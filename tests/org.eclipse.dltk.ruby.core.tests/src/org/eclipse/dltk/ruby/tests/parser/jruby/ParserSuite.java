@@ -1,4 +1,4 @@
-package org.eclipse.dltk.ruby.tests.parser;
+package org.eclipse.dltk.ruby.tests.parser.jruby;
 
 import java.io.IOException;
 import java.io.InputStream;
