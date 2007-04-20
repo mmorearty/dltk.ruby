@@ -5,7 +5,7 @@ import org.eclipse.dltk.ast.expressions.Expression;
 import org.eclipse.dltk.ast.statements.Statement;
 import org.eclipse.dltk.utils.CorePrinter;
 
-public class ColonExpression extends Expression {
+public class RubyColonExpression extends Expression {
 	private final Statement left;
 	private final String name;
 
@@ -18,7 +18,7 @@ public class ColonExpression extends Expression {
 		return name;
 	}
 
-	public ColonExpression (String name, Statement left) {
+	public RubyColonExpression (String name, Statement left) {
 		this.name = name;
 		this.left = left;
 	}

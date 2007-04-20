@@ -3,7 +3,7 @@ package org.eclipse.dltk.ruby.ast;
 import org.eclipse.dltk.ast.ASTVisitor;
 import org.eclipse.dltk.ast.expressions.Expression;
 
-public class AliasExpression extends Expression {
+public class RubyAliasExpression extends Expression {
 
 	private final String oldValue;
 	private final String newValue;
@@ -16,7 +16,7 @@ public class AliasExpression extends Expression {
 		return newValue;
 	}
 
-	public AliasExpression(int start, int end, String oldValue, String newValue) {
+	public RubyAliasExpression(int start, int end, String oldValue, String newValue) {
 		super(start, end);
 		this.oldValue = oldValue;
 		this.newValue = newValue;
@@ -28,7 +28,7 @@ public class AliasExpression extends Expression {
 	}
 
 	public void traverse(ASTVisitor visitor) throws Exception {
-		if (visitor.visit(this)) {
+		if (visitor.visit(this)) {			
 			visitor.endvisit(this);
 		}
 	}

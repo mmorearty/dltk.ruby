@@ -4,11 +4,11 @@ import org.eclipse.dltk.ast.ASTVisitor;
 import org.eclipse.dltk.ast.expressions.Expression;
 import org.eclipse.dltk.ast.statements.Statement;
 
-public class EvaluatableStringExpression extends Expression {
+public class RubyEvaluatableStringExpression extends Expression {
 	
 	private final Statement body;
 	
-	public EvaluatableStringExpression(int start, int end, Statement body) {
+	public RubyEvaluatableStringExpression(int start, int end, Statement body) {
 		super(start, end);
 		this.body = body;
 	}

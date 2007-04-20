@@ -6,13 +6,13 @@ import org.eclipse.dltk.ast.references.SimpleReference;
 import org.eclipse.dltk.ast.statements.Statement;
 import org.eclipse.dltk.utils.CorePrinter;
 
-public class ConstantDeclaration extends Expression {
+public class RubyConstantDeclaration extends Expression {
 
 	private final Expression path;
 	private final SimpleReference name;
 	private final Statement value;
 
-	public ConstantDeclaration(Expression path, SimpleReference name, Statement value) {
+	public RubyConstantDeclaration(Expression path, SimpleReference name, Statement value) {
 		this.path = path;
 		this.name = name;
 		this.value = value;

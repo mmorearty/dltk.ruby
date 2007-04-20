@@ -4,12 +4,12 @@ import org.eclipse.dltk.ast.ASTVisitor;
 import org.eclipse.dltk.ast.expressions.Expression;
 import org.eclipse.dltk.ast.statements.Statement;
 
-public class HashPairExpression extends Expression {
+public class RubyHashPairExpression extends Expression {
 
 	private final Statement key;
 	private final Statement value;
 
-	public HashPairExpression(int start, int end, Statement key, Statement value) {
+	public RubyHashPairExpression(int start, int end, Statement key, Statement value) {
 		super(start, end);
 		this.key = key;
 		this.value = value;

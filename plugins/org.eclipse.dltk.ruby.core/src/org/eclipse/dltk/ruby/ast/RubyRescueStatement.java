@@ -12,14 +12,14 @@ import org.eclipse.dltk.utils.CorePrinter;
  * end
  *
  */
-public class RescueStatement extends Statement {
+public class RubyRescueStatement extends Statement {
 
 	private Statement bodyNode;
 	private Statement elseNode;
-	private RescueBodyStatement rescueNode;
+	private RubyRescueBodyStatement rescueNode;
 
-	public RescueStatement(int start, int end, Statement bodyNode,
-			Statement elseNode, RescueBodyStatement rescueNode) {
+	public RubyRescueStatement(int start, int end, Statement bodyNode,
+			Statement elseNode, RubyRescueBodyStatement rescueNode) {
 		super(start, end);
 		this.bodyNode = bodyNode;
 		this.elseNode = elseNode;
@@ -40,13 +40,13 @@ public class RescueStatement extends Statement {
 
 
 
-	public void setRescueNode(RescueBodyStatement rescueNode) {
+	public void setRescueNode(RubyRescueBodyStatement rescueNode) {
 		this.rescueNode = rescueNode;
 	}
 
 
 
-	public RescueStatement(int start, int end) {
+	public RubyRescueStatement(int start, int end) {
 		super(start, end);
 		// TODO Auto-generated constructor stub
 	}
@@ -61,7 +61,7 @@ public class RescueStatement extends Statement {
 		return elseNode;
 	}
 
-	public RescueBodyStatement getRescueNode() {
+	public RubyRescueBodyStatement getRescueNode() {
 		return rescueNode;
 	}
 

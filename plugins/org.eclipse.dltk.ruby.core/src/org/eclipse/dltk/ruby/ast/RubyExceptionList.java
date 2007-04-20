@@ -1,6 +1,7 @@
 package org.eclipse.dltk.ruby.ast;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.dltk.ast.ASTVisitor;
@@ -8,12 +9,12 @@ import org.eclipse.dltk.ast.expressions.Expression;
 import org.eclipse.dltk.ast.references.VariableReference;
 import org.eclipse.dltk.ast.statements.Statement;
 
-public class ExceptionList extends Expression {
+public class RubyExceptionList extends Expression {
 	
 	private final List args = new ArrayList ();
 	private VariableReference var;
 	
-	public ExceptionList(int start, int end, VariableReference var) {
+	public RubyExceptionList(int start, int end, VariableReference var) {
 		super(start, end);
 		this.var = var;
 	}
@@ -40,8 +41,19 @@ public class ExceptionList extends Expression {
 	}
 
 	public void traverse(ASTVisitor visitor) throws Exception {
-		// TODO Auto-generated method stub
-
+		if (visitor.visit(this)) {
+			if (var != null)
+				var.traverse(visitor);
+			if (args != null) {
+				for (Iterator iterator = args.iterator(); iterator
+						.hasNext();) {
+					Statement a = (Statement) iterator.next();
+					if (a != null)
+						a.traverse(visitor);
+				}
+			}
+			visitor.endvisit(this);
+		}
 	}
 
 }

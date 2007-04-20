@@ -8,13 +8,13 @@ import org.eclipse.dltk.ast.DLTKToken;
 import org.eclipse.dltk.ast.references.Reference;
 import org.eclipse.dltk.utils.CorePrinter;
 
-public class SelfReference extends Reference {
+public class RubySelfReference extends Reference {
 
-	public SelfReference(int start, int end) {
+	public RubySelfReference(int start, int end) {
 		super(start, end);
 	}
 
-	public SelfReference(DLTKToken token) {
+	public RubySelfReference(DLTKToken token) {
 		this.setStart(token.getColumn());
 		this.setEnd(this.sourceStart() + 4);
 	}
@@ -32,10 +32,10 @@ public class SelfReference extends Reference {
 	}
 
 	public boolean equals(Object obj) {
-		if (!(obj instanceof SelfReference)) {
+		if (!(obj instanceof RubySelfReference)) {
 			return false;
 		}
-		SelfReference d = (SelfReference) obj;
+		RubySelfReference d = (RubySelfReference) obj;
 		return sourceStart() == d.sourceStart() && sourceEnd() == d.sourceEnd();
 	}
 

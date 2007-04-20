@@ -4,11 +4,11 @@ import java.util.regex.Pattern;
 
 import org.eclipse.dltk.ast.expressions.StringLiteral;
 
-public class RegexpExpression extends StringLiteral {
+public class RubyRegexpExpression extends StringLiteral {
 
 	private Pattern pattern;
 	
-	public RegexpExpression(int start, int end, String value) {
+	public RubyRegexpExpression(int start, int end, String value) {
 		super(start, end, value);
 	}
 

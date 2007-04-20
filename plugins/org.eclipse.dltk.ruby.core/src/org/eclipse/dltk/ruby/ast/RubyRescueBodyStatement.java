@@ -4,13 +4,13 @@ import org.eclipse.dltk.ast.ASTVisitor;
 import org.eclipse.dltk.ast.statements.Statement;
 import org.eclipse.dltk.utils.CorePrinter;
 
-public class RescueBodyStatement extends Statement {
+public class RubyRescueBodyStatement extends Statement {
 
 	private Statement bodyNode;
 	private Statement exceptionNode;
 	private Statement optNode;
 
-	public RescueBodyStatement(int start, int end, Statement bodyNode,
+	public RubyRescueBodyStatement(int start, int end, Statement bodyNode,
 			Statement exceptionNode, Statement optNode) {
 		super(start, end);
 		this.bodyNode = bodyNode;
@@ -20,7 +20,7 @@ public class RescueBodyStatement extends Statement {
 	
 	
 
-	public RescueBodyStatement(int start, int end) {
+	public RubyRescueBodyStatement(int start, int end) {
 		super(start, end);
 		// TODO Auto-generated constructor stub
 	}

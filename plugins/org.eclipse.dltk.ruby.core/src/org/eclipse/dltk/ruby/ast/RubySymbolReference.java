@@ -4,11 +4,11 @@ import org.eclipse.dltk.ast.DLTKToken;
 import org.eclipse.dltk.ast.references.Reference;
 import org.eclipse.dltk.utils.CorePrinter;
 
-public class SymbolReference extends Reference {
+public class RubySymbolReference extends Reference {
 	
 	private String name;
 
-	public SymbolReference (int start, int end, String name) {
+	public RubySymbolReference (int start, int end, String name) {
 		super(start, end);
 		
 		this.name = name;
@@ -18,7 +18,7 @@ public class SymbolReference extends Reference {
 		return name;
 	}
 
-	public SymbolReference (DLTKToken token) {
+	public RubySymbolReference (DLTKToken token) {
 		this.setStart(token.getColumn());
 		this.setEnd(this.sourceStart() + 4);
 	}
@@ -29,8 +29,8 @@ public class SymbolReference extends Reference {
 	}
 	
 	public boolean equals(Object obj) {
-		if (obj instanceof SymbolReference) {
-			SymbolReference sr = (SymbolReference)obj;			
+		if (obj instanceof RubySymbolReference) {
+			RubySymbolReference sr = (RubySymbolReference)obj;			
 			return name.equals(sr.name) && super.equals(obj);
 		}
 				
