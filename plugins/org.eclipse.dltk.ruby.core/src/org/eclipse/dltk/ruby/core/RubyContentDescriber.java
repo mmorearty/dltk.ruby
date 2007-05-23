@@ -21,9 +21,6 @@ public class RubyContentDescriber implements ITextContentDescriber {
 	}
 
 	public QualifiedName[] getSupportedOptions() {
-		// TODO Auto-generated method stub
 		return null;
 	}
-
-
 }
