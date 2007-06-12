@@ -7,21 +7,18 @@
  *
  
  *******************************************************************************/
-package org.eclipse.dltk.ruby.internal.launching;
+package org.eclipse.dltk.ruby.launching;
 
-import org.eclipse.osgi.util.NLS;
+import org.eclipse.dltk.launching.ScriptLaunchConfigurationConstants;
 
-public class RubyInterpreterMessages extends NLS {
+public class RubyLaunchConfigurationConstants extends
+		ScriptLaunchConfigurationConstants {
 
-	private static final String BUNDLE_NAME = "org.eclipse.dltk.ruby.internal.launching.RubyInterpreterMessages";//$NON-NLS-1$
+	protected RubyLaunchConfigurationConstants() {
 
-	private RubyInterpreterMessages() {
-		// dont instatiate
 	}
 
-	static {
-		// load message values from bundle file
-		NLS.initializeMessages(BUNDLE_NAME, RubyInterpreterMessages.class);
-	}
+	public static final String ID_RUBY_SCRIPT = "org.eclipse.dltk.ruby.launching.RubyLaunchConfigurationType"; //$NON-NLS-1$
 
+	public static final String ID_RUBY_PROCESS_TYPE = "rubyInterpreter"; //$NON-NLS-1$
 }
