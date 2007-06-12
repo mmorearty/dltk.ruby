@@ -11,8 +11,14 @@ package org.eclipse.dltk.ruby.core;
 
 import org.eclipse.dltk.ast.Modifiers;
 
-public interface IRubyConstants {
+public class RubyConstants {
+	protected RubyConstants() {
+
+	}
+
 	public final static String RUBY_PARTITIONING = "__ruby_partitioning";
-	public static final int RubyAttributeModifier = Modifiers.USER_MODIFIER*2;
-	public static final int RubyAliasModifier = Modifiers.USER_MODIFIER*4;
+
+	public static final int RubyAttributeModifier = Modifiers.USER_MODIFIER * 2;
+	
+	public static final int RubyAliasModifier = Modifiers.USER_MODIFIER * 4;
 }
