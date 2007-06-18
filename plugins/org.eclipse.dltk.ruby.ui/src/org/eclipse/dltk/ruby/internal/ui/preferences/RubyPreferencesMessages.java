@@ -8,27 +8,22 @@
  
  *     John Kaplan, johnkaplantech@gmail.com - 108071 [code templates] template for body of newly created class
  *******************************************************************************/
-package org.eclipse.dltk.ruby.ui.preferences;
+package org.eclipse.dltk.ruby.internal.ui.preferences;
 
 import org.eclipse.osgi.util.NLS;
 
 public final class RubyPreferencesMessages extends NLS {
 
-	private static final String BUNDLE_NAME= "org.eclipse.dltk.ruby.ui.preferences.RubyPreferencesMessages";//$NON-NLS-1$
-	
-	public static String RubyEditorPreferencePage_rubyDoc;
-	public static String RubyEditorPreferencePage_rubyDocTopic;
-	
-	public static String RubyClassVariable;
-	public static String RubyInstanceVariable;
-	public static String RubyGlobalVariable;
-	public static String RubyPseudoVariable;
-	public static String RubySymbols;
-		
+	private static final String BUNDLE_NAME= "org.eclipse.dltk.ui.preferences.PythonPreferencesMessages";//$NON-NLS-1$
+
 	private RubyPreferencesMessages() {
 		// Do not instantiate
-	}	
+	}
+	
+	
+	public static String DLTKEditorPreferencePage_general;
+
 	static {
 		NLS.initializeMessages(BUNDLE_NAME, RubyPreferencesMessages.class);
-	}	
+	}
 }
