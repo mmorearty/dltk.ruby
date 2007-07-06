@@ -7,16 +7,15 @@
  *
  
  *******************************************************************************/
-package org.eclipse.dltk.ruby.tests.typeinference.old;
+package org.eclipse.dltk.ruby.tests.typeinference;
 
 import junit.framework.Test;
 
-import org.eclipse.dltk.ruby.tests.typeinference.TypeInferenceSuite;
 
-public class StatementsTest {
+public class SimpleTest {
 
 	public static Test suite() {
-		return new TypeInferenceSuite("/workspace/typeinference/statements");
+		return new TypeInferenceSuite("/workspace/typeinference/simple");
 	}
 
 }
