@@ -7,7 +7,7 @@
  *
  
  *******************************************************************************/
-package org.eclipse.dltk.ruby.tests.search.mixin;
+package org.eclipse.dltk.ruby.core.tests.typeinference;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -15,29 +15,25 @@ import java.util.Iterator;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.dltk.core.search.IDLTKSearchConstants;
-import org.eclipse.dltk.core.tests.model.AbstractDLTKSearchTests;
+import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
+import org.eclipse.dltk.core.ISourceModule;
+import org.eclipse.dltk.ruby.typeinference.RubyTypeInferencingUtils;
+import org.eclipse.dltk.ti.ITypeInferencer;
 
-public class MixinTest extends AbstractDLTKSearchTests implements IDLTKSearchConstants {
+public class TypeInferenceTest extends AbstractTypeInferencingTests {
 
-	private static final String SRC_PROJECT = "automixins";
+	private static final String SRC_PROJECT = "typeinference";
 
-	public MixinTest(String name) {
+	public TypeInferenceTest(String name) {
 		super("org.eclipse.dltk.ruby.core.tests", name);
 	}
-	
 
 	public void setUpSuite() throws Exception {
-		super.setUpSuite();		
-		up();
+		PROJECT = setUpScriptProject(SRC_PROJECT);
+		super.setUpSuite();
 		waitUntilIndexesReady();
 		ResourcesPlugin.getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, new NullProgressMonitor());
-	}
-	
-	private void up() throws Exception {
-		if (SCRIPT_PROJECT == null) {
-			SCRIPT_PROJECT = setUpScriptProject(SRC_PROJECT);
-		}
+		
 	}
 	
 	public void tearDownSuite() throws Exception {
@@ -45,11 +41,13 @@ public class MixinTest extends AbstractDLTKSearchTests implements IDLTKSearchCon
 		super.tearDownSuite();
 	}
 
-	public void executeTest(Collection assertions) throws Exception {
-		waitUntilIndexesReady();
+	public void executeTest(String folder, String name, ITypeInferencer inferencer, Collection assertions) throws Exception {
+		waitForAutoBuild();
+		ISourceModule cu = getSourceModule(SRC_PROJECT, folder, name);
+		ModuleDeclaration rootNode = RubyTypeInferencingUtils.parseSource(cu);
 		for (Iterator iter = assertions.iterator(); iter.hasNext();) {
 			IAssertion assertion = (IAssertion) iter.next();
-			assertion.check();
+			assertion.check(rootNode, cu, inferencer);
 		}
 	}
 

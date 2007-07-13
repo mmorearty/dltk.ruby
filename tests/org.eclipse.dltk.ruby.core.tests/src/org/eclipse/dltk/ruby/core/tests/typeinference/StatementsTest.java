@@ -7,14 +7,15 @@
  *
  
  *******************************************************************************/
-package org.eclipse.dltk.ruby.tests.typeinference;
+package org.eclipse.dltk.ruby.core.tests.typeinference;
 
 import junit.framework.Test;
 
-public class VariablesTest {
+
+public class StatementsTest {
 
 	public static Test suite() {
-		return new TypeInferenceSuite("/workspace/typeinference/variables");
+		return new TypeInferenceSuite("/workspace/typeinference/statements");
 	}
 
 }

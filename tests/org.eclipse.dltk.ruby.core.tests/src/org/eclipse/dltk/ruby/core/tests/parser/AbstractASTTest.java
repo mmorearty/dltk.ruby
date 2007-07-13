@@ -7,7 +7,7 @@
  *
  
  *******************************************************************************/
-package org.eclipse.dltk.ruby.tests.parser;
+package org.eclipse.dltk.ruby.core.tests.parser;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
@@ -20,7 +20,7 @@ import org.eclipse.dltk.compiler.problem.IProblemReporter;
 import org.eclipse.dltk.core.DLTKLanguageManager;
 import org.eclipse.dltk.core.tests.model.AbstractModelTests;
 import org.eclipse.dltk.ruby.core.RubyNature;
-import org.eclipse.dltk.ruby.tests.Activator;
+import org.eclipse.dltk.ruby.core.tests.Activator;
 
 public abstract class AbstractASTTest extends AbstractModelTests {
 

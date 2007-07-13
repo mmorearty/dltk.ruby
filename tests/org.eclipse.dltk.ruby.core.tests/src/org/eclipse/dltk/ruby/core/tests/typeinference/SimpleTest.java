@@ -7,17 +7,15 @@
  *
  
  *******************************************************************************/
-/**
- * 
- */
-package org.eclipse.dltk.ruby.tests.typeinference;
+package org.eclipse.dltk.ruby.core.tests.typeinference;
 
-import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
-import org.eclipse.dltk.core.ISourceModule;
-import org.eclipse.dltk.ti.ITypeInferencer;
+import junit.framework.Test;
 
-public interface IAssertion {
 
-	void check(ModuleDeclaration rootNode, ISourceModule cu, ITypeInferencer inferencer) throws Exception;
+public class SimpleTest {
+
+	public static Test suite() {
+		return new TypeInferenceSuite("/workspace/typeinference/simple");
+	}
 
 }

@@ -7,7 +7,7 @@
  *
  
  *******************************************************************************/
-package org.eclipse.dltk.ruby.tests.typeinference;
+package org.eclipse.dltk.ruby.core.tests.typeinference;
 
 import java.util.Hashtable;
 
