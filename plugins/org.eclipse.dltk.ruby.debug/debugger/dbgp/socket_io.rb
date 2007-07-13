@@ -12,7 +12,8 @@ require 'socket'
 require 'io/wait'
 
 module XoredDebugger
-    class SocketIOManager
+
+    class SocketIO
         def log_send(text)
             @logger.puts('>>> ' + text)
         end
@@ -62,5 +63,6 @@ module XoredDebugger
         def close
             @socket.close
         end
-    end # class SocketIOManager
-end # module XoredDebugger
+    end # class SocketIO
+
+end # module

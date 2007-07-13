@@ -8,18 +8,15 @@
 
 ###############################################################################    
 
-require 'dbgp/managers/log_null'
-require 'dbgp/managers/log_file'
-require 'dbgp/managers/log_stdout'
-
-require 'simple_debugger'
-                                           
+require 'dbgp/logging'
+require 'dbgp/ruby_debugger'
+                                            
 module XoredDebugger
     
     class Runner
         def Runner.go
             log = ENV['DBGP_RUBY_LOG']
-            logger = log.nil? ? NullLogManager.new : (log == 'stdout' ? StdoutLogManager.new : FileLogManager.new(log))
+            logger = log.nil? ? NullLogger.new : (log == 'stdout' ? StdoutLogger.new : FileLogger.new(log))
 
             host   = ENV['DBGP_RUBY_HOST']
             port   = ENV['DBGP_RUBY_PORT'].to_i
@@ -32,26 +29,17 @@ module XoredDebugger
                 if (host.nil? or port == 0 or key.nil? or script.nil?)
                     logger.puts('Invalid debugger params')
                 else
-                    logger.puts("Time:   #{Time.new.to_s}")
-                    logger.puts("Host:   #{host.to_s}")
-                    logger.puts("Port:   #{port.to_s}")
-                    logger.puts("Key:    #{key.to_s}")
-                    logger.puts("Script: #{script.to_s}")
-                    logger.puts("Test:   #{test.to_s}")
-
-                    logger.puts('Include paths:')
-                    $:.each { |path|
-                        logger.puts("\t#{path}")
-                    }
-
+                    logger.puts('Debugging session on ' + Time.new.to_s)
+                    logger.puts('Host: ' + host.to_s)
+                    logger.puts('Port: ' + port.to_s)
+                    logger.puts('Key: ' + key.to_s)
+                    logger.puts('Script: ' + script.to_s)
+                    logger.puts('Test: ' + test.to_s)
 
                     # Debugger setup
-                    logger.puts('Creating debugger...')
-                    debugger = RubyDebugger.new(host, port, key, script, logger, test)
-
-                    logger.puts('Setting trace_func...')
+                    debugger = RubyDebugger.new(host, port, key, logger, test)
+            
                     set_trace_func proc { |event, file, line, id, binding, klass, *rest|
-                        #logger.puts("=> Trace: #{event.to_s} from #{file.to_s} at #{line.to_s}")
                         debugger.trace(event, file, line, id, binding, klass)
                     }
 

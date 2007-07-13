@@ -10,7 +10,8 @@
 
 require 'thread'
 
-module XoredDebugger   
+module XoredDebugger
+   
     class Capturer
         def initialize(stream, state)
             @stream = stream
@@ -69,4 +70,6 @@ module XoredDebugger
             $stderr = saved_stream
         end
     end # class StderrCapturer
+
+
 end # module XoredDebugger
