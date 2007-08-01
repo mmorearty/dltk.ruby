@@ -17,7 +17,6 @@ import org.eclipse.dltk.ast.declarations.TypeDeclaration;
 import org.eclipse.dltk.ast.expressions.Expression;
 import org.eclipse.dltk.ast.statements.Block;
 import org.eclipse.dltk.ast.statements.Statement;
-import org.eclipse.dltk.ruby.ast.RubyBlock;
 
 public class OffsetTargetedASTVisitor extends ASTVisitor {
 
@@ -31,10 +30,8 @@ public class OffsetTargetedASTVisitor extends ASTVisitor {
 		// XXX AST offsets bug workaround
 		if (s instanceof Block)
 			return true;
-		if (s.sourceStart() >= 0
-				&& s.sourceEnd() > s.sourceStart()
-				&& (requestedOffset < s.sourceStart() || requestedOffset >= s
-						.sourceEnd()))
+		if (s.sourceStart() >= 0 && s.sourceEnd() > s.sourceStart()
+				&& (requestedOffset < s.sourceStart() || requestedOffset >= s.sourceEnd()))
 			return false;
 		return true;
 	}
@@ -89,16 +86,9 @@ public class OffsetTargetedASTVisitor extends ASTVisitor {
 		return visitGeneralInteresting(s);
 	}
 
-	protected boolean visitInteresting(RubyBlock b) {
-		return true;
-	}
-
 	public final boolean visitGeneral(ASTNode s) throws Exception {
 		if (!interesting(s))
 			return false;
-		if (s instanceof RubyBlock) {
-			return visitInteresting((RubyBlock) s);
-		}
 		return visitGeneralInteresting(s);
 	}
 

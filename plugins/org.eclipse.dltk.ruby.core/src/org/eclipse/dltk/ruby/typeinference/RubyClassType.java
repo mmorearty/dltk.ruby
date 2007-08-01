@@ -22,7 +22,7 @@ public class RubyClassType extends ClassType implements IClassType {
 	}
 
 	public boolean subtypeOf(IEvaluatedType type) {
-		return false; //TODO
+		return false;
 	}
 
 	public String getModelKey() {

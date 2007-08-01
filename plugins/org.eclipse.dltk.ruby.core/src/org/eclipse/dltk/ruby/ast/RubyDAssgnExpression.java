@@ -10,43 +10,34 @@
 package org.eclipse.dltk.ruby.ast;
 
 import org.eclipse.dltk.ast.ASTNode;
-import org.eclipse.dltk.ast.references.SimpleReference;
-import org.eclipse.dltk.ast.references.VariableReference;
+import org.eclipse.dltk.ast.ASTVisitor;
 
-public class RubyDAssgnExpression extends RubyAssignment {
+public class RubyDAssgnExpression extends ASTNode {
 
-	private SimpleReference left;
+	private String name;
 
-	public RubyDAssgnExpression(int start, int end, String name, ASTNode value) {
-		super(null, value);
-		this.left = new VariableReference(start, start + name.length(), name);
-		this.setStart(start);
-		this.setEnd(end);
+	public RubyDAssgnExpression(int start, int end) {
+		super(start, end);
+		// TODO Auto-generated constructor stub
 	}
 
 	public String getName() {
-		return left.getName();
+		return name;
 	}
 
 	public void setName(String name) {
-		left.setName(name);
+		this.name = name;
 	}
 
 	public int getKind() {
+		// TODO Auto-generated method stub
 		return 0;
 	}
 
-//	public void traverse(ASTVisitor visitor) throws Exception {
-//		if (visitor.visit(this)) {	
-//			if ()
-//			visitor.endvisit(this);
-//		}
-//	}
-
-	public ASTNode getLeft() {
-		return left;
+	public void traverse(ASTVisitor visitor) throws Exception {
+		if (visitor.visit(this)) {			
+			visitor.endvisit(this);
+		}
 	}
 
-	
-	
 }
