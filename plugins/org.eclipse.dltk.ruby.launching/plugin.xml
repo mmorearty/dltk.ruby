@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.2"?>
-<plugin>
+<plugin
+>
+  
   <extension
          point="org.eclipse.debug.core.launchConfigurationTypes">
          <launchConfigurationType
@@ -15,7 +17,7 @@
   <extension
         point="org.eclipse.debug.core.sourceLocators">
      <sourceLocator
-           class="org.eclipse.dltk.launching.ScriptSourceLookupDirector"
+           class="org.eclipse.dltk.ruby.internal.launching.RubySourceLookupDirector"
            id="rubySourceLocator"
            name="%RubySourceLocator.name">
      </sourceLocator>
@@ -42,11 +44,5 @@
             class="org.eclipse.dltk.ruby.internal.launching.RubyGenericInstallType"
             id="org.eclipse.dltk.internal.debug.ui.launcher.GenericRubyInstallType">
       </interpreterInstallType>   
-   </extension>
-   <extension
-         point="org.eclipse.core.runtime.preferences">
-      <initializer
-            class="org.eclipse.dltk.ruby.launching.RubyLaunchingPluginPreferenceInitializer">
-      </initializer>
    </extension>
 </plugin>

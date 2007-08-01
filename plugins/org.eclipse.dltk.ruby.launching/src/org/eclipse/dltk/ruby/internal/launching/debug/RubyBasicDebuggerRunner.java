@@ -6,7 +6,6 @@ import java.io.IOException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.dltk.launching.DebuggingEngineRunner;
 import org.eclipse.dltk.launching.IInterpreterInstall;
@@ -21,6 +20,7 @@ public class RubyBasicDebuggerRunner extends DebuggingEngineRunner {
 	private static final String RUBY_SCRIPT_VAR = "DBGP_RUBY_SCRIPT";
 	private static final String RUBY_LOG_VAR = "DBGP_RUBY_LOG";
 
+	private static final String DEBUGGER_DBGP_DIR = "dbgp";
 	private static final String DEBUGGER_SCRIPT = "runner.rb";
 
 	private final boolean logging;
@@ -52,15 +52,17 @@ public class RubyBasicDebuggerRunner extends DebuggingEngineRunner {
 		// Get debugger source location
 		final IPath sourceLocation = deploy();
 
-		final File scriptFile = sourceLocation.append(new Path("dbgp")).append(
-				DEBUGGER_SCRIPT).toFile();
+		final File scriptFile = sourceLocation.append(DEBUGGER_DBGP_DIR)
+				.append(DEBUGGER_SCRIPT).toFile();
+
+		final String includePath = sourceLocation.toOSString();
 
 		// Creating new config
 		InterpreterConfig newConfig = new InterpreterConfig();
 
 		// Interpreter arguments
 		newConfig.addInterpreterArgs(config.getInterpreterArgs());
-		newConfig.addInterpreterArg("-I" + sourceLocation.toOSString());
+		newConfig.addInterpreterArg("-I" + includePath);
 
 		// Script
 		newConfig.setScriptFile(scriptFile);
