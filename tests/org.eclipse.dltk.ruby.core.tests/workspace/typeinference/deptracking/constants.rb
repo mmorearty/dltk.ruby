@@ -21,4 +21,4 @@ class Bar
 	end
 end
 
-Bar.new.func ## expr Bar.new.func => Fixnum%
+## meth Bar.func => Fixnum
