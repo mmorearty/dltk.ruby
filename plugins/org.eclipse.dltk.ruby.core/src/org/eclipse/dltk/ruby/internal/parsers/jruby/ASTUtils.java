@@ -26,6 +26,12 @@ import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.DLTKLanguageManager;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
+import org.eclipse.dltk.ruby.ast.RubyBlock;
+import org.eclipse.dltk.ruby.ast.RubyForStatement2;
+import org.eclipse.dltk.ruby.ast.RubyIfStatement;
+import org.eclipse.dltk.ruby.ast.RubyUnlessStatement;
+import org.eclipse.dltk.ruby.ast.RubyUntilStatement;
+import org.eclipse.dltk.ruby.ast.RubyWhileStatement;
 import org.eclipse.dltk.ruby.core.RubyNature;
 
 public class ASTUtils {
@@ -242,6 +248,29 @@ public class ASTUtils {
 		return null;
 	}
 	
+	public static ModuleDeclaration getAST(char[] cs) {
+		try {
+			ISourceParser sourceParser = DLTKLanguageManager
+					.getSourceParser(RubyNature.NATURE_ID);
+			ModuleDeclaration declaration = sourceParser.parse("RawSource"
+					.toCharArray(), cs, null);
+			return declaration;
+		} catch (ModelException e) {
+			e.printStackTrace();
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 	
+	public static boolean isNodeScoping(ASTNode node) {
+		return (node instanceof RubyIfStatement
+				|| node instanceof RubyForStatement2
+				|| node instanceof RubyWhileStatement
+				|| node instanceof RubyBlock
+				|| node instanceof RubyUntilStatement
+				|| node instanceof RubyUnlessStatement
+				|| node instanceof TypeDeclaration || node instanceof MethodDeclaration);
+	}
 	
 }

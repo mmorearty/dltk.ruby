@@ -25,6 +25,7 @@ import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.mixin.MixinModel;
 import org.eclipse.dltk.ruby.ast.RubyCallArgument;
+import org.eclipse.dltk.ruby.ast.RubyDVarExpression;
 import org.eclipse.dltk.ruby.ast.RubyMethodArgument;
 import org.eclipse.dltk.ruby.ast.RubySingletonMethodDeclaration;
 import org.eclipse.dltk.ruby.ast.RubyVariableKind;
@@ -86,8 +87,7 @@ public class VariableReferenceEvaluator extends GoalEvaluator {
 	}
 
 	public IGoal[] init() {
-		VariableReference ref = (VariableReference) ((ExpressionTypeGoal) goal)
-				.getExpression();
+		VariableReference ref = getGoalVariableReference ();
 		if (ref.getVariableKind() == RubyVariableKind.LOCAL) {
 			IContext context = goal.getContext();
 			ModuleDeclaration rootNode = ((ISourceModuleContext) context)
@@ -112,14 +112,14 @@ public class VariableReferenceEvaluator extends GoalEvaluator {
 			List poss = new ArrayList();
 
 			if (info != null) {
-				if (info.lastAssignment != null) {
+				if (info.getLastAssignment() != null) {
 					IGoal subgoal = new ExpressionTypeGoal(context,
-							info.lastAssignment.getRight());
+							info.getLastAssignment().getRight());
 					poss.add(subgoal);
 				}
-				for (int i = 0; i < info.conditionalAssignments.length; i++) {
+				for (int i = 0; i < info.getConditionalAssignments().length; i++) {
 					IGoal subgoal = new ExpressionTypeGoal(context,
-							info.conditionalAssignments[i].getRight());
+							info.getConditionalAssignments()[i].getRight());
 					poss.add(subgoal);
 				}
 			}
@@ -179,10 +179,21 @@ public class VariableReferenceEvaluator extends GoalEvaluator {
 		}
 		return argPos;
 	}
+	
+	private VariableReference getGoalVariableReference () {
+		ASTNode expression = ((ExpressionTypeGoal) goal)
+		.getExpression();
+		if (expression instanceof VariableReference)
+			return (VariableReference) expression;
+		if (expression instanceof RubyDVarExpression) {
+			RubyDVarExpression dvar = (RubyDVarExpression) expression;
+			return new VariableReference(dvar.sourceStart(), dvar.sourceEnd(), dvar.getName(), RubyVariableKind.LOCAL);
+		}
+		return null;
+	}
 
 	private ASTNode getArgFromCall(CallExpression expr) {
-		VariableReference ref = (VariableReference) ((ExpressionTypeGoal) goal)
-				.getExpression();
+		VariableReference ref = getGoalVariableReference ();
 		if (ref.getVariableKind() != RubyVariableKind.LOCAL)
 			return null;
 

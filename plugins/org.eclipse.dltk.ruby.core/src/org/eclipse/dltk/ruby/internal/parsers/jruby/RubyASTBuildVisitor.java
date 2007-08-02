@@ -975,17 +975,15 @@ public class RubyASTBuildVisitor implements NodeVisitor {
 		return null;
 	}
 
-	public Instruction visitDAsgnNode(DAsgnNode iVisited) { // FIXME, just a
-		// stub
+	public Instruction visitDAsgnNode(DAsgnNode iVisited) { 
 		ISourcePosition pos = iVisited.getPosition();
+		ASTNode valueNode = this.collectSingleNodeSafe(iVisited.getValueNode(),
+				true);
 		RubyDAssgnExpression e = new RubyDAssgnExpression(pos.getStartOffset(),
-				pos.getEndOffset());
-		e.setName(iVisited.getName());
+				pos.getEndOffset(), iVisited.getName(), valueNode);
+
 		states.peek().add(e);
-		// Iterator iterator = iVisited.childNodes().iterator();
-		// while (iterator.hasNext()) {
-		// ((Node) iterator.next()).accept(this);
-		// }
+
 		return null;
 	}
 
