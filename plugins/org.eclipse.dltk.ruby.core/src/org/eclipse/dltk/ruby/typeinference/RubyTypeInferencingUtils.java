@@ -425,19 +425,7 @@ public class RubyTypeInferencingUtils {
 		return visitor.getUnconditionalAssignment();
 	}
 
-	/**
-	 * @deprecated
-	 * @param module
-	 * @param offset
-	 * @param name
-	 * @return
-	 */
 	public static LocalVariableInfo inspectLocalVariable(
-			ModuleDeclaration module, int offset, String name) {
-		return searchLocalVars(module, offset, name);
-	}
-
-	public static LocalVariableInfo searchLocalVars(
 			ModuleDeclaration module, int offset, String name) {
 		LocalVariableInfo info = new LocalVariableInfo();
 		ASTNode[] scopes = getAllStaticScopes(module, offset);

@@ -106,7 +106,7 @@ public class VariableReferenceEvaluator extends GoalEvaluator {
 				}
 			}
 
-			info = RubyTypeInferencingUtils.searchLocalVars(rootNode,
+			info = RubyTypeInferencingUtils.inspectLocalVariable(rootNode,
 					expression.sourceStart(), varName);
 
 			List poss = new ArrayList();

@@ -34,11 +34,11 @@ public class LocalVariableInfo {
 
 	public final static int KIND_LOOP_VAR = 3;
 
-	public ASTNode declaringScope;
+	private ASTNode declaringScope;
 
-	public RubyAssignment[] conditionalAssignments;
+	private RubyAssignment[] conditionalAssignments;
 
-	public RubyAssignment lastAssignment;
+	private RubyAssignment lastAssignment;
 
 	private int kind;
 
@@ -46,7 +46,7 @@ public class LocalVariableInfo {
 			final RubyAssignment[] assignments, final RubyAssignment last) {
 		this.declaringScope = declaringScope;
 		this.conditionalAssignments = assignments;
-		lastAssignment = last;
+		this.lastAssignment = last;
 		this.kind = 0;
 	}
 
