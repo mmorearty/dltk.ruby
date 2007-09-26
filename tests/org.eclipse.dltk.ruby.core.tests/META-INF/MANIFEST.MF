@@ -2,16 +2,20 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.eclipse.dltk.ruby.core.tests
-Bundle-Version: 0.9.0.qualifier
+Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.eclipse.dltk.ruby.core.tests.Activator
 Bundle-Vendor: %pluginProvider
 Bundle-Localization: plugin
-Require-Bundle: org.eclipse.core.runtime,
+Require-Bundle: org.junit,
+ org.eclipse.core.runtime,
+ org.eclipse.debug.core,
  org.eclipse.dltk.core,
  org.eclipse.dltk.ruby.core,
- org.junit,
  org.eclipse.dltk.core.tests,
- org.eclipse.core.resources
+ org.eclipse.dltk.ruby.launching,
+ org.eclipse.dltk.launching,
+ org.eclipse.dltk.ruby.debug
 Eclipse-LazyStart: true
-Export-Package: org.eclipse.dltk.ruby.tests,
- org.eclipse.dltk.ruby.tests.parser
+Export-Package: org.eclipse.dltk.ruby.core.tests,
+ org.eclipse.dltk.ruby.core.tests.parser
+Bundle-RequiredExecutionEnvironment: J2SE-1.4

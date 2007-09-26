@@ -58,8 +58,6 @@ public class Activator extends Plugin {
 	 * @return the shared instance
 	 */
 	public static Activator getDefault() {
-		if (plugin == null)
-			plugin = new Activator();
 		return plugin;
 	}
 	public static InputStream openResource(String path) throws IOException {

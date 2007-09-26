@@ -567,3 +567,736 @@ module Kernel
 	end
 end
 
+	
+class File  < ::IO
+	class << ::File
+		
+		include Kernel
+	
+	end
+	
+public
+	def ctime ()
+	end
+	
+	def lstat ()
+	end
+	
+	def chown (arg1, arg2)
+	end
+	
+	def mtime ()
+	end
+	
+	def path ()
+	end
+	
+	def truncate (arg1)
+	end
+	
+	def chmod (arg1)
+	end
+	
+	def atime ()
+	end
+	
+	def flock (arg1)
+	end
+	
+	
+protected
+	
+private
+	def initialize (*args)
+	end
+	
+	def self.exist? (arg1)
+	end
+	
+	def self.grpowned? (arg1)
+	end
+	
+	def self.lchown (*args)
+	end
+	
+	def self.executable_real? (arg1)
+	end
+	
+	def self.setgid? (arg1)
+	end
+	
+	def self.utime (*args)
+	end
+	
+	def self.expand_path (*args)
+	end
+	
+	def self.readable_real? (arg1)
+	end
+	
+	def self.socket? (arg1)
+	end
+	
+	def self.ftype (arg1)
+	end
+	
+	def self.readlink (arg1)
+	end
+	
+	def self.directory? (arg1)
+	end
+	
+	def self.owned? (arg1)
+	end
+	
+	def self.lchmod (*args)
+	end
+	
+	def self.extname (arg1)
+	end
+	
+	def self.executable? (arg1)
+	end
+	
+	def self.setuid? (arg1)
+	end
+	
+	def self.ctime (arg1)
+	end
+	
+	def self.delete (*args)
+	end
+	
+	def self.umask (*args)
+	end
+	
+	def self.readable? (arg1)
+	end
+	
+	def self.symlink? (arg1)
+	end
+	
+	def self.lstat (arg1)
+	end
+	
+	def self.symlink (arg1, arg2)
+	end
+	
+	def self.split (arg1)
+	end
+	
+	def self.join (*args)
+	end
+	
+	def self.size? (arg1)
+	end
+	
+	def self.identical? (arg1, arg2)
+	end
+	
+	def self.chown (*args)
+	end
+	
+	def self.dirname (arg1)
+	end
+	
+	def self.fnmatch (*args)
+	end
+	
+	def self.writable_real? (arg1)
+	end
+	
+	def self.zero? (arg1)
+	end
+	
+	def self.chardev? (arg1)
+	end
+	
+	def self.mtime (arg1)
+	end
+	
+	def self.rename (arg1, arg2)
+	end
+	
+	def self.exists? (arg1)
+	end
+	
+	def self.size (arg1)
+	end
+	
+	def self.pipe? (arg1)
+	end
+	
+	def self.stat (arg1)
+	end
+	
+	def self.link (arg1, arg2)
+	end
+	
+	def self.truncate (arg1, arg2)
+	end
+	
+	def self.file? (arg1)
+	end
+	
+	def self.sticky? (arg1)
+	end
+	
+	def self.chmod (*args)
+	end
+	
+	def self.basename (*args)
+	end
+	
+	def self.fnmatch? (*args)
+	end
+	
+	def self.writable? (arg1)
+	end
+	
+	def self.blockdev? (arg1)
+	end
+	
+	def self.atime (arg1)
+	end
+	
+	def self.unlink (*args)
+	end
+	
+end
+
+	
+class File::Stat  < ::Object
+		
+	include Comparable
+	
+	class << ::File::Stat
+		
+		include Kernel
+	
+	end
+	
+public
+	def rdev_minor ()
+	end
+	
+	def grpowned? ()
+	end
+	
+	def <=> (arg1)
+	end
+	
+	def uid ()
+	end
+	
+	def executable_real? ()
+	end
+	
+	def setgid? ()
+	end
+	
+	def dev_minor ()
+	end
+	
+	def ftype ()
+	end
+	
+	def readable_real? ()
+	end
+	
+	def socket? ()
+	end
+	
+	def rdev_major ()
+	end
+	
+	def directory? ()
+	end
+	
+	def owned? ()
+	end
+	
+	def nlink ()
+	end
+	
+	def ctime ()
+	end
+	
+	def executable? ()
+	end
+	
+	def setuid? ()
+	end
+	
+	def dev_major ()
+	end
+	
+	def blocks ()
+	end
+	
+	def readable? ()
+	end
+	
+	def symlink? ()
+	end
+	
+	def rdev ()
+	end
+	
+	def size? ()
+	end
+	
+	def mode ()
+	end
+	
+	def mtime ()
+	end
+	
+	def writable_real? ()
+	end
+	
+	def zero? ()
+	end
+	
+	def chardev? ()
+	end
+	
+	def dev ()
+	end
+	
+	def size ()
+	end
+	
+	def blksize ()
+	end
+	
+	def pipe? ()
+	end
+	
+	def gid ()
+	end
+	
+	def file? ()
+	end
+	
+	def sticky? ()
+	end
+	
+	def ino ()
+	end
+	
+	def atime ()
+	end
+	
+	def writable? ()
+	end
+	
+	def blockdev? ()
+	end
+	
+	
+protected
+	
+private
+	def initialize (arg1)
+	end
+	
+	def initialize_copy (arg1)
+	end
+	
+end
+
+		
+module File::Constants
+	
+public
+	
+protected
+	
+private
+end
+
+	
+class Fixnum  < ::Integer
+	class << ::Fixnum
+		
+		include Kernel
+	
+	end
+	
+public
+	def quo (arg1)
+	end
+	
+	def ** (arg1)
+	end
+	
+	def - (arg1)
+	end
+	
+	def <=> (arg1)
+	end
+	
+	def modulo (arg1)
+	end
+	
+	def [] (arg1)
+	end
+	
+	def / (arg1)
+	end
+	
+	def | (arg1)
+	end
+	
+	def rpower (arg1)
+	end
+	
+	def % (arg1)
+	end
+	
+	def << (arg1)
+	end
+	
+	def to_f ()
+	end
+	
+	def to_sym ()
+	end
+	
+	def divmod (arg1)
+	end
+	
+	def ~ ()
+	end
+	
+	def & (arg1)
+	end
+	
+	def >> (arg1)
+	end
+	
+	def ^ (arg1)
+	end
+	
+	def rdiv (arg1)
+	end
+	
+	def power! (arg1)
+	end
+	
+	def abs ()
+	end
+	
+	def zero? ()
+	end
+	
+	def id2name ()
+	end
+	
+	def div (arg1)
+	end
+	
+	def size ()
+	end
+	
+	def * (arg1)
+	end
+	
+	def -@ ()
+	end
+	
+	def + (arg1)
+	end
+	
+	
+protected
+	
+private
+	def self.induced_from (arg1)
+	end
+	
+end
+
+	
+class String  < ::Object
+		
+	include Enumerable
+	
+		
+	include Comparable
+	
+	class << ::String
+		
+		include Kernel
+	
+	end
+	
+public
+	def unpack (arg1)
+	end
+	
+	def slice! (*args)
+	end
+	
+	def strip ()
+	end
+	
+	def each_line (*args)
+	end
+	
+	def gsub! (*args)
+	end
+	
+	def length ()
+	end
+	
+	def tr_s! (arg1, arg2)
+	end
+	
+	def to_str ()
+	end
+	
+	def ljust (*args)
+	end
+	
+	def taguri= (arg1)
+	end
+	
+	def delete (*args)
+	end
+	
+	def rstrip! ()
+	end
+	
+	def split (*args)
+	end
+	
+	def to_yaml (*args)
+	end
+	
+	def to_java_string ()
+	end
+	
+	def is_binary_data? ()
+	end
+	
+	def * (arg1)
+	end
+	
+	def swapcase! ()
+	end
+	
+	def to_i (*args)
+	end
+	
+	def casecmp (arg1)
+	end
+	
+	def swapcase ()
+	end
+	
+	def chop ()
+	end
+	
+	def empty? ()
+	end
+	
+	def tr (arg1, arg2)
+	end
+	
+	def + (arg1)
+	end
+	
+	def rindex (*args)
+	end
+	
+	def intern ()
+	end
+	
+	def each (*args)
+	end
+	
+	def slice (*args)
+	end
+	
+	def next! ()
+	end
+	
+	def reverse! ()
+	end
+	
+	def strip! ()
+	end
+	
+	def match (arg1)
+	end
+	
+	def hex ()
+	end
+	
+	def downcase ()
+	end
+	
+	def sub (*args)
+	end
+	
+	def javacase ()
+	end
+	
+	def downcase! ()
+	end
+	
+	def upto (arg1)
+	end
+	
+	def concat (arg1)
+	end
+	
+	def chop! ()
+	end
+	
+	def size ()
+	end
+	
+	def lstrip ()
+	end
+	
+	def each_byte ()
+	end
+	
+	def [] (*args)
+	end
+	
+	def succ! ()
+	end
+	
+	def delete! (*args)
+	end
+	
+	def dump ()
+	end
+	
+	def []= (*args)
+	end
+	
+	def rjust (*args)
+	end
+	
+	def squeeze (*args)
+	end
+	
+	def to_sym ()
+	end
+	
+	def next ()
+	end
+	
+	def << (arg1)
+	end
+	
+	def reverse ()
+	end
+	
+	def chomp (*args)
+	end
+	
+	def to_f ()
+	end
+	
+	def sub! (*args)
+	end
+	
+	def insert (arg1, arg2)
+	end
+	
+	def replace (arg1)
+	end
+	
+	def scan (arg1)
+	end
+	
+	def tr_s (arg1, arg2)
+	end
+	
+	def tr! (arg1, arg2)
+	end
+	
+	def oct ()
+	end
+	
+	def succ ()
+	end
+	
+	def lstrip! ()
+	end
+	
+	def capitalize! ()
+	end
+	
+	def gsub (*args)
+	end
+	
+	def capitalize ()
+	end
+	
+	def is_complex_yaml? ()
+	end
+	
+	def <=> (arg1)
+	end
+	
+	def crypt (arg1)
+	end
+	
+	def index (*args)
+	end
+	
+	def rstrip ()
+	end
+	
+	def chomp! (*args)
+	end
+	
+	def sum (*args)
+	end
+	
+	def center (*args)
+	end
+	
+	def upcase ()
+	end
+	
+	def % (arg1)
+	end
+	
+	def upcase! ()
+	end
+	
+	def count (*args)
+	end
+	
+	def squeeze! (*args)
+	end
+	
+	def taguri ()
+	end
+	
+	
+protected
+	
+private
+	def initialize_copy (arg1)
+	end
+	
+	def initialize (*args)
+	end
+	
+	def self.yaml_tag_subclasses? ()
+	end
+	
+	def self.yaml_new (arg1, arg2, arg3)
+	end
+	
+end
+
