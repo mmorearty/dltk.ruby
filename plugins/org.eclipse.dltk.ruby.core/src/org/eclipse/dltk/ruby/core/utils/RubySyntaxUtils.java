@@ -127,6 +127,10 @@ public class RubySyntaxUtils {
 		}				
 		return str.matches("^(@{0,2}|\\$)[_a-zA-Z0-9]+[\\?!=]?$");
 	}
+	
+	public static boolean isLessStrictIdentifierCharacter(char ch) {
+		return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || (ch >= '0' && ch <= '9') || ch == '_' || ch == '@' || ch == '$';
+	}
 
 	public static boolean isStrictIdentifierCharacter(char ch) {
 		return (ch >= 'a' && ch <= 'z') || (ch >= '0' && ch <= '9') || ch == '_' || ch == '@' || ch == '$';
@@ -265,5 +269,6 @@ public class RubySyntaxUtils {
 		}
 		return false;
 	}
+
 	
 }

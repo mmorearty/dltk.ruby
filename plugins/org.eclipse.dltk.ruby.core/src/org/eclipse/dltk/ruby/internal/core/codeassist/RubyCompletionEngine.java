@@ -206,13 +206,13 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 		int len = 0;
 		while (position >= 0
 				&& len < maxLen
-				&& RubySyntaxUtils.isStrictIdentifierCharacter(content
+				&& RubySyntaxUtils.isLessStrictIdentifierCharacter(content
 						.charAt(position))) {
 			position--;
 		}
 		if (position + 1 > original)
 			return "";
-		if (position >= 0 && Character.isWhitespace(content.charAt(position)))
+		if (( position >= 0 && Character.isWhitespace(content.charAt(position)) ) || position == -1)
 			return content.substring(position + 1, original);
 		return null;
 	}
