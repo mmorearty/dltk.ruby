@@ -5,19 +5,17 @@
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-v10.html
 #
+###############################################################################
 
-###############################################################################    
-
-require 'abstract_runner'
-require 'simple_debugger'
-                          
+require 'AbstractRunner'
+                       
 module XoredDebugger
-    class SimpleRunner < AbstractRunner
+    class BasicRunner < AbstractRunner
         def create_debugger
-            RubyDebugger.new()
-        end
-    end # class Runner
+            require 'basic/BasicDebugger'
+            BasicDebugger.new() 
+        end    
+    end # class FastRunner
 
-    SimpleRunner.new.run
-
+    BasicRunner.new.run
 end # XoredDebugger
