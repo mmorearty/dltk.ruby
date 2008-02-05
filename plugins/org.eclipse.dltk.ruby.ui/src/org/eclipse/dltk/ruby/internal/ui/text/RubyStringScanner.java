@@ -12,6 +12,7 @@ package org.eclipse.dltk.ruby.internal.ui.text;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.dltk.ruby.internal.ui.text.IRubyColorConstants;
 import org.eclipse.dltk.ui.text.AbstractScriptScanner;
 import org.eclipse.dltk.ui.text.IColorManager;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -20,7 +21,7 @@ import org.eclipse.jface.text.rules.WhitespaceRule;
 public class RubyStringScanner extends AbstractScriptScanner {
 
 	private static final String[] fgTokenProperties = new String[] {
-		RubyColorConstants.RUBY_STRING		
+		IRubyColorConstants.RUBY_STRING		
 	};
 
 	public RubyStringScanner(IColorManager manager, IPreferenceStore store) {
@@ -43,7 +44,7 @@ public class RubyStringScanner extends AbstractScriptScanner {
 		
 		//TODO: Add here % and %{name} variables handling.
 				
-		setDefaultReturnToken(getToken(RubyColorConstants.RUBY_STRING));
+		setDefaultReturnToken(getToken(IRubyColorConstants.RUBY_STRING));
 
 		return rules;
 	}

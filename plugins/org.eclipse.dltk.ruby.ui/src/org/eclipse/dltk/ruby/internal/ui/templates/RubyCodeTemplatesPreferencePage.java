@@ -11,7 +11,7 @@ package org.eclipse.dltk.ruby.internal.ui.templates;
 
 import org.eclipse.dltk.ruby.internal.ui.RubyUI;
 import org.eclipse.dltk.ruby.internal.ui.preferences.SimpleRubySourceViewerConfiguration;
-import org.eclipse.dltk.ruby.internal.ui.text.RubyPartitions;
+import org.eclipse.dltk.ruby.internal.ui.text.IRubyPartitions;
 import org.eclipse.dltk.ruby.internal.ui.text.RubyTextTools;
 import org.eclipse.dltk.ui.templates.ScriptTemplatePreferencePage;
 import org.eclipse.dltk.ui.text.ScriptSourceViewerConfiguration;
@@ -36,13 +36,13 @@ public class RubyCodeTemplatesPreferencePage extends
 		RubyTextTools textTools = RubyUI.getDefault().getTextTools();
 		return new SimpleRubySourceViewerConfiguration(textTools
 				.getColorManager(), store, null,
-				RubyPartitions.RUBY_PARTITIONING, false);
+				IRubyPartitions.RUBY_PARTITIONING, false);
 	}
 
 	protected void setDocumentParticioner(IDocument document) {
 		RubyTextTools textTools = RubyUI.getDefault().getTextTools();
 		textTools.setupDocumentPartitioner(document,
-				RubyPartitions.RUBY_PARTITIONING);
+				IRubyPartitions.RUBY_PARTITIONING);
 	}
 	
 	
