@@ -11,11 +11,12 @@ package org.eclipse.dltk.ruby.ui.tests.text.indenting;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.dltk.ruby.internal.ui.RubyPreferenceConstants;
+import org.eclipse.dltk.ruby.internal.ui.text.IRubyPartitions;
 import org.eclipse.dltk.ruby.internal.ui.text.RubyAutoEditStrategy;
-import org.eclipse.dltk.ruby.internal.ui.text.RubyPartitions;
 import org.eclipse.dltk.ruby.ui.tests.RubyUITests;
 import org.eclipse.dltk.ruby.ui.tests.internal.TestUtils;
 import org.eclipse.dltk.ui.CodeFormatterConstants;
+import org.eclipse.dltk.ui.PreferenceConstants;
 import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.jface.text.DocCmd;
 import org.eclipse.jface.text.Document;
@@ -50,17 +51,18 @@ public class IndentingTest extends RubyUITests {
 
 	private RubyAutoEditStrategy createStrategy(boolean useTabs) {
 		PreferenceStore store = new PreferenceStore();
+    	RubyPreferenceConstants.initializeDefaultValues(store);
     	store.setValue(CodeFormatterConstants.FORMATTER_TAB_CHAR, 
     			(useTabs ? CodeFormatterConstants.TAB : CodeFormatterConstants.SPACE));
-    	RubyPreferenceConstants.initializeDefaultValues(store);
-		String partitioning = RubyPartitions.RUBY_PARTITIONING;
-    	RubyAutoEditStrategy result = new RubyAutoEditStrategy(store, partitioning);
+    	store.setValue(PreferenceConstants.EDITOR_CLOSE_BRACES, false);
+		String partitioning = IRubyPartitions.RUBY_PARTITIONING;
+    	RubyAutoEditStrategy result = new RubyAutoEditStrategy(partitioning, store);
 		return result;
 	}
 
 	public void doTest(String data, RubyAutoEditStrategy strategy)
 			throws Exception {
-		data = data.replaceAll("π", "≤\n≥");
+		data = data.replaceAll("π", "≤\r\n≥");
 		
 		int startPos = data.indexOf("≤");
 		Assert.isLegal(startPos >= 0);
@@ -140,11 +142,11 @@ public class IndentingTest extends RubyUITests {
 		magic();
 	}
 	
-	public void REM_testMovingEndToNewLine() throws Exception {
+	public void testMovingEndToNewLine() throws Exception {
 		magic();
 	}
 	
-	public void REM_testMovingEndWithWhitespaceToNewLine() throws Exception {
+	public void testMovingEndWithWhitespaceToNewLine() throws Exception {
 		magic();
 	}
 	
@@ -156,15 +158,15 @@ public class IndentingTest extends RubyUITests {
 		magic();
 	}
 	
-	public void REM_testNewLineAfterEmptyIndentedLine() throws Exception {
+	public void testNewLineAfterEmptyIndentedLine() throws Exception {
 		magic();
 	}
 	
-	public void REM_testNewLineInRegularFunction() throws Exception {
+	public void testNewLineInRegularFunction() throws Exception {
 		magic();
 	}
 	
-	public void REM_testIndentAfterNewLineBeforeParen() throws Exception {
+	public void testIndentAfterNewLineBeforeParen() throws Exception {
 		magic();
 	}
 	
@@ -172,19 +174,19 @@ public class IndentingTest extends RubyUITests {
 		magic();
 	}
 	
-	public void REM_testIndentOnFirstExplicitContinuation() throws Exception {
+	public void testIndentOnFirstExplicitContinuation() throws Exception {
 		magic();
 	}
 	
-	public void REM_testIndentOnFirstImplicitContinuation() throws Exception {
+	public void testIndentOnFirstImplicitContinuation() throws Exception {
 		magic();
 	}
 	
-	public void REM_testNoIndentOnSubsequentExplicitContinuation() throws Exception {
+	public void testNoIndentOnSubsequentExplicitContinuation() throws Exception {
 		magic();
 	}
 	
-	public void REM_testNoIndentOnSubsequentImplicitContinuationAfterExplicitOne() throws Exception {
+	public void testNoIndentOnSubsequentImplicitContinuationAfterExplicitOne() throws Exception {
 		magic();
 	}
 	

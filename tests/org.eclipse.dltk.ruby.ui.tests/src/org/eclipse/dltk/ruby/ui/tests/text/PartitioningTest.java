@@ -11,7 +11,7 @@ package org.eclipse.dltk.ruby.ui.tests.text;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.dltk.core.tests.model.SuiteOfTestCases;
-import org.eclipse.dltk.ruby.internal.ui.text.RubyPartitions;
+import org.eclipse.dltk.ruby.internal.ui.text.IRubyPartitions;
 import org.eclipse.dltk.ruby.ui.tests.internal.TestUtils;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
@@ -37,7 +37,7 @@ public class PartitioningTest extends SuiteOfTestCases {
 		StringBuffer expected = new StringBuffer(), actual = new StringBuffer();
 		for (int offset = startPos; offset < endPos; offset++) {
 			ITypedRegion p2 = TextUtilities.getPartition(doc,
-					RubyPartitions.RUBY_PARTITIONING, offset,
+					IRubyPartitions.RUBY_PARTITIONING, offset,
 					(offset > startPos));
 			expected.append(offset);
 			expected.append(" ");
@@ -58,33 +58,33 @@ public class PartitioningTest extends SuiteOfTestCases {
 	}
 
 	public void testString() throws Exception {
-		doTest("puts §\"Hello, world\"§, a", RubyPartitions.RUBY_STRING);
+		doTest("puts §\"Hello, world\"§, a", IRubyPartitions.RUBY_STRING);
 	}
 
 	public void testPercentStringAfterPuts() throws Exception {
-		doTest("puts §%s/foo bar boz/§ / 2", RubyPartitions.RUBY_STRING);
+		doTest("puts §%s/foo bar boz/§ / 2", IRubyPartitions.RUBY_STRING);
 	}
 
 	public void testPercentStringAfterMethodCall() throws Exception {
 		doTest("def foo(*args); puts(*args); end\nfoo §%s/foo bar boz/§ / 2",
-				RubyPartitions.RUBY_STRING);
+				IRubyPartitions.RUBY_STRING);
 	}
 
 	public void testPercentOperatorAfterVariable() throws Exception {
 		// XXX: this does not start a string in Ruby, but will be treated as a
 		// string in IDE
-		doTest("foo = 20\nfoo §%s/foo bar boz/§ 2", RubyPartitions.RUBY_STRING);
+		doTest("foo = 20\nfoo §%s/foo bar boz/§ 2", IRubyPartitions.RUBY_STRING);
 	}
 
 	public void testPercentDoesStartString() throws Exception {
 		doTest("if a == §%s/2/§ then puts 1 else puts 2 end",
-				RubyPartitions.RUBY_STRING);
+				IRubyPartitions.RUBY_STRING);
 	}
 
 	public void testPercentDoesNotStartString() throws Exception {
 		// XXX: this does not start a string in Ruby, but will be treated as a
 		// string in IDE
-		doTest("puts bar §%s/2/§\n3", RubyPartitions.RUBY_STRING);
+		doTest("puts bar §%s/2/§\n3", IRubyPartitions.RUBY_STRING);
 	}
 
 	private void doHereDocTest(String data) throws Exception {
@@ -92,13 +92,13 @@ public class PartitioningTest extends SuiteOfTestCases {
 		String s2 = data.replaceAll("±", "§");
 		String s3 = data.replaceAll("ø", "§");
 		String s4 = data.replaceAll("∑", "§");
-		doTest(s1, RubyPartitions.RUBY_STRING);
+		doTest(s1, IRubyPartitions.RUBY_STRING);
 		if (!data.equals(s2))
-			doTest(s2, RubyPartitions.RUBY_STRING);
+			doTest(s2, IRubyPartitions.RUBY_STRING);
 		if (!data.equals(s3))
-			doTest(s3, RubyPartitions.RUBY_STRING);
+			doTest(s3, IRubyPartitions.RUBY_STRING);
 		if (!data.equals(s4))
-			doTest(s3, RubyPartitions.RUBY_STRING);
+			doTest(s3, IRubyPartitions.RUBY_STRING);
 	}
 
 	public void REM_testAllSortsOfHeredocs() throws Exception {
@@ -136,21 +136,21 @@ public class PartitioningTest extends SuiteOfTestCases {
 				IDocument.DEFAULT_CONTENT_TYPE);
 		doTest("class Test\ndef test(x)\nobj = f($', x)\n"
 				+ "if (obj.class.name == §\"Array\"§) then\n#...\n"
-				+ "return\nend\n# It's ...\nend", RubyPartitions.RUBY_STRING);
+				+ "return\nend\n# It's ...\nend", IRubyPartitions.RUBY_STRING);
 		doTest("class Test\ndef test(x)\nobj = f($', x)\n"
 				+ "if (obj.class.name == \"Array\"§) then\n§#...\n"
 				+ "return\nend\n# It's ...\nend",
 				IDocument.DEFAULT_CONTENT_TYPE);
 		doTest("class Test\ndef test(x)\nobj = f($', x)\n"
 				+ "if (obj.class.name == \"Array\") then\n§#...\n§"
-				+ "return\nend\n# It's ...\nend", RubyPartitions.RUBY_COMMENT);
+				+ "return\nend\n# It's ...\nend", IRubyPartitions.RUBY_COMMENT);
 		doTest("class Test\ndef test(x)\nobj = f($', x)\n"
 				+ "if (obj.class.name == \"Array\") then\n#...\n§"
 				+ "return\nend\n§# It's ...\nend",
 				IDocument.DEFAULT_CONTENT_TYPE);
 		doTest("class Test\ndef test(x)\nobj = f($', x)\n"
 				+ "if (obj.class.name == \"Array\") then\n#...\n"
-				+ "return\nend\n§# It's ...\n§end", RubyPartitions.RUBY_COMMENT);
+				+ "return\nend\n§# It's ...\n§end", IRubyPartitions.RUBY_COMMENT);
 		doTest("class Test\ndef test(x)\nobj = f($', x)\n"
 				+ "if (obj.class.name == \"Array\") then\n#...\n"
 				+ "return\nend\n# It's ...\n§end§",
@@ -168,7 +168,7 @@ public class PartitioningTest extends SuiteOfTestCases {
 						+ "def #{item}_dir_path\n" + "resolve_path(:#{item})\n"
 						+ "end\n" + "EO_METH\n"
 						+ "class_eval(method_to_eval)\n" + "end",
-				RubyPartitions.RUBY_COMMENT);
+				IRubyPartitions.RUBY_COMMENT);
 		doTest(
 				"# Some metaprogramming to make it rock\n"
 						+ "§%w{app controllers models helpers views\n"
@@ -179,7 +179,7 @@ public class PartitioningTest extends SuiteOfTestCases {
 						+ "def #{item}_dir_path\n" + "resolve_path(:#{item})\n"
 						+ "end\n" + "EO_METH\n"
 						+ "class_eval(method_to_eval)\n" + "end",
-				RubyPartitions.RUBY_STRING);
+				IRubyPartitions.RUBY_STRING);
 		doTest(
 				"# Some metaprogramming to make it rock\n"
 						+ "%w{app controllers models helpers views\n"
@@ -201,7 +201,7 @@ public class PartitioningTest extends SuiteOfTestCases {
 						+ "def §#{item}_dir_path\n§"
 						+ "resolve_path(:#{item})\n" + "end\n" + "EO_METH\n"
 						+ "class_eval(method_to_eval)\n" + "end",
-				RubyPartitions.RUBY_COMMENT);
+				IRubyPartitions.RUBY_COMMENT);
 		doTest(
 				"# Some metaprogramming to make it rock\n"
 						+ "%w{app controllers models helpers views\n"
@@ -223,7 +223,7 @@ public class PartitioningTest extends SuiteOfTestCases {
 						+ "def #{item}_dir_path\n"
 						+ "resolve_path(:§#{item})\n§" + "end\n" + "EO_METH\n"
 						+ "class_eval(method_to_eval)\n" + "end",
-				RubyPartitions.RUBY_COMMENT);
+				IRubyPartitions.RUBY_COMMENT);
 		doTest(
 				"# Some metaprogramming to make it rock\n"
 						+ "%w{app controllers models helpers views\n"
