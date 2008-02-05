@@ -123,7 +123,14 @@ public class RubyAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 		int token = scanner.previousTokenAfterInput(c.offset, c.text);
 
 		if (Arrays.binarySearch(INDENT_TO_BLOCK_TOKENS, token) >= 0) {
-			String indent = getBlockIndent(d, c, scanner);
+			String indent = "";
+			try {
+				indent = getBlockIndent(d, c, scanner);
+			}
+			catch (BadLocationException e) {
+				// there is no enclosing block
+			}	
+			
 			int pos = scanner.findNonWhitespaceForwardInAnyPartition(info
 					.getOffset(), c.offset);
 			String line = "";
@@ -148,11 +155,11 @@ public class RubyAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 			RubyHeuristicScanner scanner) throws BadLocationException {
 
 		int blockOffset = scanner.findBlockBeginningOffset(c.offset);
-		String indent = "";
-		if (blockOffset != RubyHeuristicScanner.NOT_FOUND) {
-			indent = AutoEditUtils.getLineIndent(d, d
-					.getLineOfOffset(blockOffset));
-		}
+		if (blockOffset == RubyHeuristicScanner.NOT_FOUND)
+			throw new BadLocationException("Block not found");
+			
+		String indent = AutoEditUtils.getLineIndent(d, d
+				.getLineOfOffset(blockOffset));
 		return indent;
 	}
 
@@ -172,7 +179,12 @@ public class RubyAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 		// if pending statement is end, else etc. then indent it to block
 		// beginning
 		if (nextIsIdentToBlockToken(scanner, c.offset, lineEnd)) {
-			c.text += getBlockIndent(d, c, scanner);
+			try {
+				c.text += getBlockIndent(d, c, scanner);
+			}
+			catch (BadLocationException e) {
+				// there is no enclosing block
+			}			
 			return;
 		}
 
@@ -261,8 +273,13 @@ public class RubyAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 		}
 
 		RubyHeuristicScanner scanner = new RubyHeuristicScanner(d);
-		String indent = getBlockIndent(d, c, scanner)
-				+ fPreferences.getIndent();
+		String indent = "";
+		try {
+			indent = getBlockIndent(d, c, scanner) + fPreferences.getIndent();
+		}
+		catch (BadLocationException e) {
+			// there is no enclosing block
+		}	
 
 		String delimiter = TextUtilities.getDefaultLineDelimiter(d);
 		boolean addLastDelimiter = c.text.endsWith(delimiter);
