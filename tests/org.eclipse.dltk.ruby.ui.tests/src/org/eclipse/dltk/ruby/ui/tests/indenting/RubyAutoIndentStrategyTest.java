@@ -19,6 +19,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.jface.text.DocCmd;
 import org.eclipse.jface.text.Document;
+import org.eclipse.jface.text.TextUtilities;
 
 
 public class RubyAutoIndentStrategyTest extends RubyUITests {
@@ -37,7 +38,9 @@ public class RubyAutoIndentStrategyTest extends RubyUITests {
 	
 	private static final String DUMMY_POSTFIX = "#comment";
 
-	private static final String BLOCK_END = "\r\nend";
+	private static String DELIMITER = TextUtilities.getDefaultLineDelimiter(new Document());
+	private static String BLOCK_END = DELIMITER + "end";
+	
 
     private RubyAutoEditStrategy strategy;
 	private String doc;
@@ -129,8 +132,8 @@ public class RubyAutoIndentStrategyTest extends RubyUITests {
     public void testIndentedNewLineAfterIf() {
     	String stat1 = "if a==0";
     	doTestNewLineIndent(stat1, DUMMY_POSTFIX, AUTOINDENT + DUMMY_POSTFIX + BLOCK_END);
-    	String stat2 = "def foo\r\nend\r\nif a==0";
-    	doTestNewLineIndent(stat2, DUMMY_POSTFIX, AUTOINDENT + DUMMY_POSTFIX +BLOCK_END);
+    	String stat2 = "def foo" + DELIMITER + "end" + DELIMITER + "if a==0";
+    	doTestNewLineIndent(stat2, DUMMY_POSTFIX, AUTOINDENT + DUMMY_POSTFIX + BLOCK_END);
     }
     
     private void doTestBraceDeindent(String opening, String closing) throws Exception {
