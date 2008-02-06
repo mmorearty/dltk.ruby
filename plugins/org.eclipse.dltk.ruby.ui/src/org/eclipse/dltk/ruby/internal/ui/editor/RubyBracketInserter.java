@@ -12,9 +12,9 @@ package org.eclipse.dltk.ruby.internal.ui.editor;
 import org.eclipse.dltk.internal.ui.editor.BracketInserter;
 import org.eclipse.dltk.internal.ui.editor.ScriptEditor;
 import org.eclipse.dltk.internal.ui.editor.ScriptEditor.BracketLevel;
+import org.eclipse.dltk.ruby.internal.ui.text.IRubyPartitions;
+import org.eclipse.dltk.ruby.internal.ui.text.ISymbols;
 import org.eclipse.dltk.ruby.internal.ui.text.RubyHeuristicScanner;
-import org.eclipse.dltk.ruby.internal.ui.text.RubyPartitions;
-import org.eclipse.dltk.ruby.internal.ui.text.Symbols;
 import org.eclipse.dltk.ui.DLTKUIPlugin;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.BadPositionCategoryException;
@@ -71,42 +71,42 @@ public class RubyBracketInserter extends BracketInserter {
 			int nextToken = scanner.nextToken(offset + length, endLine
 					.getOffset()
 					+ endLine.getLength());
-			String next = nextToken == Symbols.TokenEOF ? null : document.get(
+			String next = nextToken == ISymbols.TokenEOF ? null : document.get(
 					offset, scanner.getPosition() - offset).trim();
 			int prevToken = scanner.previousToken(offset - 1, startLine
 					.getOffset());
 			int prevTokenOffset = scanner.getPosition() + 1;
-			String previous = prevToken == Symbols.TokenEOF ? null : document
+			String previous = prevToken == ISymbols.TokenEOF ? null : document
 					.get(prevTokenOffset, offset - prevTokenOffset).trim();
 
 			switch (event.character) {
 			case '(':
-				if (!fCloseBrackets || nextToken == Symbols.TokenLPAREN
-						|| nextToken == Symbols.TokenIDENT || next != null
+				if (!fCloseBrackets || nextToken == ISymbols.TokenLPAREN
+						|| nextToken == ISymbols.TokenIDENTIFIER || next != null
 						&& next.length() > 1)
 					return;
 				break;
 
 			case '<':
 				if (!(fCloseAngularBrackets && fCloseBrackets)
-						|| nextToken == Symbols.TokenLESSTHAN
-						|| prevToken != Symbols.TokenLBRACE
-						&& prevToken != Symbols.TokenRBRACE
-						&& prevToken != Symbols.TokenSEMICOLON
-						&& (prevToken != Symbols.TokenIDENT || !isAngularIntroducer(previous))
-						&& prevToken != Symbols.TokenEOF)
+						|| nextToken == ISymbols.TokenLESSTHAN
+						|| prevToken != ISymbols.TokenLBRACE
+						&& prevToken != ISymbols.TokenRBRACE
+						&& prevToken != ISymbols.TokenSEMICOLON
+						&& (prevToken !=ISymbols.TokenIDENTIFIER || !isAngularIntroducer(previous))
+						&& prevToken != ISymbols.TokenEOF)
 					return;
 				break;
 
 			case '[':
-				if (!fCloseBrackets || nextToken == Symbols.TokenIDENT
+				if (!fCloseBrackets || nextToken == ISymbols.TokenIDENTIFIER
 						|| next != null && next.length() > 1)
 					return;
 				break;
 
 			case '\'':
 			case '"':
-				if (!fCloseStrings || nextToken == Symbols.TokenIDENT
+				if (!fCloseStrings || nextToken == ISymbols.TokenIDENTIFIER
 						/*|| prevToken == Symbols.TokenIDENT*/ || next != null
 						&& next.length() > 1 || previous != null
 						&& (previous.length() > 1 && previous.charAt(0)== event.character))
@@ -119,7 +119,7 @@ public class RubyBracketInserter extends BracketInserter {
 
 			int correctedOffset = (document.getLength() == offset)?offset - 1:offset;
 			ITypedRegion partition = TextUtilities.getPartition(document,
-					RubyPartitions.RUBY_PARTITIONING, correctedOffset, true);
+					IRubyPartitions.RUBY_PARTITIONING, correctedOffset, true);
 			if (!IDocument.DEFAULT_CONTENT_TYPE.equals(partition.getType()))
 				return;
 

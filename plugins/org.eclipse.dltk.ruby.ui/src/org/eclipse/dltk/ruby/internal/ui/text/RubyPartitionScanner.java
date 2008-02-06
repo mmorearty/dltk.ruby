@@ -12,8 +12,6 @@ package org.eclipse.dltk.ruby.internal.ui.text;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.dltk.ruby.core.text.RubyContext;
-import org.eclipse.dltk.ruby.internal.ui.text.syntax.RubyContextUtils;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.rules.EndOfLineRule;
 import org.eclipse.jface.text.rules.IPredicateRule;
@@ -34,21 +32,21 @@ public class RubyPartitionScanner extends RuleBasedPartitionScanner {
 	public RubyPartitionScanner() {
 		super();
 		
-		defaultToken = new Token (IDocument.DEFAULT_CONTENT_TYPE);
+		defaultToken = new Token(IDocument.DEFAULT_CONTENT_TYPE);
 
-		string = new Token(RubyPartitions.RUBY_STRING);
+		string = new Token(IRubyPartitions.RUBY_STRING);
 
-		comment = new Token(RubyPartitions.RUBY_COMMENT);
+		comment = new Token(IRubyPartitions.RUBY_COMMENT);
 
-		rubyDoc = new Token(RubyPartitions.RUBY_DOC);
+		rubyDoc = new Token(IRubyPartitions.RUBY_DOC);
 
-		List/* < IPredicateRule > */rules = new ArrayList/* <IPredicateRule> */();
+		List rules = new ArrayList();
 
 		rules.add(new MultiLineRule("=begin", "=end", rubyDoc));
 
 		rules.add(new EndOfLineRule("#", comment));
 
-		rules.add(new MultiLineRule("\'", "\'", string, '\\', true));
+		rules.add(new MultiLineRule("'", "'", string, '\\', true));
 
 		rules.add(new MultiLineRule("\"", "\"", string, '\\', true));
 
@@ -61,27 +59,5 @@ public class RubyPartitionScanner extends RuleBasedPartitionScanner {
 		IPredicateRule[] result = new IPredicateRule[rules.size()];
 		rules.toArray(result);
 		setPredicateRules(result);
-	}
-
-	public int getOffsetForLaterContextLookup() {
-		return fOffset;		
-	}
-
-	public RubyContext getCurrentContext() {
-		return RubyContextUtils.determineContext(fDocument, fOffset, RubyContext.MODE_FULL);
-	}
-
-	public RubyContext getContext(int offset) {
-		return RubyContextUtils.determineContext(fDocument, offset, RubyContext.MODE_FULL);
-	}
-
-	protected Token getToken(String key) {
-		if (RubyPartitions.RUBY_STRING.equals(key))
-			return string;
-		if (RubyPartitions.RUBY_COMMENT.equals(key))
-			return comment;
-		if (RubyPartitions.RUBY_DOC.equals(key))
-			return rubyDoc;
-		return null;
 	}
 }

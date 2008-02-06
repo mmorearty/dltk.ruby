@@ -11,10 +11,7 @@ package org.eclipse.dltk.ruby.internal.ui.text;
 
 import org.eclipse.dltk.ui.text.DLTKColorConstants;
 
-public final class RubyColorConstants {
-	private RubyColorConstants() {
-	}
-
+public interface IRubyColorConstants {
 	/**
 	 * The color key for string and character literals in Ruby code.
 	 */

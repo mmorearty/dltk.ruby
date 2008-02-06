@@ -40,11 +40,11 @@ public class RubyCodeScanner extends AbstractScriptScanner {
 
 	private static String fgReturnKeyword = "return";
 
-	private static String fgTokenProperties[] = new String[] { RubyColorConstants.RUBY_SINGLE_LINE_COMMENT, RubyColorConstants.RUBY_DEFAULT,
-			RubyColorConstants.RUBY_KEYWORD, RubyColorConstants.RUBY_KEYWORD_RETURN, RubyColorConstants.RUBY_NUMBER,
-			RubyColorConstants.RUBY_VARIABLE, RubyColorConstants.RUBY_CLASS_VARIABLE, RubyColorConstants.RUBY_CONSTANT_VARIABLE,
-			RubyColorConstants.RUBY_GLOBAL_VARIABLE, RubyColorConstants.RUBY_INSTANCE_VARIABLE, RubyColorConstants.RUBY_PREDEFINED_VARIABLE,
-			RubyColorConstants.RUBY_PSEUDO_VARIABLE, RubyColorConstants.RUBY_SYMBOLS };
+	private static String fgTokenProperties[] = new String[] { IRubyColorConstants.RUBY_SINGLE_LINE_COMMENT, IRubyColorConstants.RUBY_DEFAULT,
+			IRubyColorConstants.RUBY_KEYWORD, IRubyColorConstants.RUBY_KEYWORD_RETURN, IRubyColorConstants.RUBY_NUMBER,
+			IRubyColorConstants.RUBY_VARIABLE, IRubyColorConstants.RUBY_CLASS_VARIABLE, IRubyColorConstants.RUBY_CONSTANT_VARIABLE,
+			IRubyColorConstants.RUBY_GLOBAL_VARIABLE, IRubyColorConstants.RUBY_INSTANCE_VARIABLE, IRubyColorConstants.RUBY_PREDEFINED_VARIABLE,
+			IRubyColorConstants.RUBY_PSEUDO_VARIABLE, IRubyColorConstants.RUBY_SYMBOLS };
 
 	public RubyCodeScanner(IColorManager manager, IPreferenceStore store) {
 		super(manager, store);
@@ -57,17 +57,17 @@ public class RubyCodeScanner extends AbstractScriptScanner {
 
 	protected List createRules() {
 		List/* <IRule> */rules = new ArrayList/* <IRule> */();
-		IToken keyword = getToken(RubyColorConstants.RUBY_KEYWORD);
-		IToken keywordReturn = getToken(RubyColorConstants.RUBY_KEYWORD_RETURN);
-		IToken comment = getToken(RubyColorConstants.RUBY_SINGLE_LINE_COMMENT);
-		IToken other = getToken(RubyColorConstants.RUBY_DEFAULT);
+		IToken keyword = getToken(IRubyColorConstants.RUBY_KEYWORD);
+		IToken keywordReturn = getToken(IRubyColorConstants.RUBY_KEYWORD_RETURN);
+		IToken comment = getToken(IRubyColorConstants.RUBY_SINGLE_LINE_COMMENT);
+		IToken other = getToken(IRubyColorConstants.RUBY_DEFAULT);
 //		IToken number = getToken(RubyColorConstants.RUBY_NUMBER);
 		
-		IToken classVariable = getToken(RubyColorConstants.RUBY_CLASS_VARIABLE);
-		IToken instanceVariable = getToken(RubyColorConstants.RUBY_INSTANCE_VARIABLE);
-		IToken pseudoVariable = getToken(RubyColorConstants.RUBY_PSEUDO_VARIABLE);
-		IToken globalVariable = getToken(RubyColorConstants.RUBY_GLOBAL_VARIABLE);
-		IToken symbols = getToken(RubyColorConstants.RUBY_SYMBOLS);
+		IToken classVariable = getToken(IRubyColorConstants.RUBY_CLASS_VARIABLE);
+		IToken instanceVariable = getToken(IRubyColorConstants.RUBY_INSTANCE_VARIABLE);
+		IToken pseudoVariable = getToken(IRubyColorConstants.RUBY_PSEUDO_VARIABLE);
+		IToken globalVariable = getToken(IRubyColorConstants.RUBY_GLOBAL_VARIABLE);
+		IToken symbols = getToken(IRubyColorConstants.RUBY_SYMBOLS);
 
 		// Add rule for single line comments.
 		rules.add(new EndOfLineRule("#", comment));

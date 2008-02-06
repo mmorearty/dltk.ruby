@@ -20,8 +20,8 @@ import org.eclipse.dltk.internal.ui.editor.ScriptOutlinePage;
 import org.eclipse.dltk.internal.ui.editor.ToggleCommentAction;
 import org.eclipse.dltk.ruby.core.RubyLanguageToolkit;
 import org.eclipse.dltk.ruby.internal.ui.RubyUI;
+import org.eclipse.dltk.ruby.internal.ui.text.IRubyPartitions;
 import org.eclipse.dltk.ruby.internal.ui.text.RubyPairMatcher;
-import org.eclipse.dltk.ruby.internal.ui.text.RubyPartitions;
 import org.eclipse.dltk.ruby.internal.ui.text.folding.RubyFoldingStructureProvider;
 import org.eclipse.dltk.ui.actions.IScriptEditorActionDefinitionIds;
 import org.eclipse.dltk.ui.text.ScriptTextTools;
@@ -49,8 +49,7 @@ public class RubyEditor extends ScriptEditor {
 	private org.eclipse.dltk.internal.ui.editor.BracketInserter fBracketInserter = new RubyBracketInserter(
 			this);
 
-	private RubyPairMatcher bracketMatcher = new RubyPairMatcher("{}[]()"
-			.toCharArray());
+	private RubyPairMatcher bracketMatcher = new RubyPairMatcher();
 
 	protected void initializeEditor() {
 		super.initializeEditor();
@@ -76,7 +75,7 @@ public class RubyEditor extends ScriptEditor {
 		if (document instanceof IDocumentExtension3) {
 			IDocumentExtension3 extension = (IDocumentExtension3) document;
 			if (extension
-					.getDocumentPartitioner(RubyPartitions.RUBY_PARTITIONING) == null) {
+					.getDocumentPartitioner(IRubyPartitions.RUBY_PARTITIONING) == null) {
 				RubyDocumentSetupParticipant participant = new RubyDocumentSetupParticipant();
 				participant.setup(document);
 			}
