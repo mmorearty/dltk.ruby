@@ -149,8 +149,15 @@ public class RubyHeuristicScanner extends ScriptHeuristicScanner implements
 	}
 
 	public IRegion findSurroundingBlock(int offset) {
-		// TODO: Add smart block recognition
-		return new Region(0, getDocument().getLength());
+		int start = findBlockBeginningOffset(offset);
+		if (start == NOT_FOUND)
+			start = 0;
+		
+		int end = findBlockEndingOffset(offset);
+		if (end == NOT_FOUND)
+			end = getDocument().getLength();
+		
+		return new Region(start, end - start);
 	}
 
 	public boolean isBlockBeginning(int offset, int bound) {
