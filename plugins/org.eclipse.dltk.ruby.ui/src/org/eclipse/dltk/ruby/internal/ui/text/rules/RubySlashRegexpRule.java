@@ -7,7 +7,7 @@
  *
  
  *******************************************************************************/
-package org.eclipse.dltk.ruby.internal.ui.text;
+package org.eclipse.dltk.ruby.internal.ui.text.rules;
 
 import org.eclipse.dltk.ruby.core.utils.RubySyntaxUtils;
 import org.eclipse.jface.text.rules.ICharacterScanner;

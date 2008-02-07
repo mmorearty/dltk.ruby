@@ -12,6 +12,9 @@ package org.eclipse.dltk.ruby.internal.ui.text;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.dltk.ruby.internal.ui.text.rules.RubyGlobalVarRule;
+import org.eclipse.dltk.ruby.internal.ui.text.rules.RubyPercentStringRule;
+import org.eclipse.dltk.ruby.internal.ui.text.rules.RubySlashRegexpRule;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.rules.EndOfLineRule;
 import org.eclipse.jface.text.rules.IPredicateRule;
@@ -25,16 +28,19 @@ public class RubyPartitionScanner extends RuleBasedPartitionScanner {
 	private Token comment;
 	private Token rubyDoc;
 	private Token defaultToken;
-	
+	private Token singleQuoteString;
+
 	/**
 	 * Creates the partitioner and sets up the appropriate rules.
 	 */
 	public RubyPartitionScanner() {
 		super();
-		
+
 		defaultToken = new Token(IDocument.DEFAULT_CONTENT_TYPE);
 
 		string = new Token(IRubyPartitions.RUBY_STRING);
+
+		singleQuoteString = new Token(IRubyPartitions.RUBY_SINGLE_QUOTE_STRING);
 
 		comment = new Token(IRubyPartitions.RUBY_COMMENT);
 
@@ -46,14 +52,14 @@ public class RubyPartitionScanner extends RuleBasedPartitionScanner {
 
 		rules.add(new EndOfLineRule("#", comment));
 
-		rules.add(new MultiLineRule("'", "'", string, '\\', true));
-
 		rules.add(new MultiLineRule("\"", "\"", string, '\\', true));
+		
+		rules.add(new MultiLineRule("'", "'", singleQuoteString, '\\', true));
 
 		rules.add(new RubyPercentStringRule(string, false));
 
 		rules.add(new RubySlashRegexpRule(string));
-		
+
 		rules.add(new RubyGlobalVarRule(defaultToken));
 
 		IPredicateRule[] result = new IPredicateRule[rules.size()];

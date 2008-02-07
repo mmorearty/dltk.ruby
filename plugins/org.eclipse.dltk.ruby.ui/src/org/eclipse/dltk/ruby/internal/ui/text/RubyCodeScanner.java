@@ -12,6 +12,7 @@ package org.eclipse.dltk.ruby.internal.ui.text;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.dltk.ruby.internal.ui.text.rules.RubyFloatNumberRule;
 import org.eclipse.dltk.ruby.internal.ui.text.rules.StartWithRule;
 import org.eclipse.dltk.ui.text.AbstractScriptScanner;
 import org.eclipse.dltk.ui.text.IColorManager;
@@ -61,7 +62,7 @@ public class RubyCodeScanner extends AbstractScriptScanner {
 		IToken keywordReturn = getToken(IRubyColorConstants.RUBY_KEYWORD_RETURN);
 		IToken comment = getToken(IRubyColorConstants.RUBY_SINGLE_LINE_COMMENT);
 		IToken other = getToken(IRubyColorConstants.RUBY_DEFAULT);
-//		IToken number = getToken(RubyColorConstants.RUBY_NUMBER);
+		IToken number = getToken(IRubyColorConstants.RUBY_NUMBER);
 		
 		IToken classVariable = getToken(IRubyColorConstants.RUBY_CLASS_VARIABLE);
 		IToken instanceVariable = getToken(IRubyColorConstants.RUBY_INSTANCE_VARIABLE);
@@ -72,8 +73,9 @@ public class RubyCodeScanner extends AbstractScriptScanner {
 		// Add rule for single line comments.
 		rules.add(new EndOfLineRule("#", comment));
 		// Add generic whitespace rule.
-		rules.add(new WhitespaceRule(new RubyWhitespaceDetector()));
-		// rules.add(new FloatNumberRule(number));
+		rules.add(new WhitespaceRule(new RubyWhitespaceDetector()));		
+		// Add rule for numbers
+		rules.add(new RubyFloatNumberRule(number));
 							
 		// Global Variables
 		rules.add(new StartWithRule(globalVariable, '$') {

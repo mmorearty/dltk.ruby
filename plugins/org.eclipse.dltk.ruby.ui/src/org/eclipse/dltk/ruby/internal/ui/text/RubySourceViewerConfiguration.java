@@ -58,6 +58,8 @@ public class RubySourceViewerConfiguration extends
 
 	private AbstractScriptScanner fStringScanner;
 
+	private AbstractScriptScanner fSingleQuoteStringScanner;
+
 	private AbstractScriptScanner fCommentScanner;
 
 	private AbstractScriptScanner fDocScanner;
@@ -74,7 +76,8 @@ public class RubySourceViewerConfiguration extends
 
 	public String[] getIndentPrefixes(ISourceViewer sourceViewer,
 			String contentType) {
-		RubyPreferenceInterpreter prefs = new RubyPreferenceInterpreter(fPreferenceStore);
+		RubyPreferenceInterpreter prefs = new RubyPreferenceInterpreter(
+				fPreferenceStore);
 		if (prefs.getTabStyle() == TabStyle.SPACES)
 			return new String[] { AutoEditUtils.getNSpaces(prefs
 					.getIndentSize()) };
@@ -94,6 +97,8 @@ public class RubySourceViewerConfiguration extends
 		fCodeScanner = new RubyCodeScanner(getColorManager(), fPreferenceStore);
 		fStringScanner = new RubyStringScanner(getColorManager(),
 				fPreferenceStore);
+		fSingleQuoteStringScanner = new RubySingleQuoteStringScanner(
+				getColorManager(), fPreferenceStore);
 		fCommentScanner = new SingleTokenScriptScanner(getColorManager(),
 				fPreferenceStore, IRubyColorConstants.RUBY_SINGLE_LINE_COMMENT);
 
@@ -130,6 +135,10 @@ public class RubySourceViewerConfiguration extends
 		reconciler.setDamager(dr, IRubyPartitions.RUBY_STRING);
 		reconciler.setRepairer(dr, IRubyPartitions.RUBY_STRING);
 
+		dr = new DefaultDamagerRepairer(getSingleQuoteStringScanner());
+		reconciler.setDamager(dr, IRubyPartitions.RUBY_SINGLE_QUOTE_STRING);
+		reconciler.setRepairer(dr, IRubyPartitions.RUBY_SINGLE_QUOTE_STRING);
+
 		dr = new DefaultDamagerRepairer(getDocScanner());
 		reconciler.setDamager(dr, IRubyPartitions.RUBY_DOC);
 		reconciler.setRepairer(dr, IRubyPartitions.RUBY_DOC);
@@ -139,6 +148,10 @@ public class RubySourceViewerConfiguration extends
 		reconciler.setRepairer(dr, IRubyPartitions.RUBY_COMMENT);
 
 		return reconciler;
+	}
+
+	private ITokenScanner getSingleQuoteStringScanner() {
+		return fSingleQuoteStringScanner;
 	}
 
 	private ITokenScanner getDocScanner() {
@@ -164,6 +177,8 @@ public class RubySourceViewerConfiguration extends
 			fCodeScanner.adaptToPreferenceChange(event);
 		if (fStringScanner.affectsBehavior(event))
 			fStringScanner.adaptToPreferenceChange(event);
+		if (fSingleQuoteStringScanner.affectsBehavior(event))
+			fSingleQuoteStringScanner.adaptToPreferenceChange(event);
 		if (fDocScanner.affectsBehavior(event))
 			fDocScanner.adaptToPreferenceChange(event);
 	}
@@ -180,6 +195,7 @@ public class RubySourceViewerConfiguration extends
 	public boolean affectsTextPresentation(PropertyChangeEvent event) {
 		return fCodeScanner.affectsBehavior(event)
 				|| fStringScanner.affectsBehavior(event)
+				|| fSingleQuoteStringScanner.affectsBehavior(event)
 				|| fDocScanner.affectsBehavior(event);
 	}
 
@@ -292,5 +308,7 @@ public class RubySourceViewerConfiguration extends
 				.setInformationProvider(provider, IRubyPartitions.RUBY_COMMENT);
 		presenter.setInformationProvider(provider, IRubyPartitions.RUBY_DOC);
 		presenter.setInformationProvider(provider, IRubyPartitions.RUBY_STRING);
+		presenter.setInformationProvider(provider,
+				IRubyPartitions.RUBY_SINGLE_QUOTE_STRING);
 	}
 }
