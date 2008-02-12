@@ -503,7 +503,7 @@ public abstract class ScriptHeuristicScanner implements ISymbols {
 		return scanBackward(position, bound, fNonWS);
 	}
 
-	private int getGenericToken(char ch) {
+	protected int getGenericToken(char ch) {
 		switch (ch) {
 		case LBRACE:
 			return TokenLBRACE;
@@ -617,7 +617,7 @@ public abstract class ScriptHeuristicScanner implements ISymbols {
 			int from, to = pos + 1;
 			pos = findNonIdentifierBackward(pos, bound);
 			if (pos == NOT_FOUND)
-				from = bound == UNBOUND ? 0 : bound + 1;
+				from = bound == UNBOUND ? 0 : bound;
 			else
 				from = pos + 1;
 
@@ -658,34 +658,6 @@ public abstract class ScriptHeuristicScanner implements ISymbols {
 			DLTKUIPlugin.log(e);
 		}
 		return 0;
-	}
-
-	public int previousTokenAfterInput(int offset, String appended) {
-		try {
-			if (appended.length() == 1) {
-				int token = getGenericToken(appended.charAt(0));
-				if  (token != TokenOTHER)
-					return token;
-			}
-			
-			int lineOffset = fDocument.getLineInformationOfOffset(offset)
-					.getOffset();
-			int token = previousToken(offset, lineOffset);
-			if (token != TokenIDENTIFIER)
-				return token;
-
-			// else
-			int start = getPosition() + 1;
-			int end = findNonIdentifierForward(start, offset);
-			if (end == NOT_FOUND) {
-				end = offset;
-			}
-			String identifier = fDocument.get(start, end - start);
-			return getToken(start, identifier + appended);
-		} catch (BadLocationException e) {
-			DLTKUIPlugin.log(e);
-		}
-		return NOT_FOUND;
 	}
 	
 	/**
