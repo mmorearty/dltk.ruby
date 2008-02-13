@@ -7,7 +7,7 @@
  *
  
  *******************************************************************************/
-package org.eclipse.dltk.ruby.internal.ui.text;
+package org.eclipse.dltk.ruby.internal.ui.text.rules;
 
 import java.util.Arrays;
 import java.util.Comparator;

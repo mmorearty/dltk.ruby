@@ -52,6 +52,7 @@ public class RubyDocumentationProvider implements IScriptDocumentationProvider {
 	 */
 	private static void installStuff(Document document) {
 		String[] types = new String[] { IRubyPartitions.RUBY_STRING,
+				IRubyPartitions.RUBY_SINGLE_QUOTE_STRING,
 				IRubyPartitions.RUBY_COMMENT, IRubyPartitions.RUBY_DOC,
 				IDocument.DEFAULT_CONTENT_TYPE };
 		FastPartitioner partitioner = new FastPartitioner(
