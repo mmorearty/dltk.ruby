@@ -189,6 +189,10 @@ public class JRubySourceParser extends AbstractSourceParser {
 		public void clearMarkers() {
 			this.original.clearMarkers();
 		}
+
+		public boolean isMarkersCleaned() {
+			return original.isMarkersCleaned();
+		}
 	}
 	
 	public JRubySourceParser() {
