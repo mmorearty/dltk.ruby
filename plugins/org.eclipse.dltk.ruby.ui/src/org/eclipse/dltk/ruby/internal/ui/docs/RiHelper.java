@@ -69,7 +69,7 @@ public class RiHelper {
 				.append("dltkri.rb").toFile();
 		riProcess = ScriptLaunchUtil.runScriptWithInterpreter(install
 				.getInstallLocation().getAbsolutePath(), script, null, null,
-				null);
+				null, install.getEnvironmentVariables());
 
 		writer = new OutputStreamWriter(riProcess.getOutputStream());
 		reader = new BufferedReader(new InputStreamReader(riProcess
