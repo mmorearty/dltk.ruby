@@ -22,7 +22,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.ui.IDebugModelPresentation;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.debug.ui.DLTKDebugUIPlugin;
-import org.eclipse.dltk.internal.corext.util.Strings;
 import org.eclipse.dltk.internal.ui.editor.EditorUtility;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
