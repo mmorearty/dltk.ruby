@@ -32,10 +32,6 @@ public class RubyLanguageToolkit extends AbstractLanguageToolkit {
 		return RubyNature.NATURE_ID;
 	}
 
-	public String getDelimeterReplacerString() {
-		return ".";
-	}
-
 	public static IDLTKLanguageToolkit getDefault() {
 		return sToolkit;
 	}
