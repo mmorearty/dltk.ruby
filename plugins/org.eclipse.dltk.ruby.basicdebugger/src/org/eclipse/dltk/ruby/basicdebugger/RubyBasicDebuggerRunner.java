@@ -19,6 +19,7 @@ import org.eclipse.dltk.launching.DebuggingEngineRunner;
 import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.dltk.launching.InterpreterConfig;
 import org.eclipse.dltk.launching.debug.DbgpInterpreterConfig;
+import org.eclipse.dltk.ruby.debug.RubyDebugPlugin;
 import org.eclipse.dltk.ruby.internal.launching.JRubyInstallType;
 
 public class RubyBasicDebuggerRunner extends DebuggingEngineRunner {
@@ -27,7 +28,6 @@ public class RubyBasicDebuggerRunner extends DebuggingEngineRunner {
 	private static final String RUBY_HOST_VAR = "DBGP_RUBY_HOST";
 	private static final String RUBY_PORT_VAR = "DBGP_RUBY_PORT";
 	private static final String RUBY_KEY_VAR = "DBGP_RUBY_KEY";
-	private static final String RUBY_SCRIPT_VAR = "DBGP_RUBY_SCRIPT";
 	private static final String RUBY_LOG_VAR = "DBGP_RUBY_LOG";
 
 	private static final String DEBUGGER_SCRIPT = "BasicRunner.rb";
@@ -86,8 +86,6 @@ public class RubyBasicDebuggerRunner extends DebuggingEngineRunner {
 		newConfig.addEnvVar(RUBY_PORT_VAR, Integer.toString(dbgpConfig
 				.getPort()));
 		newConfig.addEnvVar(RUBY_KEY_VAR, dbgpConfig.getSessionId());
-		newConfig.addEnvVar(RUBY_SCRIPT_VAR, config.getScriptFilePath()
-				.toPortableString());
 		
 		if (isLoggingEnabled()) {
 			newConfig.addEnvVar(RUBY_LOG_VAR, getLogFilename()
@@ -99,5 +97,12 @@ public class RubyBasicDebuggerRunner extends DebuggingEngineRunner {
 
 	protected String getDebuggingEngineId() {
 		return ENGINE_ID;
+	}
+
+	/*
+	 * @see org.eclipse.dltk.launching.DebuggingEngineRunner#getDebugPreferenceQualifier()
+	 */
+	protected String getDebugPreferenceQualifier() {
+		return RubyDebugPlugin.PLUGIN_ID;
 	}
 }
