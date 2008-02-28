@@ -14,6 +14,7 @@ import org.eclipse.dltk.launching.DebuggingEngineRunner;
 import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.dltk.launching.InterpreterConfig;
 import org.eclipse.dltk.launching.debug.DbgpInterpreterConfig;
+import org.eclipse.dltk.ruby.debug.RubyDebugPlugin;
 import org.eclipse.dltk.ruby.fastdebugger.preferences.FastDebuggerPreferenceConstants;
 import org.eclipse.dltk.ruby.internal.launching.RubyGenericInstallType;
 
@@ -23,7 +24,6 @@ public class FastDebuggerRunner extends DebuggingEngineRunner {
 	private static final String RUBY_HOST_VAR = "DBGP_RUBY_HOST";
 	private static final String RUBY_PORT_VAR = "DBGP_RUBY_PORT";
 	private static final String RUBY_KEY_VAR = "DBGP_RUBY_KEY";
-	private static final String RUBY_SCRIPT_VAR = "DBGP_RUBY_SCRIPT";
 	private static final String RUBY_LOG_VAR = "DBGP_RUBY_LOG";
 
 	private static final String DEBUGGER_SCRIPT = "FastRunner.rb";
@@ -90,8 +90,6 @@ public class FastDebuggerRunner extends DebuggingEngineRunner {
 
 		String sessionId = dbgpConfig.getSessionId();
 		newConfig.addEnvVar(RUBY_KEY_VAR, sessionId);
-		newConfig.addEnvVar(RUBY_SCRIPT_VAR, config.getScriptFilePath()
-				.toPortableString());
 
 		if (isLoggingEnabled(delegate)) {
 			newConfig.addEnvVar(RUBY_LOG_VAR, getLogFilename(delegate,
@@ -103,5 +101,12 @@ public class FastDebuggerRunner extends DebuggingEngineRunner {
 
 	protected String getDebuggingEngineId() {
 		return ENGINE_ID;
+	}
+
+	/*
+	 * @see org.eclipse.dltk.launching.DebuggingEngineRunner#getDebugPreferenceQualifier()
+	 */
+	protected String getDebugPreferenceQualifier() {
+		return RubyDebugPlugin.PLUGIN_ID;
 	}
 }
