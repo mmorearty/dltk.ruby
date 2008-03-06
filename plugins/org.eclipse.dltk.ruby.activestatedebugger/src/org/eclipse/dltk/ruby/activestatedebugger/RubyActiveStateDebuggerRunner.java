@@ -4,9 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *
- 
- *******************************************************************************/
+ ******************************************************************************/
 
 package org.eclipse.dltk.ruby.activestatedebugger;
 
@@ -83,5 +81,26 @@ public class RubyActiveStateDebuggerRunner extends
 	 */
 	protected String getDebugPreferenceQualifier() {
 		return RubyDebugPlugin.PLUGIN_ID;
+	}
+
+	/*
+	 * @see org.eclipse.dltk.launching.DebuggingEngineRunner#getLoggingEnabledPreferenceKey()
+	 */
+	protected String getLoggingEnabledPreferenceKey() {
+		return RubyActiveStateDebuggerConstants.ENABLE_LOGGING;
+	}
+
+	/*
+	 * @see org.eclipse.dltk.launching.DebuggingEngineRunner#getLogFileNamePreferenceKey()
+	 */
+	protected String getLogFileNamePreferenceKey() {
+		return RubyActiveStateDebuggerConstants.LOG_FILE_NAME;
+	}
+
+	/*
+	 * @see org.eclipse.dltk.launching.DebuggingEngineRunner#getLogFilePathPreferenceKey()
+	 */
+	protected String getLogFilePathPreferenceKey() {
+		return RubyActiveStateDebuggerConstants.LOG_FILE_PATH;
 	}
 }
