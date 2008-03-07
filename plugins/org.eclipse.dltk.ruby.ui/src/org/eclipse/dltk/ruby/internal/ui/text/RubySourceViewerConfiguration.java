@@ -23,6 +23,7 @@ import org.eclipse.dltk.ui.text.IColorManager;
 import org.eclipse.dltk.ui.text.ScriptPresentationReconciler;
 import org.eclipse.dltk.ui.text.ScriptSourceViewerConfiguration;
 import org.eclipse.dltk.ui.text.SingleTokenScriptScanner;
+import org.eclipse.dltk.ui.text.completion.ContentAssistPreference;
 import org.eclipse.dltk.ui.text.util.AutoEditUtils;
 import org.eclipse.dltk.ui.text.util.TabStyle;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -34,7 +35,6 @@ import org.eclipse.jface.text.IInformationControl;
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
-import org.eclipse.jface.text.contentassist.IContentAssistant;
 import org.eclipse.jface.text.information.IInformationPresenter;
 import org.eclipse.jface.text.information.IInformationProvider;
 import org.eclipse.jface.text.information.InformationPresenter;
@@ -262,34 +262,16 @@ public class RubySourceViewerConfiguration extends
 			}
 		};
 	}
-
-	public IContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
-		if (getEditor() != null) {
-			ContentAssistant assistant = new ContentAssistant();
-
-			assistant
-					.setDocumentPartitioning(getConfiguredDocumentPartitioning(sourceViewer));
-			assistant
-					.setRestoreCompletionProposalSize(getSettings("completion_proposal_size")); //$NON-NLS-1$
-			assistant
-					.setContextInformationPopupOrientation(IContentAssistant.CONTEXT_INFO_ABOVE);
-			assistant
-					.setInformationControlCreator(getInformationControlCreator(sourceViewer));
-			// assistant.setStatusLineVisible(true);
-			// assistant.setStatusMessage("Hello!");
-
-			IContentAssistProcessor scriptProcessor = new RubyCompletionProcessor(
-					getEditor(), assistant, IDocument.DEFAULT_CONTENT_TYPE);
-			assistant.setContentAssistProcessor(scriptProcessor,
-					IDocument.DEFAULT_CONTENT_TYPE);
-
-			RubyContentAssistPreference.getDefault().configure(assistant,
-					fPreferenceStore);
-
-			return assistant;
-		}
-
-		return null;
+	
+	protected void alterContentAssistant(ContentAssistant assistant) {
+		IContentAssistProcessor scriptProcessor = new RubyCompletionProcessor(
+				getEditor(), assistant, IDocument.DEFAULT_CONTENT_TYPE);
+		assistant.setContentAssistProcessor(scriptProcessor,
+				IDocument.DEFAULT_CONTENT_TYPE);
+	}
+	
+	protected ContentAssistPreference getContentAssistPreference() {
+		return RubyContentAssistPreference.getDefault();
 	}
 
 	public IInformationControlCreator getInformationControlCreator(
