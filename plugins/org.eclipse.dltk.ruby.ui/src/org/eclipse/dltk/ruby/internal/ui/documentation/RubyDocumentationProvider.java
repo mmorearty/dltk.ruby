@@ -178,7 +178,7 @@ public class RubyDocumentationProvider implements IScriptDocumentationProvider {
 		String doc = helper.getDocFor(keyword);
 		if (doc != null)
 			return new StringReader(doc);
-		return new StringReader("Built-in method");
+		return null;
 	}
 
 	private Reader proccessBuiltinMethod(IMethod method) {
@@ -196,11 +196,17 @@ public class RubyDocumentationProvider implements IScriptDocumentationProvider {
 			if (pp.getElementName().equals("Kernel")) {
 				keyword = "Object" + divider + method.getElementName();
 				doc = helper.getDocFor(keyword);
+				if (doc == null || doc.indexOf("Nothing known about") >= 0) {
+					doc = null;
+				}
+			} else {
+				doc = null;
 			}
+
 		}
 		if (doc != null)
 			return new StringReader(doc);
-		return new StringReader("Built-in method");
+		return null;
 	}
 
 	public Reader getInfo(IMember member, boolean lookIntoParents,
