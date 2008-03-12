@@ -403,8 +403,8 @@ public class RubyPreferenceConstants extends PreferenceConstants
 //		store.setDefault(PreferenceConstants.EDITOR_FOLDING_IMPORTS, true);
 		
 		store.setDefault (CodeFormatterConstants.FORMATTER_TAB_CHAR, CodeFormatterConstants.TAB);
-		store.setDefault (CodeFormatterConstants.FORMATTER_TAB_SIZE, "2");
-		store.setDefault (CodeFormatterConstants.FORMATTER_INDENTATION_SIZE, "2");
+		store.setDefault (CodeFormatterConstants.FORMATTER_TAB_SIZE, "2"); //$NON-NLS-1$
+		store.setDefault (CodeFormatterConstants.FORMATTER_INDENTATION_SIZE, "2"); //$NON-NLS-1$
 		
 		NewScriptProjectPreferencePage.initDefaults(store);
 		
@@ -415,6 +415,6 @@ public class RubyPreferenceConstants extends PreferenceConstants
 		
 		store.setDefault(PreferenceConstants.SHOW_SOURCE_MODULE_CHILDREN, true);
 		
-		store.setDefault(PreferenceConstants.CODEASSIST_AUTOACTIVATION_TRIGGERS, ".:$@");
+		store.setDefault(PreferenceConstants.CODEASSIST_AUTOACTIVATION_TRIGGERS, ".:$@"); //$NON-NLS-1$
 	}
 }

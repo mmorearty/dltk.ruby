@@ -15,7 +15,7 @@ import org.eclipse.dltk.ui.templates.ScriptTemplateContextType;
 import org.eclipse.jface.text.IDocument;
 
 public class RubyUniversalTemplateContextType extends ScriptTemplateContextType {
-	public static final String CONTEXT_TYPE_ID = "rubyUniversalTemplateContextType";
+	public static final String CONTEXT_TYPE_ID = "rubyUniversalTemplateContextType"; //$NON-NLS-1$
 	
 	public RubyUniversalTemplateContextType() {		
 		// empty constructor
