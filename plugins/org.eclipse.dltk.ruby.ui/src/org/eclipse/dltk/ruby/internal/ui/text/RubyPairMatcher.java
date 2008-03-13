@@ -28,7 +28,7 @@ public final class RubyPairMatcher extends DefaultCharacterPairMatcher {
 	 * @since 3.1
 	 */
 	public RubyPairMatcher() {
-		super("{}[]()".toCharArray(), IRubyPartitions.RUBY_PARTITIONING);
+		super("{}[]()".toCharArray(), IRubyPartitions.RUBY_PARTITIONING); //$NON-NLS-1$
 	}
 
 	/* @see ICharacterPairMatcher#match(IDocument, int) */

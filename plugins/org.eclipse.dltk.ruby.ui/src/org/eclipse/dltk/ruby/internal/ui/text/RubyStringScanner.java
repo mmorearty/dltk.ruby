@@ -41,11 +41,11 @@ public class RubyStringScanner extends AbstractScriptScanner {
 
 		// Add generic whitespace rule.
 		rules.add(new WhitespaceRule(new RubyWhitespaceDetector()));
-		rules.add(new WordPatternRule(new RubyWordDetector(), "#$", "",
+		rules.add(new WordPatternRule(new RubyWordDetector(), "#$", "", //$NON-NLS-1$ //$NON-NLS-2$
 				getToken(IRubyColorConstants.RUBY_GLOBAL_VARIABLE)));
-		rules.add(new WordPatternRule(new RubyWordDetector(), "#@@", "",
+		rules.add(new WordPatternRule(new RubyWordDetector(), "#@@", "", //$NON-NLS-1$ //$NON-NLS-2$
 				getToken(IRubyColorConstants.RUBY_CLASS_VARIABLE)));
-		rules.add(new WordPatternRule(new RubyWordDetector(), "#@", "",
+		rules.add(new WordPatternRule(new RubyWordDetector(), "#@", "", //$NON-NLS-1$ //$NON-NLS-2$
 				getToken(IRubyColorConstants.RUBY_INSTANCE_VARIABLE)));
 //		rules.add(new MultiLineRule("#{", "}",
 //				getToken(IRubyColorConstants.RUBY_DEFAULT)));

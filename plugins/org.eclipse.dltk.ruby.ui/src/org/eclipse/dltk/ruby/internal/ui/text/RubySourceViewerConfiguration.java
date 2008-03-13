@@ -82,7 +82,7 @@ public class RubySourceViewerConfiguration extends
 			return new String[] { AutoEditUtils.getNSpaces(prefs
 					.getIndentSize()) };
 		else
-			return new String[] { "\t" };
+			return new String[] { "\t" }; //$NON-NLS-1$
 	}
 
 	public int getTabWidth(ISourceViewer sourceViewer) {
@@ -279,7 +279,7 @@ public class RubySourceViewerConfiguration extends
 		return new IInformationControlCreator() {
 			public IInformationControl createInformationControl(Shell parent) {
 				return new DefaultInformationControl(parent, SWT.NONE,
-						new HTMLTextPresenter(true), "");
+						new HTMLTextPresenter(true), ""); //$NON-NLS-1$
 			}
 		};
 	}

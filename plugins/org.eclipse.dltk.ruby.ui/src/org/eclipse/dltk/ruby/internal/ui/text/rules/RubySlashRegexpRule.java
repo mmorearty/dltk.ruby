@@ -17,7 +17,7 @@ import org.eclipse.jface.text.rules.MultiLineRule;
 public class RubySlashRegexpRule extends MultiLineRule {
 
 	public RubySlashRegexpRule(IToken token) {
-		super("/", "/", token, '\\');
+		super("/", "/", token, '\\'); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	public IToken evaluate(ICharacterScanner scanner, boolean resume) {

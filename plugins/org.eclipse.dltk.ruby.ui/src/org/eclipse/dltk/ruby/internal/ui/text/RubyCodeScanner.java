@@ -23,23 +23,23 @@ import org.eclipse.jface.text.rules.WhitespaceRule;
 import org.eclipse.jface.text.rules.WordRule;
 
 public class RubyCodeScanner extends AbstractScriptScanner {
-	private static String[] fgKeywords = { "alias", "alias_method", "and", "BEGIN", "begin", "break", "case", "class", "def", "defined", "do",
-			"else", "elsif", "END", "end", "ensure", "for", "if", "in", "module", "next", "not", "or", "redo", "rescue", "retry", "return", "super",
-			"then", "undef", "unless", "until", "when", "while", "yield",
+	private static String[] fgKeywords = { "alias", "alias_method", "and", "BEGIN", "begin", "break", "case", "class", "def", "defined", "do", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$ //$NON-NLS-10$ //$NON-NLS-11$
+			"else", "elsif", "END", "end", "ensure", "for", "if", "in", "module", "next", "not", "or", "redo", "rescue", "retry", "return", "super", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$ //$NON-NLS-10$ //$NON-NLS-11$ //$NON-NLS-12$ //$NON-NLS-13$ //$NON-NLS-14$ //$NON-NLS-15$ //$NON-NLS-16$ //$NON-NLS-17$
+			"then", "undef", "unless", "until", "when", "while", "yield", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
 			// pseudo-keywords (standard methods used as keywords)
-			"private", "protected", "public", "attr", "attr_accessor", "attr_reader", "attr_writer", "include", "require", "extend", "lambda",
-			"proc", "block_given?", "at_exit", "try", "catch", "raise", "throw", "=begin", "=end", "module_function" };
+			"private", "protected", "public", "attr", "attr_accessor", "attr_reader", "attr_writer", "include", "require", "extend", "lambda", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$ //$NON-NLS-10$ //$NON-NLS-11$
+			"proc", "block_given?", "at_exit", "try", "catch", "raise", "throw", "=begin", "=end", "module_function" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$ //$NON-NLS-10$
 	
 	// TODO: use
-	private static String[] additionalKeywords = {"initialize", "new", "loop"};
+	private static String[] additionalKeywords = {"initialize", "new", "loop"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-	private static String[] fgPseudoVariables = { "true", "false", "self", "nil" };
+	private static String[] fgPseudoVariables = { "true", "false", "self", "nil" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
 //	private static String[] fgPredefinedVariables = { "$!", "$@", "$&", "$`", "$'", "$+", "$1", "$2", "$3", "$4", "$5", "$6", "$7", "$8", "$9", "$~",
 //			"$=", "$/", "$\\", "$,", "$;", "$.", "$<", "$>", "$_", "$0", "$*", "$$", "$?", "$:", "$\"", "$DEBUG", "$FILENAME", "$LOAD_PATH",
 //			"$stderr", "$stdin", "$stdout", "$VERBOSE", "$-0", "$-a", "$-d", "$-F", "$-i", "$-I", "$-l", "$-p", "$-v", "$-w" };
 
-	private static String fgReturnKeyword = "return";
+	private static String fgReturnKeyword = "return"; //$NON-NLS-1$
 
 	private static String fgTokenProperties[] = new String[] { IRubyColorConstants.RUBY_SINGLE_LINE_COMMENT, IRubyColorConstants.RUBY_DEFAULT,
 			IRubyColorConstants.RUBY_KEYWORD, IRubyColorConstants.RUBY_KEYWORD_RETURN, IRubyColorConstants.RUBY_NUMBER,
@@ -71,7 +71,7 @@ public class RubyCodeScanner extends AbstractScriptScanner {
 		IToken symbols = getToken(IRubyColorConstants.RUBY_SYMBOLS);
 
 		// Add rule for single line comments.
-		rules.add(new EndOfLineRule("#", comment));
+		rules.add(new EndOfLineRule("#", comment)); //$NON-NLS-1$
 		// Add generic whitespace rule.
 		rules.add(new WhitespaceRule(new RubyWhitespaceDetector()));		
 		// Add rule for numbers
@@ -101,7 +101,7 @@ public class RubyCodeScanner extends AbstractScriptScanner {
 		rules.add(new StartWithRule(instanceVariable, '@', true) );
 		
 		// Class Variables
-		rules.add(new StartWithRule(classVariable, "@@".toCharArray() ) );
+		rules.add(new StartWithRule(classVariable, "@@".toCharArray() ) ); //$NON-NLS-1$
 		
 		// Symbols
 		rules.add(new StartWithRule(symbols, ':', true));				

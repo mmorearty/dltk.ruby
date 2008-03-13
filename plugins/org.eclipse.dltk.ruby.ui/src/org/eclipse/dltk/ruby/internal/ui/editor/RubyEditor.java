@@ -43,11 +43,11 @@ import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 import org.eclipse.ui.texteditor.TextOperationAction;
 
 public class RubyEditor extends ScriptEditor {
-	public static final String EDITOR_ID = "org.eclipse.dltk.ruby.ui.editor.RubyEditor";
+	public static final String EDITOR_ID = "org.eclipse.dltk.ruby.ui.editor.RubyEditor"; //$NON-NLS-1$
 
-	public static final String EDITOR_CONTEXT = "#RubyEditorContext";
+	public static final String EDITOR_CONTEXT = "#RubyEditorContext"; //$NON-NLS-1$
 
-	public static final String RULER_CONTEXT = "#RubyRulerContext";
+	public static final String RULER_CONTEXT = "#RubyRulerContext"; //$NON-NLS-1$
 
 	private org.eclipse.dltk.internal.ui.editor.BracketInserter fBracketInserter = new RubyBracketInserter(
 			this);
@@ -109,7 +109,7 @@ public class RubyEditor extends ScriptEditor {
 	}
 
 	public String getCallHierarchyID() {
-		return "org.eclipse.dltk.callhierarchy.view";
+		return "org.eclipse.dltk.callhierarchy.view"; //$NON-NLS-1$
 	}
 
 	protected void initializeKeyBindingScopes() {
@@ -221,7 +221,7 @@ public class RubyEditor extends ScriptEditor {
 
 		int selectionLength = Math.abs(selection.getLength());
 		if (selectionLength > 1) {
-			setStatusLineErrorMessage("No bracket selected");
+			setStatusLineErrorMessage(Messages.RubyEditor_nobracketSelected);
 			sourceViewer.getTextWidget().getDisplay().beep();
 			return;
 		}
@@ -233,7 +233,7 @@ public class RubyEditor extends ScriptEditor {
 		
 		IRegion region = bracketMatcher.match(document, sourceCaretOffset);
 		if (region == null) {
-			setStatusLineErrorMessage("No matching bracket found");
+			setStatusLineErrorMessage(Messages.RubyEditor_noMatchingBracketFound);
 			sourceViewer.getTextWidget().getDisplay().beep();
 			return;
 		}
@@ -262,7 +262,7 @@ public class RubyEditor extends ScriptEditor {
 		}
 
 		if (!visible) {
-			setStatusLineErrorMessage("Matching bracket is outside selected element");
+			setStatusLineErrorMessage(Messages.RubyEditor_matchingBracketIsOutsideSelectedElement);
 			sourceViewer.getTextWidget().getDisplay().beep();
 			return;
 		}

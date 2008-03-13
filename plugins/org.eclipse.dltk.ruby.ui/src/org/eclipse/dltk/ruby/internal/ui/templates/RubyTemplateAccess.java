@@ -18,7 +18,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
  */
 public class RubyTemplateAccess extends ScriptTemplateAccess {
 	// Template
-	private static final String CUSTOM_TEMPLATES_KEY = "org.eclipse.ruby.Templates";
+	private static final String CUSTOM_TEMPLATES_KEY = "org.eclipse.ruby.Templates"; //$NON-NLS-1$
 
 	private static RubyTemplateAccess instance;
 

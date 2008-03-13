@@ -66,7 +66,7 @@ public class RubyPreferenceInterpreter implements ITabPreferencesProvider {
 		if (getTabStyle() == TabStyle.SPACES) {
 			return AutoEditUtils.getNSpaces(getIndentSize());
 		} else
-			return "\t";
+			return "\t"; //$NON-NLS-1$
 	}
 
 	public String getIndentByVirtualSize(int size) {

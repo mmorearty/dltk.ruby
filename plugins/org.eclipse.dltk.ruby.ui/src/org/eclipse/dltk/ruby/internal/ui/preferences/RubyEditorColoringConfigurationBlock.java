@@ -34,7 +34,7 @@ public class RubyEditorColoringConfigurationBlock extends
 		AbstractScriptEditorColoringConfigurationBlock implements
 		IPreferenceConfigurationBlock {
 
-	private static final String PREVIEW_FILE_NAME = "PreviewFile.txt";
+	private static final String PREVIEW_FILE_NAME = "PreviewFile.txt"; //$NON-NLS-1$
 
 	private static final String[][] fSyntaxColorListModel = new String[][] {
 			{ RubyPreferencesMessages.RubyEditorPreferencePage_rubyDoc,
