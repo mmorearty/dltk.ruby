@@ -16,11 +16,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RubyKeyword {
-	private static String[] sKeywords = new String[] {"if", "else", "elsif", "unless", "while", "until", "in"
-		,"case", "when", "begin", "ensure", "module", "for", "then", "do", "and", "or", "not"
-		,"rescue", "return", "break", "next", "yield", "defined?", "super", "def", "undef", "alias", "class"
-		,"end", "self", "false", "true", "retry", "nil", "redo", "BEGIN", "END", "__LINE__", "__FILE__",
-		"sub", "sub!", "gsub", "gsub!", "scan", "index", "match", "require" };
+	private static String[] sKeywords = new String[] {"if", "else", "elsif", "unless", "while", "until", "in" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
+		,"case", "when", "begin", "ensure", "module", "for", "then", "do", "and", "or", "not" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$ //$NON-NLS-10$ //$NON-NLS-11$
+		,"rescue", "return", "break", "next", "yield", "defined?", "super", "def", "undef", "alias", "class" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$ //$NON-NLS-10$ //$NON-NLS-11$
+		,"end", "self", "false", "true", "retry", "nil", "redo", "BEGIN", "END", "__LINE__", "__FILE__", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$ //$NON-NLS-10$ //$NON-NLS-11$
+		"sub", "sub!", "gsub", "gsub!", "scan", "index", "match", "require" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$
 	
 	public static String[] findByPrefix (String prefix) {
 		List result = new ArrayList ();
