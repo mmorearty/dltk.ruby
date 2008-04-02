@@ -20,6 +20,9 @@ import java.util.Map;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.ILaunchManager;
+import org.eclipse.dltk.core.environment.IDeployment;
+import org.eclipse.dltk.core.environment.IExecutionEnvironment;
+import org.eclipse.dltk.core.environment.IFileHandle;
 import org.eclipse.dltk.launching.AbstractInterpreterInstall;
 import org.eclipse.dltk.launching.IInterpreterInstallType;
 import org.eclipse.dltk.launching.IInterpreterRunner;
@@ -27,7 +30,6 @@ import org.eclipse.dltk.launching.InterpreterConfig;
 import org.eclipse.dltk.launching.ScriptLaunchUtil;
 import org.eclipse.dltk.ruby.core.RubyNature;
 import org.eclipse.dltk.ruby.launching.RubyLaunchingPlugin;
-import org.eclipse.dltk.utils.DeployHelper;
 
 public class RubyGenericInstall extends AbstractInterpreterInstall {
 
@@ -37,16 +39,19 @@ public class RubyGenericInstall extends AbstractInterpreterInstall {
 		private Map sources;
 
 		private String[] generateLines() throws IOException, CoreException {
-			final IPath builder = DeployHelper.deploy(RubyLaunchingPlugin
-					.getDefault(), "scripts/builtin.rb"); //$NON-NLS-1$
+			IExecutionEnvironment exeEnv = getExecEnvironment();
+			IDeployment deployment = exeEnv.createDeployment();
+			final IPath builder = deployment.add(RubyLaunchingPlugin
+					.getDefault().getBundle(), "scripts/builtin.rb"); //$NON-NLS-1$
 
 			final List lines = new ArrayList();
 
+			IFileHandle builderFile = deployment.getFile(builder);
 			InterpreterConfig config = ScriptLaunchUtil
-					.createInterpreterConfig(builder.toFile(), builder
-							.removeLastSegments(1).toFile(), null);
+					.createInterpreterConfig(exeEnv, builderFile, builderFile
+							.getParent());
 			// config.addInterpreterArg("-KU"); //$NON-NLS-1$
-			Process process = ScriptLaunchUtil.runScriptWithInterpreter(
+			Process process = ScriptLaunchUtil.runScriptWithInterpreter(exeEnv,
 					RubyGenericInstall.this.getInstallLocation()
 							.getAbsolutePath(), config);
 
