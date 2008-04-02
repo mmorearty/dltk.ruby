@@ -15,6 +15,9 @@ import java.io.IOException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.dltk.core.PreferencesLookupDelegate;
+import org.eclipse.dltk.core.environment.IDeployment;
+import org.eclipse.dltk.core.environment.IEnvironment;
+import org.eclipse.dltk.core.environment.IExecutionEnvironment;
 import org.eclipse.dltk.launching.DebuggingEngineRunner;
 import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.dltk.launching.InterpreterConfig;
@@ -32,11 +35,15 @@ public class RubyBasicDebuggerRunner extends DebuggingEngineRunner {
 
 	private static final String DEBUGGER_SCRIPT = "BasicRunner.rb"; //$NON-NLS-1$
 
-	protected IPath deploy() throws CoreException {
+	protected IPath deploy(IDeployment deployment) throws CoreException {
 		try {
-			return RubyBasicDebuggerPlugin.getDefault().deployDebuggerSource();
+			RubyBasicDebuggerPlugin.getDefault().deployDebuggerSource(
+					deployment);
+			return deployment.getAbsolutePath();
 		} catch (IOException e) {
-			abort(Messages.RubyBasicDebuggerRunner_unableToDeployDebuggerSource, e);
+			abort(
+					Messages.RubyBasicDebuggerRunner_unableToDeployDebuggerSource,
+					e);
 		}
 
 		return null;
@@ -48,8 +55,13 @@ public class RubyBasicDebuggerRunner extends DebuggingEngineRunner {
 
 	protected InterpreterConfig addEngineConfig(InterpreterConfig config,
 			PreferencesLookupDelegate delegate) throws CoreException {
+		IEnvironment env = getInstall().getEnvironment();
+		IExecutionEnvironment exeEnv = (IExecutionEnvironment) env
+				.getAdapter(IExecutionEnvironment.class);
+		IDeployment deployment = exeEnv.createDeployment();
+
 		// Get debugger source location
-		final IPath sourceLocation = deploy();
+		final IPath sourceLocation = deploy(deployment);
 
 		final IPath scriptFile = sourceLocation.append(DEBUGGER_SCRIPT);
 
@@ -61,8 +73,10 @@ public class RubyBasicDebuggerRunner extends DebuggingEngineRunner {
 			newConfig.addInterpreterArg("-X-C"); //$NON-NLS-1$
 		}
 
-		newConfig.addInterpreterArg("-r" + scriptFile.toPortableString()); //$NON-NLS-1$
-		newConfig.addInterpreterArg("-I" + sourceLocation.toPortableString()); //$NON-NLS-1$
+		newConfig.addInterpreterArg("-r");
+		newConfig.addInterpreterArg(scriptFile.toPortableString()); //$NON-NLS-1$
+		newConfig.addInterpreterArg("-I");
+		newConfig.addInterpreterArg(sourceLocation.toPortableString()); //$NON-NLS-1$
 
 		// Environment
 		final DbgpInterpreterConfig dbgpConfig = new DbgpInterpreterConfig(
