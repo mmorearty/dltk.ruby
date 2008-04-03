@@ -162,8 +162,8 @@ public class FastDebuggerRunner extends DebuggingEngineRunner {
 		return (resolveRubyDebugGemExists(true) || resolveRubyDebugGemExists(false));
 	}
 
-	protected void checkConfig(InterpreterConfig config) throws CoreException {
-		super.checkConfig(config);
+	protected void checkConfig(InterpreterConfig config, IEnvironment environment) throws CoreException {
+		super.checkConfig(config, environment);
 
 		if (resolveRubyDebugGemExists() != true) {
 			abort(
