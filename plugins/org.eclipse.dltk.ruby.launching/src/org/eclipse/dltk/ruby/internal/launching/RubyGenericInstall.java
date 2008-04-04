@@ -20,6 +20,7 @@ import java.util.Map;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.ILaunchManager;
+import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.environment.IDeployment;
 import org.eclipse.dltk.core.environment.IExecutionEnvironment;
 import org.eclipse.dltk.core.environment.IFileHandle;
@@ -61,8 +62,14 @@ public class RubyGenericInstall extends AbstractInterpreterInstall {
 						.getInputStream()));
 
 				String line = null;
-				while ((line = input.readLine()) != null) {
-					lines.add(line);
+				try {
+					while ((line = input.readLine()) != null) {
+						lines.add(line);
+					}
+				} catch (IOException e) {
+					if( DLTKCore.DEBUG ) {
+						e.printStackTrace();
+					}
 				}
 
 				return (String[]) lines.toArray(new String[lines.size()]);
