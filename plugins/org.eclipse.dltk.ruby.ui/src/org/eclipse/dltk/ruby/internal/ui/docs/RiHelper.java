@@ -22,6 +22,7 @@ import org.eclipse.dltk.core.environment.IDeployment;
 import org.eclipse.dltk.core.environment.IEnvironment;
 import org.eclipse.dltk.core.environment.IExecutionEnvironment;
 import org.eclipse.dltk.core.environment.IFileHandle;
+import org.eclipse.dltk.core.internal.environment.LocalEnvironment;
 import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.dltk.launching.IInterpreterInstallChangedListener;
 import org.eclipse.dltk.launching.PropertyChangeEvent;
@@ -64,7 +65,7 @@ public class RiHelper {
 	protected synchronized void runRiProcess() throws CoreException,
 			IOException {
 		IInterpreterInstall install = ScriptLaunchUtil
-				.getDefaultInterpreterInstall(RubyNature.NATURE_ID);
+				.getDefaultInterpreterInstall(RubyNature.NATURE_ID, LocalEnvironment.ENVIRONMENT_ID);
 
 		if (install == null) {
 			throw new CoreException(Status.CANCEL_STATUS);
