@@ -52,32 +52,49 @@ public class RubyGenericInstall extends AbstractInterpreterInstall {
 					.createInterpreterConfig(exeEnv, builderFile, builderFile
 							.getParent());
 			// config.addInterpreterArg("-KU"); //$NON-NLS-1$
-			Process process = ScriptLaunchUtil.runScriptWithInterpreter(exeEnv,
-					RubyGenericInstall.this.getInstallLocation()
+			final Process process = ScriptLaunchUtil.runScriptWithInterpreter(
+					exeEnv, RubyGenericInstall.this.getInstallLocation()
 							.getAbsolutePath(), config);
 
-			BufferedReader input = null;
-			try {
-				input = new BufferedReader(new InputStreamReader(process
-						.getInputStream()));
+			Thread readerThread = new Thread(new Runnable() {
+				public void run() {
+					BufferedReader input = null;
+					try {
+						input = new BufferedReader(new InputStreamReader(
+								process.getInputStream()));
 
-				String line = null;
-				try {
-					while ((line = input.readLine()) != null) {
-						lines.add(line);
-					}
-				} catch (IOException e) {
-					if( DLTKCore.DEBUG ) {
-						e.printStackTrace();
+						String line = null;
+						try {
+							while ((line = input.readLine()) != null) {
+								lines.add(line);
+							}
+						} catch (IOException e) {
+							if (DLTKCore.DEBUG) {
+								e.printStackTrace();
+							}
+						}
+
+					} finally {
+						if (input != null) {
+							try {
+								input.close();
+							} catch (IOException e) {
+								if (DLTKCore.DEBUG) {
+									e.printStackTrace();
+								}
+							}
+						}
 					}
 				}
-
-				return (String[]) lines.toArray(new String[lines.size()]);
-			} finally {
-				if (input != null) {
-					input.close();
+			});
+			try {
+				readerThread.join(10000);
+			} catch (InterruptedException e) {
+				if (DLTKCore.DEBUG) {
+					e.printStackTrace();
 				}
 			}
+			return (String[]) lines.toArray(new String[lines.size()]);
 		}
 
 		private void parseLines(String[] lines) {
