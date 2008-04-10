@@ -88,6 +88,7 @@ public class RubyGenericInstall extends AbstractInterpreterInstall {
 				}
 			});
 			try {
+				readerThread.start();
 				readerThread.join(10000);
 			} catch (InterruptedException e) {
 				if (DLTKCore.DEBUG) {
