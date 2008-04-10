@@ -19,10 +19,10 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.dltk.core.environment.IDeployment;
 import org.eclipse.dltk.launching.AbstractScriptLaunchConfigurationDelegate;
 import org.eclipse.dltk.launching.InterpreterConfig;
 import org.eclipse.dltk.ruby.core.RubyNature;
-import org.eclipse.dltk.utils.DeployHelper;
 
 public class RubyLaunchConfigurationDelegate extends
 		AbstractScriptLaunchConfigurationDelegate {
@@ -86,8 +86,9 @@ public class RubyLaunchConfigurationDelegate extends
 
 		char separator = Platform.getOS().equals(Platform.OS_WIN32) ? ';' : ':';
 
-		final StringBuffer sb = new StringBuffer("-I"); //$NON-NLS-1$
+		final StringBuffer sb = new StringBuffer(); //$NON-NLS-1$
 		if (paths.length > 0) {
+			sb.append("-I");
 			sb.append(paths[0]);
 			for (int i = 1; i < paths.length; ++i) {
 				sb.append(separator);
@@ -101,10 +102,11 @@ public class RubyLaunchConfigurationDelegate extends
 	protected void addStreamSync(InterpreterConfig config,
 			ILaunchConfiguration configuration) {
 		try {
-			final IPath path = DeployHelper.deploy(RubyLaunchingPlugin
-					.getDefault(), "scripts/sync.rb"); //$NON-NLS-1$
+			IDeployment deployment = config.getExecutionEnvironment().createDeployment();
+			final IPath path = deployment.add(RubyLaunchingPlugin
+					.getDefault().getBundle(), "scripts/sync.rb"); //$NON-NLS-1$
 			config.addInterpreterArg("-r"); //$NON-NLS-1$
-			config.addInterpreterArg(path.toPortableString());
+			config.addInterpreterArg(deployment.getFile(path).getAbsolutePath());
 		} catch (IOException e) {
 			RubyLaunchingPlugin.log(e);
 		}

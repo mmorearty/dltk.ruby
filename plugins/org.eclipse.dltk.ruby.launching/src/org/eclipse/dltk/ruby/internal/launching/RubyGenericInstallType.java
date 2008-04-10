@@ -9,10 +9,11 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.internal.launching;
 
-import java.io.File;
 import java.io.IOException;
 
 import org.eclipse.core.runtime.ILog;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.dltk.core.environment.IDeployment;
 import org.eclipse.dltk.internal.launching.AbstractInterpreterInstallType;
 import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.dltk.ruby.core.RubyNature;
@@ -44,9 +45,9 @@ public class RubyGenericInstallType extends AbstractInterpreterInstallType {
 		return new RubyGenericInstall(this, id);
 	}
 
-	protected File createPathFile() throws IOException {
-		return storeToMetadata(RubyLaunchingPlugin.getDefault(), "path.rb", //$NON-NLS-1$
-				"scripts/path.rb"); //$NON-NLS-1$
+	protected IPath createPathFile(IDeployment deployment) throws IOException {
+		return deployment.add(
+				RubyLaunchingPlugin.getDefault().getBundle(), "scripts/path.rb");
 	}
 
 	protected String getBuildPathDelimeter() {
