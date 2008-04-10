@@ -1,5 +1,8 @@
 package org.eclipse.dltk.ruby.fastdebugger;
 
+import java.io.IOException;
+import java.text.MessageFormat;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
@@ -7,17 +10,16 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugException;
 import org.eclipse.dltk.core.PreferencesLookupDelegate;
+import org.eclipse.dltk.core.environment.IDeployment;
+import org.eclipse.dltk.core.environment.IEnvironment;
+import org.eclipse.dltk.core.environment.IExecutionEnvironment;
+import org.eclipse.dltk.core.environment.IFileHandle;
 import org.eclipse.dltk.launching.DebuggingEngineRunner;
 import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.dltk.launching.InterpreterConfig;
 import org.eclipse.dltk.launching.debug.DbgpInterpreterConfig;
 import org.eclipse.dltk.ruby.debug.RubyDebugPlugin;
 import org.eclipse.dltk.ruby.internal.launching.RubyGenericInstallType;
-
-import java.io.File;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.text.MessageFormat;
 
 public class FastDebuggerRunner extends DebuggingEngineRunner {
 	public static final String ENGINE_ID = "org.eclipse.dltk.ruby.fastdebugger"; //$NON-NLS-1$
@@ -29,9 +31,11 @@ public class FastDebuggerRunner extends DebuggingEngineRunner {
 
 	private static final String DEBUGGER_SCRIPT = "FastRunner.rb"; //$NON-NLS-1$
 
-	protected IPath deploy() throws CoreException {
+	protected IPath deploy(IDeployment deployment) throws CoreException {
 		try {
-			return FastDebuggerPlugin.getDefault().deployDebuggerSource();
+			IPath deploymentPath = FastDebuggerPlugin.getDefault()
+					.deployDebuggerSource(deployment);
+			return deployment.getFile(deploymentPath).getPath();
 		} catch (IOException e) {
 			// TODO: add code for handler
 			throw new CoreException(
@@ -56,15 +60,23 @@ public class FastDebuggerRunner extends DebuggingEngineRunner {
 							FastDebuggerPlugin.PLUGIN_ID,
 							Messages.FastDebuggerRunner_fastDebuggerCanOnlyBeRunWithGenericRubyInterpreter));
 		}
+
+		IEnvironment env = getInstall().getEnvironment();
+		IExecutionEnvironment exeEnv = (IExecutionEnvironment) env
+				.getAdapter(IExecutionEnvironment.class);
+		IDeployment deployment = exeEnv.createDeployment();
+
 		// Get debugger source location
-		final IPath sourceLocation = deploy();
+		final IPath sourceLocation = deploy(deployment);
 
 		final IPath scriptFile = sourceLocation.append(DEBUGGER_SCRIPT);
 
 		// Creating new config
 		InterpreterConfig newConfig = (InterpreterConfig) config.clone();
-		newConfig.addInterpreterArg("-r" + scriptFile.toPortableString()); //$NON-NLS-1$
-		newConfig.addInterpreterArg("-I" + sourceLocation.toPortableString()); //$NON-NLS-1$
+		newConfig.addInterpreterArg("-r");
+		newConfig.addInterpreterArg(scriptFile.toPortableString()); //$NON-NLS-1$
+		newConfig.addInterpreterArg("-I");
+		newConfig.addInterpreterArg(sourceLocation.toPortableString()); //$NON-NLS-1$
 
 		// Environment
 		final DbgpInterpreterConfig dbgpConfig = new DbgpInterpreterConfig(
@@ -97,25 +109,28 @@ public class FastDebuggerRunner extends DebuggingEngineRunner {
 	}
 
 	public IPath resolveGemsPath(boolean user) {
-		IPath gemsPath = null;
+		IEnvironment env = getInstall().getEnvironment();
+		IPath gemsPath = new Path(getInstall().getInstallLocation()
+				.getAbsolutePath());
+		if (gemsPath.segmentCount() < 2)
+			return null;
 
-		gemsPath = new Path(getInstall().getInstallLocation().getAbsolutePath());
 		gemsPath = gemsPath.removeLastSegments(2);
 
 		if (user == true) {
 			gemsPath = gemsPath.append("lib/ruby/user-gems/1.8/gems"); //$NON-NLS-1$
 
 			IPath userGemsPathUbuntu = new Path("/var/lib/user-gems/1.8/gems"); //$NON-NLS-1$
-			if ((gemsPath.toFile().exists() != true)
-					&& (userGemsPathUbuntu.toFile().exists() == true)) {
+			if ((env.getFile(gemsPath).exists() != true)
+					&& (env.getFile(userGemsPathUbuntu).exists() == true)) {
 				gemsPath = userGemsPathUbuntu;
 			}
 		} else {
 			gemsPath = gemsPath.append("lib/ruby/gems/1.8/gems"); //$NON-NLS-1$
 
 			IPath gemsPathUbuntu = new Path("/var/lib/gems/1.8/gems"); //$NON-NLS-1$
-			if ((gemsPath.toFile().exists() != true)
-					&& (gemsPathUbuntu.toFile().exists() == true)) {
+			if ((env.getFile(gemsPath).exists() != true)
+					&& (env.getFile(gemsPathUbuntu).exists() == true)) {
 				gemsPath = gemsPathUbuntu;
 			}
 		}
@@ -124,31 +139,31 @@ public class FastDebuggerRunner extends DebuggingEngineRunner {
 	}
 
 	private boolean resolveRubyDebugGemExists(boolean userGems) {
-		boolean rubyDebugGemExists = false;
+		IEnvironment env = getInstall().getEnvironment();
 		IPath gemsPath = resolveGemsPath(userGems);
 
-		if ((gemsPath != null) && (gemsPath.toFile().exists() == true)) {
-			String[] files = gemsPath.toFile().list(new FilenameFilter() {
-
-				public boolean accept(File dir, String name) {
-					return name.indexOf('-') != -1
-							&& "ruby-debug".equals(name.substring(0, //$NON-NLS-1$
-									name.lastIndexOf('-')));
+		IFileHandle gemDir = env.getFile(gemsPath);
+		if ((gemsPath != null) && (gemDir.exists() == true)) {
+			IFileHandle[] children = gemDir.getChildren();
+			for (int i = 0; i < children.length; i++) {
+				String name = children[i].getName();
+				if (name.indexOf('-') != -1
+						&& "ruby-debug".equals(name.substring(0, //$NON-NLS-1$
+								name.lastIndexOf('-')))) {
+					return true;
 				}
-
-			});
-			rubyDebugGemExists = (files.length > 0);
+			}
 		}
 
-		return rubyDebugGemExists;
+		return false;
 	}
 
 	public boolean resolveRubyDebugGemExists() {
 		return (resolveRubyDebugGemExists(true) || resolveRubyDebugGemExists(false));
 	}
 
-	protected void checkConfig(InterpreterConfig config) throws CoreException {
-		super.checkConfig(config);
+	protected void checkConfig(InterpreterConfig config, IEnvironment environment) throws CoreException {
+		super.checkConfig(config, environment);
 
 		if (resolveRubyDebugGemExists() != true) {
 			abort(
