@@ -86,9 +86,9 @@ public class RubyLaunchConfigurationDelegate extends
 
 		char separator = Platform.getOS().equals(Platform.OS_WIN32) ? ';' : ':';
 
-		final StringBuffer sb = new StringBuffer(); //$NON-NLS-1$
+		final StringBuffer sb = new StringBuffer();
 		if (paths.length > 0) {
-			sb.append("-I");
+			sb.append("-I"); //$NON-NLS-1$
 			sb.append(paths[0]);
 			for (int i = 1; i < paths.length; ++i) {
 				sb.append(separator);

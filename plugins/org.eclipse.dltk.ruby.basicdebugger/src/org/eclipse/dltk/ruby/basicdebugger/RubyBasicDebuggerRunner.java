@@ -73,10 +73,10 @@ public class RubyBasicDebuggerRunner extends DebuggingEngineRunner {
 			newConfig.addInterpreterArg("-X-C"); //$NON-NLS-1$
 		}
 
-		newConfig.addInterpreterArg("-r");
-		newConfig.addInterpreterArg(scriptFile.toPortableString()); //$NON-NLS-1$
-		newConfig.addInterpreterArg("-I");
-		newConfig.addInterpreterArg(sourceLocation.toPortableString()); //$NON-NLS-1$
+		newConfig.addInterpreterArg("-r"); //$NON-NLS-1$
+		newConfig.addInterpreterArg(scriptFile.toPortableString());
+		newConfig.addInterpreterArg("-I"); //$NON-NLS-1$
+		newConfig.addInterpreterArg(sourceLocation.toPortableString());
 
 		// Environment
 		final DbgpInterpreterConfig dbgpConfig = new DbgpInterpreterConfig(

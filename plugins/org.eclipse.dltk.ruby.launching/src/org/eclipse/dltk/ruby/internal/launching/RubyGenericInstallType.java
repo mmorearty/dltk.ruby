@@ -47,7 +47,7 @@ public class RubyGenericInstallType extends AbstractInterpreterInstallType {
 
 	protected IPath createPathFile(IDeployment deployment) throws IOException {
 		return deployment.add(
-				RubyLaunchingPlugin.getDefault().getBundle(), "scripts/path.rb");
+				RubyLaunchingPlugin.getDefault().getBundle(), "scripts/path.rb"); //$NON-NLS-1$
 	}
 
 	protected String getBuildPathDelimeter() {
