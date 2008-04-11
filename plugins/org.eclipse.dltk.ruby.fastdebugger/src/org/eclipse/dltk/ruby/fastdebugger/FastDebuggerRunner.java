@@ -74,9 +74,9 @@ public class FastDebuggerRunner extends DebuggingEngineRunner {
 		// Creating new config
 		InterpreterConfig newConfig = (InterpreterConfig) config.clone();
 		newConfig.addInterpreterArg("-r"); //$NON-NLS-1$
-		newConfig.addInterpreterArg(scriptFile.toPortableString());
+		newConfig.addInterpreterArg(env.convertPathToString(scriptFile)); //$NON-NLS-1$
 		newConfig.addInterpreterArg("-I"); //$NON-NLS-1$
-		newConfig.addInterpreterArg(sourceLocation.toPortableString());
+		newConfig.addInterpreterArg(env.convertPathToString(sourceLocation)); //$NON-NLS-1$
 
 		// Environment
 		final DbgpInterpreterConfig dbgpConfig = new DbgpInterpreterConfig(
@@ -91,7 +91,7 @@ public class FastDebuggerRunner extends DebuggingEngineRunner {
 
 		if (isLoggingEnabled(delegate)) {
 			newConfig.addEnvVar(RUBY_LOG_VAR, getLogFileName(delegate,
-					sessionId).getAbsolutePath());
+					sessionId));
 		}
 
 		return newConfig;
