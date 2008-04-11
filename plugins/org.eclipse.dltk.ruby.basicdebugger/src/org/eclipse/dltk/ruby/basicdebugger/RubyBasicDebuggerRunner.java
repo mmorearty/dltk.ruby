@@ -37,9 +37,9 @@ public class RubyBasicDebuggerRunner extends DebuggingEngineRunner {
 
 	protected IPath deploy(IDeployment deployment) throws CoreException {
 		try {
-			RubyBasicDebuggerPlugin.getDefault().deployDebuggerSource(
-					deployment);
-			return deployment.getAbsolutePath();
+			IPath deploymentPath = RubyBasicDebuggerPlugin.getDefault()
+					.deployDebuggerSource(deployment);
+			return deployment.getFile(deploymentPath).getPath();
 		} catch (IOException e) {
 			abort(
 					Messages.RubyBasicDebuggerRunner_unableToDeployDebuggerSource,
@@ -74,9 +74,9 @@ public class RubyBasicDebuggerRunner extends DebuggingEngineRunner {
 		}
 
 		newConfig.addInterpreterArg("-r"); //$NON-NLS-1$
-		newConfig.addInterpreterArg(scriptFile.toPortableString());
+		newConfig.addInterpreterArg(env.convertPathToString(scriptFile)); //$NON-NLS-1$
 		newConfig.addInterpreterArg("-I"); //$NON-NLS-1$
-		newConfig.addInterpreterArg(sourceLocation.toPortableString());
+		newConfig.addInterpreterArg(env.convertPathToString(sourceLocation)); //$NON-NLS-1$
 
 		// Environment
 		final DbgpInterpreterConfig dbgpConfig = new DbgpInterpreterConfig(
@@ -91,7 +91,7 @@ public class RubyBasicDebuggerRunner extends DebuggingEngineRunner {
 
 		if (isLoggingEnabled(delegate)) {
 			newConfig.addEnvVar(RUBY_LOG_VAR, getLogFileName(delegate,
-					sessionId).getAbsolutePath());
+					sessionId));
 		}
 
 		return newConfig;
