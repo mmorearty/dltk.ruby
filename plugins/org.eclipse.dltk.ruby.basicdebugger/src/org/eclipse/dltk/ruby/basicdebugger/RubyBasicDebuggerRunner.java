@@ -89,9 +89,10 @@ public class RubyBasicDebuggerRunner extends DebuggingEngineRunner {
 				.getPort()));
 		newConfig.addEnvVar(RUBY_KEY_VAR, sessionId);
 
-		if (isLoggingEnabled(delegate)) {
-			newConfig.addEnvVar(RUBY_LOG_VAR, getLogFileName(delegate,
-					sessionId));
+		String logFileName = getLogFileName(delegate,
+				sessionId);
+		if (logFileName != null) {
+			newConfig.addEnvVar(RUBY_LOG_VAR, logFileName);
 		}
 
 		return newConfig;
