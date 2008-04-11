@@ -89,9 +89,9 @@ public class FastDebuggerRunner extends DebuggingEngineRunner {
 		String sessionId = dbgpConfig.getSessionId();
 		newConfig.addEnvVar(RUBY_KEY_VAR, sessionId);
 
-		if (isLoggingEnabled(delegate)) {
-			newConfig.addEnvVar(RUBY_LOG_VAR, getLogFileName(delegate,
-					sessionId));
+		String logFileName = getLogFileName(delegate, sessionId);
+		if (logFileName != null) {
+			newConfig.addEnvVar(RUBY_LOG_VAR, logFileName);
 		}
 
 		return newConfig;
@@ -162,7 +162,8 @@ public class FastDebuggerRunner extends DebuggingEngineRunner {
 		return (resolveRubyDebugGemExists(true) || resolveRubyDebugGemExists(false));
 	}
 
-	protected void checkConfig(InterpreterConfig config, IEnvironment environment) throws CoreException {
+	protected void checkConfig(InterpreterConfig config,
+			IEnvironment environment) throws CoreException {
 		super.checkConfig(config, environment);
 
 		if (resolveRubyDebugGemExists() != true) {
