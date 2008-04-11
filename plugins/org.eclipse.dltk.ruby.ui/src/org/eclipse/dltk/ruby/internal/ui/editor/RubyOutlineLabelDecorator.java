@@ -76,7 +76,7 @@ public class RubyOutlineLabelDecorator extends LabelProvider implements
 		if (element instanceof IMethod) {
 			IMethod method = (IMethod) element;
 			try {
-				if ((method.getFlags() & RubyConstants.RubyAliasModifier) != 0) {
+				if (method.exists() && (method.getFlags() & RubyConstants.RubyAliasModifier) != 0) {
 					String oldName = method.getParameters()[0];
 					return method.getElementName();// + " [alias for " + oldName + "]";
 				}
@@ -93,15 +93,17 @@ public class RubyOutlineLabelDecorator extends LabelProvider implements
 		try {
 			if (obj instanceof IMember) {
 				IMember member = (IMember) obj;
-				int flags = member.getFlags();
+				if (member.exists()) {
+					int flags = member.getFlags();
 
-				ImageDescriptor baseImage = new ImageImageDescriptor(image);
-				Rectangle bounds = image.getBounds();
+					ImageDescriptor baseImage = new ImageImageDescriptor(image);
+					Rectangle bounds = image.getBounds();
 
-				ImageDescriptor dsc = new RubyOutlineImageDescriptor(baseImage,
-						new Point(bounds.width, bounds.height), flags);
+					ImageDescriptor dsc = new RubyOutlineImageDescriptor(baseImage,
+							new Point(bounds.width, bounds.height), flags);
 
-				return dsc.createImage();
+					return dsc.createImage();
+				}
 			}
 
 		} catch (ModelException e) {
