@@ -111,7 +111,7 @@ public class FastDebuggerRunner extends DebuggingEngineRunner {
 	public IPath resolveGemsPath(boolean user) {
 		IEnvironment env = getInstall().getEnvironment();
 		IPath gemsPath = new Path(getInstall().getInstallLocation()
-				.getAbsolutePath());
+				.toOSString());
 		if (gemsPath.segmentCount() < 2)
 			return null;
 
@@ -174,7 +174,7 @@ public class FastDebuggerRunner extends DebuggingEngineRunner {
 									new Object[] {
 											getDebuggingEngine().getName(),
 											getInstall().getInstallLocation()
-													.getAbsolutePath() }), null);
+													.toOSString() }), null);
 		}
 	}
 
