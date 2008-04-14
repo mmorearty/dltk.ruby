@@ -13,7 +13,7 @@ public class RubyRemoteTabGroup extends AbstractLaunchConfigurationTabGroup {
 	 */
 	public void createTabs(ILaunchConfigurationDialog dialog, String mode) {
 		ILaunchConfigurationTab[] tabs = new ILaunchConfigurationTab[] {
-				new RubyRemoteLaunchConfigurationTab(), new CommonTab() };
+				new RubyRemoteLaunchConfigurationTab(mode), new CommonTab() };
 
 		setTabs(tabs);
 

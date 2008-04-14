@@ -20,7 +20,7 @@ import org.eclipse.dltk.ruby.internal.debug.ui.interpreters.RubyInterpreterTab;
 public class RubyTabGroup extends AbstractLaunchConfigurationTabGroup {
 	public void createTabs(ILaunchConfigurationDialog dialog, String mode) {
 		ILaunchConfigurationTab[] tabs = new ILaunchConfigurationTab[] {
-				new RubyMainLaunchConfigurationTab(),
+				new RubyMainLaunchConfigurationTab(mode),
 				new ScriptArgumentsTab(),
 				new RubyInterpreterTab(),
 				new EnvironmentTab(),
