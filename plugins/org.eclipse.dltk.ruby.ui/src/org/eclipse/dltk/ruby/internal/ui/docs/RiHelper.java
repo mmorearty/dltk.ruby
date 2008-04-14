@@ -82,7 +82,7 @@ public class RiHelper {
 		IFileHandle script = deployment.getFile(path);
 
 		riProcess = ScriptLaunchUtil.runScriptWithInterpreter(exeEnv, install
-				.getInstallLocation().getAbsolutePath(), script, null, null,
+				.getInstallLocation().toOSString(), script, null, null,
 				null, install.getEnvironmentVariables());
 
 		writer = new OutputStreamWriter(riProcess.getOutputStream());
