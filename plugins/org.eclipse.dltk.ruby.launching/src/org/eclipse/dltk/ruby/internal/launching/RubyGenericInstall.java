@@ -95,6 +95,7 @@ public class RubyGenericInstall extends AbstractInterpreterInstall {
 					e.printStackTrace();
 				}
 			}
+			deployment.dispose();
 			return (String[]) lines.toArray(new String[lines.size()]);
 		}
 
