@@ -1,3 +1,15 @@
+/*******************************************************************************
+ * Copyright (c) 2008 xored software, Inc.  
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html  
+ *
+ * Contributors:
+ *     xored software, Inc. - initial API and Implementation
+ * 	   Alex Panchenko <alex@xored.com>
+ *******************************************************************************/
 package org.eclipse.dltk.ruby.internal.ui.text;
 
 import java.util.Arrays;
@@ -376,10 +388,9 @@ public class RubyAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 			return fPreferences.getIndentByVirtualSize(shift) + line;
 		} else {
 			int pos = 0;
-			shift *= -1;
-			while (shift > 0 && Character.isWhitespace(line.charAt(pos))) {
-				String ws = Character.toString(line.charAt(pos));
-				shift -= computeVisualLength(ws);
+			while (shift < 0 && pos < line.length()
+					&& Character.isWhitespace(line.charAt(pos))) {
+				shift += computeVisualLength(line.substring(pos, pos + 1));
 				pos++;
 			}
 			return line.substring(pos);
