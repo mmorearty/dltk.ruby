@@ -90,6 +90,7 @@ public class RiHelper {
 				.getInputStream()));
 		errorReader = new BufferedReader(new InputStreamReader(riProcess
 				.getErrorStream()));
+		deployment.dispose();
 	}
 
 	protected synchronized void destroyRiProcess() {
