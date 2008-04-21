@@ -11,6 +11,7 @@ package org.eclipse.dltk.ruby.internal.ui.text.folding;
 
 import java.util.ArrayList;
 
+import org.eclipse.dltk.ruby.internal.ui.RubyPreferenceConstants;
 import org.eclipse.dltk.ui.PreferenceConstants;
 import org.eclipse.dltk.ui.preferences.AbstractConfigurationBlock;
 import org.eclipse.dltk.ui.preferences.OverlayPreferenceStore;
@@ -21,7 +22,6 @@ import org.eclipse.dltk.ui.util.PixelConverter;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
-import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -37,15 +37,14 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
 /**
- * Script default folding preferences.
- * 
+ * Ruby folding preferences.
  */
 public class RubyFoldingPreferenceBlock extends AbstractConfigurationBlock implements IFoldingPreferenceBlock {
 	private OverlayPreferenceStore fOverlayStore;
 	private OverlayKey[] fKeys;
 
-	public RubyFoldingPreferenceBlock(OverlayPreferenceStore store, PreferencePage mainPreferencePage) {
-		super(store, mainPreferencePage);
+	public RubyFoldingPreferenceBlock(OverlayPreferenceStore store) {
+		super(store);
 		fOverlayStore = store;
 		fKeys = createKeys();
 		fOverlayStore.addKeys(fKeys);
@@ -57,9 +56,18 @@ public class RubyFoldingPreferenceBlock extends AbstractConfigurationBlock imple
 		overlayKeys.add(new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.INT, 
 				PreferenceConstants.EDITOR_FOLDING_LINES_LIMIT));
 
-		overlayKeys.add(new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN,
-				PreferenceConstants.EDITOR_COMMENTS_FOLDING_ENABLED));
-		
+		overlayKeys.add(new OverlayPreferenceStore.OverlayKey(
+				OverlayPreferenceStore.BOOLEAN,
+				RubyPreferenceConstants.EDITOR_FOLDING_INIT_COMMENTS));
+
+		overlayKeys.add(new OverlayPreferenceStore.OverlayKey(
+				OverlayPreferenceStore.BOOLEAN,
+				RubyPreferenceConstants.EDITOR_FOLDING_INIT_HEADER_COMMENTS));
+
+		overlayKeys.add(new OverlayPreferenceStore.OverlayKey(
+				OverlayPreferenceStore.BOOLEAN,
+				RubyPreferenceConstants.EDITOR_FOLDING_INIT_METHODS));
+
 		OverlayPreferenceStore.OverlayKey[] keys = new OverlayPreferenceStore.OverlayKey[overlayKeys.size()];
 		overlayKeys.toArray(keys);
 		return keys;
@@ -232,15 +240,24 @@ public class RubyFoldingPreferenceBlock extends AbstractConfigurationBlock imple
 		addLabelledTextField(blockFolding, RubyFoldingMessages.RubyFoldingPreferenceBlock_minimalAmountOfLinesToBeFolded, 
 				PreferenceConstants.EDITOR_FOLDING_LINES_LIMIT, 3, 1, true, val);
 		
-		Composite commentFolding = createSubsection(inner, null, RubyFoldingMessages.RubyFoldingPreferenceBlock_14);
-		commentFolding.setLayout(new GridLayout());
-		
-		addCheckBox(commentFolding, RubyFoldingMessages.RubyFoldingPreferenceBlock_15,
-				PreferenceConstants.EDITOR_COMMENTS_FOLDING_ENABLED, 0);
-		
 		Composite initialFolding = createSubsection(inner, null, RubyFoldingMessages.RubyFoldingPreferenceBlock_16);
 		initialFolding.setLayout(new GridLayout());
+		
+		addCheckBox(
+				initialFolding,
+				RubyFoldingMessages.RubyFoldingPreference_initiallyFoldComments,
+				RubyPreferenceConstants.EDITOR_FOLDING_INIT_COMMENTS, 0);
 				
+		addCheckBox(
+				initialFolding,
+				RubyFoldingMessages.RubyFoldingPreference_initiallyFoldHeaderComments,
+				RubyPreferenceConstants.EDITOR_FOLDING_INIT_HEADER_COMMENTS, 0);
+				
+		addCheckBox(
+				initialFolding,
+				RubyFoldingMessages.RubyFoldingPreference_initiallyFoldMethods,
+				RubyPreferenceConstants.EDITOR_FOLDING_INIT_METHODS, 0);
+
 		return inner;
 	}
 	

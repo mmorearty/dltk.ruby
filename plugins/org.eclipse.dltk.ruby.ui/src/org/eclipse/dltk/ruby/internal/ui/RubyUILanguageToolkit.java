@@ -114,6 +114,7 @@ public class RubyUILanguageToolkit implements IDLTKUILanguageToolkit {
 	private static final String DEBUG_PREFERENCE_PAGE_ID = "org.eclipse.dltk.ruby.preferences.debug"; //$NON-NLS-1$
 	private static final String[] EDITOR_PREFERENCE_PAGES_IDS = {
 		"org.eclipse.dltk.ruby.preferences.editor",  //$NON-NLS-1$
+		"org.eclipse.dltk.ruby.preferences.editor.folding",  //$NON-NLS-1$
 		"org.eclipse.dltk.ruby.preferences.editor.syntaxcoloring", //$NON-NLS-1$ 
 		"org.eclipse.dltk.ruby.preferences.templates" //$NON-NLS-1$
 	};
