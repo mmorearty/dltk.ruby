@@ -9,11 +9,13 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugException;
+import org.eclipse.debug.core.ILaunch;
 import org.eclipse.dltk.core.PreferencesLookupDelegate;
 import org.eclipse.dltk.core.environment.IDeployment;
 import org.eclipse.dltk.core.environment.IEnvironment;
 import org.eclipse.dltk.core.environment.IExecutionEnvironment;
 import org.eclipse.dltk.core.environment.IFileHandle;
+import org.eclipse.dltk.internal.launching.execution.DeploymentManager;
 import org.eclipse.dltk.launching.DebuggingEngineRunner;
 import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.dltk.launching.InterpreterConfig;
@@ -52,7 +54,7 @@ public class FastDebuggerRunner extends DebuggingEngineRunner {
 	}
 
 	protected InterpreterConfig addEngineConfig(InterpreterConfig config,
-			PreferencesLookupDelegate delegate) throws CoreException {
+			PreferencesLookupDelegate delegate, ILaunch launch) throws CoreException {
 		if (!(getInstall().getInterpreterInstallType() instanceof RubyGenericInstallType)) {
 			throw new DebugException(
 					new Status(
@@ -65,6 +67,7 @@ public class FastDebuggerRunner extends DebuggingEngineRunner {
 		IExecutionEnvironment exeEnv = (IExecutionEnvironment) env
 				.getAdapter(IExecutionEnvironment.class);
 		IDeployment deployment = exeEnv.createDeployment();
+		DeploymentManager.getInstance().addDeployment(launch, deployment);
 
 		// Get debugger source location
 		final IPath sourceLocation = deploy(deployment);
