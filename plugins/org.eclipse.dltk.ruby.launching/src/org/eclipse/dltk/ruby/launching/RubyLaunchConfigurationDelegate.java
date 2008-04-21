@@ -39,7 +39,7 @@ public class RubyLaunchConfigurationDelegate extends
 		if (config != null) {
 			addEncodingInterpreterArg(config, configuration);
 			addIncludePathInterpreterArg(config, configuration);
-			addStreamSync(config, configuration);
+			addStreamSync(config, configuration, launch);
 		}
 		
 		return config;
@@ -101,7 +101,7 @@ public class RubyLaunchConfigurationDelegate extends
 	}
 
 	protected void addStreamSync(InterpreterConfig config,
-			ILaunchConfiguration configuration) {
+			ILaunchConfiguration configuration, ILaunch launch) {
 		try {
 			IDeployment deployment = config.getExecutionEnvironment().createDeployment();
 			final IPath path = deployment.add(RubyLaunchingPlugin
