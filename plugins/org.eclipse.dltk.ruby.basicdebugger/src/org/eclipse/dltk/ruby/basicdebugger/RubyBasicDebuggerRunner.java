@@ -14,10 +14,12 @@ import java.io.IOException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.debug.core.ILaunch;
 import org.eclipse.dltk.core.PreferencesLookupDelegate;
 import org.eclipse.dltk.core.environment.IDeployment;
 import org.eclipse.dltk.core.environment.IEnvironment;
 import org.eclipse.dltk.core.environment.IExecutionEnvironment;
+import org.eclipse.dltk.internal.launching.execution.DeploymentManager;
 import org.eclipse.dltk.launching.DebuggingEngineRunner;
 import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.dltk.launching.InterpreterConfig;
@@ -54,11 +56,13 @@ public class RubyBasicDebuggerRunner extends DebuggingEngineRunner {
 	}
 
 	protected InterpreterConfig addEngineConfig(InterpreterConfig config,
-			PreferencesLookupDelegate delegate) throws CoreException {
+			PreferencesLookupDelegate delegate, ILaunch launch) throws CoreException {
 		IEnvironment env = getInstall().getEnvironment();
 		IExecutionEnvironment exeEnv = (IExecutionEnvironment) env
 				.getAdapter(IExecutionEnvironment.class);
 		IDeployment deployment = exeEnv.createDeployment();
+		
+		DeploymentManager.getInstance().addDeployment(launch, deployment);
 
 		// Get debugger source location
 		final IPath sourceLocation = deploy(deployment);
