@@ -54,24 +54,25 @@ public class RubyCallProcessor implements ICallProcessor {
 					SimpleReference ref = new SimpleReference(
 							match.getOffset(), match.getOffset()
 									+ match.getLength(), ""); //$NON-NLS-1$
-//					try {
-//						IModelElement[] e = module.codeSelect(
-//								match.getOffset(), match.getLength());
-//						for (int j = 0; j < e.length; ++j) {
-//							if (e[j].equals(parent)) {
-								elements.put(ref, member);
-//							}
-//						}
-//
-//					} catch (ModelException e) {
-//						e.printStackTrace();
-//					}
+					// try {
+					// IModelElement[] e = module.codeSelect(
+					// match.getOffset(), match.getLength());
+					// for (int j = 0; j < e.length; ++j) {
+					// if (e[j].equals(parent)) {
+					elements.put(ref, member);
+					// }
+					// }
+					//
+					// } catch (ModelException e) {
+					// e.printStackTrace();
+					// }
 				}
 			}
 		};
 
 		SearchPattern pattern = SearchPattern.createPattern(element,
-				IDLTKSearchConstants.REFERENCES, GENERICS_AGNOSTIC_MATCH_RULE);
+				IDLTKSearchConstants.REFERENCES, GENERICS_AGNOSTIC_MATCH_RULE,
+				scope.getLanguageToolkit());
 		try {
 			searchEngine
 					.search(pattern, new SearchParticipant[] { SearchEngine
