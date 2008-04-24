@@ -4,12 +4,8 @@ import java.io.IOException;
 
 import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.dltk.core.environment.IDeployment;
-import org.eclipse.dltk.core.environment.IFileHandle;
 import org.eclipse.dltk.internal.launching.AbstractInterpreterInstallType;
-import org.eclipse.dltk.internal.launching.InterpreterMessages;
 import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.dltk.ruby.core.RubyNature;
 import org.eclipse.dltk.ruby.launching.RubyLaunchingPlugin;
@@ -50,18 +46,5 @@ public class JRubyInstallType extends AbstractInterpreterInstallType {
 
 	protected ILog getLog() {
 		return RubyLaunchingPlugin.getDefault().getLog();
-	}
-
-	public IStatus validateInstallLocation(IFileHandle installLocation) {
-		if (!Platform.getOS().equals(Platform.OS_WIN32)) {
-			if (installLocation.getName().indexOf(".bat") != -1) { //$NON-NLS-1$
-				return createStatus(
-						IStatus.ERROR,
-						InterpreterMessages.errNonExistentOrInvalidInstallLocation,
-						null);
-			}
-		}
-
-		return super.validateInstallLocation(installLocation);
 	}
 }
