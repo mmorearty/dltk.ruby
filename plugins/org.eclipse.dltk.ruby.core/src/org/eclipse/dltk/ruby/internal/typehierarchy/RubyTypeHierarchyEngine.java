@@ -31,17 +31,19 @@ public class RubyTypeHierarchyEngine {
 		try {
 			String[] superTypes = type.getSuperClasses();
 			List types = new ArrayList();
-			monitor.beginTask(Messages.RubyTypeHierarchyEngine_collectingTypes, superTypes.length);
-			IDLTKSearchScope scope = SearchEngine.createWorkspaceScope(DLTKLanguageManager.getLanguageToolkit(type));
-			for( int i = 0; i < superTypes.length; ++i ) {
-				if( DEBUG ) {
-					System.out.println("Type:" + type.getElementName() + " has supertype:" + superTypes[i]); //$NON-NLS-1$ //$NON-NLS-2$
-				}
-				TypeNameMatch[] possibleTypes = searchTypesForName(superTypes[i], monitor, scope);
-				for( int j = 0; j < possibleTypes.length; ++i ) {
-					IType sType = possibleTypes[j].getType();
-					if( sType.exists() && filterTypeFromSelection(sType, type)) {
-						types.add(sType);
+			if (superTypes != null) {
+				monitor.beginTask(Messages.RubyTypeHierarchyEngine_collectingTypes, superTypes.length);
+				IDLTKSearchScope scope = SearchEngine.createWorkspaceScope(DLTKLanguageManager.getLanguageToolkit(type));
+				for( int i = 0; i < superTypes.length; ++i ) {
+					if( DEBUG ) {
+						System.out.println("Type:" + type.getElementName() + " has supertype:" + superTypes[i]); //$NON-NLS-1$ //$NON-NLS-2$
+					}
+					TypeNameMatch[] possibleTypes = searchTypesForName(superTypes[i], monitor, scope);
+					for( int j = 0; j < possibleTypes.length; ++i ) {
+						IType sType = possibleTypes[j].getType();
+						if( sType.exists() && filterTypeFromSelection(sType, type)) {
+							types.add(sType);
+						}
 					}
 				}
 			}

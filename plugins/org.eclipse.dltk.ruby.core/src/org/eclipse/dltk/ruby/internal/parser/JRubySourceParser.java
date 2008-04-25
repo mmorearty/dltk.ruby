@@ -26,13 +26,14 @@ import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.ASTVisitor;
 import org.eclipse.dltk.ast.declarations.Declaration;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
-import org.eclipse.dltk.ast.declarations.TypeDeclaration;
 import org.eclipse.dltk.ast.parser.AbstractSourceParser;
-import org.eclipse.dltk.ast.references.SimpleReference;
+import org.eclipse.dltk.ast.references.ConstantReference;
 import org.eclipse.dltk.ast.statements.Block;
 import org.eclipse.dltk.compiler.problem.IProblem;
 import org.eclipse.dltk.compiler.problem.IProblemReporter;
 import org.eclipse.dltk.core.DLTKCore;
+import org.eclipse.dltk.ruby.ast.RubyClassDeclaration;
+import org.eclipse.dltk.ruby.ast.RubyModuleDeclaration;
 import org.eclipse.dltk.ruby.core.RubyPlugin;
 import org.eclipse.dltk.ruby.core.utils.RubySyntaxUtils;
 import org.eclipse.dltk.ruby.internal.parsers.jruby.DLTKRubyParser;
@@ -592,40 +593,51 @@ public class JRubySourceParser extends AbstractSourceParser {
 	public ModuleDeclaration parse(String source) {
 		return this.parse(null, source.toCharArray(), null);
 	}
-	
-  /**
-   * Really basic parse to find the first class or module definition, the intent is that 
-   * a module declaration has at least a type in it (if one exists or can be parsed).
-   * TODO(mhowe) make the name position more robust
-   * 
-   * @param content
-   * @param md
-   */	
-  private static void minimumParse(char[] content, ModuleDeclaration md) {
-    StringTokenizer toker = new StringTokenizer(new String(content));
-    while (toker.hasMoreTokens()) {
-      String token = toker.nextToken();
-      if (token.equals("class") || token.equals("module")) { //$NON-NLS-1$ //$NON-NLS-2$
-        String className = toker.nextToken();
-        
-        if (RubySyntaxUtils.isValidClass(className)) {
-          String source = new String(content);
-          int indexOf = source.indexOf(className);  //This isn't robust but don't think it actually matters
-          int nameEnd = indexOf + className.length();
-          TypeDeclaration type = new TypeDeclaration(className, indexOf, nameEnd, indexOf, source.length()-1);
-          md.addStatement(type);
-          if (toker.nextToken().equals("<")) { //$NON-NLS-1$
-            String superClass = toker.nextToken();
-            if (RubySyntaxUtils.isValidClass(superClass)) {
-              indexOf = source.indexOf(className); 
-              type.addSuperClass(new SimpleReference(indexOf, indexOf + superClass.length(), superClass));
-            }
-          }
-          type.setBody(new Block(indexOf + nameEnd, source.length()-1));
-          return;
-        }
-      }
-    }
-  }
+
+	/**
+	 * Really basic parse to find the first class or module definition, the
+	 * intent is that a module declaration has at least a type in it (if one
+	 * exists or can be parsed).
+	 * 
+	 * @param content
+	 * @param md
+	 */
+	private static void minimumParse(char[] content, ModuleDeclaration md) {
+		StringTokenizer toker = new StringTokenizer(new String(content));
+		while (toker.hasMoreTokens()) {
+			String token = toker.nextToken();
+			if (token.equals("class") || token.equals("module")) { //$NON-NLS-1$ //$NON-NLS-2$
+				String className = toker.nextToken();
+
+				if (RubySyntaxUtils.isValidClass(className)) {
+					String source = new String(content);
+					// TODO(mhowe): Make position calculation more robust
+					int indexOf = source.indexOf(className);
+					int nameEnd = indexOf + className.length();
+					RubyModuleDeclaration type;
+					ASTNode nameNode = new ConstantReference(indexOf, nameEnd,
+							className);
+					Block bodyBlock = new Block(indexOf + nameEnd, source
+							.length() - 1);
+					if (token.equals("class")) { //$NON-NLS-1$
+						type = new RubyClassDeclaration(null, nameNode,
+								bodyBlock, indexOf, source.length() - 1);
+					} else
+						type = new RubyModuleDeclaration(nameNode, bodyBlock,
+								indexOf, source.length() - 1);
+					md.addStatement(type);
+					if (toker.nextToken().equals("<")) { //$NON-NLS-1$
+						String superClass = toker.nextToken();
+						if (RubySyntaxUtils.isValidClass(superClass)) {
+							indexOf = source.indexOf(className);
+							type.addSuperClass(new ConstantReference(indexOf,
+									indexOf + superClass.length(), superClass));
+						}
+					}
+					return;
+				}
+			}
+		}
+	}
 
 }
