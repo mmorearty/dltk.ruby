@@ -14,6 +14,10 @@ import org.eclipse.dltk.ruby.debug.RubyDebugPlugin;
 public class RubyRemoteLaunchConfigurationTab extends
 		RemoteLaunchConfigurationTab {
 
+	public RubyRemoteLaunchConfigurationTab(String mode) {
+		super(mode);
+	}
+
 	/*
 	 * @see org.eclipse.dltk.debug.ui.launchConfigurations.ScriptLaunchConfigurationTab#breakOnFirstLinePrefEnabled(org.eclipse.dltk.core.PreferencesLookupDelegate)
 	 */
