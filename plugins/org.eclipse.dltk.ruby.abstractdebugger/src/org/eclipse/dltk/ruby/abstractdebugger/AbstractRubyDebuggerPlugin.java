@@ -3,8 +3,9 @@ package org.eclipse.dltk.ruby.abstractdebugger;
 import java.io.IOException;
 
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Plugin;
-import org.eclipse.dltk.utils.DeployHelper;
+import org.eclipse.dltk.core.environment.IDeployment;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -53,7 +54,7 @@ public class AbstractRubyDebuggerPlugin extends Plugin {
 	
 	private static final String DEBUGGER_DIR = "/debugger"; //$NON-NLS-1$
 
-	public IPath deployDebuggerSource(Plugin childDebuggerPlugin) throws IOException {
-		return DeployHelper.deploy(getBundle(), DEBUGGER_DIR, childDebuggerPlugin.getStateLocation());
+	public IPath deployDebuggerSource(IDeployment deployment) throws IOException {
+		return deployment.add(getBundle(), DEBUGGER_DIR);
 	}
 }
