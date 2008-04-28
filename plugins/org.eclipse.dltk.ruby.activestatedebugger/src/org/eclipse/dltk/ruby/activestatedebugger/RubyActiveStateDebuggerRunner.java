@@ -8,9 +8,8 @@
 
 package org.eclipse.dltk.ruby.activestatedebugger;
 
-import java.io.File;
-
 import org.eclipse.dltk.core.PreferencesLookupDelegate;
+import org.eclipse.dltk.core.environment.IFileHandle;
 import org.eclipse.dltk.launching.ExternalDebuggingEngineRunner;
 import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.dltk.launching.InterpreterConfig;
@@ -38,13 +37,13 @@ public class RubyActiveStateDebuggerRunner extends
 	protected InterpreterConfig alterConfig(InterpreterConfig config,
 			PreferencesLookupDelegate delegate) {
 
-		File debugEnginePath = getDebuggingEnginePath(delegate);
+		IFileHandle debugEnginePath = getDebuggingEnginePath(delegate);
 		DbgpInterpreterConfig dbgpConfig = new DbgpInterpreterConfig(config);
 		final String host = dbgpConfig.getHost();
 		final int port = dbgpConfig.getPort();
 		final String sessionId = dbgpConfig.getSessionId();
 
-		final String dir = debugEnginePath.getParent();
+		final String dir = debugEnginePath.getParent().toString();
 
 		/*
 		 * TODO: handle RUBYOPT support for rubygems
@@ -59,7 +58,7 @@ public class RubyActiveStateDebuggerRunner extends
 		config.addInterpreterArg(dir);
 
 		config.addInterpreterArg("-r"); //$NON-NLS-1$
-		config.addInterpreterArg(debugEnginePath.getAbsolutePath());
+		config.addInterpreterArg(debugEnginePath.toString());
 
 		return config;
 	}
