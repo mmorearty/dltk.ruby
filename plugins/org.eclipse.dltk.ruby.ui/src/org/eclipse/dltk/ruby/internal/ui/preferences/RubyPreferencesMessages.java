@@ -26,5 +26,7 @@ public final class RubyPreferencesMessages extends NLS {
 	
 	public static String EditorSyntaxColoringPreferencePageDescription;
 	
+	public static String EditorFoldingPreferencePageDescription;
+
 	public static String GlobalPreferencePageDescription;
 }

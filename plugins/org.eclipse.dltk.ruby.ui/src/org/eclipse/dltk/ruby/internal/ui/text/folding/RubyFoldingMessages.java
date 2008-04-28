@@ -26,6 +26,9 @@ public final class RubyFoldingMessages extends NLS {
 	}
 
 	public static String DLTKEditorPreferencePage_empty_input;
+	public static String RubyFoldingPreference_initiallyFoldComments;
+	public static String RubyFoldingPreference_initiallyFoldHeaderComments;
+	public static String RubyFoldingPreference_initiallyFoldMethods;
 	public static String RubyFoldingPreferenceBlock_0;
 	public static String RubyFoldingPreferenceBlock_10;
 	public static String RubyFoldingPreferenceBlock_14;

@@ -10,14 +10,19 @@
 package org.eclipse.dltk.ruby.internal.ui.docs;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.WeakHashMap;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.dltk.core.environment.IDeployment;
+import org.eclipse.dltk.core.environment.IEnvironment;
+import org.eclipse.dltk.core.environment.IExecutionEnvironment;
+import org.eclipse.dltk.core.environment.IFileHandle;
+import org.eclipse.dltk.core.internal.environment.LocalEnvironment;
 import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.dltk.launching.IInterpreterInstallChangedListener;
 import org.eclipse.dltk.launching.PropertyChangeEvent;
@@ -25,7 +30,6 @@ import org.eclipse.dltk.launching.ScriptLaunchUtil;
 import org.eclipse.dltk.launching.ScriptRuntime;
 import org.eclipse.dltk.ruby.core.RubyNature;
 import org.eclipse.dltk.ruby.internal.ui.RubyUI;
-import org.eclipse.dltk.utils.DeployHelper;
 
 public class RiHelper {
 	private final static String DOC_TERMINATION_LINE = "DLTKDOCEND"; //$NON-NLS-1$
@@ -47,9 +51,11 @@ public class RiHelper {
 	private BufferedReader reader;
 	private BufferedReader errorReader;
 
-	protected static boolean isTerminated(Process process) {
+	private IDeployment deployment;
+
+	protected static boolean isTerminated(Process riProcess) {
 		try {
-			process.exitValue();
+			riProcess.exitValue();
 			return true;
 		} catch (IllegalThreadStateException e) {
 			return false;
@@ -59,16 +65,24 @@ public class RiHelper {
 	protected synchronized void runRiProcess() throws CoreException,
 			IOException {
 		IInterpreterInstall install = ScriptLaunchUtil
-				.getDefaultInterpreterInstall(RubyNature.NATURE_ID);
+				.getDefaultInterpreterInstall(RubyNature.NATURE_ID, LocalEnvironment.ENVIRONMENT_ID);
 
 		if (install == null) {
 			throw new CoreException(Status.CANCEL_STATUS);
 		}
 
-		File script = DeployHelper.deploy(RubyUI.getDefault(), "support/") //$NON-NLS-1$
-				.append("dltkri.rb").toFile(); //$NON-NLS-1$
-		riProcess = ScriptLaunchUtil.runScriptWithInterpreter(install
-				.getInstallLocation().getAbsolutePath(), script, null, null,
+		IEnvironment env = install.getEnvironment();
+		IExecutionEnvironment exeEnv = (IExecutionEnvironment) env
+				.getAdapter(IExecutionEnvironment.class);
+		deployment = exeEnv.createDeployment();
+
+		IPath path = deployment
+				.add(RubyUI.getDefault().getBundle(), "support/") //$NON-NLS-1$
+				.append("dltkri.rb"); //$NON-NLS-1$
+		IFileHandle script = deployment.getFile(path);
+
+		riProcess = ScriptLaunchUtil.runScriptWithInterpreter(exeEnv, install
+				.getInstallLocation().toOSString(), script, null, null,
 				null, install.getEnvironmentVariables());
 
 		writer = new OutputStreamWriter(riProcess.getOutputStream());
@@ -76,6 +90,7 @@ public class RiHelper {
 				.getInputStream()));
 		errorReader = new BufferedReader(new InputStreamReader(riProcess
 				.getErrorStream()));
+		deployment.dispose();
 	}
 
 	protected synchronized void destroyRiProcess() {
@@ -86,6 +101,11 @@ public class RiHelper {
 			// Cache should be cleared if we change interpreter
 			cache.clear();
 		}
+		if (deployment != null) {
+			deployment.dispose();
+			deployment = null;
+		}
+
 	}
 
 	protected String readStderr() throws IOException {

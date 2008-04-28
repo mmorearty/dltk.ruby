@@ -342,6 +342,21 @@ public class RubyPreferenceConstants extends PreferenceConstants
 	public final static String EDITOR_STRING_UNDERLINE = IRubyColorConstants.RUBY_STRING + EDITOR_UNDERLINE_SUFFIX;
 	
 	
+	/**
+	 * A named preference that controls whether comments are initially folded.
+	 */
+	public static final String EDITOR_FOLDING_INIT_COMMENTS = "editor_folding_init_comments"; //$NON-NLS-1$
+	
+	/**
+	 * A named preference that controls whether header comments are initially folded.
+	 */
+	public static final String EDITOR_FOLDING_INIT_HEADER_COMMENTS = "editor_folding_init_header_comments"; //$NON-NLS-1$
+	
+	/**
+	 * A named preference that controls whether methods are initially folded.
+	 */
+	public static final String EDITOR_FOLDING_INIT_METHODS  = "editor_folding_init_methods"; //$NON-NLS-1$
+	
 	public static void initializeDefaultValues( IPreferenceStore store ) {
 		PreferenceConstants.initializeDefaultValues(store);
 		
@@ -397,10 +412,9 @@ public class RubyPreferenceConstants extends PreferenceConstants
 		
 		// folding
 		store.setDefault(PreferenceConstants.EDITOR_FOLDING_ENABLED, true);
-		store.setDefault(PreferenceConstants.EDITOR_COMMENTS_FOLDING_ENABLED, true);		
-//		store.setDefault(PreferenceConstants.EDITOR_FOLDING_INNERTYPES, false);
-//		store.setDefault(PreferenceConstants.EDITOR_FOLDING_METHODS, false);
-//		store.setDefault(PreferenceConstants.EDITOR_FOLDING_IMPORTS, true);
+		store.setDefault(RubyPreferenceConstants.EDITOR_FOLDING_INIT_COMMENTS, false);		
+		store.setDefault(RubyPreferenceConstants.EDITOR_FOLDING_INIT_HEADER_COMMENTS, true);		
+		store.setDefault(RubyPreferenceConstants.EDITOR_FOLDING_INIT_METHODS, false);		
 		
 		store.setDefault (CodeFormatterConstants.FORMATTER_TAB_CHAR, CodeFormatterConstants.SPACE);
 		store.setDefault (CodeFormatterConstants.FORMATTER_TAB_SIZE, "2"); //$NON-NLS-1$
