@@ -3,8 +3,9 @@ package org.eclipse.dltk.ruby.fastdebugger;
 import java.io.IOException;
 
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.dltk.core.environment.IDeployment;
 import org.eclipse.dltk.ruby.abstractdebugger.AbstractRubyDebuggerPlugin;
-import org.eclipse.dltk.utils.DeployHelper;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -46,8 +47,8 @@ public class FastDebuggerPlugin extends AbstractUIPlugin {
 
 	private static final String DEBUGGER_DIR = "/debugger"; //$NON-NLS-1$
 
-	public IPath deployDebuggerSource() throws IOException {
-		AbstractRubyDebuggerPlugin.getDefault().deployDebuggerSource(this);
-		return DeployHelper.deploy(this, DEBUGGER_DIR);
+	public IPath deployDebuggerSource(IDeployment deployment) throws IOException {
+		AbstractRubyDebuggerPlugin.getDefault().deployDebuggerSource(deployment);
+		return deployment.add(getBundle(), DEBUGGER_DIR);
 	}
 }
