@@ -16,13 +16,13 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.dltk.core.environment.IDeployment;
+import org.eclipse.dltk.core.environment.IEnvironment;
 import org.eclipse.dltk.launching.AbstractScriptLaunchConfigurationDelegate;
 import org.eclipse.dltk.launching.InterpreterConfig;
 import org.eclipse.dltk.ruby.core.RubyNature;
-import org.eclipse.dltk.utils.DeployHelper;
 
 public class RubyLaunchConfigurationDelegate extends
 		AbstractScriptLaunchConfigurationDelegate {
@@ -39,7 +39,7 @@ public class RubyLaunchConfigurationDelegate extends
 		if (config != null) {
 			addEncodingInterpreterArg(config, configuration);
 			addIncludePathInterpreterArg(config, configuration);
-			addStreamSync(config, configuration);
+			addStreamSync(config, configuration, launch);
 		}
 		
 		return config;
@@ -84,14 +84,16 @@ public class RubyLaunchConfigurationDelegate extends
 			ILaunchConfiguration configuration) throws CoreException {
 		IPath[] paths = createBuildPath(configuration);
 
-		char separator = Platform.getOS().equals(Platform.OS_WIN32) ? ';' : ':';
+		IEnvironment env = config.getEnvironment();
+		char separator = env.getPathsSeparatorChar();
 
-		final StringBuffer sb = new StringBuffer("-I"); //$NON-NLS-1$
+		final StringBuffer sb = new StringBuffer();
 		if (paths.length > 0) {
-			sb.append(paths[0]);
+			sb.append("-I"); //$NON-NLS-1$
+			sb.append(env.convertPathToString(paths[0]));
 			for (int i = 1; i < paths.length; ++i) {
 				sb.append(separator);
-				sb.append(paths[i].toPortableString());
+				sb.append(env.convertPathToString(paths[i]));
 			}
 		}
 
@@ -99,12 +101,13 @@ public class RubyLaunchConfigurationDelegate extends
 	}
 
 	protected void addStreamSync(InterpreterConfig config,
-			ILaunchConfiguration configuration) {
+			ILaunchConfiguration configuration, ILaunch launch) {
 		try {
-			final IPath path = DeployHelper.deploy(RubyLaunchingPlugin
-					.getDefault(), "scripts/sync.rb"); //$NON-NLS-1$
+			IDeployment deployment = config.getExecutionEnvironment().createDeployment();
+			final IPath path = deployment.add(RubyLaunchingPlugin
+					.getDefault().getBundle(), "scripts/sync.rb"); //$NON-NLS-1$
 			config.addInterpreterArg("-r"); //$NON-NLS-1$
-			config.addInterpreterArg(path.toPortableString());
+			config.addInterpreterArg(deployment.getFile(path).toString());
 		} catch (IOException e) {
 			RubyLaunchingPlugin.log(e);
 		}
