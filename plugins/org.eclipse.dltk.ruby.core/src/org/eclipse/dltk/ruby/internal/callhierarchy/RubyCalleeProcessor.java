@@ -33,44 +33,51 @@ import org.eclipse.dltk.core.search.SearchPattern;
 import org.eclipse.dltk.core.search.SearchRequestor;
 import org.eclipse.dltk.ruby.core.RubyNature;
 
-
 public class RubyCalleeProcessor implements ICalleeProcessor {
-	protected static int EXACT_RULE = SearchPattern.R_EXACT_MATCH | SearchPattern.R_CASE_SENSITIVE;
-	
+	protected static int EXACT_RULE = SearchPattern.R_EXACT_MATCH
+			| SearchPattern.R_CASE_SENSITIVE;
+
 	private Map fSearchResults = new HashMap();
 
 	private IMethod method;
-		
-	//private IDLTKSearchScope scope;
 
-	public RubyCalleeProcessor(IMethod method, IProgressMonitor monitor, IDLTKSearchScope scope) {
+	// private IDLTKSearchScope scope;
+
+	public RubyCalleeProcessor(IMethod method, IProgressMonitor monitor,
+			IDLTKSearchScope scope) {
 		this.method = method;
-		//this.scope = scope;
+		// this.scope = scope;
 	}
 
-	private class CaleeSourceElementRequestor implements ISourceElementRequestor {
+	private class CaleeSourceElementRequestor implements
+			ISourceElementRequestor {
 		public void acceptFieldReference(char[] fieldName, int sourcePosition) {
 		}
 
-		public void acceptMethodReference(char[] methodName, int argCount, int sourcePosition, int sourceEndPosition) {
+		public void acceptMethodReference(char[] methodName, int argCount,
+				int sourcePosition, int sourceEndPosition) {
 			String name = new String(methodName);
 			int off = 0;
 			try {
 				off = method.getSourceRange().getOffset();
 			} catch (ModelException e) {
 				e.printStackTrace();
-			} 
-			SimpleReference ref = new SimpleReference(off + sourcePosition, off + sourceEndPosition, name);
-			IMethod[] methods = findMethods(name, argCount, off + sourceEndPosition - 1);
+			}
+			SimpleReference ref = new SimpleReference(off + sourcePosition, off
+					+ sourceEndPosition, name);
+			IMethod[] methods = findMethods(name, argCount, off
+					+ sourceEndPosition - 1);
 			fSearchResults.put(ref, methods);
 		}
 
-		public void acceptPackage(int declarationStart, int declarationEnd, char[] name) {
+		public void acceptPackage(int declarationStart, int declarationEnd,
+				char[] name) {
 			// TODO Auto-generated method stub
 
 		}
 
-		public void acceptTypeReference(char[][] typeName, int sourceStart, int sourceEnd) {
+		public void acceptTypeReference(char[][] typeName, int sourceStart,
+				int sourceEnd) {
 			// TODO Auto-generated method stub
 
 		}
@@ -100,12 +107,14 @@ public class RubyCalleeProcessor implements ICalleeProcessor {
 
 		}
 
-		public boolean enterMethodWithParentType(MethodInfo info, String parentName, String delimiter) {
+		public boolean enterMethodWithParentType(MethodInfo info,
+				String parentName, String delimiter) {
 			// TODO Auto-generated method stub
 			return false;
 		}
-		
-		public boolean enterFieldWithParentType(FieldInfo info, String parentName, String delimiter) {
+
+		public boolean enterFieldWithParentType(FieldInfo info,
+				String parentName, String delimiter) {
 			// TODO Auto-generated method stub
 			return false;
 		}
@@ -120,7 +129,8 @@ public class RubyCalleeProcessor implements ICalleeProcessor {
 
 		}
 
-		public boolean enterTypeAppend(TypeInfo info, String fullName, String delimiter) {
+		public boolean enterTypeAppend(TypeInfo info, String fullName,
+				String delimiter) {
 			// TODO Auto-generated method stub
 			return false;
 		}
@@ -145,7 +155,7 @@ public class RubyCalleeProcessor implements ICalleeProcessor {
 
 		public void enterModuleRoot() {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 		public boolean enterTypeAppend(String fullName, String delimiter) {
@@ -155,7 +165,7 @@ public class RubyCalleeProcessor implements ICalleeProcessor {
 
 		public void exitModuleRoot() {
 			// TODO Auto-generated method stub
-			
+
 		}
 	}
 
@@ -164,55 +174,67 @@ public class RubyCalleeProcessor implements ICalleeProcessor {
 			String methodSource = method.getSource();
 			CaleeSourceElementRequestor requestor = new CaleeSourceElementRequestor();
 			ISourceElementParser parser = null;
-			
-			parser = DLTKLanguageManager.getSourceElementParser(RubyNature.NATURE_ID);
-		
+
+			parser = DLTKLanguageManager
+					.getSourceElementParser(RubyNature.NATURE_ID);
+
 			parser.setRequestor(requestor);
-			
-//			parser.parseModule(null, methodSource, null );
-			parser.parseSourceModule(methodSource.toCharArray(), null, method.getSourceModule().getPath().toString().toCharArray());
+
+			// parser.parseModule(null, methodSource, null );
+			parser.parseSourceModule(methodSource.toCharArray(), null, method
+					.getSourceModule().getPath().toString().toCharArray());
 
 			return fSearchResults;
 		} catch (ModelException e) {
-			if( DLTKCore.DEBUG ) {
+			if (DLTKCore.DEBUG) {
 				e.printStackTrace();
 			}
 		} catch (CoreException e) {
-			if( DLTKCore.DEBUG ) {
+			if (DLTKCore.DEBUG) {
 				e.printStackTrace();
 			}
 		}
 		return fSearchResults;
 	}
-	
-	public IMethod[] findMethods(final String methodName, int argCount, int sourcePosition) {
+
+	public IMethod[] findMethods(final String methodName, int argCount,
+			int sourcePosition) {
 		final List methods = new ArrayList();
 		ISourceModule module = this.method.getSourceModule();
 		try {
-			IModelElement[] elements = module.codeSelect(sourcePosition, /*methodName.length()*/1);
-			for( int i = 0; i < elements.length; ++i ) {
-				if( elements[i] instanceof IMethod ) {
+			IModelElement[] elements = module.codeSelect(sourcePosition, /* methodName.length() */
+					1);
+			for (int i = 0; i < elements.length; ++i) {
+				if (elements[i] instanceof IMethod) {
 					methods.add(elements[i]);
 				}
 			}
 		} catch (ModelException e) {
 			e.printStackTrace();
 		}
-		
-		return (IMethod[])methods.toArray(new IMethod[methods.size()]);
+
+		return (IMethod[]) methods.toArray(new IMethod[methods.size()]);
 	}
 
-	protected void search(String patternString, int searchFor, int limitTo, IDLTKSearchScope scope, SearchRequestor resultCollector)
+	protected void search(String patternString, int searchFor, int limitTo,
+			IDLTKSearchScope scope, SearchRequestor resultCollector)
 			throws CoreException {
-		search(patternString, searchFor, limitTo, EXACT_RULE, scope, resultCollector);
+		search(patternString, searchFor, limitTo, EXACT_RULE, scope,
+				resultCollector);
 	}
 
-	protected void search(String patternString, int searchFor, int limitTo, int matchRule, IDLTKSearchScope scope, SearchRequestor requestor)
+	protected void search(String patternString, int searchFor, int limitTo,
+			int matchRule, IDLTKSearchScope scope, SearchRequestor requestor)
 			throws CoreException {
-		if (patternString.indexOf('*') != -1 || patternString.indexOf('?') != -1) {
+		if (patternString.indexOf('*') != -1
+				|| patternString.indexOf('?') != -1) {
 			matchRule |= SearchPattern.R_PATTERN_MATCH;
 		}
-		SearchPattern pattern = SearchPattern.createPattern(patternString, searchFor, limitTo, matchRule);
-		new SearchEngine().search(pattern, new SearchParticipant[] { SearchEngine.getDefaultSearchParticipant() }, scope, requestor, null);
+		SearchPattern pattern = SearchPattern.createPattern(patternString,
+				searchFor, limitTo, matchRule, scope.getLanguageToolkit());
+		new SearchEngine().search(pattern,
+				new SearchParticipant[] { SearchEngine
+						.getDefaultSearchParticipant() }, scope, requestor,
+				null);
 	}
 }

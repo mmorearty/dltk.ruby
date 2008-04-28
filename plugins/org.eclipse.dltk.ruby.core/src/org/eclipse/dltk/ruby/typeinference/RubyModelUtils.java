@@ -22,10 +22,11 @@ import org.eclipse.dltk.ast.expressions.Expression;
 import org.eclipse.dltk.ast.references.VariableReference;
 import org.eclipse.dltk.ast.statements.Block;
 import org.eclipse.dltk.core.DLTKCore;
-import org.eclipse.dltk.core.IScriptProject;
+import org.eclipse.dltk.core.DLTKLanguageManager;
 import org.eclipse.dltk.core.IField;
 import org.eclipse.dltk.core.IMethod;
 import org.eclipse.dltk.core.IModelElement;
+import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ISourceRange;
 import org.eclipse.dltk.core.IType;
@@ -140,7 +141,7 @@ public class RubyModelUtils {
 				if (!interesting(s))
 					return false;
 				return true;
-			}			
+			}
 
 			public boolean visit(TypeDeclaration s) throws Exception {
 				if (!interesting(s))
@@ -187,7 +188,8 @@ public class RubyModelUtils {
 
 		if (keys != null && keys.length > 0) {
 			String inner = keys[keys.length - 1];
-			if (prefix.length() > 0 && !prefix.startsWith("@")) { // locals & //$NON-NLS-1$
+			if (prefix.length() > 0 && !prefix.startsWith("@")) { // locals &
+																	// //$NON-NLS-1$
 				// constants
 				String varkey = inner + MixinModel.SEPARATOR + prefix;
 				String[] keys2 = rubyModel.getRawModel().findKeys(varkey + "*"); //$NON-NLS-1$
@@ -197,7 +199,8 @@ public class RubyModelUtils {
 					if (element instanceof RubyMixinVariable) {
 						RubyMixinVariable variable = (RubyMixinVariable) element;
 						IField field = variable.getSourceFields()[0];
-						if (prefix == null || field.getElementName().startsWith(prefix))
+						if (prefix == null
+								|| field.getElementName().startsWith(prefix))
 							result.add(field);
 					}
 				}
@@ -224,7 +227,9 @@ public class RubyModelUtils {
 					for (int i = 0; i < children.length; i++) {
 						if (children[i] instanceof IField) {
 							IField field = (IField) children[i];
-							if (prefix == null || field.getElementName().startsWith(prefix))
+							if (prefix == null
+									|| field.getElementName()
+											.startsWith(prefix))
 								result.add(field);
 						}
 					}
@@ -236,35 +241,41 @@ public class RubyModelUtils {
 
 		return (IField[]) result.toArray(new IField[result.size()]);
 	}
-	
+
 	/**
 	 * Handling for "new" method
+	 * 
 	 * @param method
 	 * @param selfKlass
 	 * @return
 	 */
-	private static List handleSpecialMethod(RubyMixinMethod method, RubyMixinClass selfKlass) {
+	private static List handleSpecialMethod(RubyMixinMethod method,
+			RubyMixinClass selfKlass) {
 		if (method.getKey().equals("Class%{new")) { //$NON-NLS-1$
-			RubyMixinMethod init = selfKlass.getInstanceClass()
-					.getMethod("initialize"); //$NON-NLS-1$
+			RubyMixinMethod init = selfKlass.getInstanceClass().getMethod(
+					"initialize"); //$NON-NLS-1$
 			if (init != null) {
 				IMethod[] initMethods = init.getSourceMethods();
-				List result = new ArrayList ();
-				for (int i = 0; i < initMethods.length; i++) {					
+				List result = new ArrayList();
+				for (int i = 0; i < initMethods.length; i++) {
 					try {
 						String[] parameters = initMethods[i].getParameters();
 						String[] parameterInitializers = initMethods[i]
-						                                             .getParameterInitializers();
+								.getParameterInitializers();
 						int flags = initMethods[i].getFlags();
-						ISourceRange sourceRange = initMethods[i].getSourceRange();
+						ISourceRange sourceRange = initMethods[i]
+								.getSourceRange();
 						ISourceRange nameRange = initMethods[i].getNameRange();
 						IModelElement parent = initMethods[i].getParent();
 						FakeMethod newMethod = new FakeMethod(
-								(ModelElement) parent, "new", //$NON-NLS-1$
-								sourceRange.getOffset(), sourceRange.getLength(),
-								nameRange.getOffset(), nameRange.getLength());
+								(ModelElement) parent,
+								"new", //$NON-NLS-1$
+								sourceRange.getOffset(), sourceRange
+										.getLength(), nameRange.getOffset(),
+								nameRange.getLength());
 						newMethod.setParameters(parameters);
-						newMethod.setParameterInitializers(parameterInitializers);
+						newMethod
+								.setParameterInitializers(parameterInitializers);
 						newMethod.setFlags(flags);
 						String receiver = ""; //$NON-NLS-1$
 						if (parent instanceof IType) {
@@ -274,7 +285,7 @@ public class RubyModelUtils {
 						newMethod.setReceiver(receiver);
 						result.add(newMethod);
 					} catch (ModelException e) {
-						e.printStackTrace();						
+						e.printStackTrace();
 					}
 				}
 				return result;
@@ -282,9 +293,10 @@ public class RubyModelUtils {
 		}
 		return null;
 	}
-	
-	public static List getAllSourceMethods(RubyMixinMethod[] methods, RubyMixinClass selfKlass) {
-		List result = new ArrayList ();
+
+	public static List getAllSourceMethods(RubyMixinMethod[] methods,
+			RubyMixinClass selfKlass) {
+		List result = new ArrayList();
 		for (int i = 0; i < methods.length; i++) {
 			if (selfKlass != null) {
 				List m = handleSpecialMethod(methods[i], selfKlass);
@@ -293,14 +305,16 @@ public class RubyModelUtils {
 					continue;
 				}
 			}
-			IMethod[] sourceMethods = methods[i].getSourceMethods();			
+			IMethod[] sourceMethods = methods[i].getSourceMethods();
 			for (int j = 0; j < sourceMethods.length; j++) {
 				if (sourceMethods[j] != null/*
-						&& sourceMethods[j].getElementName()
-								.startsWith(prefix)*/) {				
+											 * &&
+											 * sourceMethods[j].getElementName()
+											 * .startsWith(prefix)
+											 */) {
 					result.add(sourceMethods[j]);
 				}
-			}			
+			}
 		}
 		return result;
 	}
@@ -587,11 +601,11 @@ public class RubyModelUtils {
 		};
 		SearchPattern pattern = SearchPattern.createPattern(namePattern,
 				IDLTKSearchConstants.METHOD, IDLTKSearchConstants.DECLARATIONS,
-				SearchPattern.R_PATTERN_MATCH | SearchPattern.R_EXACT_MATCH);
+				SearchPattern.R_PATTERN_MATCH | SearchPattern.R_EXACT_MATCH,
+				DLTKLanguageManager.getLanguageToolkit(project));
 		IDLTKSearchScope scope;
 		if (project != null)
-			scope = SearchEngine
-					.createSearchScope(new IModelElement[] { project });
+			scope = SearchEngine.createSearchScope(project);
 		else
 			scope = SearchEngine.createWorkspaceScope(RubyLanguageToolkit
 					.getDefault());

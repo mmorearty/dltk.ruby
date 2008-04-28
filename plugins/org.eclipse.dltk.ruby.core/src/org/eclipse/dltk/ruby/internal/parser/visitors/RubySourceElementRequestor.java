@@ -158,25 +158,6 @@ public class RubySourceElementRequestor extends SourceElementRequestVisitor {
 		}
 	}
 
-	protected String[] processSuperClasses(TypeDeclaration type) {
-		ASTListNode list = type.getSuperClasses();
-
-		if (list == null) {
-			return new String[0];
-		}
-
-		List expressions = list.getChilds();
-		List names = new ArrayList();
-		for (Iterator iter = expressions.iterator(); iter.hasNext();) {
-			String name = RubyASTUtil.resolveClassName((ASTNode) iter.next());
-			if (name != null && name.length() > 0) {
-				names.add(name);
-			}
-		}
-
-		return (String[]) names.toArray(new String[names.size()]);
-	}
-
 	protected String makeLanguageDependentValue(ASTNode value) {
 		String outValue = ""; //$NON-NLS-1$
 		/*

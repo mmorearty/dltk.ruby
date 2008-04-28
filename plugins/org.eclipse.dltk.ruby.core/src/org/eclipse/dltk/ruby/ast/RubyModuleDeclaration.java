@@ -24,7 +24,8 @@ public class RubyModuleDeclaration extends TypeDeclaration {
 	private ASTNode name;
 
 	public RubyModuleDeclaration(ASTNode name, Block body, int start, int end) {
-		super("", name.sourceStart(), name.sourceEnd(), start, end); //$NON-NLS-1$
+		super(RubyASTUtil.resolveClassName(name), name.sourceStart(), name
+				.sourceEnd(), start, end);
 		ASTListNode el = new ASTListNode();
 		this.setSuperClasses(el);
 		this.name = name;
@@ -51,7 +52,6 @@ public class RubyModuleDeclaration extends TypeDeclaration {
 
 	public List/* <String> */getSuperClassNames() {
 		List/* < String > */names = new ArrayList/* < String > */();
-		names.addAll(super.getSuperClassNames());
 		String name;
 		for (Iterator iter = getSuperClasses().getChilds().iterator(); iter
 				.hasNext();) {

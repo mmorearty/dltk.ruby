@@ -70,6 +70,7 @@ import org.eclipse.dltk.ruby.ast.RubyMatch2Expression;
 import org.eclipse.dltk.ruby.ast.RubyMatch3Expression;
 import org.eclipse.dltk.ruby.ast.RubyMatchExpression;
 import org.eclipse.dltk.ruby.ast.RubyMethodArgument;
+import org.eclipse.dltk.ruby.ast.RubyModuleDeclaration;
 import org.eclipse.dltk.ruby.ast.RubyMultipleAssignmentStatement;
 import org.eclipse.dltk.ruby.ast.RubyNextExpression;
 import org.eclipse.dltk.ruby.ast.RubyNotExpression;
@@ -1654,12 +1655,13 @@ public class RubyASTBuildVisitor implements NodeVisitor {
 		if (cpathNode instanceof Colon2Node || cpathNode instanceof ConstNode) {
 			name = colons2Name(cpathNode);
 		}
+		ASTNode cpath = collectSingleNodeSafe(cpathNode);
 		ISourcePosition pos = iVisited.getCPath().getPosition();
 		ISourcePosition cPos = iVisited.getPosition();
 		cPos = fixNamePosition(cPos);
 		pos = fixNamePosition(pos);
-		TypeDeclaration type = new TypeDeclaration(name, pos.getStartOffset(),
-				pos.getEndOffset(), cPos.getStartOffset(), cPos.getEndOffset());
+		RubyModuleDeclaration type = new RubyModuleDeclaration(cpath, null,
+				cPos.getStartOffset(), cPos.getEndOffset());
 		type.setModifier(Modifiers.AccModule);
 		states.peek().add(type);
 		states.push(new ModuleState(type));
