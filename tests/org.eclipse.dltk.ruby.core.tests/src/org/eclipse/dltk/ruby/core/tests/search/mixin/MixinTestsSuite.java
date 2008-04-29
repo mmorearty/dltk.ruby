@@ -142,11 +142,14 @@ public class MixinTestsSuite extends TestSuite {
 		InputStream input = null;
 		try {
 			input = Activator.getDefault().openResource(path);
-			InputStreamReader reader = new InputStreamReader(input);
-			BufferedReader br = new BufferedReader(reader);
-			char[] data = new char[10 * 1024 * 1024];
-			int size = br.read(data);
-			buffer.append(data, 0, size);
+			char buff[] = new char[4096];
+			int len = 0;
+			BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+			while( (len = reader.read(buff))!=-1) {
+				if( len > 0 ) {
+					buffer.append(buff, 0, len);
+				}
+			}
 		} finally {
 			if (input != null) {
 				input.close();
