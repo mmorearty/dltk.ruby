@@ -10,8 +10,13 @@
 package org.eclipse.dltk.ruby.internal.parser;
 
 import org.eclipse.dltk.compiler.SourceElementRequestVisitor;
+import org.eclipse.dltk.compiler.task.ITaskReporter;
+import org.eclipse.dltk.compiler.task.TodoTaskPreferences;
+import org.eclipse.dltk.compiler.task.TodoTaskSimpleParser;
 import org.eclipse.dltk.core.AbstractSourceElementParser;
+import org.eclipse.dltk.core.ISourceModuleInfoCache.ISourceModuleInfo;
 import org.eclipse.dltk.ruby.core.RubyNature;
+import org.eclipse.dltk.ruby.core.RubyPlugin;
 import org.eclipse.dltk.ruby.internal.parser.visitors.RubySourceElementRequestor;
 
 public class RubySourceElementParser extends AbstractSourceElementParser {
@@ -29,4 +34,30 @@ public class RubySourceElementParser extends AbstractSourceElementParser {
 	protected String getNatureId() {
 		return RubyNature.NATURE_ID;
 	}
+
+	public void parseSourceModule(char[] contents, ISourceModuleInfo astCache,
+			char[] filename) {
+		super.parseSourceModule(contents, astCache, filename);
+		if (getProblemReporter() != null) {
+			final ITaskReporter taskReporter = (ITaskReporter) getProblemReporter()
+					.getAdapter(ITaskReporter.class);
+			if (taskReporter != null) {
+				taskReporter.clearTasks();
+				parseTasks(taskReporter, contents);
+			}
+		}
+	}
+
+	protected void parseTasks(ITaskReporter taskReporter, char[] content) {
+		final TodoTaskPreferences preferences = new TodoTaskPreferences(
+				RubyPlugin.getDefault().getPluginPreferences());
+		if (preferences.isEnabled()) {
+			final TodoTaskSimpleParser taskParser = new TodoTaskSimpleParser(
+					taskReporter, preferences);
+			if (taskParser.isValid()) {
+				taskParser.parse(content);
+			}
+		}
+	}
+
 }
