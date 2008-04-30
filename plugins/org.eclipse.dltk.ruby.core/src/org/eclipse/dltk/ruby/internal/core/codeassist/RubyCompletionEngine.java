@@ -20,9 +20,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.Modifiers;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
@@ -135,8 +133,7 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 	public RubyCompletionEngine() {
 		this.inferencer = new DLTKTypeInferenceEngine();
 		this.model = RubyMixinModel.getRawInstance();
-		this.parser = DLTKLanguageManager
-				.getSourceParser(RubyNature.NATURE_ID);
+		this.parser = DLTKLanguageManager.getSourceParser(RubyNature.NATURE_ID);
 	}
 
 	protected int getEndOfEmptyToken() {
@@ -213,17 +210,13 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 
 	public void complete(ISourceModule module, int position, int i) {
 		this.currentModule = module;
-		if (Job.getJobManager().find(ResourcesPlugin.FAMILY_AUTO_BUILD).length > 0) {
-			// FIXIT, make more correct awaiting for building
-			this.requestor.completionFailure(new DefaultProblem(null,
-					Messages.RubyCompletionEngine_pleaseWaitUntilBuildingIsReady, 0, null,
-					IStatus.WARNING, startPosition, endPosition, -1));
-			return;
-		}
 		if (!RubyPlugin.initialized) {
-			this.requestor.completionFailure(new DefaultProblem(null,
-					Messages.RubyCompletionEngine_pleaseWaitWhileDltkRubyBeingInitialized, 0,
-					null, IStatus.WARNING, startPosition, endPosition, -1));
+			this.requestor
+					.completionFailure(new DefaultProblem(
+							null,
+							Messages.RubyCompletionEngine_pleaseWaitWhileDltkRubyBeingInitialized,
+							0, null, IStatus.WARNING, startPosition,
+							endPosition, -1));
 			return;
 		}
 
@@ -595,11 +588,11 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 	}
 
 	private int relevance;
-	
+
 	private void completeConstant(org.eclipse.dltk.core.ISourceModule module,
 			ModuleDeclaration moduleDeclaration, String prefix, int position,
 			boolean topLevelOnly) {
-		
+
 		relevance = 4242;
 		reportProjectTypes(module, prefix);
 
