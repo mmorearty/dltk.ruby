@@ -29,8 +29,10 @@ import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
 import org.eclipse.dltk.ast.parser.AbstractSourceParser;
 import org.eclipse.dltk.ast.references.ConstantReference;
 import org.eclipse.dltk.ast.statements.Block;
+import org.eclipse.dltk.compiler.problem.AbstractProblemReporter;
 import org.eclipse.dltk.compiler.problem.IProblem;
 import org.eclipse.dltk.compiler.problem.IProblemReporter;
+import org.eclipse.dltk.compiler.problem.ProblemReporterProxy;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.ruby.ast.RubyClassDeclaration;
 import org.eclipse.dltk.ruby.ast.RubyModuleDeclaration;
@@ -273,32 +275,19 @@ public class JRubySourceParser extends AbstractSourceParser {
     return parserResult;
   }
 
-	private class ProxyProblemReporter implements IProblemReporter {
-
-		private final IProblemReporter original;
+	private class ProxyProblemReporter extends ProblemReporterProxy {
 
 		public ProxyProblemReporter(IProblemReporter original) {
-			super();
-			this.original = original;
+			super(original);
 		}
 
 		public IMarker reportProblem(IProblem problem) throws CoreException {
-			IMarker m = null;
-			if (original != null)
-				m = original.reportProblem(problem);
 			if (problem.isError()) {
 				errorState[0] = true;
 			}
-			return m;
+			return super.reportProblem(problem);
 		}
 
-		public void clearMarkers() {
-			this.original.clearMarkers();
-		}
-
-		public boolean isMarkersCleaned() {
-			return original.isMarkersCleaned();
-		}
 	}
 	
 	public JRubySourceParser() {
@@ -514,7 +503,7 @@ public class JRubySourceParser extends AbstractSourceParser {
                     content2 = fixBrokenCommasUnsafe(content2);
                     content2 = fixBrokenHashesUnsafe(content2);
 
-                    node2 = parser.parse("", new StringReader(content2), new IProblemReporter() { //$NON-NLS-1$
+                    node2 = parser.parse("", new StringReader(content2), new AbstractProblemReporter() { //$NON-NLS-1$
 
                       public IMarker reportProblem(IProblem problem) {
                         if (DLTKCore.DEBUG) {
@@ -529,13 +518,6 @@ public class JRubySourceParser extends AbstractSourceParser {
 
                         return null;
                       }
-
-              		  public void clearMarkers() {
-            		  }
-
-              		  public boolean isMarkersCleaned() {
-              			  return true;
-              		  }
 
                     });
                     if (node2 != null)

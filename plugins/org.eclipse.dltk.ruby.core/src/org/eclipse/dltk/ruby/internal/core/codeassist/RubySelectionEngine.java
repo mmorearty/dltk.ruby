@@ -5,12 +5,13 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- 
+ * Contributors:
+ *     xored software, Inc. - initial API and Implementation (Andrei Sobolev)
+ *     xored software, Inc. - RubyDocumentation display improvements (Alex Panchenko <alex@xored.com>)
  *******************************************************************************/
 package org.eclipse.dltk.ruby.internal.core.codeassist;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -31,8 +32,10 @@ import org.eclipse.dltk.codeassist.ScriptSelectionEngine;
 import org.eclipse.dltk.compiler.env.ISourceModule;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IField;
+import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.IMethod;
 import org.eclipse.dltk.core.IModelElement;
+import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ISourceRange;
 import org.eclipse.dltk.core.IType;
 import org.eclipse.dltk.core.ModelException;
@@ -46,6 +49,7 @@ import org.eclipse.dltk.internal.core.ModelElement;
 import org.eclipse.dltk.ruby.ast.RubyAssignment;
 import org.eclipse.dltk.ruby.ast.RubyColonExpression;
 import org.eclipse.dltk.ruby.ast.RubySuperExpression;
+import org.eclipse.dltk.ruby.core.RubyPlugin;
 import org.eclipse.dltk.ruby.core.model.FakeField;
 import org.eclipse.dltk.ruby.core.utils.RubySyntaxUtils;
 import org.eclipse.dltk.ruby.internal.parser.mixin.RubyMixinClass;
@@ -93,9 +97,9 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 	}
 
 	public RubySelectionEngine(/*
-								 * ISearchableEnvironment environment, Map
-								 * options, IDLTKLanguageToolkit toolkit
-								 */) {
+	 * ISearchableEnvironment environment, Map
+	 * options, IDLTKLanguageToolkit toolkit
+	 */) {
 		// super();
 		// setOptions(options);
 		// this.nameEnvironment = environment;
@@ -163,7 +167,8 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 				} else if (node instanceof MethodDeclaration) {
 					MethodDeclaration methodDeclaration = (MethodDeclaration) node;
 					selectionOnMethodDeclaration(parsedUnit, methodDeclaration);
-				} else if (node instanceof ConstantReference || node instanceof RubyColonExpression) {
+				} else if (node instanceof ConstantReference
+						|| node instanceof RubyColonExpression) {
 					selectTypes(modelModule, parsedUnit, node);
 				} else if (node instanceof VariableReference) {
 					selectionOnVariable(modelModule, parsedUnit,
@@ -180,41 +185,36 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 				}
 			}
 		} catch (IndexOutOfBoundsException e) { // work-around internal failure
-			if (DEBUG) {
-				System.out.println("Exception caught by RubySelectionEngine:"); //$NON-NLS-1$
-				e.printStackTrace(System.out);
-			}
+			RubyPlugin.log(e);
 		}
 
-		List resultElements = new ArrayList ();
-		
-		for (Iterator iterator = selectionElements.iterator(); iterator.hasNext();) {
-			IModelElement element = (IModelElement) iterator.next();
-			if (sourceUnit.getModelElement().getScriptProject().equals( 
-				element.getScriptProject()))
-				resultElements.add(element);
+		final List result = new ArrayList();
+		final IScriptProject sourceProject = sourceUnit.getModelElement()
+				.getScriptProject();
+		for (Iterator i = selectionElements.iterator(); i.hasNext();) {
+			final IModelElement element = (IModelElement) i.next();
+			if (sourceProject.equals(element.getScriptProject()))
+				result.add(element);
 		}
-		
-		return (IModelElement[]) resultElements
-				.toArray(new IModelElement[resultElements.size()]);
+		return (IModelElement[]) result
+				.toArray(new IModelElement[result.size()]);
 	}
-	
-	
 
 	private void selectOnSuper(org.eclipse.dltk.core.ISourceModule modelModule,
 			ModuleDeclaration parsedUnit, RubySuperExpression superExpr) {
-		RubyClassType selfClass = RubyTypeInferencingUtils.determineSelfClass(modelModule, parsedUnit, superExpr.sourceStart());
-		MethodDeclaration enclosingMethod = ASTUtils.getEnclosingMethod(wayToNode, superExpr, false);
+		RubyClassType selfClass = RubyTypeInferencingUtils.determineSelfClass(
+				modelModule, parsedUnit, superExpr.sourceStart());
+		MethodDeclaration enclosingMethod = ASTUtils.getEnclosingMethod(
+				wayToNode, superExpr, false);
 		if (enclosingMethod != null) {
 			String name = enclosingMethod.getName();
-			RubyMixinClass rubyClass = RubyMixinModel.getInstance().createRubyClass(selfClass);
+			RubyMixinClass rubyClass = RubyMixinModel.getInstance()
+					.createRubyClass(selfClass);
 			RubyMixinClass superclass = rubyClass.getSuperclass();
 			RubyMixinMethod method = superclass.getMethod(name);
 			if (method != null) {
 				IMethod[] sourceMethods = method.getSourceMethods();
-				for (int i = 0; i < sourceMethods.length; i++) {
-					this.selectionElements.add(sourceMethods[i]);
-				}
+				addArrayToCollection(sourceMethods, selectionElements);
 			}
 		}
 	}
@@ -228,18 +228,23 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 				new ExpressionTypeGoal(basicContext, node));
 		IGoal[] init = evaluator.init();
 		if (init == null || init.length == 0) {
-			 // should never be here
-			//System.err.println("Why did ColonExpressionEvaluator evaluated so fast?");
+			// should never be here
+			// System.err.println("Why did ColonExpressionEvaluator evaluated so
+			// fast?");
 		} else {
-			IEvaluatedType leftType = inferencer.evaluateType((AbstractTypeGoal) init[0], -1);
-			IGoal[] goals = evaluator.subGoalDone(init[0], leftType, GoalState.DONE);
-			if (goals== null || goals.length == 0) { // good, we have type-constant 
+			IEvaluatedType leftType = inferencer.evaluateType(
+					(AbstractTypeGoal) init[0], -1);
+			IGoal[] goals = evaluator.subGoalDone(init[0], leftType,
+					GoalState.DONE);
+			if (goals == null || goals.length == 0) { // good, we have
+				// type-constant
 				Object evaluatedType = evaluator.produceResult();
 				if (evaluatedType instanceof RubyClassType) {
 					RubyMixinClass mixinClass = RubyMixinModel.getInstance()
 							.createRubyClass((RubyClassType) evaluatedType);
 					if (mixinClass != null)
-						this.selectionElements.addAll(Arrays.asList(mixinClass.getSourceTypes()));
+						addArrayToCollection(mixinClass.getSourceTypes(),
+								selectionElements);
 				}
 			} else {
 				if (goals[0] instanceof NonTypeConstantTypeGoal) {
@@ -248,12 +253,13 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 			}
 		}
 	}
-	
+
 	/**
 	 * Uses goal info for selection on non-type goal
+	 * 
 	 * @param ngoal
 	 */
-	private void processNonTypeConstant (NonTypeConstantTypeGoal ngoal) {
+	private void processNonTypeConstant(NonTypeConstantTypeGoal ngoal) {
 		IMixinElement element = ngoal.getElement();
 		if (element != null) {
 			Object[] eObjects = element.getAllObjects();
@@ -283,11 +289,11 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 				RubyMixinClass mixinClass = RubyMixinModel.getInstance()
 						.createRubyClass((RubyClassType) evaluatedType);
 				if (mixinClass != null)
-					this.selectionElements.addAll(Arrays.asList(mixinClass.getSourceTypes()));
+					addArrayToCollection(mixinClass.getSourceTypes(),
+							selectionElements);
 			}
-		} else if (init[0] instanceof NonTypeConstantTypeGoal) { // it'a
-																	// non-type
-																	// constant
+		} else if (init[0] instanceof NonTypeConstantTypeGoal) {
+			// it'a non-type constant
 			processNonTypeConstant((NonTypeConstantTypeGoal) init[0]);
 		}
 	}
@@ -342,13 +348,13 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 	private void selectTypes(org.eclipse.dltk.core.ISourceModule modelModule,
 			ModuleDeclaration parsedUnit, ASTNode node) {
 		if (node instanceof ConstantReference) {
-			selectOnConstant(parsedUnit, (ConstantReference) node,
-					modelModule);
+			selectOnConstant(parsedUnit, (ConstantReference) node, modelModule);
 		} else if (node instanceof RubyColonExpression) {
-			selectOnColonExpression(parsedUnit, (RubyColonExpression) node, modelModule);
+			selectOnColonExpression(parsedUnit, (RubyColonExpression) node,
+					modelModule);
 		}
-		
-		if (this.selectionElements.isEmpty()) {
+
+		if (selectionElements.isEmpty()) {
 			TypeNameMatchRequestor requestor = new TypeNameMatchRequestor() {
 				public void acceptTypeNameMatch(TypeNameMatch match) {
 					selectionElements.add(match.getType());
@@ -376,9 +382,7 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 		if (name.startsWith("@")) { //$NON-NLS-1$
 			IField[] fields = RubyModelUtils.findFields(modelModule,
 					parsedUnit, name, e.sourceStart());
-			for (int i = 0; i < fields.length; i++) {
-				selectionElements.add(fields[i]);
-			}
+			addArrayToCollection(fields, selectionElements);
 		} else { // local vars (legacy, saved for speed reasons: we dont need
 			// to use mixin model for local vars)
 			ASTNode parentScope = null;
@@ -403,10 +407,9 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 				RubyAssignment[] assignments = RubyTypeInferencingUtils
 						.findLocalVariableAssignments(parentScope, e, name);
 				if (assignments.length > 0) {
-					RubyAssignment assignment = assignments[0];
-					selectionElements.add(createLocalVariable(name, assignment
-							.getLeft().sourceStart(), assignment.getLeft()
-							.sourceEnd()));
+					final ASTNode left = assignments[0].getLeft();
+					selectionElements.add(createLocalVariable(name, left
+							.sourceStart(), left.sourceEnd()));
 				} else {
 					selectionElements.add(createLocalVariable(name, e
 							.sourceStart(), e.sourceEnd()));
@@ -476,77 +479,76 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 	private void selectOnMethod(
 			org.eclipse.dltk.core.ISourceModule modelModule,
 			ModuleDeclaration parsedUnit, CallExpression parentCall) {
-		String methodName = ((CallExpression) parentCall).getName();
+		String methodName = parentCall.getName();
 		ASTNode receiver = parentCall.getReceiver();
 
-		IMethod[] availableMethods = null;
-		IMethod[] availableMethods2 = null;
+		final List availableMethods = new ArrayList();
 
 		if (receiver == null) {
 			RubyClassType type = RubyTypeInferencingUtils.determineSelfClass(
 					modelModule, parsedUnit, parentCall.sourceStart());
-			availableMethods = RubyModelUtils.searchClassMethods(modelModule,
+			IMethod[] m = RubyModelUtils.searchClassMethods(modelModule,
 					parsedUnit, type, methodName);
+			addArrayToCollection(m, availableMethods);
 		} else {
 			ExpressionTypeGoal goal = new ExpressionTypeGoal(new BasicContext(
 					modelModule, parsedUnit), receiver);
 			IEvaluatedType type = inferencer.evaluateType(goal, 5000);
-			availableMethods = RubyModelUtils.searchClassMethods(modelModule,
+			IMethod[] m = RubyModelUtils.searchClassMethods(modelModule,
 					parsedUnit, type, methodName);
+			addArrayToCollection(m, availableMethods);
 			if (receiver instanceof VariableReference) {
-				availableMethods2 = RubyModelUtils.getSingletonMethods(
-						(VariableReference) receiver, parsedUnit, modelModule,
-						methodName);
+				IMethod[] availableMethods2 = RubyModelUtils
+						.getSingletonMethods((VariableReference) receiver,
+								parsedUnit, modelModule, methodName);
+				addArrayToCollection(availableMethods2, availableMethods);
 			}
 		}
 
-		if (availableMethods2 != null) {
-			IMethod[] newm = new IMethod[((availableMethods != null) ? availableMethods.length
-					: 0)
-					+ availableMethods2.length];
-			int next = 0;
-			if (availableMethods != null) {
-				System.arraycopy(availableMethods, 0, newm, 0,
-						availableMethods.length);
-				next = availableMethods.length;
-			}
-			System.arraycopy(availableMethods2, 0, newm, next,
-					availableMethods2.length);
-			availableMethods = newm;
-		}
-
-		if (availableMethods == null || availableMethods.length == 0) {
-			final Collection methods = new ArrayList();
+		if (availableMethods.isEmpty()) {
 			SearchRequestor requestor = new SearchRequestor() {
 
 				public void acceptSearchMatch(SearchMatch match)
 						throws CoreException {
-					IModelElement modelElement = (IModelElement) match.getElement();
-					org.eclipse.dltk.core.ISourceModule sm = (org.eclipse.dltk.core.ISourceModule) modelElement.getAncestor(IModelElement.SOURCE_MODULE);
-					IModelElement elementAt = sm.getElementAt(match.getOffset());
-					methods.add(elementAt);
+					IModelElement modelElement = (IModelElement) match
+							.getElement();
+					org.eclipse.dltk.core.ISourceModule sm = (org.eclipse.dltk.core.ISourceModule) modelElement
+							.getAncestor(IModelElement.SOURCE_MODULE);
+					IModelElement elementAt = sm
+							.getElementAt(match.getOffset());
+					availableMethods.add(elementAt);
 				}
 
 			};
 			ScriptModelUtil.searchMethodDeclarations(modelModule
 					.getScriptProject(), methodName, requestor);
-			availableMethods = (IMethod[]) methods.toArray(new IMethod[methods
-					.size()]);
-//			if (availableMethods.length > 0)
-//				System.out
-//						.println("RubySelectionEngine.selectOnMethod() used global search");
+			// if (availableMethods.length > 0)
+			// System.out
+			// .println("RubySelectionEngine.selectOnMethod() used global
+			// search");
 		}
 
-		if (availableMethods != null) {
-			int count = 0;
-			for (int i = 0; i < availableMethods.length; i++) {
-				if (availableMethods[i].getElementName().equals(methodName)) {
-					selectionElements.add(availableMethods[i]);
-					++count;
+		if (!availableMethods.isEmpty()) {
+			for (int i = 0, size = availableMethods.size(); i < size; ++i) {
+				final IMethod m = (IMethod) availableMethods.get(i);
+				if (methodName.equals(methodName)) {
+					selectionElements.add(m);
 				}
 			}
 		}
 
+	}
+
+	/**
+	 * @param src
+	 * @param dest
+	 */
+	private static void addArrayToCollection(IMember[] src, Collection dest) {
+		if (src != null) {
+			for (int i = 0, size = src.length; i < size; ++i) {
+				dest.add(src[i]);
+			}
+		}
 	}
 
 }
