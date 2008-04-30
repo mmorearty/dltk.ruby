@@ -14,8 +14,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.ASTVisitor;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
+import org.eclipse.dltk.compiler.problem.AbstractProblemReporter;
 import org.eclipse.dltk.compiler.problem.IProblem;
-import org.eclipse.dltk.compiler.problem.IProblemReporter;
 import org.eclipse.dltk.core.DLTKLanguageManager;
 import org.eclipse.dltk.core.tests.model.AbstractModelTests;
 import org.eclipse.dltk.ruby.core.RubyNature;
@@ -23,7 +23,7 @@ import org.eclipse.dltk.ruby.core.tests.Activator;
 
 public abstract class AbstractASTTest extends AbstractModelTests {
 
-	protected static class CountingProblemReporter implements IProblemReporter {
+	protected static class CountingProblemReporter extends AbstractProblemReporter {
 
 		public int count = 0;
 		public String lastInfo = "<no errors>";
@@ -46,12 +46,6 @@ public abstract class AbstractASTTest extends AbstractModelTests {
 			return null;
 		}
 
-		public void clearMarkers() {
-		}
-
-		public boolean isMarkersCleaned() {
-			return false;
-		}
 	}
 
 	protected final static CountingProblemReporter problems = new CountingProblemReporter();
