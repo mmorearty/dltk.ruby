@@ -5,7 +5,9 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- 
+ * Contributors:
+ *     xored software, Inc. - initial API and Implementation (Andrei Sobolev)
+ *     xored software, Inc. - RubyDocumentation display improvements (Alex Panchenko <alex@xored.com>)
  *******************************************************************************/
 package org.eclipse.dltk.ruby.internal.parser.mixin;
 
@@ -71,21 +73,24 @@ public class RubyMixinMethod implements IRubyMixinElement {
 	 */
 	public IMethod[] getSourceMethods() {
 		if (this.sourceMethods != null)
-			return sourceMethods;		
+			return sourceMethods;
 		return RubyMixinMethod.getSourceMethods(model, key);
 	}
-	
-	protected static IMethod[] getSourceMethods (RubyMixinModel model, String key) {
-		List result = new ArrayList();
-		IMixinElement mixinElement = model.getRawModel().get(key);
-		Object[] allObjects = mixinElement.getAllObjects();
-		for (int i = 0; i < allObjects.length; i++) {
-			RubyMixinElementInfo info = (RubyMixinElementInfo) allObjects[i];
-			if (info.getKind() == RubyMixinElementInfo.K_METHOD) {
-				result.add(info.getObject());
+
+	protected static IMethod[] getSourceMethods(RubyMixinModel model, String key) {
+		final IMixinElement mixinElement = model.getRawModel().get(key);
+		if (mixinElement != null) {
+			final Object[] allObjects = mixinElement.getAllObjects();
+			final List result = new ArrayList();
+			for (int i = 0; i < allObjects.length; i++) {
+				RubyMixinElementInfo info = (RubyMixinElementInfo) allObjects[i];
+				if (info.getKind() == RubyMixinElementInfo.K_METHOD) {
+					result.add(info.getObject());
+				}
 			}
+			return (IMethod[]) result.toArray(new IMethod[result.size()]);
 		}
-		return (IMethod[]) result.toArray(new IMethod[result.size()]);
+		return new IMethod[0];
 	}
 
 	public RubyMixinVariable[] getVariables() {
