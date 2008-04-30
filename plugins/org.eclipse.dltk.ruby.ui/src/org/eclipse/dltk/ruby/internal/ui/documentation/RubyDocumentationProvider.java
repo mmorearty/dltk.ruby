@@ -5,7 +5,9 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- 
+ * Contributors:
+ *     xored software, Inc. - initial API and Implementation (Andrei Sobolev)
+ *     xored software, Inc. - RubyDocumentation display improvements (Alex Panchenko <alex@xored.com>)
  *******************************************************************************/
 package org.eclipse.dltk.ruby.internal.ui.documentation;
 
@@ -40,6 +42,12 @@ import org.eclipse.jface.text.rules.FastPartitioner;
 
 public class RubyDocumentationProvider implements IScriptDocumentationProvider {
 
+	private static final String PUBLIC = "public"; //$NON-NLS-1$
+
+	private static final String PROTECTED = "protected"; //$NON-NLS-1$
+
+	private static final String PRIVATE = "private"; //$NON-NLS-1$
+
 	protected String getLine(Document d, int line) throws BadLocationException {
 		return d.get(d.getLineOffset(line), d.getLineLength(line));
 	}
@@ -73,30 +81,51 @@ public class RubyDocumentationProvider implements IScriptDocumentationProvider {
 				.setDocumentPartitioner(IRubyPartitions.RUBY_PARTITIONING, null);
 	}
 
+	private static int findOffsetBeforeMethod(Document doc, int start)
+			throws BadLocationException {
+		int line = doc.getLineOfOffset(start);
+		for (;;) {
+			if (--line < 0) {
+				throw new BadLocationException();
+			}
+			final IRegion r = doc.getLineInformation(line);
+			if (r.getLength() == 0) {
+				continue;
+			}
+			String s = doc.get(r.getOffset(), r.getLength());
+			if (isBlank(s)) {
+				continue;
+			}
+			s = s.trim();
+			if (PUBLIC.equals(s) || PROTECTED.equals(s) || PRIVATE.equals(s)) {
+				/**
+				 * skip access modifiers between method and comment, e.g.
+				 * 
+				 * <code>
+				 * # foo-method	documentation 
+				 * public 
+				 * def foo 
+				 * end
+				 * </code>
+				 */
+				continue;
+			}
+			return r.getOffset() + r.getLength() - 1;
+		}
+	}
+
 	public static String getHeaderComment(String contents, int offset) {
 		int start = offset;
 		int end = start;
 
-		String result = ""; //$NON-NLS-1$
-
 		Document doc = new Document(contents);
 		installStuff(doc);
 
-		int pos = 0;
-
-		if (start > 0) {
-			try {
-				int line = doc.getLineOfOffset(start);
-				if (line == 0)
-					return null;
-				IRegion inf = doc.getLineInformation(line - 1);
-				pos = inf.getOffset() + inf.getLength() - 1;
-			} catch (BadLocationException e) {
-				return null;
-			}
-		}
-
 		try {
+			int pos = 0;
+			if (start > 0) {
+				pos = findOffsetBeforeMethod(doc, start);
+			}
 			while (pos >= 0 && pos <= doc.getLength()) {
 				ITypedRegion region = TextUtilities.getPartition(doc,
 						IRubyPartitions.RUBY_PARTITIONING, pos, true);
@@ -136,15 +165,13 @@ public class RubyDocumentationProvider implements IScriptDocumentationProvider {
 			if (end >= doc.getLength())
 				end = doc.getLength() - 1;
 
-			result = doc.get(start, end - start);
+			return doc.get(start, end - start);
 
 		} catch (BadLocationException e1) {
 			return null;
 		} finally {
 			removeStuff(doc);
 		}
-
-		return result;
 	}
 
 	protected String getHeaderComment(IMember member) {
@@ -181,6 +208,8 @@ public class RubyDocumentationProvider implements IScriptDocumentationProvider {
 		return null;
 	}
 
+	private static final String NOTHING_KNOWN_ABOUT = "Nothing known about"; //$NON-NLS-1$
+
 	private Reader proccessBuiltinMethod(IMethod method) {
 		final String divider = "#"; //$NON-NLS-1$
 		IModelElement pp = method.getAncestor(IModelElement.TYPE);
@@ -190,13 +219,13 @@ public class RubyDocumentationProvider implements IScriptDocumentationProvider {
 				+ method.getElementName();
 		RiHelper helper = RiHelper.getInstance();
 		String doc = helper.getDocFor(keyword);
-		if (doc != null && (doc.indexOf("Nothing known about") != -1) //$NON-NLS-1$
-				|| doc.trim().length() == 0) {
+		if (doc != null
+				&& (doc.indexOf(NOTHING_KNOWN_ABOUT) >= 0 || isBlank(doc))) {
 			// XXX megafix: some Kernel methods are documented in Object
 			if (pp.getElementName().equals("Kernel")) { //$NON-NLS-1$
 				keyword = "Object" + divider + method.getElementName(); //$NON-NLS-1$
 				doc = helper.getDocFor(keyword);
-				if (doc == null || doc.indexOf("Nothing known about") >= 0) { //$NON-NLS-1$
+				if (doc != null && doc.indexOf(NOTHING_KNOWN_ABOUT) >= 0) {
 					doc = null;
 				}
 			} else {
@@ -315,4 +344,26 @@ public class RubyDocumentationProvider implements IScriptDocumentationProvider {
 	public Reader getInfo(String content) {
 		return null;
 	}
+
+	/**
+	 * Checks if a String is whitespace, empty ("") or null.
+	 * 
+	 * @param str
+	 *            the String to check, may be null
+	 * @return <code>true</code> if the String is null, empty or whitespace
+	 */
+	private static boolean isBlank(String s) {
+		if (s != null) {
+			final int len = s.length();
+			if (len != 0) {
+				for (int i = 0; i < len; i++) {
+					if (!Character.isWhitespace(s.charAt(i))) {
+						return false;
+					}
+				}
+			}
+		}
+		return true;
+	}
+
 }

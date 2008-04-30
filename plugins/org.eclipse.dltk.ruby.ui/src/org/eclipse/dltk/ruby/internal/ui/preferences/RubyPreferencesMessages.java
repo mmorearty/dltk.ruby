@@ -29,4 +29,7 @@ public final class RubyPreferencesMessages extends NLS {
 	public static String EditorFoldingPreferencePageDescription;
 
 	public static String GlobalPreferencePageDescription;
+
+	public static String TodoTaskDescription;
+
 }
