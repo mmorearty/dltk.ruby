@@ -153,6 +153,11 @@
               id="org.eclipse.dltk.ruby.preferences.templates"
               name="%RubyCodeTemplatesPreferencePage.name">
      </page>	          
+      <page
+              category="org.eclipse.dltk.ruby.preferences"
+              class="org.eclipse.dltk.ruby.internal.ui.preferences.RubyTodoTaskPreferencePage"
+              id="org.eclipse.dltk.ruby.preferences.todo"
+              name="%RubyTaskTagsPreferencePage.name"/>
     </extension>
     
     <extension point="org.eclipse.ui.views">  
