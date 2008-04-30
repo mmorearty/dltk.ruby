@@ -594,9 +594,14 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 		reportSubElements(module, type, starting);
 	}
 
+	private int relevance;
+	
 	private void completeConstant(org.eclipse.dltk.core.ISourceModule module,
 			ModuleDeclaration moduleDeclaration, String prefix, int position,
 			boolean topLevelOnly) {
+		
+		relevance = 4242;
+		reportProjectTypes(module, prefix);
 
 		if (!topLevelOnly) {
 			IMixinElement[] modelStaticScopes = RubyTypeInferencingUtils
@@ -609,8 +614,6 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 						prefix);
 			}
 		}
-
-		int relevance = 4242;
 
 		// try {
 		if (prefix.length() > 0) {
@@ -636,16 +639,19 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 		// e.printStackTrace();
 		// }
 
-		HashSet names = new HashSet();
-		IType[] allTypes = RubyTypeInferencingUtils.getAllTypes(module, prefix);
-		for (int i = 0; i < allTypes.length; i++) {
-			String elementName = allTypes[i].getElementName();
-			if (names.contains(elementName))
-				continue;
-			names.add(elementName);
-			reportType(allTypes[i], relevance--);
-		}
+	}
 
+	private void reportProjectTypes(
+			final org.eclipse.dltk.core.ISourceModule module, String prefix) {
+		IType[] types = RubyTypeInferencingUtils.getAllTypes(module, prefix);
+		Arrays.sort(types, new ProjectTypeComparator(module));
+		final Set names = new HashSet();
+		for (int i = 0; i < types.length; i++) {
+			final String elementName = types[i].getElementName();
+			if (names.add(elementName)) {
+				reportType(types[i], relevance--);
+			}
+		}
 	}
 
 	private void completeConstant(org.eclipse.dltk.core.ISourceModule module,
