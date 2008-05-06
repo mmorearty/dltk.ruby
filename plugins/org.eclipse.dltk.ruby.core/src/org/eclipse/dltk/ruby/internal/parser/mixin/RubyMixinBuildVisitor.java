@@ -360,7 +360,11 @@ public class RubyMixinBuildVisitor extends ASTVisitor {
 		String name = decl.getName();
 		if (moduleAvailable) {
 			IModelElement element = findModelElementFor(decl);
-			obj = (IMethod) element;
+			if (element instanceof IMethod) {
+				obj = (IMethod) element;
+			} else {
+				return false;
+			}
 		}
 		if (decl instanceof RubySingletonMethodDeclaration) {
 			RubySingletonMethodDeclaration singl = (RubySingletonMethodDeclaration) decl;
@@ -549,7 +553,8 @@ public class RubyMixinBuildVisitor extends ASTVisitor {
 				String key = scope.reportVariable(ref.getName(), null);
 				if (key != null) {
 					key += VIRTUAL_SUFFIX;
-					report(key, new RubyMixinElementInfo(RubyMixinElementInfo.K_VIRTUAL, obj));				
+					report(key, new RubyMixinElementInfo(
+							RubyMixinElementInfo.K_VIRTUAL, obj));
 					scopes.push(new MetaClassScope(decl, key));
 					return true;
 				}
