@@ -6,6 +6,7 @@ import junit.framework.TestSuite;
 import org.eclipse.dltk.ruby.core.tests.assist.RubySelectionTests;
 import org.eclipse.dltk.ruby.core.tests.parser.RubyParserRecoveryTests;
 import org.eclipse.dltk.ruby.core.tests.parser.RubyParserTests;
+import org.eclipse.dltk.ruby.core.tests.search.RubySearchTests;
 import org.eclipse.dltk.ruby.core.tests.search.mixin.AutoMixinTests;
 import org.eclipse.dltk.ruby.core.tests.search.mixin.MixinModelManipulationTests;
 import org.eclipse.dltk.ruby.core.tests.text.completion.RubyCompletionTests;
@@ -42,7 +43,10 @@ public class AllTests {
 		suite.addTest(SimpleTest.suite());
 
 		// Launching
-		//suite.addTest(RubyLaunchingTests.suite());
+		// suite.addTest(RubyLaunchingTests.suite());
+
+		// Search
+		suite.addTest(RubySearchTests.suite());
 
 		// $JUnit-END$
 		return suite;
