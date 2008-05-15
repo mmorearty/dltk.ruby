@@ -16,6 +16,6 @@ import org.eclipse.dltk.internal.debug.ui.interpreters.AbstractInterpreterContai
 
 public class RubyInterpreterContainerWizardPage extends AbstractInterpreterContainerWizardPage {
 	protected AbstractInterpreterComboBlock getInterpreterBlock() {
-		return new RubyInterpreterComboBlock();
+		return new RubyInterpreterComboBlock(null);
 	}
 }

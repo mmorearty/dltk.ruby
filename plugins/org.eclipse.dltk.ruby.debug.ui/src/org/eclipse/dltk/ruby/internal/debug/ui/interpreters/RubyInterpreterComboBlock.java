@@ -9,10 +9,16 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.internal.debug.ui.interpreters;
 
+import org.eclipse.dltk.debug.ui.launchConfigurations.IMainLaunchConfigurationTabListenerManager;
 import org.eclipse.dltk.internal.debug.ui.interpreters.AbstractInterpreterComboBlock;
 import org.eclipse.dltk.ruby.core.RubyNature;
 
 public class RubyInterpreterComboBlock extends AbstractInterpreterComboBlock {
+	protected RubyInterpreterComboBlock(
+			IMainLaunchConfigurationTabListenerManager tab) {
+		super(tab);
+	}
+
 	protected void showInterpreterPreferencePage() {
 		showPrefPage(RubyInterpreterPreferencePage.PAGE_ID);
 	}

@@ -9,13 +9,20 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.internal.debug.ui.interpreters;
 
+import org.eclipse.dltk.debug.ui.launchConfigurations.IMainLaunchConfigurationTabListenerManager;
 import org.eclipse.dltk.debug.ui.launchConfigurations.InterpreterTab;
 import org.eclipse.dltk.internal.debug.ui.interpreters.AbstractInterpreterComboBlock;
 import org.eclipse.dltk.ruby.core.RubyNature;
 
 public class RubyInterpreterTab extends InterpreterTab {
+	
+	public RubyInterpreterTab(
+			IMainLaunchConfigurationTabListenerManager listenerManager) {
+		super(listenerManager);
+	}
+
 	protected AbstractInterpreterComboBlock getInterpreterBlock() {
-		return new RubyInterpreterComboBlock();
+		return new RubyInterpreterComboBlock(getMainTab());
 	}
 
 	protected String getNature() {
