@@ -779,11 +779,14 @@ public class DefaultRubyParser {
       @param message text to be displayed.
       @param expected list of acceptable tokens, if available.
     */
-  public void yyerror (String message, String[] expected, String found) {
-    StringBuffer text = new StringBuffer(message);
-    text.append(", unexpected " + found);
-    throw new SyntaxException(getPosition(null), text.toString());
-  }
+  public void yyerror(String message, String[] expected, String found) {
+		if (found != null) {
+			throw new SyntaxException(getPosition(null), message
+					+ ", unexpected " + found);
+		} else {
+			throw new SyntaxException(getPosition(null), message);
+		}
+	}
 
   /** computes list of expected tokens on error by tracing the tables.
       @param state for which to compute the list.

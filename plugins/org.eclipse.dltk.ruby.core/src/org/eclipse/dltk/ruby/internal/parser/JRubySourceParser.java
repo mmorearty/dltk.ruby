@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.ASTVisitor;
 import org.eclipse.dltk.ast.declarations.Declaration;
+import org.eclipse.dltk.ast.declarations.FakeModuleDeclaration;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
 import org.eclipse.dltk.ast.parser.AbstractSourceParser;
 import org.eclipse.dltk.ast.references.ConstantReference;
@@ -556,7 +557,8 @@ public class JRubySourceParser extends AbstractSourceParser {
 			this.parserResult = parser.getParserResult();
 			
             if (!parser.isSuccess() && module.isEmpty()) {
-               minimumParse(content, module);
+            	module = new FakeModuleDeclaration(content.length);
+				minimumParse(content, module);
 			}
 			
 			return module;
