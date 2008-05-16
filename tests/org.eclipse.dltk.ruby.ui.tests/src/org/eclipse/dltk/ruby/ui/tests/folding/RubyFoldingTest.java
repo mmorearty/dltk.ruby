@@ -13,6 +13,7 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
+import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ruby.internal.ui.RubyPreferenceConstants;
 import org.eclipse.dltk.ruby.internal.ui.text.folding.RubyFoldingStructureProvider;
 import org.eclipse.dltk.ruby.ui.tests.internal.RubyUITestsPlugin;
@@ -26,8 +27,12 @@ public class RubyFoldingTest extends TestCase {
 
 	private class MyRubyASTFoldingStructureProvider extends
 			RubyFoldingStructureProvider {
+		public boolean codeFolding = true;
+		public boolean commentFolding = true;
+
 		protected FoldingStructureComputationContext createInitialContext() {
 			initializePreferences(fStore);
+			fCommentsFolding = commentFolding;
 			return createContext(true);
 		}
 
@@ -59,6 +64,11 @@ public class RubyFoldingTest extends TestCase {
 			return ctx.getMap();
 		}
 
+		protected boolean mayCollapse(ASTNode s,
+				FoldingStructureComputationContext ctx) {
+			return codeFolding && super.mayCollapse(s, ctx);
+		}
+
 	};
 
 	IPreferenceStore fStore;
@@ -81,7 +91,8 @@ public class RubyFoldingTest extends TestCase {
 				.createInitialContext());
 		assertEquals(1, result.size());
 	}
-	public void test177924() throws Exception {
+
+	public void test177924a() throws Exception {
 		fStore.setValue(RubyPreferenceConstants.EDITOR_FOLDING_LINES_LIMIT, 2);
 		String content = TestUtils.getData("resources/folding/b177924.rb");
 		Document document = new Document(content);
@@ -89,10 +100,45 @@ public class RubyFoldingTest extends TestCase {
 		provider.setDocument(document);
 		Map result = provider.testComputeFoldingStructure(content, provider
 				.createInitialContext());
-		assertEquals(8, result.size());
+		assertEquals(3, result.size());
 	}
-	
-	public void test193174() throws Exception {
+
+	public void test177924b() throws Exception {
+		fStore.setValue(RubyPreferenceConstants.EDITOR_FOLDING_LINES_LIMIT, 4);
+		String content = TestUtils.getData("resources/folding/b177924.rb");
+		Document document = new Document(content);
+		TestUtils.installStuff(document);
+		provider.setDocument(document);
+		Map result = provider.testComputeFoldingStructure(content, provider
+				.createInitialContext());
+		assertEquals(2, result.size());
+	}
+
+	public void test193174a() throws Exception {
+		fStore.setValue(RubyPreferenceConstants.EDITOR_FOLDING_LINES_LIMIT, 2);
+		String content = TestUtils.getData("resources/folding/b193174.rb");
+		Document document = new Document(content);
+		TestUtils.installStuff(document);
+		provider.codeFolding = false;
+		provider.setDocument(document);
+		Map result = provider.testComputeFoldingStructure(content, provider
+				.createInitialContext());
+		assertEquals(27, result.size());
+	}
+
+	public void test193174b() throws Exception {
+		fStore.setValue(RubyPreferenceConstants.EDITOR_FOLDING_LINES_LIMIT, 2);
+		String content = TestUtils.getData("resources/folding/b193174.rb");
+		Document document = new Document(content);
+		TestUtils.installStuff(document);
+		provider.commentFolding = false;
+		provider.setDocument(document);
+		Map result = provider.testComputeFoldingStructure(content, provider
+				.createInitialContext());
+		assertEquals(73, result.size());
+	}
+
+	public void test193174c() throws Exception {
 		fStore.setValue(RubyPreferenceConstants.EDITOR_FOLDING_LINES_LIMIT, 2);
 		String content = TestUtils.getData("resources/folding/b193174.rb");
 		Document document = new Document(content);
@@ -100,7 +146,6 @@ public class RubyFoldingTest extends TestCase {
 		provider.setDocument(document);
 		Map result = provider.testComputeFoldingStructure(content, provider
 				.createInitialContext());
-		assertEquals(114, result.size());
+		assertEquals(100, result.size());
 	}
-
 }
