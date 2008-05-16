@@ -11,7 +11,10 @@ package org.eclipse.dltk.ruby.internal.ui.text.folding;
 
 import org.eclipse.core.runtime.ILog;
 import org.eclipse.dltk.ast.ASTNode;
+import org.eclipse.dltk.ast.declarations.FakeModuleDeclaration;
 import org.eclipse.dltk.ast.declarations.MethodDeclaration;
+import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
+import org.eclipse.dltk.ast.parser.ISourceParser;
 import org.eclipse.dltk.ruby.core.RubyNature;
 import org.eclipse.dltk.ruby.internal.ui.RubyPreferenceConstants;
 import org.eclipse.dltk.ruby.internal.ui.RubyUI;
@@ -110,6 +113,15 @@ public class RubyFoldingStructureProvider extends
 	 */
 	protected ILog getLog() {
 		return RubyUI.getDefault().getLog();
+	}
+
+	protected CodeBlock[] getCodeBlocks(String code, int offset) {
+		ISourceParser parser = getSourceParser();
+		ModuleDeclaration decl = parser.parse(null, code.toCharArray(), null);
+		if (decl instanceof FakeModuleDeclaration) {
+			return null;
+		}
+		return buildCodeBlocks(decl, offset);
 	}
 
 }

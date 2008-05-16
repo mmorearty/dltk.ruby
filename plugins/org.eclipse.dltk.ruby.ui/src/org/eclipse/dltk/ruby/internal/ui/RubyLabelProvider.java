@@ -1,14 +1,145 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2008 xored software, Inc.
+ *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- 
+ * Contributors:
+ *     xored software, Inc. - initial API and Implementation (Alex Panchenko)
  *******************************************************************************/
 package org.eclipse.dltk.ruby.internal.ui;
 
-public class RubyLabelProvider {
-	//TODO: implement
+import org.eclipse.core.resources.IStorage;
+import org.eclipse.dltk.core.IBuildpathEntry;
+import org.eclipse.dltk.core.IModelElement;
+import org.eclipse.dltk.core.IProjectFragment;
+import org.eclipse.dltk.core.IScriptFolder;
+import org.eclipse.dltk.core.ISourceModule;
+import org.eclipse.dltk.core.IType;
+import org.eclipse.dltk.core.environment.EnvironmentPathUtils;
+import org.eclipse.dltk.ui.ScriptElementLabels;
+import org.eclipse.dltk.ui.viewsupport.StorageLabelProvider;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.swt.graphics.Image;
+
+public class RubyLabelProvider extends LabelProvider {
+
+	public static final String PACKAGE_SEPARATOR = "::"; //$NON-NLS-1$
+	public static final String SEPARATOR = " - "; //$NON-NLS-1$
+	public static final String FOLDER_SEPARATOR = "/"; //$NON-NLS-1$
+
+	private final StorageLabelProvider fStorageLabelProvider;
+
+	public RubyLabelProvider() {
+		fStorageLabelProvider = new StorageLabelProvider();
+	}
+
+	public Image getImage(Object element) {
+		if (element instanceof IStorage) {
+			return fStorageLabelProvider.getImage(element);
+		}
+		return null;
+	}
+
+	public String getText(Object element) {
+		if (element instanceof ISourceModule) {
+			final StringBuffer sb = new StringBuffer();
+			appendSourceModule((ISourceModule) element, sb);
+			return sb.toString();
+		} else if (element instanceof IType) {
+			final StringBuffer sb = new StringBuffer();
+			appendQualifiedType((IType) element, sb);
+			return sb.toString();
+		}
+		return super.getText(element);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.jface.viewers.BaseLabelProvider#dispose()
+	 */
+	public void dispose() {
+		fStorageLabelProvider.dispose();
+	}
+
+	public static void appendQualifiedType(IType type, StringBuffer sb) {
+		sb.append(type.getElementName());
+		final IModelElement parent = type.getParent();
+		final ISourceModule parentModule;
+		if (parent instanceof IType) {
+			sb.append(SEPARATOR);
+			parentModule = RubyLabelProvider.appendType((IType) parent, sb);
+		} else if (parent instanceof ISourceModule) {
+			parentModule = (ISourceModule) parent;
+		} else {
+			parentModule = null;
+		}
+		if (parentModule != null) {
+			sb.append(SEPARATOR);
+			appendSourceModule(parentModule, sb);
+		}
+	}
+
+	private static ISourceModule appendType(IType type, StringBuffer sb) {
+		final IModelElement parent = type.getParent();
+		if (parent instanceof IType) {
+			final ISourceModule module = appendType((IType) parent, sb);
+			sb.append(RubyLabelProvider.PACKAGE_SEPARATOR);
+			sb.append(type.getElementName());
+			return module;
+		} else {
+			sb.append(type.getElementName());
+			if (parent instanceof ISourceModule) {
+				return (ISourceModule) parent;
+			} else {
+				return null;
+			}
+		}
+	}
+
+	public static void appendSourceModule(ISourceModule module, StringBuffer sb) {
+		final IModelElement parent = module.getParent();
+		final IProjectFragment fragment;
+		if (parent instanceof IScriptFolder) {
+			fragment = appendScriptFolder((IScriptFolder) parent, sb);
+		} else {
+			fragment = null;
+		}
+		sb.append(module.getElementName());
+		if (fragment != null) {
+			if (!fragment.isArchive()) {
+				if (fragment.getPath().toString().startsWith(
+						IBuildpathEntry.BUILTIN_EXTERNAL_ENTRY_STR)) {
+					sb.append(' ');
+					sb.append(ScriptElementLabels.BUILTINS_FRAGMENT);
+				} else if (fragment.isExternal()) {
+					sb.append(RubyLabelProvider.SEPARATOR);
+					sb.append(EnvironmentPathUtils.getLocalPath(
+							fragment.getPath()).toPortableString());
+				}
+			}
+		}
+	}
+
+	private static IProjectFragment appendScriptFolder(IScriptFolder folder,
+			StringBuffer sb) {
+		final IModelElement parent = folder.getParent();
+		final IProjectFragment fragment;
+		if (parent instanceof IScriptFolder) {
+			fragment = appendScriptFolder((IScriptFolder) parent, sb);
+		} else if (parent instanceof IProjectFragment) {
+			fragment = (IProjectFragment) parent;
+		} else {
+			fragment = null;
+		}
+		if (!folder.isRootFolder()) {
+			sb.append(folder.getElementName());
+			sb.append(RubyLabelProvider.FOLDER_SEPARATOR);
+		}
+		return fragment;
+	}
+
 }

@@ -5,11 +5,18 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
+ *  Contributors:
+ *     xored software, Inc. - initial API and implementation
+ *     xored software, Inc. - fix tab handling (Bug# 200024) (Alex Panchenko) 
  
  *******************************************************************************/
 package org.eclipse.dltk.ruby.internal.ui.text;
 
+import java.util.Map;
+
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.dltk.internal.ui.editor.EditorUtility;
 import org.eclipse.dltk.internal.ui.editor.ScriptSourceViewer;
 import org.eclipse.dltk.internal.ui.text.HTMLTextPresenter;
@@ -74,15 +81,44 @@ public class RubySourceViewerConfiguration extends
 		return IRubyPartitions.RUBY_PARTITION_TYPES;
 	}
 
+	/*
+	 * @see SourceViewerConfiguration#getIndentPrefixes(ISourceViewer, String)
+	 */
 	public String[] getIndentPrefixes(ISourceViewer sourceViewer,
 			String contentType) {
-		RubyPreferenceInterpreter prefs = new RubyPreferenceInterpreter(
+		if (fPreferenceStore == null) {
+			return super.getIndentPrefixes(sourceViewer, contentType);
+		}
+		final RubyPreferenceInterpreter prefs = new RubyPreferenceInterpreter(
 				fPreferenceStore);
-		if (prefs.getTabStyle() == TabStyle.SPACES)
-			return new String[] { AutoEditUtils.getNSpaces(prefs
-					.getIndentSize()) };
-		else
-			return new String[] { "\t" }; //$NON-NLS-1$
+		final int tabWidth = prefs.getTabSize();
+		final int indentWidth = prefs.getIndentSize();
+		if (indentWidth < tabWidth) {
+			return new String[] { AutoEditUtils.getNSpaces(indentWidth), "" }; //$NON-NLS-1$
+		} else if (prefs.getTabStyle() == TabStyle.TAB) {
+			return getIndentPrefixesForTab(tabWidth);
+		} else {
+			return getIndentPrefixesForSpaces(tabWidth);
+		}
+	}
+
+	/**
+	 * Computes and returns the indent prefixes for space indentation and the
+	 * given <code>tabWidth</code>.
+	 * 
+	 * @param tabWidth
+	 *            the display tab width
+	 * @return the indent prefixes
+	 * @see #getIndentPrefixes(ISourceViewer, String)
+	 */
+	private static String[] getIndentPrefixesForSpaces(int tabWidth) {
+		final String[] indentPrefixes = new String[tabWidth + 2];
+		indentPrefixes[0] = AutoEditUtils.getNSpaces(tabWidth);
+		for (int i = 0; i < tabWidth; i++) {
+			indentPrefixes[i + 1] = AutoEditUtils.getNSpaces(i) + '\t';
+		}
+		indentPrefixes[tabWidth + 1] = ""; //$NON-NLS-1$
+		return indentPrefixes;
 	}
 
 	public int getTabWidth(ISourceViewer sourceViewer) {
@@ -181,6 +217,8 @@ public class RubySourceViewerConfiguration extends
 			fSingleQuoteStringScanner.adaptToPreferenceChange(event);
 		if (fDocScanner.affectsBehavior(event))
 			fDocScanner.adaptToPreferenceChange(event);
+		if (fCommentScanner.affectsBehavior(event)) 
+			fCommentScanner.adaptToPreferenceChange(event);
 	}
 
 	/**
@@ -262,14 +300,14 @@ public class RubySourceViewerConfiguration extends
 			}
 		};
 	}
-	
+
 	protected void alterContentAssistant(ContentAssistant assistant) {
 		IContentAssistProcessor scriptProcessor = new RubyCompletionProcessor(
 				getEditor(), assistant, IDocument.DEFAULT_CONTENT_TYPE);
 		assistant.setContentAssistProcessor(scriptProcessor,
 				IDocument.DEFAULT_CONTENT_TYPE);
 	}
-	
+
 	protected ContentAssistPreference getContentAssistPreference() {
 		return RubyContentAssistPreference.getDefault();
 	}
@@ -293,4 +331,11 @@ public class RubySourceViewerConfiguration extends
 		presenter.setInformationProvider(provider,
 				IRubyPartitions.RUBY_SINGLE_QUOTE_STRING);
 	}
+
+	protected Map getHyperlinkDetectorTargets(final ISourceViewer sourceViewer) {
+		final Map targets = super.getHyperlinkDetectorTargets(sourceViewer);
+		targets.put("org.eclipse.dltk.ruby.Óode", getEditor()); //$NON-NLS-1$
+		return targets;
+	}
+
 }
