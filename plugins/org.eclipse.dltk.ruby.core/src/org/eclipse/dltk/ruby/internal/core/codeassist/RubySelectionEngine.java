@@ -126,11 +126,6 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 			System.out.println("SELECTION - Source :"); //$NON-NLS-1$
 			System.out.println(source);
 		}
-		if (selectionSourceStart > selectionSourceEnd) {
-			int x = selectionSourceEnd;
-			selectionSourceEnd = selectionSourceStart;
-			selectionSourceStart = x;
-		}
 		if (!checkSelection(source, selectionSourceStart, selectionSourceEnd)) {
 			return new IModelElement[0];
 		}
@@ -310,17 +305,21 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 	 * @return
 	 */
 	protected boolean checkSelection(String source, int start, int end) {
-
-		if (start - 1 == end) {
+		if (start > end) {
+			int x = start;
+			start = end;
+			end = x;
+		}
+		if (start + 1 == end) {
 			ISourceRange range, range2;
-			range = RubySyntaxUtils.getEnclosingName(source, start);
+			range = RubySyntaxUtils.getEnclosingName(source, end);
 			if (range != null) {
 				this.actualSelectionStart = range.getOffset();
 				this.actualSelectionEnd = this.actualSelectionStart
 						+ range.getLength();
 				// return true;
 			}
-			range2 = RubySyntaxUtils.insideMethodOperator(source, start);
+			range2 = RubySyntaxUtils.insideMethodOperator(source, end);
 			if (range != null
 					&& (range2 == null || range2.getLength() < range
 							.getLength()))
