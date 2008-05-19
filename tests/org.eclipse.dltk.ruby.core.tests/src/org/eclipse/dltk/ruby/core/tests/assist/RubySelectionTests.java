@@ -371,6 +371,22 @@ public class RubySelectionTests extends AbstractModelCompletionTests {
 		assertNotNull(elements);
 		assertEquals(1, elements.length);
 	}
+	
+	public void testBug194721() throws ModelException {
+		final ISourceModule cu = getSourceModule(SELECTION_PROJECT, "src",
+				"selection_on_var.rb");
+		final String source = cu.getSource();
+		final String variableName = "boolean";
+		final int start = source.lastIndexOf(variableName);
+		final IModelElement[] before = cu.codeSelect(start, 0);
+		assertNotNull(before);
+		assertEquals(1, before.length);
+		final IModelElement[] after = cu.codeSelect(start
+				+ variableName.length(), 0);
+		assertNotNull(after);
+		assertEquals(1, after.length);
+	}
+	
 	// ////
 	public void executeTest(String module, int offset, int length)
 			throws ModelException {
