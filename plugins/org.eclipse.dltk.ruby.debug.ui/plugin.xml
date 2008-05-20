@@ -3,7 +3,7 @@
 <plugin>
 	<extension point="org.eclipse.ui.actionSets">
 		<actionSet id="org.eclipse.dltk.ruby.debug.ui.ScriptDebugActionSet"
-			label="%actionSet.label.rubyDebug" visible="true">
+			label="%actionSet.label.rubyDebugger" visible="true">
 			<menu
          		id="org.eclipse.ui.run"
          		label="%menu.label.run"
