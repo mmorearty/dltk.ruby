@@ -15,8 +15,6 @@ package org.eclipse.dltk.ruby.internal.ui.text;
 import java.util.Map;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.PlatformObject;
 import org.eclipse.dltk.internal.ui.editor.EditorUtility;
 import org.eclipse.dltk.internal.ui.editor.ScriptSourceViewer;
 import org.eclipse.dltk.internal.ui.text.HTMLTextPresenter;
@@ -142,8 +140,7 @@ public class RubySourceViewerConfiguration extends
 	}
 
 	/**
-	 * @return <code>true</code> iff the new setup without text tools is in
-	 *         use.
+	 * @return <code>true</code> iff the new setup without text tools is in use.
 	 */
 	private boolean isNewSetup() {
 		return fTextTools == null;
@@ -217,7 +214,7 @@ public class RubySourceViewerConfiguration extends
 			fSingleQuoteStringScanner.adaptToPreferenceChange(event);
 		if (fDocScanner.affectsBehavior(event))
 			fDocScanner.adaptToPreferenceChange(event);
-		if (fCommentScanner.affectsBehavior(event)) 
+		if (fCommentScanner.affectsBehavior(event))
 			fCommentScanner.adaptToPreferenceChange(event);
 	}
 
@@ -334,7 +331,7 @@ public class RubySourceViewerConfiguration extends
 
 	protected Map getHyperlinkDetectorTargets(final ISourceViewer sourceViewer) {
 		final Map targets = super.getHyperlinkDetectorTargets(sourceViewer);
-		targets.put("org.eclipse.dltk.ruby.Óode", getEditor()); //$NON-NLS-1$
+		targets.put("org.eclipse.dltk.ruby.code", getEditor()); //$NON-NLS-1$
 		return targets;
 	}
 
