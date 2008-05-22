@@ -187,24 +187,19 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 	}
 
 	private String getWordStarting(String content, int position, int maxLen) {
-		int original = position;
-		if (position <= 0)
-			return ""; //$NON-NLS-1$
-		if (position >= content.length())
-			position = content.length();
-		position--;
-		int len = 0;
-		while (position >= 0
-				&& len < maxLen
+		if (position <= 0 || position > content.length())
+			return null;
+		final int original = position;
+		while (position > 0
+				&& maxLen > 0
 				&& RubySyntaxUtils.isLessStrictIdentifierCharacter(content
-						.charAt(position))) {
-			position--;
+						.charAt(position - 1))) {
+			--position;
+			--maxLen;
 		}
-		if (position + 1 > original)
-			return ""; //$NON-NLS-1$
-		if ((position >= 0 && Character.isWhitespace(content.charAt(position)))
-				|| position == -1)
-			return content.substring(position + 1, original);
+		if (position < original) {
+			return content.substring(position, original);
+		}
 		return null;
 	}
 
