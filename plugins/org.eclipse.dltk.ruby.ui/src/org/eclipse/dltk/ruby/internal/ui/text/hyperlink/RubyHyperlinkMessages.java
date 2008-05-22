@@ -18,6 +18,8 @@ public class RubyHyperlinkMessages extends NLS {
 	public static String RequireHyperlink_BadSelection;
 	public static String RequireHyperlink_message;
 	public static String RequireHyperlink_title;
+	public static String RequireHyperlink_text;
+	public static String RequireHyperlink_label;
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, RubyHyperlinkMessages.class);

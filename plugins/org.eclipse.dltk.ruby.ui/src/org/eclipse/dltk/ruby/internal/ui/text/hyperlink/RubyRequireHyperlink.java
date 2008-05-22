@@ -26,6 +26,7 @@ import org.eclipse.dltk.ui.actions.OpenAction;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.ui.texteditor.IEditorStatusLine;
@@ -48,11 +49,11 @@ public class RubyRequireHyperlink implements IHyperlink {
 	}
 
 	public String getHyperlinkText() {
-		return null;
+		return NLS.bind(RubyHyperlinkMessages.RequireHyperlink_text, path);
 	}
 
 	public String getTypeLabel() {
-		return null;
+		return RubyHyperlinkMessages.RequireHyperlink_label;
 	}
 
 	public void open() {
