@@ -478,58 +478,51 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 
 	private void reportSubElements(org.eclipse.dltk.core.ISourceModule module,
 			IEvaluatedType type, String prefix) {
-		int relevance = 424242;
 
-		ArrayList types = new ArrayList();
-		ArrayList methods = new ArrayList();
-		ArrayList fields = new ArrayList();
 
-		if (type instanceof RubyClassType) {
-			RubyClassType rubyClassType = (RubyClassType) type;
-			IMixinElement mixinElement = model.get(rubyClassType.getModelKey());
-			if (mixinElement != null) {
-				IMixinElement[] children = mixinElement.getChildren();
-				for (int i = 0; i < children.length; i++) {
-					Object[] infos = children[i].getAllObjects();
-					for (int j = 0; j < infos.length; j++) {
-						RubyMixinElementInfo obj = (RubyMixinElementInfo) infos[j];
-						if (obj.getObject() == null)
-							continue;
-						if (obj.getKind() == RubyMixinElementInfo.K_CLASS
-								|| obj.getKind() == RubyMixinElementInfo.K_MODULE) {
-							IType type2 = (IType) obj.getObject();
-							if (type2 != null
-									&& type2.getElementName()
-											.startsWith(prefix)) {
-								// reportType(type2, relevance--);
-								types.add(type2);
-							}
-						} else if (obj.getKind() == RubyMixinElementInfo.K_METHOD) {
-							IMethod method2 = (IMethod) obj.getObject();
-							if (method2 != null
-									&& method2.getElementName().startsWith(
-											prefix)) {
-								// reportMethod(method2, relevance--);
-								methods.add(method2);
-							}
-						}
-						if (obj.getKind() == RubyMixinElementInfo.K_VARIABLE) {
-							IField fff = (IField) obj.getObject();
-							if (fff != null
-									&& fff.getElementName().startsWith(prefix)) {
-								// reportField(fff, relevance--);
-								fields.add(fff);
-							}
-						}
-						break;
+		if (!(type instanceof RubyClassType)) {
+			return;
+		}
+		RubyClassType rubyClassType = (RubyClassType) type;
+		IMixinElement mixinElement = model.get(rubyClassType.getModelKey());
+		if (mixinElement == null) {
+			return;
+		}
+		List types = new ArrayList();
+		List methods = new ArrayList();
+		List fields = new ArrayList();
+		IMixinElement[] children = mixinElement.getChildren();
+		for (int i = 0; i < children.length; i++) {
+			Object[] infos = children[i].getAllObjects();
+			for (int j = 0; j < infos.length; j++) {
+				RubyMixinElementInfo obj = (RubyMixinElementInfo) infos[j];
+				if (obj.getObject() == null)
+					continue;
+				if (obj.getKind() == RubyMixinElementInfo.K_CLASS
+						|| obj.getKind() == RubyMixinElementInfo.K_MODULE) {
+					IType type2 = (IType) obj.getObject();
+					if (type2 != null
+							&& type2.getElementName().startsWith(prefix)) {
+						types.add(type2);
 					}
-
+				} else if (obj.getKind() == RubyMixinElementInfo.K_METHOD) {
+					IMethod method2 = (IMethod) obj.getObject();
+					if (method2 != null
+							&& method2.getElementName().startsWith(prefix)) {
+						methods.add(method2);
+					}
 				}
+				if (obj.getKind() == RubyMixinElementInfo.K_VARIABLE) {
+					IField fff = (IField) obj.getObject();
+					if (fff != null && fff.getElementName().startsWith(prefix)) {
+						fields.add(fff);
+					}
+				}
+				break;
 			}
-		} else {
-			// never should be here
 		}
 
+		int relevance = 424242;
 		Collections.sort(fields, modelElementComparator);
 		for (Iterator iterator = fields.iterator(); iterator.hasNext();) {
 			IField t = (IField) iterator.next();
