@@ -239,14 +239,12 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 					.getFileName(), content.toCharArray(), null);
 
 			if (afterDollar(content, position)) {
-				completeGlobalVar((org.eclipse.dltk.core.ISourceModule) module,
-						moduleDeclaration, "$", position); //$NON-NLS-1$
+				completeGlobalVar(modelModule, moduleDeclaration, "$", position); //$NON-NLS-1$
 			} else if (afterAt2(content, position)) {
-				completeSimpleRef((org.eclipse.dltk.core.ISourceModule) module,
-						moduleDeclaration, "@@", position); //$NON-NLS-1$
+				completeSimpleRef(modelModule, moduleDeclaration,
+						"@@", position); //$NON-NLS-1$
 			} else if (afterAt(content, position)) {
-				completeSimpleRef((org.eclipse.dltk.core.ISourceModule) module,
-						moduleDeclaration, "@", position); //$NON-NLS-1$
+				completeSimpleRef(modelModule, moduleDeclaration, "@", position); //$NON-NLS-1$
 			} else if (afterColons(content, position)) {
 
 				ASTNode node = ASTUtils.findMaximalNodeEndingAt(
@@ -478,7 +476,6 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 
 	private void reportSubElements(org.eclipse.dltk.core.ISourceModule module,
 			IEvaluatedType type, String prefix) {
-
 
 		if (!(type instanceof RubyClassType)) {
 			return;
