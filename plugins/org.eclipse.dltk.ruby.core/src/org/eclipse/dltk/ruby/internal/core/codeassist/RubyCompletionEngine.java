@@ -73,7 +73,10 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 
 	private final static int RELEVANCE_FREE_SPACE = 10000000;
 
-	private final static int RELEVANCE_KEYWORD = 1000000;
+	/**
+	 * this variable is updated when keyword proposals are added
+	 */
+	private int relevanceKeyword = 1000000;
 
 	private final static int RELEVANCE_METHODS = 100000;
 
@@ -839,7 +842,7 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 	private void reportKeyword(String name) {
 		// accept result
 		noProposal = false;
-		if (!requestor.isIgnored(CompletionProposal.FIELD_REF)) {
+		if (!requestor.isIgnored(CompletionProposal.KEYWORD)) {
 			CompletionProposal proposal = createProposal(
 					CompletionProposal.KEYWORD, actualCompletionPosition);
 
@@ -848,7 +851,7 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 			// proposal.setFlags(Flags.AccDefault);
 			proposal.setReplaceRange(this.startPosition - this.offset,
 					this.endPosition - this.offset);
-			proposal.setRelevance(RELEVANCE_KEYWORD);
+			proposal.setRelevance(--relevanceKeyword);
 			this.requestor.accept(proposal);
 			if (DEBUG) {
 				this.printDebug(proposal);
