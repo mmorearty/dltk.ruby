@@ -56,19 +56,20 @@ public class ASTUtils {
             boolean found = false;
 
             public boolean visitGeneral(ASTNode node) throws Exception {
-                if (found)
-                    return super.visitGeneral(node);
-                stack.push(node);
-                if (node.equals(nde))
-                    found = true;
+                if (!found) {
+					stack.push(node);
+					if (node.equals(nde)) {
+						found = true;
+					}
+				}
                 return super.visitGeneral(node);
             }
 
             public void endvisitGeneral(ASTNode node) throws Exception {
-                super.endvisitGeneral(node);
-                if (found)
-                    return;
-                stack.pop();
+				super.endvisitGeneral(node);
+				if (!found) {
+					stack.pop();
+				}
             }
         };
 
@@ -130,7 +131,7 @@ public class ASTUtils {
 
         class Visitor extends ASTVisitor {
             ASTNode result = null;
-            int start, end;
+            final int start, end;
 
             public Visitor(int start, int end) {
                 this.start = start;
