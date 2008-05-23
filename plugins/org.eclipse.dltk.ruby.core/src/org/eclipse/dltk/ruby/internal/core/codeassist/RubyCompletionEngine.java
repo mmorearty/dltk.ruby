@@ -45,6 +45,7 @@ import org.eclipse.dltk.evaluation.types.AmbiguousType;
 import org.eclipse.dltk.evaluation.types.IClassType;
 import org.eclipse.dltk.internal.core.ModelElement;
 import org.eclipse.dltk.ruby.ast.RubyBlock;
+import org.eclipse.dltk.ruby.ast.RubyCallArgumentsList;
 import org.eclipse.dltk.ruby.ast.RubyColonExpression;
 import org.eclipse.dltk.ruby.ast.RubyDAssgnExpression;
 import org.eclipse.dltk.ruby.ast.RubyDVarExpression;
@@ -266,6 +267,9 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 						moduleDeclaration, position, position);
 				if (minimalNode != null) {
 					this.completionNode = minimalNode;
+					final boolean isContextMethodCall = completeContextMethod(
+							position, modelModule, moduleDeclaration,
+							minimalNode);
 					if (minimalNode instanceof CallExpression) {
 						completeCall(modelModule, moduleDeclaration,
 								(CallExpression) minimalNode, position);
@@ -284,22 +288,21 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 								((RubyDVarExpression) minimalNode).getName(),
 								position);
 					} else { // worst case
-						if (wordStarting == null || wordStarting.length() == 0) {
+						if (wordStarting == null && !isContextMethodCall) {
 							int rel = RELEVANCE_FREE_SPACE;
 							try {
 								IModelElement[] children = modelModule
 										.getChildren();
 								if (children != null)
 									for (int j = 0; j < children.length; j++) {
-										if (children[j] instanceof IField)
+										if (children[j] instanceof IField) {
 											reportField((IField) children[j],
 													rel);
-										if (children[j] instanceof IMethod) {
+										} else if (children[j] instanceof IMethod) {
 											IMethod method = (IMethod) children[j];
 											if ((method.getFlags() & Modifiers.AccStatic) == 0)
 												reportMethod(method, rel);
-										}
-										if (children[j] instanceof IType
+										} else if (children[j] instanceof IType
 												&& !children[j]
 														.getElementName()
 														.trim()
@@ -312,11 +315,61 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 						}
 					}
 				}
-
 			}
-
 		} finally {
 			this.requestor.endReporting();
+		}
+	}
+
+	private boolean completeContextMethod(int position,
+			org.eclipse.dltk.core.ISourceModule modelModule,
+			ModuleDeclaration moduleDeclaration, ASTNode minimalNode) {
+		ASTNode[] path = ASTUtils.restoreWayToNode(moduleDeclaration,
+				minimalNode);
+		if (path == null) {
+			return false;
+		}
+		for (int k = path.length; --k >= 1;) {
+			if (path[k] instanceof RubyCallArgumentsList
+					&& path[k - 1] instanceof CallExpression) {
+				final CallExpression call = (CallExpression) path[k - 1];
+				final RubyCallArgumentsList args = (RubyCallArgumentsList) path[k];
+				if (!RubySyntaxUtils.isRubyOperator(call.getName())
+						&& isValidCallArgs(args)) {
+					completeCallArgumentList(modelModule, moduleDeclaration,
+							call, position);
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * @param args
+	 * @return
+	 */
+	private static boolean isValidCallArgs(RubyCallArgumentsList args) {
+		return args.sourceStart() >= 0 && args.sourceEnd() >= 0
+				&& args.sourceEnd() > args.sourceStart();
+	}
+
+	private void completeCallArgumentList(
+			org.eclipse.dltk.core.ISourceModule modelModule,
+			ModuleDeclaration moduleDeclaration, final CallExpression call,
+			int position) {
+		final ASTNode receiver = call.getReceiver();
+		final String methodName = call.getCallName().getName();
+		if (receiver != null) {
+			// if ("new".equals(methodName) && receiver instanceof
+			// ConstantReference)
+			completeClassMethods(modelModule, moduleDeclaration, receiver,
+					methodName);
+		} else {
+			IClassType self = RubyTypeInferencingUtils.determineSelfClass(
+					modelModule, moduleDeclaration, position);
+			completeClassMethods(modelModule, moduleDeclaration, self,
+					methodName);
 		}
 	}
 
