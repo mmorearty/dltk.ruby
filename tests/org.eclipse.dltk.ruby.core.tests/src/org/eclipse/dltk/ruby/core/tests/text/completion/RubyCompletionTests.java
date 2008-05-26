@@ -493,7 +493,7 @@ public class RubyCompletionTests extends AbstractModelCompletionTests {
 		assertTrue(requestor.getResults().length() > 0);
 	}
 	
-	public void testCompletion029() throws ModelException {
+	public void REM_testCompletion029() throws ModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
 		ISourceModule cu = getSourceModule("completion", "src", "b180143.rb");
 
