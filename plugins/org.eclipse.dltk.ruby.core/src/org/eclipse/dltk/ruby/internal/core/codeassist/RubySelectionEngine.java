@@ -20,7 +20,6 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.dltk.ast.ASTNode;
-import org.eclipse.dltk.ast.declarations.Argument;
 import org.eclipse.dltk.ast.declarations.MethodDeclaration;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
 import org.eclipse.dltk.ast.declarations.TypeDeclaration;
@@ -96,15 +95,7 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 		return ASTUtils.getEnclosingCallNode(wayToNode, node, true);
 	}
 
-	public RubySelectionEngine(/*
-	 * ISearchableEnvironment environment, Map
-	 * options, IDLTKLanguageToolkit toolkit
-	 */) {
-		// super();
-		// setOptions(options);
-		// this.nameEnvironment = environment;
-		// this.lookupEnvironment = new LookupEnvironment(this,
-		// nameEnvironment);
+	public RubySelectionEngine() {
 		inferencer = new DLTKTypeInferenceEngine();
 	}
 
@@ -382,25 +373,20 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 			IField[] fields = RubyModelUtils.findFields(modelModule,
 					parsedUnit, name, e.sourceStart());
 			addArrayToCollection(fields, selectionElements);
-		} else { // local vars (legacy, saved for speed reasons: we dont need
-			// to use mixin model for local vars)
+		} else {
+			/*
+			 * local vars (legacy, saved for speed reasons: we don't need to use
+			 * mixin model for local vars)
+			 */
 			ASTNode parentScope = null;
-			MethodDeclaration methodDeclaration = ASTUtils.getEnclosingMethod(
-					wayToNode, e, false);
-			if (methodDeclaration != null) {
-				List arguments = methodDeclaration.getArguments();
-				for (Iterator iterator = arguments.iterator(); iterator
-						.hasNext();) {
-					Argument arg = (Argument) iterator.next();
-					if (arg.getName().equals(name)) {
-						selectionElements.add(createLocalVariable(name, arg
-								.sourceStart(), arg.sourceEnd()));
-						return;
-					}
+			for (int i = wayToNode.length; --i >= 0;) {
+				final ASTNode node = wayToNode[i];
+				if (node instanceof MethodDeclaration
+						|| node instanceof TypeDeclaration
+						|| node instanceof ModuleDeclaration) {
+					parentScope = node;
+					break;
 				}
-				parentScope = methodDeclaration;
-			} else if (wayToNode.length >= 2) {
-				parentScope = wayToNode[wayToNode.length - 2];
 			}
 			if (parentScope != null) {
 				RubyAssignment[] assignments = RubyTypeInferencingUtils
