@@ -16,7 +16,6 @@ import java.io.StringReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.eclipse.dltk.core.IBuffer;
 import org.eclipse.dltk.core.IField;
 import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.IMethod;
@@ -184,13 +183,11 @@ public class RubyDocumentationProvider implements IScriptDocumentationProvider {
 				return null;
 			int offset = range.getOffset();
 
-			IBuffer buf = null;
 			ISourceModule sourceModule = member.getSourceModule();
 			if (!sourceModule.isConsistent()) {
 				return null;
 			}
-			buf = sourceModule.getBuffer();
-			String contents = buf.getContents();
+			String contents = sourceModule.getSource();
 
 			return RubyDocumentationProvider.getHeaderComment(contents, offset);
 
