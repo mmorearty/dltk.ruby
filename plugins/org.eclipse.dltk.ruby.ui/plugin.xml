@@ -391,6 +391,7 @@
          <part id="org.eclipse.dltk.ruby.ui.editor.RubyEditor"/>
       </actionSetPartAssociation>
  </extension>
+<!--Action Sets -->
 
  <extension
    	point="org.eclipse.ui.workbench.texteditor.hyperlinkDetectors">
@@ -409,5 +410,32 @@
    	</target>
  </extension>
 
-<!--Action Sets -->
+<!-- =========================================================================== -->
+<!-- Ruby Compare                                                                -->
+<!-- =========================================================================== -->
+   <extension
+         point="org.eclipse.ui.themes">
+      <fontDefinition
+            label="%RubyCompareFontDefiniton.label"
+            defaultsTo="org.eclipse.jface.textfont"
+            categoryId="org.eclipse.compare.contentmergeviewer.TextMergeViewer"
+            id="org.eclipse.dltk.ruby.internal.ui.compare.RubyMergeViewer">
+         <description>
+            %RubyCompareFontDefiniton.description
+         </description>
+      </fontDefinition>
+   </extension>
+
+   <extension point="org.eclipse.compare.contentMergeViewers">
+      <viewer
+            extensions="rb"
+            class="org.eclipse.dltk.ruby.internal.ui.compare.RubyMergeViewerCreator"
+            id="org.eclipse.dltk.ruby.internal.ui.compare.RubyMergeViewer">
+      </viewer>
+      <contentTypeBinding
+			contentTypeId="org.eclipse.dltk.rubyContentType"
+            contentMergeViewerId="org.eclipse.dltk.ruby.internal.ui.compare.RubyMergeViewer">
+	  </contentTypeBinding>
+   </extension>
+
  </plugin>
