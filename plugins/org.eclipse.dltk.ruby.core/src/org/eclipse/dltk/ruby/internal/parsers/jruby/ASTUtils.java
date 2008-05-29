@@ -224,7 +224,8 @@ public class ASTUtils {
                 if (Math.abs(sourceEnd - boundaryOffset) <= 0) { // XXX: was
                     // ... <= 1
                     result = s;
-                    System.out.println("Found " + s.getClass().getName()); //$NON-NLS-1$
+					if (DLTKCore.DEBUG_SELECTION)
+						System.out.println("Found " + s.getClass().getName()); //$NON-NLS-1$
                 }
                 return true;
             }
