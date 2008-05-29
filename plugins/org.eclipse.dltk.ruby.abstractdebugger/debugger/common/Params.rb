@@ -41,6 +41,11 @@ module XoredDebugger
             res += "Script: #{@script.to_s}\n"
             res += "Test:   #{@test.to_s}\n"
 			
+			res += "Environment:\n"
+			ENV.keys.sort.each do |key|
+				res += "\t#{key}=#{ENV[key]}\n"
+			end
+
 			res += "Input args:\n"
 			ARGV.each { |arg|
 				res += "\t#{arg}\n"
