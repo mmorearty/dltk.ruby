@@ -15,12 +15,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.dltk.ast.ASTListNode;
 import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.Modifiers;
 import org.eclipse.dltk.ast.PositionInformation;
 import org.eclipse.dltk.ast.declarations.MethodDeclaration;
-import org.eclipse.dltk.ast.declarations.TypeDeclaration;
 import org.eclipse.dltk.ast.expressions.CallArgumentsList;
 import org.eclipse.dltk.ast.expressions.CallExpression;
 import org.eclipse.dltk.ast.expressions.Expression;
@@ -30,8 +28,8 @@ import org.eclipse.dltk.ast.references.VariableReference;
 import org.eclipse.dltk.ast.statements.Statement;
 import org.eclipse.dltk.compiler.ISourceElementRequestor;
 import org.eclipse.dltk.compiler.SourceElementRequestVisitor;
+import org.eclipse.dltk.compiler.ISourceElementRequestor.MethodInfo;
 import org.eclipse.dltk.core.DLTKCore;
-import org.eclipse.dltk.ruby.ast.RubyASTUtil;
 import org.eclipse.dltk.ruby.ast.RubyAliasExpression;
 import org.eclipse.dltk.ruby.ast.RubyAssignment;
 import org.eclipse.dltk.ruby.ast.RubyConstantDeclaration;
@@ -41,6 +39,7 @@ public class RubySourceElementRequestor extends SourceElementRequestVisitor {
 
 	private static final String NEW_CALL = "new"; //$NON-NLS-1$
 	private static final String VALUE = "value"; //$NON-NLS-1$
+	private static final String INITIALIZE = "initialize"; //$NON-NLS-1$
 
 	private static class TypeField {
 		private String fName;
@@ -350,4 +349,9 @@ public class RubySourceElementRequestor extends SourceElementRequestVisitor {
 		return visit((ASTNode) statement);
 	}
 
+	protected void modifyMethodInfo(MethodDeclaration methodDeclaration, MethodInfo mi) {
+		if (fInClass) {
+			mi.isConstructor = methodDeclaration.getName().equals(INITIALIZE);
+		}
+	}
 }
