@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.Modifiers;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
@@ -31,7 +30,6 @@ import org.eclipse.dltk.ast.references.SimpleReference;
 import org.eclipse.dltk.codeassist.IAssistParser;
 import org.eclipse.dltk.codeassist.ScriptCompletionEngine;
 import org.eclipse.dltk.compiler.env.ISourceModule;
-import org.eclipse.dltk.compiler.problem.DefaultProblem;
 import org.eclipse.dltk.core.CompletionProposal;
 import org.eclipse.dltk.core.DLTKLanguageManager;
 import org.eclipse.dltk.core.IField;
@@ -209,15 +207,6 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 
 	public void complete(ISourceModule module, int position, int i) {
 		this.currentModule = module;
-		if (!RubyPlugin.initialized) {
-			this.requestor
-					.completionFailure(new DefaultProblem(
-							null,
-							Messages.RubyCompletionEngine_pleaseWaitWhileDltkRubyBeingInitialized,
-							0, null, IStatus.WARNING, startPosition,
-							endPosition, -1));
-			return;
-		}
 
 		completedNames.clear();
 		this.actualCompletionPosition = position;
