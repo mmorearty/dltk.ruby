@@ -38,8 +38,8 @@ public class RubyUI extends AbstractUIPlugin {
 
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
-		
-		(new InitializeAfterLoadJob()).schedule();
+
+		// (new InitializeAfterLoadJob()).schedule();
 	}
 
 	public void stop(BundleContext context) throws Exception {
@@ -58,8 +58,9 @@ public class RubyUI extends AbstractUIPlugin {
 
 		return fRubyTextTools;
 	}
-	
-	public static void initializeAfterLoad(IProgressMonitor monitor) throws CoreException {
+
+	public static void initializeAfterLoad(IProgressMonitor monitor)
+			throws CoreException {
 		RiHelper.getInstance().getDocFor("Object"); //$NON-NLS-1$
 	}
 }
