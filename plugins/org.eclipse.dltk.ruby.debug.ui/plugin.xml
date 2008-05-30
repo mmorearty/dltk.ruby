@@ -193,23 +193,21 @@
       </page> 
     </extension>   
 
-<!-- ssanders: Uncomment when matching is correct
 	<extension
 		point="org.eclipse.ui.console.consolePatternMatchListeners">
 		<consolePatternMatchListener
 			class="org.eclipse.dltk.ruby.internal.debug.ui.console.RubyConsoleTracker"
 			id="org.eclipse.dltk.ruby.debug.ui.RubyConsoleTracker"
-			regex="(\w?:?[^(:|\n)]+):([\d]+)">
+			regex="${RubyFilenameLinenumber}"
+			qualifier="\p{Alpha}:\d">
 			<enablement>
-				<or>
-					<test
-						property="org.eclipse.debug.ui.processTypeTest"
-						value="rubyInterpreter" />
-				</or>
+				<test
+					property="org.eclipse.debug.ui.processTypeTest"
+					value="rubyInterpreter" />
 			</enablement>
 		</consolePatternMatchListener>
 	</extension>
--->
+
 	<extension point="org.eclipse.debug.ui.debugModelPresentations">
 		<debugModelPresentation
 			class="org.eclipse.dltk.ruby.internal.debug.ui.RubyDebugModelPresentation"

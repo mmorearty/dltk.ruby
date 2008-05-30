@@ -5,12 +5,12 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- 
+ * Contributors:
+ *     xored software, Inc. - Ñompleted initial version (Alex Panchenko)
  *******************************************************************************/
 package org.eclipse.dltk.ruby.internal.debug.ui.console;
 
 import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.console.IPatternMatchListenerDelegate;
 import org.eclipse.ui.console.PatternMatchEvent;
 import org.eclipse.ui.console.TextConsole;
@@ -34,28 +34,55 @@ public class RubyConsoleTracker implements IPatternMatchListenerDelegate {
 		return fConsole;
 	}
 
+	//	private static final String FROM = "from "; //$NON-NLS-1$
+	//	private static final String FROM_E = "from -e"; //$NON-NLS-1$
+
 	public void matchFound(PatternMatchEvent event) {
 		try {
 			int offset = event.getOffset();
 			int length = event.getLength();
-			IDocument document = getConsole().getDocument();
-			String text = document.get(offset, length);
-			if (text.indexOf("from -e") != -1) { //$NON-NLS-1$
-				return;
+			String text = getConsole().getDocument().get(offset, length);
+			// if (text.indexOf(FROM_E) != -1) {
+			// return;
+			// }
+			// if (text.startsWith(FROM)) {
+			// offset += FROM.length();
+			// length -= FROM.length();
+			// text = text.substring(FROM.length());
+			// }
+			if (RubyFileHyperlink.DEBUG) {
+				System.out.println("linkText=\"" + text + '"'); //$NON-NLS-1$
 			}
-			String trim = text.trim();
-			String from_ = "from "; //$NON-NLS-1$
-			if (trim.startsWith(from_)) {
-				int shift = text.indexOf(from_) + from_.length();
-				offset += shift;
-				length -= shift;
-			}
-			RubyFileHyperlink link = new RubyFileHyperlink(fConsole);
-			if (link.isCorrect(offset, length)) {
+			if (isValidLink(text)) {
+				final RubyFileHyperlink link = new RubyFileHyperlink(fConsole);
 				fConsole.addHyperlink(link, offset, length);
 			}
 		} catch (BadLocationException e) {
 		}
+	}
+
+	/**
+	 * Validates this hyper link
+	 * 
+	 * @param offset
+	 * @param length
+	 * @return
+	 */
+	private boolean isValidLink(String text) {
+		try {
+			final String fileName = RubyFileHyperlink.extractFileName(text);
+			if (fileName.length() > 1) {
+				if (RubyFileHyperlink.DEBUG) {
+					System.out.println("fileName='" + fileName + "'"); //$NON-NLS-1$//$NON-NLS-2$
+				}
+				return RubyFileHyperlink.findSourceModule(fileName) != null;
+			}
+		} catch (IllegalArgumentException e) {
+			if (RubyFileHyperlink.DEBUG) {
+				e.printStackTrace();
+			}
+		}
+		return false;
 	}
 
 }
