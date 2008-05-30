@@ -22,4 +22,14 @@
             nature="org.eclipse.dltk.ruby.core.nature">
       </provider>
    </extension>
+   <!-- Dynamic (String Substitution) Variables -->
+   <extension
+         point="org.eclipse.core.variables.dynamicVariables">
+      <variable
+          description="%RubyFilenameLinenumber.description"
+          name="RubyFilenameLinenumber"
+          resolver="org.eclipse.dltk.ruby.debug.RubyFilenameLinenumberResolver"
+          supportsArgument="false"/>
+   </extension> 
+
 </plugin>
