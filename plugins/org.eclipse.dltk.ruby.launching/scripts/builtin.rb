@@ -38,7 +38,7 @@ def put_methods!(metaclass)
 	for method in methods do
 	    put_rdoc(metaclass.name + "." + method.to_s)
 		$data << <<-"END"		
-	def #{method.to_s} (#{generateArgs(metaclass.instance_method(method).arity)})
+	def #{method.to_s}(#{generateArgs(metaclass.instance_method(method).arity)})
 	end
 	
 		END
@@ -55,7 +55,7 @@ def put_methods!(metaclass)
 	for method in methods do
 	    put_rdoc(metaclass.name + "." + method.to_s)
 		$data << <<-"END"		
-	def #{method.to_s} (#{generateArgs(metaclass.instance_method(method).arity)})
+	def #{method.to_s}(#{generateArgs(metaclass.instance_method(method).arity)})
 	end
 	
 		END
@@ -73,7 +73,7 @@ def put_methods!(metaclass)
 	for method in methods do
 	    put_rdoc(metaclass.name + "." + method.to_s)
 		$data << <<-"END"		
-	def #{method.to_s} (#{generateArgs(metaclass.instance_method(method).arity)})
+	def #{method.to_s}(#{generateArgs(metaclass.instance_method(method).arity)})
 	end
 	
 		END
@@ -106,7 +106,7 @@ def put_singleton_methods!(metaclass)
 #	ms = (metaclass.public_methods(false) - Class.instance_methods(false)).each { |m|
 	ms = (metaclass.singleton_methods(false)).each { |m|
 	$data << <<-"END2"
-	def self.#{m.to_s} (#{generateArgs(metaclass.method(m).arity)})
+	def self.#{m.to_s}(#{generateArgs(metaclass.method(m).arity)})
 	end
 	
 	END2
