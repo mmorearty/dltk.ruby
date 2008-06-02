@@ -9,76 +9,91 @@
 ###############################################################################
 require 'set'
 
-class String
-	def javacase
-		repl = self.gsub('::', '_')
-		"#{repl[0..0].downcase}#{repl[1..-1]}"
-	end
-	
-	def to_java_string
-		'"' + self + '"'
-	end
-end
+#class String
+#	def javacase
+#		repl = self.gsub('::', '_')
+#		"#{repl[0..0].downcase}#{repl[1..-1]}"
+#	end
+#
+#	def to_java_string
+#		'"' + self + '"'
+#	end
+#end
 
 [].each do |klass|
 	sup = klass.superclass
 	puts "#{klass.name}"
 	klass.instance_methods(false).each { |m| puts "    #{m}" }
 	puts "#{klass.name}.class"
-	klass.methods(false).each { |m| puts "    #{m}" }
+	klass.methods(false).each { |m| puts "	  #{m}" }
+end
+
+class DLTKBuilinGenerator
+
+def collectMethod(hash, methodName, arity)
+	hash.add methodName + '###' + arity.to_s
 end
 
 def put_methods!(metaclass)
-    modules = metaclass.included_modules
-	
+	result = Set.new
+	modules = metaclass.included_modules
+
 	methods = metaclass.public_instance_methods(false)
 	for mod in modules do; methods -= mod.public_instance_methods(true); end
-	
+
 	$data << "\t\npublic\n"
 	for method in methods do
-	    put_rdoc(metaclass.name + "." + method.to_s)
-		$data << <<-"END"		
-	def #{method.to_s}(#{generateArgs(metaclass.instance_method(method).arity)})
+		arity = metaclass.instance_method(method).arity
+		collectMethod(result, method.to_s, arity)
+		put_rdoc(metaclass.name + "." + method.to_s)
+		$data << <<-"END"
+	def #{method.to_s}(#{generateArgs(arity)})
 	end
-	
-		END
+
+END
 	end
-	
+
 	methods = metaclass.protected_instance_methods(false)
-	for mod in modules do; 
-	    if mod.respond_to?(:protected_instance_methods) then 
-	        methods -= mod.protected_instance_methods(true)
-		end  
+	for mod in modules do;
+		if mod.respond_to?(:protected_instance_methods) then
+			methods -= mod.protected_instance_methods(true)
+			end
 	end
-	
+
 	$data << "\t\nprotected\n"
 	for method in methods do
-	    put_rdoc(metaclass.name + "." + method.to_s)
-		$data << <<-"END"		
-	def #{method.to_s}(#{generateArgs(metaclass.instance_method(method).arity)})
+		put_rdoc(metaclass.name + "." + method.to_s)
+		arity = metaclass.instance_method(method).arity
+		collectMethod(result, method.to_s, arity)
+		$data << <<-"END"
+	def #{method.to_s}(#{generateArgs(arity)})
 	end
-	
-		END
+
+END
 	end
-	
-	
+
+
 	methods = metaclass.private_instance_methods(false)
-	for mod in modules do; 
-	    if mod.respond_to?(:private_instance_methods) then 
-	        methods -= mod.private_instance_methods(true)
-		end 		 
+	for mod in modules do;
+		if mod.respond_to?(:private_instance_methods) then
+			methods -= mod.private_instance_methods(true)
+		end
 	end
-	
+
 	$data << "\t\nprivate\n"
 	for method in methods do
-	    put_rdoc(metaclass.name + "." + method.to_s)
-		$data << <<-"END"		
-	def #{method.to_s}(#{generateArgs(metaclass.instance_method(method).arity)})
+		put_rdoc(metaclass.name + "." + method.to_s)
+		arity = metaclass.instance_method(method).arity
+		collectMethod(result, method.to_s, arity)
+		$data << <<-"END"
+	def #{method.to_s}(#{generateArgs(arity)})
 	end
-	
-		END
-	end			
-	
+
+END
+	end
+
+	return result
+
 end
 
 def generateArgs(arity)
@@ -86,16 +101,16 @@ def generateArgs(arity)
 		return "*args"
 	end
 	result = ""
-	for i in 1..arity do 
+	for i in 1..arity do
 		result <<  "arg" + i.to_s
-		if i != arity then 
+		if i != arity then
 			result << ", "
 		end
 	end
 	result
 end
 
-def put_singleton_methods!(metaclass)
+def put_singleton_methods!(metaclass, instanceMethods)
 #	if (metaclass.is_a?(Class))
 #		$data << <<-"END2"
 #		class << self
@@ -105,11 +120,14 @@ def put_singleton_methods!(metaclass)
 #	end
 #	ms = (metaclass.public_methods(false) - Class.instance_methods(false)).each { |m|
 	ms = (metaclass.singleton_methods(false)).each { |m|
-	$data << <<-"END2"
-	def self.#{m.to_s}(#{generateArgs(metaclass.method(m).arity)})
+		arity = metaclass.method(m).arity
+		if (!instanceMethods.include?(m.to_s + '###' + arity.to_s)) then
+			$data << <<-"END2"
+	def self.#{m.to_s}(#{generateArgs(arity)})
 	end
-	
-	END2
+
+			END2
+		end
 	}
 #	if (metaclass.is_a?(Class))
 #		$data << <<-"END2"
@@ -120,19 +138,19 @@ end
 
 def put_included_modules!(metaclass)
 
-	ms = (metaclass.included_modules - 
+	ms = (metaclass.included_modules -
 			((metaclass.is_a?(Class) &&
 			metaclass.superclass &&
 				metaclass.superclass.included_modules) || []))
-				
+
 	for in_mod in ms do
 		$data << <<-"END"
-		
+
 	include #{in_mod.name}
-	
+
 		END
 	end
-	
+
 end
 
 def put_singleton_included_modules!(metaclass)
@@ -144,16 +162,16 @@ def put_singleton_included_modules!(metaclass)
 #	ms = ((class << metaclass; included_modules; end) -
 #			((sup && sup.included_modules) || []))
 	ms = (class << metaclass; included_modules; end)
-	
-	
+
+
 	for in_mod in ms do
 		$data << <<-"END"
-		
+
 		include #{in_mod.name}
-	
+
 		END
 	end
-	
+
 	$data << <<-"END2"
 	end
 	END2
@@ -185,14 +203,14 @@ def dumpClass(klass)
 #	methods = klass.instance_methods(false)
 	put_rdoc(name)
 	$data << <<-"END"
-	
+
 class #{name} #{scname}
 	END
 	put_included_modules!(klass)
 	put_singleton_included_modules!(klass)
-	put_methods!(klass)
-	put_singleton_methods!(klass)
-	$data << <<-"END"	
+	instanceMethods = put_methods!(klass)
+	put_singleton_methods!(klass, instanceMethods)
+	$data << <<-"END"
 end
 
 	END
@@ -201,7 +219,7 @@ end
 def put_rdoc(name)
 	return
 	print "Getting doc for " + name + "\n"
-	rdoc = `d:\\instantrails\\ruby\\bin\\ri.bat \"#{name}\" -f html`	
+	rdoc = `d:\\instantrails\\ruby\\bin\\ri.bat \"#{name}\" -f html`
 	rdoc.to_a.each { |line|
 		$data << "#" + line
 	}
@@ -212,12 +230,12 @@ def dumpModule(klass)
 	#	methods = klass.instance_methods(false)
 	put_rdoc(name)
 	$data << <<-"END"
-		
+
 module #{name}
 	END
 	put_included_modules!(klass)
-	put_methods!(klass)
-	put_singleton_methods!(klass)
+	instanceMethods = put_methods!(klass)
+	put_singleton_methods!(klass, instanceMethods)
 	$data << <<-"END"
 end
 
@@ -238,55 +256,63 @@ def process_all
 	classes = Set.new
 	known_modules = Set.new #[Enumerable, Comparable]
 	ObjectSpace.each_object do |o|
+		if (o.respond_to?('name') && o.name == 'DLTKBuilinGenerator') then 
+			next
+		end
 		classes << o if o.is_a?(Class)
 		known_modules << o if o.is_a?(Module)
 	end
 	known_modules = (known_modules - classes).to_a
 	classes = classes.to_a.sort { |a,b| a.name <=> b.name }
-	
-	classes.each { |c|		
-		$data = "" 
-		dumpClass(c) 
+
+	classes.each { |c|
+		$data = ""
+		dumpClass(c)
 		filename = c.name
 		pos = filename.index(':')
-		if pos then 
+		if pos then
 			filename = filename.slice(0..pos-1)
-			#puts "sliced " + filename  
-		end		
-		file = filename + ".rb"		
+			#puts "sliced " + filename
+		end
+		file = filename + ".rb"
 		puts "#### DLTK RUBY BUILTINS ####" + file + "\n"
-		puts $data 
+		puts $data
 		#File.open(file, 'a') {|f| f.write $data}
 	}
 	known_modules.each { |c|
-		$data = "" 
-		dumpModule(c) 
+		$data = ""
+		dumpModule(c)
 		filename = c.name
 		pos = filename.index(':')
-		if pos then 
+		if pos then
 			filename = filename.slice(0..pos-1)
-			#puts "sliced " + filename 
-		end		
+			#puts "sliced " + filename
+		end
 		file = filename + ".rb"
 		puts "#### DLTK RUBY BUILTINS ####" + file + "\n"
-		puts $data 
-		#File.open(file, 'a') {|f| f.write $data}		
+		puts $data
+		#File.open(file, 'a') {|f| f.write $data}
 	}
-	
+
 	ccc = Module.constants.to_a
+	ccc.delete('DLTKBuilinGenerator')
 	known_modules.each { |x|
 		ccc.delete(x.to_s)
 	}
 	classes.each { |x|
 		ccc.delete(x.to_s)
 	}
-	
+
 	puts "#### DLTK RUBY BUILTINS ####constants.rb\n\n\n"
 	ccc.each { |bar|
 		puts "#{bar} = #{Module.const_get(bar).class.to_s}.new"
 	}
-	
+
 end
 
-process_all
+end
 
+g = DLTKBuilinGenerator.new
+g.process_all
+
+# vim: noexpandtab tabstop=4 sts=0 sw=4
