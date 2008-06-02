@@ -195,7 +195,7 @@ public class RubyFileHyperlink implements IHyperlink {
 		try {
 			return fConsole.getDocument().get(offset, length);
 		} catch (BadLocationException e) {
-			throw new IllegalArgumentException(e);
+			throw new IllegalArgumentException(e.getMessage());
 		}
 	}
 
