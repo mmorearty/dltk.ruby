@@ -1,23 +1,24 @@
 require 'rdoc/ri/ri_driver'
 
-ENV["RI"] = "-f html"
+ENV["RI"] = "-f html -T"
 
+endMarker = "DLTKDOCEND"
 ri = RiDriver.new
 
-while true do 
-	s = STDIN.gets.chop!
-	begin		
-		ri.get_info_for(s)		
-		STDOUT.puts "\nDLTKDOCEND"
+while true do
+	s = STDIN.gets
+	if (s.nil?) 
+	  break;
+	end
+	s = s.chop!
+	begin
+		ri.get_info_for(s)
+		STDOUT.puts "\n" + endMarker
 		STDOUT.flush
-	rescue RiError => e		
+	rescue RiError => e
 		STDOUT.puts "#{e}"
-		STDOUT.puts "\nDLTKDOCEND"
-		STDOUT.flush		
+		STDOUT.puts "\n" + endMarker
+		STDOUT.flush
 		next
 	end
 end
-
-STDOUT.puts "/bye"
-STDOUT.puts "\nDLTKDOCEND"
-STDOUT.flush

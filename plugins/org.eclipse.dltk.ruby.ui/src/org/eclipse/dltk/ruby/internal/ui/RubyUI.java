@@ -11,6 +11,7 @@ package org.eclipse.dltk.ruby.internal.ui;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.dltk.ruby.internal.ui.docs.RiHelper;
 import org.eclipse.dltk.ruby.internal.ui.text.RubyTextTools;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -28,6 +29,8 @@ public class RubyUI extends AbstractUIPlugin {
 	private static RubyUI plugin;
 
 	private RubyTextTools fRubyTextTools;
+	
+	private ListenerList shutdownListeners = new ListenerList();
 
 	/**
 	 * The constructor
@@ -41,8 +44,16 @@ public class RubyUI extends AbstractUIPlugin {
 
 		// (new InitializeAfterLoadJob()).schedule();
 	}
+	
+	public void addShutdownListener(ShutdownEventListener listener) {
+		shutdownListeners.add(listener);
+	}
 
 	public void stop(BundleContext context) throws Exception {
+		Object[] listeners = shutdownListeners.getListeners();
+		for (int i = 0; i < listeners.length; ++i) {
+			((ShutdownEventListener) listeners[i]).shutdown();
+		}
 		plugin = null;
 		super.stop(context);
 	}

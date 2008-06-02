@@ -13,6 +13,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.Writer;
 import java.util.WeakHashMap;
 
 import org.eclipse.core.runtime.CoreException;
@@ -30,10 +32,12 @@ import org.eclipse.dltk.launching.ScriptLaunchUtil;
 import org.eclipse.dltk.launching.ScriptRuntime;
 import org.eclipse.dltk.ruby.core.RubyNature;
 import org.eclipse.dltk.ruby.internal.ui.RubyUI;
+import org.eclipse.dltk.ruby.internal.ui.ShutdownEventListener;
 import org.eclipse.dltk.ui.DLTKUIPlugin;
 
 public class RiHelper {
-	private final static String DOC_TERMINATION_LINE = "DLTKDOCEND"; //$NON-NLS-1$
+	private static final String DOC_TERMINATION_LINE = "DLTKDOCEND"; //$NON-NLS-1$
+	private static final long TERMINATE_WAIT_TIMEOUT = 2000;
 
 	private static RiHelper instance;
 
@@ -66,7 +70,8 @@ public class RiHelper {
 	protected synchronized void runRiProcess() throws CoreException,
 			IOException {
 		IInterpreterInstall install = ScriptLaunchUtil
-				.getDefaultInterpreterInstall(RubyNature.NATURE_ID, LocalEnvironment.ENVIRONMENT_ID);
+				.getDefaultInterpreterInstall(RubyNature.NATURE_ID,
+						LocalEnvironment.ENVIRONMENT_ID);
 
 		if (install == null) {
 			throw new CoreException(Status.CANCEL_STATUS);
@@ -83,8 +88,8 @@ public class RiHelper {
 		IFileHandle script = deployment.getFile(path);
 
 		riProcess = ScriptLaunchUtil.runScriptWithInterpreter(exeEnv, install
-				.getInstallLocation().toOSString(), script, null, null,
-				null, install.getEnvironmentVariables());
+				.getInstallLocation().toOSString(), script, null, null, null,
+				install.getEnvironmentVariables());
 
 		writer = new OutputStreamWriter(riProcess.getOutputStream());
 		reader = new BufferedReader(new InputStreamReader(riProcess
@@ -94,18 +99,65 @@ public class RiHelper {
 	}
 
 	protected synchronized void destroyRiProcess() {
+		if (writer != null) {
+			closeQuietly(writer);
+			writer = null;
+		}
+		if (reader != null) {
+			closeQuietly(reader);
+			reader = null;
+		}
+		if (errorReader != null) {
+			closeQuietly(errorReader);
+			errorReader = null;
+		}
 		if (riProcess != null) {
+			try {
+				final Watchdog watchdog = new Watchdog(TERMINATE_WAIT_TIMEOUT);
+				watchdog.addListener(new WatchdogListener() {
+
+					public void timeoutOccured() {
+						riProcess.destroy();
+					}
+
+				});
+				watchdog.start();
+				try {
+					riProcess.waitFor();
+				} finally {
+					watchdog.stop();
+				}
+			} catch (InterruptedException e) {
+				// ignore
+			}
 			riProcess.destroy();
 			riProcess = null;
-
-			// Cache should be cleared if we change interpreter
-			cache.clear();
 		}
 		if (deployment != null) {
 			deployment.dispose();
 			deployment = null;
 		}
+		// Cache should be cleared if we change interpreter
+		cache.clear();
+	}
 
+	/**
+	 * @param errorReader2
+	 */
+	private void closeQuietly(Reader r) {
+		try {
+			r.close();
+		} catch (IOException e) {
+			// ignore
+		}
+	}
+
+	private static void closeQuietly(Writer w) {
+		try {
+			w.close();
+		} catch (IOException e) {
+			// ignore
+		}
 	}
 
 	protected String readStderr() throws IOException {
@@ -179,6 +231,13 @@ public class RiHelper {
 							IInterpreterInstall Interpreter) {
 					}
 				});
+		RubyUI.getDefault().addShutdownListener(new ShutdownEventListener() {
+
+			public void shutdown() {
+				destroyRiProcess();
+			}
+
+		});
 	}
 
 	public synchronized String getDocFor(String keyword) {
