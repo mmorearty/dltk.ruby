@@ -30,6 +30,7 @@ import org.eclipse.dltk.launching.ScriptLaunchUtil;
 import org.eclipse.dltk.launching.ScriptRuntime;
 import org.eclipse.dltk.ruby.core.RubyNature;
 import org.eclipse.dltk.ruby.internal.ui.RubyUI;
+import org.eclipse.dltk.ui.DLTKUIPlugin;
 
 public class RiHelper {
 	private final static String DOC_TERMINATION_LINE = "DLTKDOCEND"; //$NON-NLS-1$
@@ -76,9 +77,9 @@ public class RiHelper {
 				.getAdapter(IExecutionEnvironment.class);
 		deployment = exeEnv.createDeployment();
 
-		IPath path = deployment
-				.add(RubyUI.getDefault().getBundle(), "support/") //$NON-NLS-1$
-				.append("dltkri.rb"); //$NON-NLS-1$
+		IPath path = deployment.add(RubyUI.getDefault().getBundle(),
+				"support/dltkri.rb"); //$NON-NLS-1$
+
 		IFileHandle script = deployment.getFile(path);
 
 		riProcess = ScriptLaunchUtil.runScriptWithInterpreter(exeEnv, install
@@ -90,7 +91,6 @@ public class RiHelper {
 				.getInputStream()));
 		errorReader = new BufferedReader(new InputStreamReader(riProcess
 				.getErrorStream()));
-		deployment.dispose();
 	}
 
 	protected synchronized void destroyRiProcess() {
@@ -152,7 +152,7 @@ public class RiHelper {
 			try {
 				runRiProcess();
 			} catch (Exception e) {
-				// TODO: log exception
+				DLTKUIPlugin.logErrorMessage("Error starting RiHelper", e); //$NON-NLS-1$
 				return false;
 			}
 		}
