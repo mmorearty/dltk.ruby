@@ -21,7 +21,6 @@ import java.util.Locale;
 import java.util.Set;
 
 import org.eclipse.dltk.ast.ASTNode;
-import org.eclipse.dltk.ast.Modifiers;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
 import org.eclipse.dltk.ast.expressions.CallExpression;
 import org.eclipse.dltk.ast.parser.ISourceParser;
@@ -275,30 +274,9 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 								((RubyDVarExpression) minimalNode).getName(),
 								position);
 					} else { // worst case
-						if (wordStarting == null && !isContextMethodCall) {
-							int rel = RELEVANCE_FREE_SPACE;
-							try {
-								IModelElement[] children = currentModule
-										.getChildren();
-								if (children != null)
-									for (int j = 0; j < children.length; j++) {
-										if (children[j] instanceof IField) {
-											reportField((IField) children[j],
-													rel);
-										} else if (children[j] instanceof IMethod) {
-											IMethod method = (IMethod) children[j];
-											if ((method.getFlags() & Modifiers.AccStatic) == 0)
-												reportMethod(method, rel);
-										} else if (children[j] instanceof IType
-												&& !children[j]
-														.getElementName()
-														.trim()
-														.startsWith("<<")) //$NON-NLS-1$
-											reportType((IType) children[j], rel);
-									}
-							} catch (ModelException e) {
-								e.printStackTrace();
-							}
+						if (wordStarting == null
+								&& !requestor.isContextInformationMode()) {
+							reportCurrentElements(moduleDeclaration, position);
 						}
 					}
 				}
@@ -306,6 +284,15 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 		} finally {
 			this.requestor.endReporting();
 		}
+	}
+
+	private void reportCurrentElements(ModuleDeclaration moduleDeclaration,
+			int position) {
+		setSourceRange(position, position);
+		completeSimpleRef(moduleDeclaration, "", position); //$NON-NLS-1$
+		IClassType self = RubyTypeInferencingUtils.determineSelfClass(
+				currentModule, moduleDeclaration, position);
+		completeClassMethods(moduleDeclaration, self, ""); //$NON-NLS-1$
 	}
 
 	private boolean completeContextMethod(int position,
@@ -735,8 +722,6 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 		char[] name = elementName.toCharArray();
 		char[] compl = name;
 
-		int relevance = rel;
-
 		// accept result
 		noProposal = false;
 		if (!requestor.isIgnored(CompletionProposal.METHOD_DECLARATION)) {
@@ -769,7 +754,7 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 			}
 			proposal.setReplaceRange(this.startPosition - this.offset,
 					this.endPosition - this.offset);
-			proposal.setRelevance(relevance);
+			proposal.setRelevance(rel);
 			this.requestor.accept(proposal);
 			if (DEBUG) {
 				this.printDebug(proposal);
@@ -789,8 +774,6 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 		if (name.length == 0)
 			return;
 
-		int relevance = rel;
-
 		// accept result
 		noProposal = false;
 		if (!requestor.isIgnored(CompletionProposal.TYPE_REF)) {
@@ -807,7 +790,7 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 			}
 			proposal.setReplaceRange(this.startPosition - this.offset,
 					this.endPosition - this.offset);
-			proposal.setRelevance(relevance);
+			proposal.setRelevance(rel);
 			this.requestor.accept(proposal);
 			if (DEBUG) {
 				this.printDebug(proposal);
@@ -827,8 +810,6 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 		if (name.length == 0)
 			return;
 
-		int relevance = rel;
-
 		// accept result
 		noProposal = false;
 		if (!requestor.isIgnored(CompletionProposal.FIELD_REF)) {
@@ -841,7 +822,7 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 			// proposal.setFlags(Flags.AccDefault);
 			proposal.setReplaceRange(this.startPosition - this.offset,
 					this.endPosition - this.offset);
-			proposal.setRelevance(relevance);
+			proposal.setRelevance(rel);
 			this.requestor.accept(proposal);
 			if (DEBUG) {
 				this.printDebug(proposal);
