@@ -526,7 +526,7 @@ public class RubyCompletionTests extends AbstractModelCompletionTests {
 		assertTrue(requestor.getResults().length() > 0);
 	}
 
-	public void REM_testCompletion029() throws ModelException {
+	public void testCompletion029() throws ModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
 		ISourceModule cu = getSourceModule("completion", "src", "b180143.rb");
 
@@ -1027,7 +1027,8 @@ public class RubyCompletionTests extends AbstractModelCompletionTests {
 		assertTrue(requestor.getResults().length() > 0);
 	}
 
-	public void REM_testCompletion060() throws ModelException {
+	public void testCompletion060_FAILS() throws ModelException {
+		if (notYetImplemented()) return;
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
 		ISourceModule cu = getSourceModule("completion", "src", "b193898.rb");
 
@@ -1041,7 +1042,8 @@ public class RubyCompletionTests extends AbstractModelCompletionTests {
 		assertTrue(requestor.getResults().indexOf("sort") > -1);
 	}
 
-	public void REM_testCompletion061() throws ModelException {
+	public void testCompletion061_FAILS() throws ModelException {
+		if (notYetImplemented()) return;
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
 		ISourceModule cu = getSourceModule("completion", "src", "b194725.rb");
 
@@ -1056,7 +1058,8 @@ public class RubyCompletionTests extends AbstractModelCompletionTests {
 		assertTrue(lineIndex == -1);
 	}
 
-	public void REM_testCompletion062() throws ModelException {
+	public void testCompletion062_FAILS() throws ModelException {
+		if (notYetImplemented()) return;
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
 		ISourceModule cu = getSourceModule("completion", "src", "b195463.rb");
 
@@ -1086,7 +1089,8 @@ public class RubyCompletionTests extends AbstractModelCompletionTests {
 		assertTrue(resultsLength > 0);
 	}
 
-	public void REM_testCompletion064() throws ModelException {
+	public void testCompletion064_FAILS() throws ModelException {
+		if (notYetImplemented()) return;
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
 		ISourceModule cu = getSourceModule("completion", "src", "b198381.rb");
 
@@ -1103,7 +1107,8 @@ public class RubyCompletionTests extends AbstractModelCompletionTests {
 	}
 
 	/* It does NOT work in the editor */
-	public void testCompletion065() throws ModelException {
+	public void REM_testCompletion065_FAILS_IN_EDITOR() throws ModelException {
+		if (notYetImplemented()) return;
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
 		ISourceModule cu = getSourceModule("completion", "src", "b180167.rb");
 
@@ -1135,7 +1140,7 @@ public class RubyCompletionTests extends AbstractModelCompletionTests {
 		assertTrue(resultsLength > 0);
 	}
 
-	public void REM_testCompletion067() throws ModelException {
+	public void testCompletion067() throws ModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
 		ISourceModule cu = getSourceModule("completion", "src", "b194564.rb");
 
