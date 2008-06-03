@@ -637,9 +637,8 @@ public class RubyASTBuildVisitor implements NodeVisitor {
 	}
 
 	private void fixFunctionCallOffsets(CallExpression callNode,
-			String nameNode, int possibleNameStart, int firstArgStart,
+			String methodName, int possibleNameStart, int firstArgStart,
 			int lastArgEnd) {
-		String methodName = nameNode;
 		int nameStart = RubySyntaxUtils.skipWhitespaceForward(content,
 				possibleNameStart);
 		int nameEnd = nameStart + methodName.length();
@@ -669,11 +668,14 @@ public class RubyASTBuildVisitor implements NodeVisitor {
 			}
 		} else {
 			if (nameEnd > firstArgStart) {
+				if (callNode.getArgs().getChilds().isEmpty()) {
+					callNode.setEnd(nameEnd);
+				}
 				if (TRACE_RECOVERING)
 					RubyPlugin
 							.log("DLTKASTBuildVisitor.fixFunctionCallOffsets(" //$NON-NLS-1$
 									+ methodName + "): nameEnd > firstArgStart"); //$NON-NLS-1$
-				return; // /XXX: it's a kind of magic, please, FIXME!!!
+				return;
 			}
 			int lParenOffset = RubySyntaxUtils.skipWhitespaceForward(content,
 					nameEnd, firstArgStart);
