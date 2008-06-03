@@ -28,7 +28,6 @@ import org.eclipse.dltk.ast.references.ConstantReference;
 import org.eclipse.dltk.ast.references.VariableReference;
 import org.eclipse.dltk.codeassist.IAssistParser;
 import org.eclipse.dltk.codeassist.ScriptSelectionEngine;
-import org.eclipse.dltk.compiler.env.ISourceModule;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.DLTKLanguageManager;
 import org.eclipse.dltk.core.IField;
@@ -36,6 +35,7 @@ import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.IMethod;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.IScriptProject;
+import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ISourceRange;
 import org.eclipse.dltk.core.IType;
 import org.eclipse.dltk.core.ModelException;
@@ -109,7 +109,8 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 		return null;
 	}
 
-	public IModelElement[] select(ISourceModule sourceUnit,
+	public IModelElement[] select(
+			org.eclipse.dltk.compiler.env.ISourceModule sourceUnit,
 			int selectionSourceStart, int selectionSourceEnd) {
 		sourceModule = (ISourceModule) sourceUnit.getModelElement();
 		String source = sourceUnit.getSourceContents();
@@ -151,27 +152,23 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 
 				this.wayToNode = ASTUtils.restoreWayToNode(parsedUnit, node);
 
-				org.eclipse.dltk.core.ISourceModule modelModule = (org.eclipse.dltk.core.ISourceModule) sourceModule
-						.getModelElement();
 				if (node instanceof TypeDeclaration) {
-					TypeDeclaration typeDeclaration = (TypeDeclaration) node;
-					selectionOnTypeDeclaration(parsedUnit, typeDeclaration);
+					selectionOnTypeDeclaration(parsedUnit,
+							(TypeDeclaration) node);
 				} else if (node instanceof MethodDeclaration) {
-					MethodDeclaration methodDeclaration = (MethodDeclaration) node;
-					selectionOnMethodDeclaration(parsedUnit, methodDeclaration);
+					selectionOnMethodDeclaration(parsedUnit,
+							(MethodDeclaration) node);
 				} else if (node instanceof ConstantReference
 						|| node instanceof RubyColonExpression) {
-					selectTypes(modelModule, parsedUnit, node);
+					selectTypes(parsedUnit, node);
 				} else if (node instanceof VariableReference) {
-					selectionOnVariable(modelModule, parsedUnit,
-							(VariableReference) node);
+					selectionOnVariable(parsedUnit, (VariableReference) node);
 				} else if (node instanceof RubySuperExpression) {
-					RubySuperExpression superExpr = (RubySuperExpression) node;
-					selectOnSuper(modelModule, parsedUnit, superExpr);
+					selectOnSuper(parsedUnit, (RubySuperExpression) node);
 				} else {
 					CallExpression parentCall = this.getEnclosingCallNode(node);
 					if (parentCall != null) {
-						selectOnMethod(modelModule, parsedUnit, parentCall);
+						selectOnMethod(parsedUnit, parentCall);
 					} else { // parentCall == null
 					}
 				}
@@ -192,10 +189,10 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 				.toArray(new IModelElement[result.size()]);
 	}
 
-	private void selectOnSuper(org.eclipse.dltk.core.ISourceModule modelModule,
-			ModuleDeclaration parsedUnit, RubySuperExpression superExpr) {
+	private void selectOnSuper(ModuleDeclaration parsedUnit,
+			RubySuperExpression superExpr) {
 		RubyClassType selfClass = RubyTypeInferencingUtils.determineSelfClass(
-				modelModule, parsedUnit, superExpr.sourceStart());
+				sourceModule, parsedUnit, superExpr.sourceStart());
 		MethodDeclaration enclosingMethod = ASTUtils.getEnclosingMethod(
 				wayToNode, superExpr, false);
 		if (enclosingMethod != null) {
@@ -212,10 +209,8 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 	}
 
 	private void selectOnColonExpression(ModuleDeclaration parsedUnit,
-			RubyColonExpression node,
-			org.eclipse.dltk.core.ISourceModule modelModule) {
-		BasicContext basicContext = new BasicContext(
-				(org.eclipse.dltk.core.ISourceModule) sourceModule, parsedUnit);
+			RubyColonExpression node) {
+		BasicContext basicContext = new BasicContext(sourceModule, parsedUnit);
 		ColonExpressionEvaluator evaluator = new ColonExpressionEvaluator(
 				new ExpressionTypeGoal(basicContext, node));
 		IGoal[] init = evaluator.init();
@@ -268,10 +263,8 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 	}
 
 	private void selectOnConstant(ModuleDeclaration parsedUnit,
-			ConstantReference node,
-			org.eclipse.dltk.core.ISourceModule modelModule) {
-		BasicContext basicContext = new BasicContext(
-				(org.eclipse.dltk.core.ISourceModule) sourceModule, parsedUnit);
+			ConstantReference node) {
+		BasicContext basicContext = new BasicContext(sourceModule, parsedUnit);
 		ConstantReferenceEvaluator evaluator = new ConstantReferenceEvaluator(
 				new ExpressionTypeGoal(basicContext, node));
 		IGoal[] init = evaluator.init();
@@ -308,15 +301,15 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 			end = x;
 		}
 		if (start + 1 == end) {
-			ISourceRange range, range2;
-			range = RubySyntaxUtils.getEnclosingName(source, end);
+			ISourceRange range = RubySyntaxUtils.getEnclosingName(source, end);
 			if (range != null) {
 				this.actualSelectionStart = range.getOffset();
 				this.actualSelectionEnd = this.actualSelectionStart
 						+ range.getLength();
 				// return true;
 			}
-			range2 = RubySyntaxUtils.insideMethodOperator(source, end);
+			ISourceRange range2 = RubySyntaxUtils.insideMethodOperator(source,
+					end);
 			if (range != null
 					&& (range2 == null || range2.getLength() < range
 							.getLength()))
@@ -341,13 +334,11 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 		return false;
 	}
 
-	private void selectTypes(org.eclipse.dltk.core.ISourceModule modelModule,
-			ModuleDeclaration parsedUnit, ASTNode node) {
+	private void selectTypes(ModuleDeclaration parsedUnit, ASTNode node) {
 		if (node instanceof ConstantReference) {
-			selectOnConstant(parsedUnit, (ConstantReference) node, modelModule);
+			selectOnConstant(parsedUnit, (ConstantReference) node);
 		} else if (node instanceof RubyColonExpression) {
-			selectOnColonExpression(parsedUnit, (RubyColonExpression) node,
-					modelModule);
+			selectOnColonExpression(parsedUnit, (RubyColonExpression) node);
 		}
 
 		if (selectionElements.isEmpty()) {
@@ -365,18 +356,17 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 				unqualifiedName = expr.getName();
 			}
 			if (unqualifiedName != null) {
-				ScriptModelUtil.searchTypeDeclarations(modelModule
+				ScriptModelUtil.searchTypeDeclarations(sourceModule
 						.getScriptProject(), unqualifiedName, requestor);
 			}
 		}
 	}
 
-	private void selectionOnVariable(
-			org.eclipse.dltk.core.ISourceModule modelModule,
-			ModuleDeclaration parsedUnit, VariableReference e) {
+	private void selectionOnVariable(ModuleDeclaration parsedUnit,
+			VariableReference e) {
 		String name = e.getName();
 		if (name.startsWith("@")) { //$NON-NLS-1$
-			IField[] fields = RubyModelUtils.findFields(modelModule,
+			IField[] fields = RubyModelUtils.findFields(sourceModule,
 					parsedUnit, name, e.sourceStart());
 			addArrayToCollection(fields, selectionElements);
 		} else {
@@ -406,9 +396,7 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 							.sourceStart(), e.sourceEnd()));
 				}
 			}
-
 		}
-
 	}
 
 	private IField createLocalVariable(String name, int nameStart, int nameEnd) {
@@ -418,10 +406,8 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 
 	private IType[] getSourceTypesForClass(ModuleDeclaration parsedUnit,
 			ASTNode statement) {
-		ExpressionTypeGoal typeGoal = new ExpressionTypeGoal(
-				new BasicContext(
-						(org.eclipse.dltk.core.ISourceModule) sourceModule,
-						parsedUnit), statement);
+		ExpressionTypeGoal typeGoal = new ExpressionTypeGoal(new BasicContext(
+				sourceModule, parsedUnit), statement);
 		IEvaluatedType evaluatedType = this.inferencer.evaluateType(typeGoal,
 				5000);
 		if (evaluatedType instanceof RubyClassType) {
@@ -443,11 +429,10 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 		// }
 		IModelElement elementAt = null;
 		try {
-			elementAt = ((org.eclipse.dltk.core.ISourceModule) sourceModule)
+			elementAt = sourceModule
 					.getElementAt(typeDeclaration.sourceStart() + 1);
 		} catch (ModelException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			RubyPlugin.log(e);
 		}
 		if (elementAt != null)
 			selectionElements.add(elementAt);
@@ -457,19 +442,17 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 			MethodDeclaration methodDeclaration) {
 		IModelElement elementAt = null;
 		try {
-			elementAt = ((org.eclipse.dltk.core.ISourceModule) sourceModule)
-					.getElementAt(methodDeclaration.sourceStart() + 1);
+			elementAt = sourceModule.getElementAt(methodDeclaration
+					.sourceStart() + 1);
 		} catch (ModelException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			RubyPlugin.log(e);
 		}
 		if (elementAt != null)
 			selectionElements.add(elementAt);
 	}
 
-	private void selectOnMethod(
-			org.eclipse.dltk.core.ISourceModule modelModule,
-			ModuleDeclaration parsedUnit, CallExpression parentCall) {
+	private void selectOnMethod(ModuleDeclaration parsedUnit,
+			CallExpression parentCall) {
 		String methodName = parentCall.getName();
 		ASTNode receiver = parentCall.getReceiver();
 
@@ -477,27 +460,27 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 
 		if (receiver == null) {
 			RubyClassType type = RubyTypeInferencingUtils.determineSelfClass(
-					modelModule, parsedUnit, parentCall.sourceStart());
-			IMethod[] m = RubyModelUtils.searchClassMethodsExact(modelModule,
+					sourceModule, parsedUnit, parentCall.sourceStart());
+			IMethod[] m = RubyModelUtils.searchClassMethodsExact(sourceModule,
 					parsedUnit, type, methodName);
 			addArrayToCollection(m, availableMethods);
 		} else {
 			ExpressionTypeGoal goal = new ExpressionTypeGoal(new BasicContext(
-					modelModule, parsedUnit), receiver);
+					sourceModule, parsedUnit), receiver);
 			IEvaluatedType type = inferencer.evaluateType(goal, 5000);
-			IMethod[] m = RubyModelUtils.searchClassMethodsExact(modelModule,
+			IMethod[] m = RubyModelUtils.searchClassMethodsExact(sourceModule,
 					parsedUnit, type, methodName);
 			addArrayToCollection(m, availableMethods);
 			if (receiver instanceof VariableReference) {
 				IMethod[] availableMethods2 = RubyModelUtils
 						.getSingletonMethods((VariableReference) receiver,
-								parsedUnit, modelModule, methodName);
+								parsedUnit, sourceModule, methodName);
 				addArrayToCollection(availableMethods2, availableMethods);
 			}
 		}
 
 		if (availableMethods.isEmpty()) {
-			searchMethodDeclarations(modelModule.getScriptProject(),
+			searchMethodDeclarations(sourceModule.getScriptProject(),
 					methodName, availableMethods);
 		}
 
@@ -509,7 +492,6 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 				}
 			}
 		}
-
 	}
 
 	private static void searchMethodDeclarations(IScriptProject project,
@@ -519,7 +501,7 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 			public void acceptSearchMatch(SearchMatch match)
 					throws CoreException {
 				IModelElement modelElement = (IModelElement) match.getElement();
-				org.eclipse.dltk.core.ISourceModule sm = (org.eclipse.dltk.core.ISourceModule) modelElement
+				ISourceModule sm = (ISourceModule) modelElement
 						.getAncestor(IModelElement.SOURCE_MODULE);
 				IModelElement elementAt = sm.getElementAt(match.getOffset());
 				if (elementAt.getElementType() == IModelElement.METHOD) {
@@ -531,8 +513,8 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 		final IDLTKSearchScope scope = SearchEngine.createSearchScope(project);
 		try {
 			final SearchEngine engine = new SearchEngine();
-			final SearchPattern pattern = SearchPattern.createPattern(methodName,
-					IDLTKSearchConstants.METHOD,
+			final SearchPattern pattern = SearchPattern.createPattern(
+					methodName, IDLTKSearchConstants.METHOD,
 					IDLTKSearchConstants.DECLARATIONS,
 					SearchPattern.R_EXACT_MATCH
 							| SearchPattern.R_CASE_SENSITIVE,
@@ -541,11 +523,10 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 					.getDefaultSearchParticipant() };
 			engine.search(pattern, participants, scope, requestor, null);
 		} catch (CoreException e) {
-			if (DLTKCore.DEBUG)
-				e.printStackTrace();
+			RubyPlugin.log(e);
 		}
-	}	
-	
+	}
+
 	/**
 	 * @param src
 	 * @param dest
