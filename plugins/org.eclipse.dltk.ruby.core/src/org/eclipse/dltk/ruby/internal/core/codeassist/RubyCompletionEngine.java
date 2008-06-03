@@ -69,7 +69,7 @@ import org.jruby.util.collections.WeakHashSet;
 
 public class RubyCompletionEngine extends ScriptCompletionEngine {
 
-	private final static int RELEVANCE_FREE_SPACE = 10000000;
+	// private final static int RELEVANCE_FREE_SPACE = 10000000;
 
 	/**
 	 * this variable is updated when keyword proposals are added
@@ -254,9 +254,12 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 						moduleDeclaration, position, position);
 				if (minimalNode != null) {
 					this.completionNode = minimalNode;
-					final boolean isContextMethodCall = completeContextMethod(
-							position, moduleDeclaration, minimalNode);
-					if (minimalNode instanceof CallExpression) {
+					completeContextMethod(position, moduleDeclaration,
+							minimalNode);
+					if (minimalNode instanceof CallExpression
+							&& !RubySyntaxUtils
+									.isRubyOperator(((CallExpression) minimalNode)
+											.getName())) {
 						completeCall(moduleDeclaration,
 								(CallExpression) minimalNode, position);
 					} else if (minimalNode instanceof ConstantReference) {
