@@ -105,5 +105,12 @@ public class RubyMixinMethod implements IRubyMixinElement {
 		return (RubyMixinVariable[]) result
 				.toArray(new RubyMixinVariable[result.size()]);
 	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() {
+		return "RubyMixinMethod[" + key + "]"; //$NON-NLS-1$ //$NON-NLS-2$
+	}
 
 }
