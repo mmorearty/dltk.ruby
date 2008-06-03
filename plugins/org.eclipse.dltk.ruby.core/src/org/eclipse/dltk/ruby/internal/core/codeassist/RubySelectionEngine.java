@@ -30,6 +30,7 @@ import org.eclipse.dltk.codeassist.IAssistParser;
 import org.eclipse.dltk.codeassist.ScriptSelectionEngine;
 import org.eclipse.dltk.compiler.env.ISourceModule;
 import org.eclipse.dltk.core.DLTKCore;
+import org.eclipse.dltk.core.DLTKLanguageManager;
 import org.eclipse.dltk.core.IField;
 import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.IMethod;
@@ -40,7 +41,12 @@ import org.eclipse.dltk.core.IType;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.core.ScriptModelUtil;
 import org.eclipse.dltk.core.mixin.IMixinElement;
+import org.eclipse.dltk.core.search.IDLTKSearchConstants;
+import org.eclipse.dltk.core.search.IDLTKSearchScope;
+import org.eclipse.dltk.core.search.SearchEngine;
 import org.eclipse.dltk.core.search.SearchMatch;
+import org.eclipse.dltk.core.search.SearchParticipant;
+import org.eclipse.dltk.core.search.SearchPattern;
 import org.eclipse.dltk.core.search.SearchRequestor;
 import org.eclipse.dltk.core.search.TypeNameMatch;
 import org.eclipse.dltk.core.search.TypeNameMatchRequestor;
@@ -472,14 +478,14 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 		if (receiver == null) {
 			RubyClassType type = RubyTypeInferencingUtils.determineSelfClass(
 					modelModule, parsedUnit, parentCall.sourceStart());
-			IMethod[] m = RubyModelUtils.searchClassMethods(modelModule,
+			IMethod[] m = RubyModelUtils.searchClassMethodsExact(modelModule,
 					parsedUnit, type, methodName);
 			addArrayToCollection(m, availableMethods);
 		} else {
 			ExpressionTypeGoal goal = new ExpressionTypeGoal(new BasicContext(
 					modelModule, parsedUnit), receiver);
 			IEvaluatedType type = inferencer.evaluateType(goal, 5000);
-			IMethod[] m = RubyModelUtils.searchClassMethods(modelModule,
+			IMethod[] m = RubyModelUtils.searchClassMethodsExact(modelModule,
 					parsedUnit, type, methodName);
 			addArrayToCollection(m, availableMethods);
 			if (receiver instanceof VariableReference) {
@@ -491,26 +497,8 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 		}
 
 		if (availableMethods.isEmpty()) {
-			SearchRequestor requestor = new SearchRequestor() {
-
-				public void acceptSearchMatch(SearchMatch match)
-						throws CoreException {
-					IModelElement modelElement = (IModelElement) match
-							.getElement();
-					org.eclipse.dltk.core.ISourceModule sm = (org.eclipse.dltk.core.ISourceModule) modelElement
-							.getAncestor(IModelElement.SOURCE_MODULE);
-					IModelElement elementAt = sm
-							.getElementAt(match.getOffset());
-					availableMethods.add(elementAt);
-				}
-
-			};
-			ScriptModelUtil.searchMethodDeclarations(modelModule
-					.getScriptProject(), methodName, requestor);
-			// if (availableMethods.length > 0)
-			// System.out
-			// .println("RubySelectionEngine.selectOnMethod() used global
-			// search");
+			searchMethodDeclarations(modelModule.getScriptProject(),
+					methodName, availableMethods);
 		}
 
 		if (!availableMethods.isEmpty()) {
@@ -524,6 +512,40 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 
 	}
 
+	private static void searchMethodDeclarations(IScriptProject project,
+			String methodName, final List availableMethods) {
+		final SearchRequestor requestor = new SearchRequestor() {
+
+			public void acceptSearchMatch(SearchMatch match)
+					throws CoreException {
+				IModelElement modelElement = (IModelElement) match.getElement();
+				org.eclipse.dltk.core.ISourceModule sm = (org.eclipse.dltk.core.ISourceModule) modelElement
+						.getAncestor(IModelElement.SOURCE_MODULE);
+				IModelElement elementAt = sm.getElementAt(match.getOffset());
+				if (elementAt.getElementType() == IModelElement.METHOD) {
+					availableMethods.add(elementAt);
+				}
+			}
+
+		};
+		final IDLTKSearchScope scope = SearchEngine.createSearchScope(project);
+		try {
+			final SearchEngine engine = new SearchEngine();
+			final SearchPattern pattern = SearchPattern.createPattern(methodName,
+					IDLTKSearchConstants.METHOD,
+					IDLTKSearchConstants.DECLARATIONS,
+					SearchPattern.R_EXACT_MATCH
+							| SearchPattern.R_CASE_SENSITIVE,
+					DLTKLanguageManager.getLanguageToolkit(project));
+			final SearchParticipant[] participants = new SearchParticipant[] { SearchEngine
+					.getDefaultSearchParticipant() };
+			engine.search(pattern, participants, scope, requestor, null);
+		} catch (CoreException e) {
+			if (DLTKCore.DEBUG)
+				e.printStackTrace();
+		}
+	}	
+	
 	/**
 	 * @param src
 	 * @param dest

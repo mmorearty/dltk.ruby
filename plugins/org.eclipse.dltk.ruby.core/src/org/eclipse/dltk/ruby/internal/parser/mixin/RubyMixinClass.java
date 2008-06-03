@@ -288,9 +288,87 @@ public class RubyMixinClass implements IRubyMixinElement {
 			public void acceptResult(IRubyMixinElement element) {
 				if (element instanceof RubyMixinMethod) {
 					RubyMixinMethod method = (RubyMixinMethod) element;
-					if (!names.contains(method.getName())) {
+					if (names.add(method.getName())) {
 						result.add(method);
-						names.add(method.getName());
+					}
+				}
+			}
+
+		});
+		return (RubyMixinMethod[]) result.toArray(new RubyMixinMethod[result
+				.size()]);
+	}
+
+	public void findMethodsExact(String methodName,
+			IMixinSearchRequestor requestor) {
+
+		IMixinElement mixinElement = model.getRawModel().get(key);
+		if (mixinElement == null)
+			return;
+		IMixinElement[] children = mixinElement.getChildren();
+		for (int i = 0; i < children.length; i++) {
+			if (children[i].getLastKeySegment().equals(methodName)) {
+				IRubyMixinElement element = model
+						.createRubyElement(children[i]);
+				if (element instanceof RubyMixinMethod) {
+					requestor.acceptResult(element);
+				}
+				if (element instanceof RubyMixinAlias) {
+					RubyMixinAlias alias = (RubyMixinAlias) element;
+					IRubyMixinElement oldElement = alias.getOldElement();
+					if (oldElement instanceof RubyMixinMethod) {
+						AliasedRubyMixinMethod a = new AliasedRubyMixinMethod(
+								model, alias);
+						requestor.acceptResult(a);
+					}
+				}
+			}
+		}
+
+		RubyMixinClass[] included = this.getIncluded();
+		for (int i = 0; i < included.length; i++) {
+			included[i].findMethodsExact(methodName, requestor);
+		}
+
+		RubyMixinClass[] extended = this.getExtended();
+		for (int i = 0; i < extended.length; i++) {
+			extended[i].findMethodsExact(methodName, requestor);
+		}
+
+		if (!this.key.endsWith(RubyMixin.VIRTUAL_SUFFIX)) {
+			RubyMixinClass superclass = getSuperclass();
+			if (superclass != null) {
+
+				if (!superclass.getKey().equals(key)) {
+					RubyMixinMethod[] methods = superclass
+							.findMethodsExact(methodName);
+					for (int j = 0; j < methods.length; j++) {
+						requestor.acceptResult(methods[j]);
+					}
+				}
+			}
+		} else {
+			String stdKey = this.key.substring(0, key.length()
+					- RubyMixin.VIRTUAL_SUFFIX.length());
+			IRubyMixinElement realElement = model.createRubyElement(stdKey);
+			if (realElement instanceof RubyMixinClass) {
+				RubyMixinClass rubyMixinClass = (RubyMixinClass) realElement;
+				rubyMixinClass.findMethodsExact(methodName, requestor);
+			}
+		}
+
+	}
+
+	public RubyMixinMethod[] findMethodsExact(String methodName) {
+		final List result = new ArrayList();
+		final Set names = new HashSet(); // for overload checks
+		this.findMethodsExact(methodName, new IMixinSearchRequestor() {
+
+			public void acceptResult(IRubyMixinElement element) {
+				if (element instanceof RubyMixinMethod) {
+					RubyMixinMethod method = (RubyMixinMethod) element;
+					if (names.add(method.getName())) {
+						result.add(method);
 					}
 				}
 			}

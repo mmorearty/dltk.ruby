@@ -348,6 +348,35 @@ public class RubyModelUtils {
 		return (IMethod[]) result.toArray(new IMethod[result.size()]);
 	}
 
+	public static IMethod[] searchClassMethodsExact(
+			org.eclipse.dltk.core.ISourceModule modelModule,
+			ModuleDeclaration moduleDeclaration, IEvaluatedType type,
+			String methodName) {
+		List result = new ArrayList();
+		if (type instanceof RubyClassType) {
+			RubyClassType rubyClassType = (RubyClassType) type;
+			RubyMixinClass rubyClass = RubyMixinModel.getInstance()
+					.createRubyClass(rubyClassType);
+			if (rubyClass != null) {
+				RubyMixinMethod[] methods = rubyClass
+						.findMethodsExact(methodName);
+				result.addAll(getAllSourceMethods(methods, rubyClass));
+			}
+
+		} else if (type instanceof AmbiguousType) {
+			AmbiguousType type2 = (AmbiguousType) type;
+			IEvaluatedType[] possibleTypes = type2.getPossibleTypes();
+			for (int i = 0; i < possibleTypes.length; i++) {
+				IMethod[] m = searchClassMethodsExact(modelModule,
+						moduleDeclaration, possibleTypes[i], methodName);
+				for (int j = 0; j < m.length; j++) {
+					result.add(m[j]);
+				}
+			}
+		}
+		return (IMethod[]) result.toArray(new IMethod[result.size()]);
+	}
+
 	private static void addVariablesFrom(RubyMixinVariable[] fields2,
 			String prefix, List resultList) {
 		for (int i = 0; i < fields2.length; i++) {
