@@ -23,6 +23,7 @@ import java.util.Set;
 import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
 import org.eclipse.dltk.ast.expressions.CallExpression;
+import org.eclipse.dltk.ast.expressions.NumericLiteral;
 import org.eclipse.dltk.ast.parser.ISourceParser;
 import org.eclipse.dltk.ast.references.ConstantReference;
 import org.eclipse.dltk.ast.references.SimpleReference;
@@ -276,6 +277,13 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 						completeSimpleRef(moduleDeclaration,
 								((RubyDVarExpression) minimalNode).getName(),
 								position);
+					} else if (minimalNode instanceof NumericLiteral
+							&& position > 0
+							&& position == minimalNode.sourceEnd()
+							&& position > minimalNode.sourceStart()
+							&& content.charAt(position - 1) == '.') {
+						setSourceRange(position, position);
+						completeClassMethods(moduleDeclaration, minimalNode, ""); //$NON-NLS-1$
 					} else { // worst case
 						if (wordStarting == null
 								&& !requestor.isContextInformationMode()) {
