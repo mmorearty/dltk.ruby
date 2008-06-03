@@ -16,19 +16,20 @@ import org.eclipse.dltk.ast.expressions.CallArgumentsList;
 
 public class RubyCallArgumentsList extends CallArgumentsList {
 	
-	public void addArgument (ASTNode value, int kind) {
-		if (value == null)
-			return;
-		RubyCallArgument r = new RubyCallArgument(value, kind);
-		this.addNode(r);
+	public void addArgument(ASTNode value, int kind) {
+		if (value != null) {
+			this.addNode(new RubyCallArgument(value, kind));
+		}
 	}
 	
-	public void autosetOffsets () {
-		List expressions = this.getChilds();
-		int size = expressions.size();
-		if (size > 0) { ASTNode first = (ASTNode) expressions.get(0); ASTNode last = (ASTNode) expressions.get(size - 1);
+	public void autosetOffsets() {
+		final List expressions = this.getChilds();
+		final int size = expressions.size();
+		if (size > 0) {
+			final ASTNode first = (ASTNode) expressions.get(0);
+			final ASTNode last = (ASTNode) expressions.get(size - 1);
 			this.setStart(first.sourceStart());
-			this.setEnd (last.sourceEnd());
+			this.setEnd(last.sourceEnd());
 		}
 	}
 
