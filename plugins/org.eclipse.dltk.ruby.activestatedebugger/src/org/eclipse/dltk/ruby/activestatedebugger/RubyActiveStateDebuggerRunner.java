@@ -20,8 +20,8 @@ import org.eclipse.dltk.ruby.debug.RubyDebugPlugin;
  * Debugging engine implementation for ActiveState's ruby debugging engine.
  * 
  * <p>
- * see: <a
- * href="http://aspn.activestate.com/ASPN/docs/Komodo/komodo-doc-debugruby.html">
+ * see: <a href=
+ * "http://aspn.activestate.com/ASPN/docs/Komodo/komodo-doc-debugruby.html">
  * http://aspn.activestate.com/ASPN/docs/Komodo/komodo-doc-debugruby.html</a>
  * </p>
  */
@@ -49,7 +49,8 @@ public class RubyActiveStateDebuggerRunner extends
 		 * TODO: handle RUBYOPT support for rubygems
 		 * 
 		 * unset if not explicity set to a value by user? see:
-		 * http://aspn.activestate.com/ASPN/docs/Komodo/komodo-doc-debugruby.html
+		 * http://aspn.activestate
+		 * .com/ASPN/docs/Komodo/komodo-doc-debugruby.html
 		 */
 		config.addEnvVar("RUBYDB_OPTS", "RemotePort=" + host + ":" + port); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		config.addEnvVar("DBGP_IDEKEY", sessionId); //$NON-NLS-1$
@@ -58,7 +59,7 @@ public class RubyActiveStateDebuggerRunner extends
 		config.addInterpreterArg(dir);
 
 		config.addInterpreterArg("-r"); //$NON-NLS-1$
-		config.addInterpreterArg(debugEnginePath.toString());
+		config.addInterpreterArg(debugEnginePath.toOSString());
 
 		return config;
 	}
@@ -76,28 +77,35 @@ public class RubyActiveStateDebuggerRunner extends
 	}
 
 	/*
-	 * @see org.eclipse.dltk.launching.DebuggingEngineRunner#getDebugPreferenceQualifier()
+	 * @see
+	 * org.eclipse.dltk.launching.DebuggingEngineRunner#getDebugPreferenceQualifier
+	 * ()
 	 */
 	protected String getDebugPreferenceQualifier() {
 		return RubyDebugPlugin.PLUGIN_ID;
 	}
 
 	/*
-	 * @see org.eclipse.dltk.launching.DebuggingEngineRunner#getLoggingEnabledPreferenceKey()
+	 * @seeorg.eclipse.dltk.launching.DebuggingEngineRunner#
+	 * getLoggingEnabledPreferenceKey()
 	 */
 	protected String getLoggingEnabledPreferenceKey() {
 		return RubyActiveStateDebuggerConstants.ENABLE_LOGGING;
 	}
 
 	/*
-	 * @see org.eclipse.dltk.launching.DebuggingEngineRunner#getLogFileNamePreferenceKey()
+	 * @see
+	 * org.eclipse.dltk.launching.DebuggingEngineRunner#getLogFileNamePreferenceKey
+	 * ()
 	 */
 	protected String getLogFileNamePreferenceKey() {
 		return RubyActiveStateDebuggerConstants.LOG_FILE_NAME;
 	}
 
 	/*
-	 * @see org.eclipse.dltk.launching.DebuggingEngineRunner#getLogFilePathPreferenceKey()
+	 * @see
+	 * org.eclipse.dltk.launching.DebuggingEngineRunner#getLogFilePathPreferenceKey
+	 * ()
 	 */
 	protected String getLogFilePathPreferenceKey() {
 		return RubyActiveStateDebuggerConstants.LOG_FILE_PATH;
