@@ -125,7 +125,7 @@ public class RubyGenericInstall extends AbstractInterpreterInstall {
 			}
 		}
 
-		public Map getSources() {
+		public synchronized Map getSources() {
 			if (sources == null) {
 				sources = new HashMap();
 
