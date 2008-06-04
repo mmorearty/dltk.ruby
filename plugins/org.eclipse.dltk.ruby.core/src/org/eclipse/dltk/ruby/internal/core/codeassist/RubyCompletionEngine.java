@@ -21,6 +21,7 @@ import java.util.Locale;
 import java.util.Set;
 
 import org.eclipse.dltk.ast.ASTNode;
+import org.eclipse.dltk.ast.Modifiers;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
 import org.eclipse.dltk.ast.expressions.CallExpression;
 import org.eclipse.dltk.ast.expressions.NumericLiteral;
@@ -70,7 +71,7 @@ import org.jruby.util.collections.WeakHashSet;
 
 public class RubyCompletionEngine extends ScriptCompletionEngine {
 
-	// private final static int RELEVANCE_FREE_SPACE = 10000000;
+	private final static int RELEVANCE_FREE_SPACE = 10000000;
 
 	/**
 	 * this variable is updated when keyword proposals are added
@@ -287,7 +288,11 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 					} else { // worst case
 						if (wordStarting == null
 								&& !requestor.isContextInformationMode()) {
-							reportCurrentElements(moduleDeclaration, position);
+							if (!afterContentAndSpace(moduleDeclaration,
+									content, position)) {
+								reportCurrentElements(moduleDeclaration,
+										position);
+							}
 						}
 					}
 				}
@@ -297,6 +302,47 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 		}
 	}
 
+	/**
+	 * @param content
+	 * @param position
+	 * @return
+	 */
+	private boolean afterContentAndSpace(ModuleDeclaration moduleDeclaration,
+			String content, int position) {
+		while (position > 0) {
+			final char c = content.charAt(position - 1);
+			if (c == ' ' || c == '\t') {
+				--position;
+			} else {
+				break;
+			}
+		}
+		if (position > 0
+				&& RubySyntaxUtils.isIdentifierCharacter(content
+						.charAt(position - 1))) {
+			ASTNode node = ASTUtils.findMinimalNode(moduleDeclaration,
+					position, position);
+			if (node instanceof CallExpression) {
+				int begin = position;
+				while (begin > 0 && content.charAt(begin - 1) != '\r'
+						&& content.charAt(begin - 1) != '\n') {
+					--begin;
+				}
+				ASTNode[] way = ASTUtils.restoreWayToNode(moduleDeclaration,
+						node);
+				for (int i = way.length - 1; --i >= 0;) {
+					if (way[i] instanceof CallExpression) {
+						// if multiple method calls in the same line
+						return way[i].sourceStart() >= begin;
+					}
+				}
+				return false;
+			}
+			return true;
+		}
+		return false;
+	}
+
 	private void reportCurrentElements(ModuleDeclaration moduleDeclaration,
 			int position) {
 		setSourceRange(position, position);
@@ -304,6 +350,31 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 		IClassType self = RubyTypeInferencingUtils.determineSelfClass(
 				currentModule, moduleDeclaration, position);
 		completeClassMethods(moduleDeclaration, self, ""); //$NON-NLS-1$
+		if ("Object".equals(self.getTypeName())) { //$NON-NLS-1$
+			try {
+				final IModelElement[] children = currentModule.getChildren();
+				if (children != null) {
+					for (int i = 0; i < children.length; ++i) {
+						IModelElement element = children[i];
+						if (element instanceof IField) {
+							reportField((IField) element, RELEVANCE_FREE_SPACE);
+						} else if (element instanceof IMethod) {
+							IMethod method = (IMethod) element;
+							if ((method.getFlags() & Modifiers.AccStatic) == 0) {
+								reportMethod(method, RELEVANCE_FREE_SPACE);
+							}
+						} else if (element instanceof IType) {
+							if (!element.getElementName().trim().startsWith(
+									"<<")) //$NON-NLS-1$
+								reportType((IType) element,
+										RELEVANCE_FREE_SPACE);
+						}
+					}
+				}
+			} catch (ModelException e) {
+				RubyPlugin.log(e);
+			}
+		}
 	}
 
 	private boolean completeContextMethod(int position,
