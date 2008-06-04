@@ -466,9 +466,7 @@ public class JRubySourceParser extends AbstractSourceParser {
 					problemReporter);
 			errorState[0] = false;
 
-			long timeStart = 0;
-			if (TRACE_AST_DLTK)
-			  timeStart = System.currentTimeMillis();
+			final long sTime = TRACE_AST_DLTK ? System.currentTimeMillis() : 0;
 
 			char[] fixedContent = fixSpacedParens(content);
 			Node node;
@@ -550,10 +548,11 @@ public class JRubySourceParser extends AbstractSourceParser {
 					RubyPlugin.log(e);
 				}
 
-			long timeEnd = System.currentTimeMillis();
-			if (TRACE_AST_DLTK)
-				System.out.println("Parsing took " + (timeEnd - timeStart) //$NON-NLS-1$
+			if (TRACE_AST_DLTK) {
+				long eTime = System.currentTimeMillis();
+				System.out.println("Parsing took " + (eTime - sTime) //$NON-NLS-1$
 						+ " ms"); //$NON-NLS-1$
+			}
 			this.parserResult = parser.getParserResult();
 			
             if (!parser.isSuccess() && module.isEmpty()) {
