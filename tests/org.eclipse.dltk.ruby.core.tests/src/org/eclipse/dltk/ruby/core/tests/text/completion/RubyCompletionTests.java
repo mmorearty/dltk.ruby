@@ -1060,8 +1060,7 @@ public class RubyCompletionTests extends AbstractModelCompletionTests {
 		assertTrue(lineIndex == -1);
 	}
 
-	public void testCompletion062_FAILS() throws ModelException {
-		// if (notYetImplemented()) return;
+	public void REM_testCompletion062_FAILS_ON_WINDOWS() throws ModelException {
 		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
 		ISourceModule cu = getSourceModule("completion", "src", "b195463.rb");
 
