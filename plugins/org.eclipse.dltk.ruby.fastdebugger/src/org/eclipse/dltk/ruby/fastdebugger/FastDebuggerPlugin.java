@@ -3,7 +3,6 @@ package org.eclipse.dltk.ruby.fastdebugger;
 import java.io.IOException;
 
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.dltk.core.environment.IDeployment;
 import org.eclipse.dltk.ruby.abstractdebugger.AbstractRubyDebuggerPlugin;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
