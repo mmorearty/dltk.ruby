@@ -7,6 +7,7 @@ public final class FastDebuggerConstants {
 	public static final String ENABLE_LOGGING = "enable_logging"; //$NON-NLS-1$
 	public static final String LOG_FILE_PATH = "log_file_path"; //$NON-NLS-1$
 	public static final String LOG_FILE_NAME = "log_file_name"; //$NON-NLS-1$
+	public static final String CHECK_RUBY_DEBUG = "check_ruby_debug"; //$NON-NLS-1$
 
 	private FastDebuggerConstants() {
 		// private constructor
@@ -19,5 +20,6 @@ public final class FastDebuggerConstants {
 
 		store.setDefault(LOG_FILE_NAME, "rubyFastDebug_{0}.log"); //$NON-NLS-1$
 		store.setDefault(LOG_FILE_PATH, ""); //$NON-NLS-1$
+		store.setDefault(CHECK_RUBY_DEBUG, true);
 	}
 }

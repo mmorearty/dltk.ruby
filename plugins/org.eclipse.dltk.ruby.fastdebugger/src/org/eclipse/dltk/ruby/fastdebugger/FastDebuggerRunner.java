@@ -33,6 +33,8 @@ public class FastDebuggerRunner extends DebuggingEngineRunner {
 
 	private static final String DEBUGGER_SCRIPT = "FastRunner.rb"; //$NON-NLS-1$
 
+	private static final String P_CHECK_RUBY_DEBUG = FastDebuggerConstants.CHECK_RUBY_DEBUG;
+
 	protected IPath deploy(IDeployment deployment) throws CoreException {
 		try {
 			IPath deploymentPath = FastDebuggerPlugin.getDefault()
@@ -54,7 +56,8 @@ public class FastDebuggerRunner extends DebuggingEngineRunner {
 	}
 
 	protected InterpreterConfig addEngineConfig(InterpreterConfig config,
-			PreferencesLookupDelegate delegate, ILaunch launch) throws CoreException {
+			PreferencesLookupDelegate delegate, ILaunch launch)
+			throws CoreException {
 		if (!(getInstall().getInterpreterInstallType() instanceof RubyGenericInstallType)) {
 			throw new DebugException(
 					new Status(
@@ -96,6 +99,9 @@ public class FastDebuggerRunner extends DebuggingEngineRunner {
 		if (logFileName != null) {
 			newConfig.addEnvVar(RUBY_LOG_VAR, logFileName);
 		}
+		final boolean check = delegate.getBoolean(FastDebuggerPlugin.PLUGIN_ID,
+				FastDebuggerConstants.CHECK_RUBY_DEBUG);
+		newConfig.setProperty(P_CHECK_RUBY_DEBUG, Boolean.valueOf(check));
 
 		return newConfig;
 	}
@@ -105,7 +111,9 @@ public class FastDebuggerRunner extends DebuggingEngineRunner {
 	}
 
 	/*
-	 * @see org.eclipse.dltk.launching.DebuggingEngineRunner#getDebugPreferenceQualifier()
+	 * @see
+	 * org.eclipse.dltk.launching.DebuggingEngineRunner#getDebugPreferenceQualifier
+	 * ()
 	 */
 	protected String getDebugPreferenceQualifier() {
 		return RubyDebugPlugin.PLUGIN_ID;
@@ -162,14 +170,22 @@ public class FastDebuggerRunner extends DebuggingEngineRunner {
 	}
 
 	public boolean resolveRubyDebugGemExists() {
-		return (resolveRubyDebugGemExists(true) || resolveRubyDebugGemExists(false));
+		return resolveRubyDebugGemExists(true)
+				|| resolveRubyDebugGemExists(false);
 	}
 
 	protected void checkConfig(InterpreterConfig config,
 			IEnvironment environment) throws CoreException {
 		super.checkConfig(config, environment);
 
-		if (resolveRubyDebugGemExists() != true) {
+		final Boolean check = (Boolean) config.getProperty(P_CHECK_RUBY_DEBUG);
+		if (check != null && check.booleanValue()) {
+			checkRubyDebug();
+		}
+	}
+
+	private void checkRubyDebug() throws CoreException {
+		if (!resolveRubyDebugGemExists()) {
 			abort(
 					MessageFormat
 							.format(
@@ -182,28 +198,34 @@ public class FastDebuggerRunner extends DebuggingEngineRunner {
 	}
 
 	/*
-	 * @see org.eclipse.dltk.launching.DebuggingEngineRunner#getDebuggingEnginePreferenceQualifier()
+	 * @see org.eclipse.dltk.launching.DebuggingEngineRunner#
+	 * getDebuggingEnginePreferenceQualifier()
 	 */
 	protected String getDebuggingEnginePreferenceQualifier() {
 		return FastDebuggerPlugin.PLUGIN_ID;
 	}
 
 	/*
-	 * @see org.eclipse.dltk.launching.DebuggingEngineRunner#getLoggingEnabledPreferenceKey()
+	 * @see org.eclipse.dltk.launching.DebuggingEngineRunner#
+	 * getLoggingEnabledPreferenceKey()
 	 */
 	protected String getLoggingEnabledPreferenceKey() {
 		return FastDebuggerConstants.ENABLE_LOGGING;
 	}
 
 	/*
-	 * @see org.eclipse.dltk.launching.DebuggingEngineRunner#getLogFileNamePreferenceKey()
+	 * @see
+	 * org.eclipse.dltk.launching.DebuggingEngineRunner#getLogFileNamePreferenceKey
+	 * ()
 	 */
 	protected String getLogFileNamePreferenceKey() {
 		return FastDebuggerConstants.LOG_FILE_NAME;
 	}
 
 	/*
-	 * @see org.eclipse.dltk.launching.DebuggingEngineRunner#getLogFilePathPreferenceKey()
+	 * @see
+	 * org.eclipse.dltk.launching.DebuggingEngineRunner#getLogFilePathPreferenceKey
+	 * ()
 	 */
 	protected String getLogFilePathPreferenceKey() {
 		return FastDebuggerConstants.LOG_FILE_PATH;

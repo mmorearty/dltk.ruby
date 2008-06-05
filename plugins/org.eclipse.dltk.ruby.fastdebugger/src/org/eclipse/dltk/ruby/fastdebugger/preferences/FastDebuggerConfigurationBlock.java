@@ -6,7 +6,10 @@ import org.eclipse.dltk.ruby.fastdebugger.FastDebuggerConstants;
 import org.eclipse.dltk.ruby.fastdebugger.FastDebuggerPlugin;
 import org.eclipse.dltk.ui.preferences.PreferenceKey;
 import org.eclipse.dltk.ui.util.IStatusChangeListener;
+import org.eclipse.dltk.ui.util.SWTFactory;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
@@ -14,14 +17,18 @@ import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
 public class FastDebuggerConfigurationBlock extends
 		DebuggingEngineConfigOptionsBlock {
 
-	private static PreferenceKey ENABLE_LOGGING = new PreferenceKey(
+	private static final PreferenceKey ENABLE_LOGGING = new PreferenceKey(
 			FastDebuggerPlugin.PLUGIN_ID, FastDebuggerConstants.ENABLE_LOGGING);
 
-	private static PreferenceKey LOG_FILE_PATH = new PreferenceKey(
+	private static final PreferenceKey LOG_FILE_PATH = new PreferenceKey(
 			FastDebuggerPlugin.PLUGIN_ID, FastDebuggerConstants.LOG_FILE_PATH);
 
-	private static PreferenceKey LOG_FILE_NAME = new PreferenceKey(
+	private static final PreferenceKey LOG_FILE_NAME = new PreferenceKey(
 			FastDebuggerPlugin.PLUGIN_ID, FastDebuggerConstants.LOG_FILE_NAME);
+
+	private static final PreferenceKey CHECK_RUBY_DEBUG = new PreferenceKey(
+			FastDebuggerPlugin.PLUGIN_ID,
+			FastDebuggerConstants.CHECK_RUBY_DEBUG);
 
 	public FastDebuggerConfigurationBlock(IStatusChangeListener context,
 			IProject project, IWorkbenchPreferenceContainer container) {
@@ -30,7 +37,7 @@ public class FastDebuggerConfigurationBlock extends
 
 	private static PreferenceKey[] getKeys() {
 		return new PreferenceKey[] { ENABLE_LOGGING, LOG_FILE_PATH,
-				LOG_FILE_NAME };
+				LOG_FILE_NAME, CHECK_RUBY_DEBUG };
 	}
 
 	protected void createEngineBlock(Composite composite) {
@@ -38,9 +45,20 @@ public class FastDebuggerConfigurationBlock extends
 	}
 
 	protected void createOtherBlock(Composite parent) {
-		Label noteLabel = new Label(parent, SWT.NONE);
+		final Label noteLabel = new Label(parent, SWT.WRAP);
 		noteLabel
 				.setText(FastDebuggerPreferenceMessages.FastDebuggerConfigurationBlock_rubyDebugGemMustBeInstalled);
+		GridData data = new GridData(SWT.FILL, GridData.BEGINNING, true, false);
+		data.widthHint = 100;
+		noteLabel.setLayoutData(data);
+
+		Button checkRubyDebug = SWTFactory
+				.createCheckButton(
+						parent,
+						FastDebuggerPreferenceMessages.FastDebuggerConfigurationBlock_rubyDebugCheckInstalled,
+						null, false, 1);
+
+		bindControl(checkRubyDebug, CHECK_RUBY_DEBUG, null);
 	}
 
 	protected PreferenceKey getEnableLoggingPreferenceKey() {

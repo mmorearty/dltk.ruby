@@ -12,4 +12,5 @@ public class FastDebuggerPreferenceMessages {
 	public static String PreferencesDescription;
 	public static String LinkToRubyDebugPreferences;
 	public static String FastDebuggerConfigurationBlock_rubyDebugGemMustBeInstalled;
+	public static String FastDebuggerConfigurationBlock_rubyDebugCheckInstalled;
 }
