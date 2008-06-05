@@ -77,9 +77,9 @@ public class FastDebuggerRunner extends DebuggingEngineRunner {
 		// Creating new config
 		InterpreterConfig newConfig = (InterpreterConfig) config.clone();
 		newConfig.addInterpreterArg("-r"); //$NON-NLS-1$
-		newConfig.addInterpreterArg(env.convertPathToString(scriptFile)); //$NON-NLS-1$
+		newConfig.addInterpreterArg(env.convertPathToString(scriptFile));
 		newConfig.addInterpreterArg("-I"); //$NON-NLS-1$
-		newConfig.addInterpreterArg(env.convertPathToString(sourceLocation)); //$NON-NLS-1$
+		newConfig.addInterpreterArg(env.convertPathToString(sourceLocation));
 
 		// Environment
 		final DbgpInterpreterConfig dbgpConfig = new DbgpInterpreterConfig(
