@@ -9,13 +9,13 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.internal.ui.editor;
 
-import org.eclipse.dltk.compiler.util.Util;
 import org.eclipse.dltk.internal.ui.editor.BracketInserter;
 import org.eclipse.dltk.internal.ui.editor.ScriptEditor;
 import org.eclipse.dltk.internal.ui.editor.ScriptEditor.BracketLevel;
 import org.eclipse.dltk.ruby.internal.ui.text.IRubyPartitions;
 import org.eclipse.dltk.ruby.internal.ui.text.ISymbols;
 import org.eclipse.dltk.ruby.internal.ui.text.RubyHeuristicScanner;
+import org.eclipse.dltk.ruby.internal.ui.text.RubyPreferenceInterpreter;
 import org.eclipse.dltk.ui.DLTKUIPlugin;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.BadPositionCategoryException;
@@ -32,6 +32,7 @@ import org.eclipse.jface.text.link.LinkedPositionGroup;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.ui.texteditor.ITextEditorExtension3;
 import org.eclipse.ui.texteditor.link.EditorLinkedModeUI;
 
 public class RubyBracketInserter extends BracketInserter {
@@ -43,7 +44,7 @@ public class RubyBracketInserter extends BracketInserter {
 	public void verifyKey(VerifyEvent event) {
 		// early pruning to slow down normal typing as little as possible
 		if (!event.doit
-				|| this.editor.getInsertMode() != ScriptEditor.SMART_INSERT)
+				|| editor.getInsertMode() != ITextEditorExtension3.SMART_INSERT)
 			return;
 		switch (event.character) {
 		case '(':
@@ -168,40 +169,40 @@ public class RubyBracketInserter extends BracketInserter {
 				return;
 
 			final char character = event.character;
-			String prefixString;
-			String suffixString;
-			if ((character == ' ') || (character == '\r')
-					|| (character == '\n')) {
-				int end = document.getLength();
-				for (int cnt = startLine.getOffset(), max = document
-						.getLength(); cnt <= max; cnt++) {
-					if (!Character.isWhitespace(document.get(cnt, 1).charAt(0))) {
-						end = cnt;
-
-						break;
-					}
-				}
-				String indent = document.get(startLine.getOffset(),
-						(end - startLine.getOffset()));
+			final String prefixString;
+			final String suffixString;
+			if (character == ' ' || character == '\r' || character == '\n') {
+				final String lineDelimiter = TextUtilities
+						.getDefaultLineDelimiter(document);
+				final String prevIndent = getLineIndent(document, startLine);
+				final String nextIndent = selectIndent();
 				if ((character == '\r') || (character == '\n')) {
-					prefixString = Util.LINE_SEPARATOR + indent + "  "; //$NON-NLS-1$
-					suffixString = indent + "end"; //$NON-NLS-1$
+					prefixString = lineDelimiter + prevIndent + nextIndent;
+					suffixString = prevIndent + "end"; //$NON-NLS-1$
 				} else {
 					prefixString = ""; //$NON-NLS-1$
-					suffixString = Util.LINE_SEPARATOR + indent + "  " //$NON-NLS-1$
-							+ Util.LINE_SEPARATOR + indent + "end"; //$NON-NLS-1$
+					// TODO check balance and insert only if needed -- Alex Panchenko
+					// final int balance = RubyAutoEditStrategy.getBlockBalance(
+					// document, offset);
+					// if (balance > 0) {
+					suffixString = lineDelimiter + prevIndent + nextIndent
+							+ lineDelimiter + prevIndent + "end"; //$NON-NLS-1$
+					// } else if (balance == 0) {
+					// suffixString = ""; //$NON-NLS-1$
+					// } else {
+					// suffixString = lineDelimiter + prevIndent + nextIndent;
+					// }
 				}
 			} else {
 				prefixString = ""; //$NON-NLS-1$
 				suffixString = String.valueOf(getPeerCharacter(character));
 			}
-			final char closingCharacter = suffixString.charAt(0);
-			final StringBuffer buffer = new StringBuffer();
-			buffer.append(prefixString);
-			buffer.append(character);
-			buffer.append(suffixString);
+			final char closingCharacter = suffixString.length() > 0 ? suffixString
+					.charAt(0)
+					: 0;
 
-			document.replace(offset, length, buffer.toString());
+			document.replace(offset, length, prefixString + character
+					+ suffixString);
 
 			BracketLevel level = new ScriptEditor.BracketLevel();
 			fBracketLevelStack.push(level);
@@ -220,8 +221,7 @@ public class RubyBracketInserter extends BracketInserter {
 				document.addPositionCategory(CATEGORY);
 				document.addPositionUpdater(fUpdater);
 			}
-			if ((character == ' ') || (character == '\r')
-					|| (character == '\n')) {
+			if (character == ' ' || character == '\r' || character == '\n') {
 				level.fOffset = (offset - previous.length());
 				level.fLength = (previous.length() + prefixString.length() + 1 + suffixString
 						.length());
@@ -252,8 +252,7 @@ public class RubyBracketInserter extends BracketInserter {
 			level.fUI.enter();
 
 			IRegion newSelection = level.fUI.getSelectedRegion();
-			if ((character == ' ') || (character == '\r')
-					|| (character == '\n')) {
+			if (character == ' ' || character == '\r' || character == '\n') {
 				newSelection = new Region(
 						newSelection.getOffset()
 								+ prefixString.length()
@@ -270,5 +269,22 @@ public class RubyBracketInserter extends BracketInserter {
 		} catch (BadPositionCategoryException e) {
 			DLTKUIPlugin.log(e);
 		}
+	}
+
+	private String selectIndent() {
+		return RubyPreferenceInterpreter.getDefault().getIndent();
+	}
+
+	private String getLineIndent(IDocument document, IRegion startLine)
+			throws BadLocationException {
+		int end = document.getLength();
+		for (int cnt = startLine.getOffset(), max = document.getLength(); cnt <= max; cnt++) {
+			if (!Character.isWhitespace(document.getChar(cnt))) {
+				end = cnt;
+
+				break;
+			}
+		}
+		return document.get(startLine.getOffset(), end - startLine.getOffset());
 	}
 }
