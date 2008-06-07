@@ -448,9 +448,22 @@ public class RubyPreferenceConstants extends PreferenceConstants {
 	 */
 	public static final String EDITOR_FOLDING_INIT_METHODS = "editor_folding_init_methods"; //$NON-NLS-1$
 
-	public static void initializeDefaultValues(IPreferenceStore store) {
-		initializeDefaultValues(store);
+	/**
+	 * A preference that controls the color of TO-DO tasks in comments
+	 */
+	public static final String COMMENT_TASK_TAGS_COLOR = IRubyColorConstants.RUBY_TODO_COMMENT;
 
+	/**
+	 * A preference that controls the boldness of TO-DO tasks in comments
+	 */
+	public static final String COMMENT_TASK_TAGS_BOLD = COMMENT_TASK_TAGS_COLOR
+			+ EDITOR_BOLD_SUFFIX;
+
+	public static void initializeDefaultValues(IPreferenceStore store) {
+		PreferenceConstants.initializeDefaultValues(store);
+
+		PreferenceConverter.setDefault(store, COMMENT_TASK_TAGS_COLOR, new RGB(
+				127, 159, 191));
 		PreferenceConverter.setDefault(store, EDITOR_SINGLE_LINE_COMMENT_COLOR,
 				new RGB(63, 127, 95));
 		PreferenceConverter.setDefault(store, EDITOR_DOC_COLOR, new RGB(63,
@@ -481,6 +494,7 @@ public class RubyPreferenceConstants extends PreferenceConstants {
 				new RGB(200, 0, 0));
 
 		store.setDefault(EDITOR_SINGLE_LINE_COMMENT_BOLD, false);
+		store.setDefault(COMMENT_TASK_TAGS_BOLD, true);
 		store.setDefault(EDITOR_SINGLE_LINE_COMMENT_ITALIC, true);
 
 		store.setDefault(EDITOR_DOC_ITALIC, true);

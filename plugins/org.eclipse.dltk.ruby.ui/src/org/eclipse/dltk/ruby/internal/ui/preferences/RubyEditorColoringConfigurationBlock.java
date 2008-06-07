@@ -47,6 +47,9 @@ public class RubyEditorColoringConfigurationBlock extends
 			{ PreferencesMessages.DLTKEditorPreferencePage_singleLineComment,
 					RubyPreferenceConstants.EDITOR_SINGLE_LINE_COMMENT_COLOR,
 					sCommentsCategory },
+			{ PreferencesMessages.DLTKEditorPreferencePage_CommentTaskTags,
+					RubyPreferenceConstants.COMMENT_TASK_TAGS_COLOR,
+					sCommentsCategory },
 
 			{ PreferencesMessages.DLTKEditorPreferencePage_keywords,
 					RubyPreferenceConstants.EDITOR_KEYWORD_COLOR, sCoreCategory },

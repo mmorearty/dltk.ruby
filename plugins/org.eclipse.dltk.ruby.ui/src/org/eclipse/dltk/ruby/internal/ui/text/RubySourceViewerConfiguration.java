@@ -19,15 +19,16 @@ import org.eclipse.dltk.internal.ui.editor.EditorUtility;
 import org.eclipse.dltk.internal.ui.editor.ScriptSourceViewer;
 import org.eclipse.dltk.internal.ui.text.HTMLTextPresenter;
 import org.eclipse.dltk.internal.ui.text.ScriptElementProvider;
+import org.eclipse.dltk.ruby.core.RubyPlugin;
 import org.eclipse.dltk.ruby.internal.ui.text.completion.RubyCompletionProcessor;
 import org.eclipse.dltk.ruby.internal.ui.text.completion.RubyContentAssistPreference;
 import org.eclipse.dltk.ruby.internal.ui.typehierarchy.RubyHierarchyInformationControl;
 import org.eclipse.dltk.ui.CodeFormatterConstants;
 import org.eclipse.dltk.ui.text.AbstractScriptScanner;
 import org.eclipse.dltk.ui.text.IColorManager;
+import org.eclipse.dltk.ui.text.ScriptCommentScanner;
 import org.eclipse.dltk.ui.text.ScriptPresentationReconciler;
 import org.eclipse.dltk.ui.text.ScriptSourceViewerConfiguration;
-import org.eclipse.dltk.ui.text.SingleTokenScriptScanner;
 import org.eclipse.dltk.ui.text.completion.ContentAssistPreference;
 import org.eclipse.dltk.ui.text.util.AutoEditUtils;
 import org.eclipse.dltk.ui.text.util.TabStyle;
@@ -133,8 +134,10 @@ public class RubySourceViewerConfiguration extends
 				fPreferenceStore);
 		fSingleQuoteStringScanner = new RubySingleQuoteStringScanner(
 				getColorManager(), fPreferenceStore);
-		fCommentScanner = new SingleTokenScriptScanner(getColorManager(),
-				fPreferenceStore, IRubyColorConstants.RUBY_SINGLE_LINE_COMMENT);
+		fCommentScanner = new ScriptCommentScanner(getColorManager(),
+				fPreferenceStore, IRubyColorConstants.RUBY_SINGLE_LINE_COMMENT,
+				IRubyColorConstants.RUBY_TODO_COMMENT, RubyPlugin.getDefault()
+						.getPluginPreferences());
 
 		fDocScanner = new RubyDocScanner(getColorManager(), fPreferenceStore);
 	}
@@ -231,6 +234,7 @@ public class RubySourceViewerConfiguration extends
 		return fCodeScanner.affectsBehavior(event)
 				|| fStringScanner.affectsBehavior(event)
 				|| fSingleQuoteStringScanner.affectsBehavior(event)
+				|| fCommentScanner.affectsBehavior(event)
 				|| fDocScanner.affectsBehavior(event);
 	}
 
