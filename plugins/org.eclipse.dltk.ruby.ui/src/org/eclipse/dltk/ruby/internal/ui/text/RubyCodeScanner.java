@@ -17,7 +17,6 @@ import org.eclipse.dltk.ruby.internal.ui.text.rules.StartWithRule;
 import org.eclipse.dltk.ui.text.AbstractScriptScanner;
 import org.eclipse.dltk.ui.text.IColorManager;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.text.rules.EndOfLineRule;
 import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.WhitespaceRule;
 import org.eclipse.jface.text.rules.WordRule;
@@ -60,7 +59,6 @@ public class RubyCodeScanner extends AbstractScriptScanner {
 		List/* <IRule> */rules = new ArrayList/* <IRule> */();
 		IToken keyword = getToken(IRubyColorConstants.RUBY_KEYWORD);
 		IToken keywordReturn = getToken(IRubyColorConstants.RUBY_KEYWORD_RETURN);
-		IToken comment = getToken(IRubyColorConstants.RUBY_SINGLE_LINE_COMMENT);
 		IToken other = getToken(IRubyColorConstants.RUBY_DEFAULT);
 		IToken number = getToken(IRubyColorConstants.RUBY_NUMBER);
 		
