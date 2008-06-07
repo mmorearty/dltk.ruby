@@ -70,8 +70,6 @@ public class RubyCodeScanner extends AbstractScriptScanner {
 		IToken globalVariable = getToken(IRubyColorConstants.RUBY_GLOBAL_VARIABLE);
 		IToken symbols = getToken(IRubyColorConstants.RUBY_SYMBOLS);
 
-		// Add rule for single line comments.
-		rules.add(new EndOfLineRule("#", comment)); //$NON-NLS-1$
 		// Add generic whitespace rule.
 		rules.add(new WhitespaceRule(new RubyWhitespaceDetector()));		
 		// Add rule for numbers
