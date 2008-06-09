@@ -41,17 +41,18 @@ public interface IRubyColorConstants {
 	 * The color key for Ruby code.
 	 */
 	public static final String RUBY_DEFAULT = DLTKColorConstants.DLTK_DEFAULT;
-	
+
 	/**
 	 * The color key for Ruby code.
 	 */
 	public static final String RUBY_DOC = DLTKColorConstants.DLTK_DOC;
-	
+
 	/**
 	 * The color key for Ruby code.
 	 */
-	public static final String RUBY_DOC_TOPIC = DLTKColorConstants.DLTK_DOC + ".topic"; //$NON-NLS-1$
-	
+	public static final String RUBY_DOC_TOPIC = DLTKColorConstants.DLTK_DOC
+			+ ".topic"; //$NON-NLS-1$
+
 	/*
 	 * The color key for TO-DO tasks in comments
 	 */
@@ -60,10 +61,13 @@ public interface IRubyColorConstants {
 	public static final String RUBY_VARIABLE = "variable"; //$NON-NLS-1$
 	public static final String RUBY_CLASS_VARIABLE = RUBY_VARIABLE + ".class"; //$NON-NLS-1$
 	public static final String RUBY_GLOBAL_VARIABLE = RUBY_VARIABLE + ".global"; //$NON-NLS-1$
-	public static final String RUBY_CONSTANT_VARIABLE = RUBY_VARIABLE + ".constant"; //$NON-NLS-1$
-	public static final String RUBY_INSTANCE_VARIABLE = RUBY_VARIABLE + ".instance"; //$NON-NLS-1$
+	public static final String RUBY_CONSTANT_VARIABLE = RUBY_VARIABLE
+			+ ".constant"; //$NON-NLS-1$
+	public static final String RUBY_INSTANCE_VARIABLE = RUBY_VARIABLE
+			+ ".instance"; //$NON-NLS-1$
 	public static final String RUBY_PSEUDO_VARIABLE = RUBY_VARIABLE + ".pseudo"; //$NON-NLS-1$
-	public static final String RUBY_PREDEFINED_VARIABLE = RUBY_VARIABLE + ".predefined"; //$NON-NLS-1$
-	
+	public static final String RUBY_PREDEFINED_VARIABLE = RUBY_VARIABLE
+			+ ".predefined"; //$NON-NLS-1$
+
 	public static final String RUBY_SYMBOLS = "ruby.symbols"; //$NON-NLS-1$
 }
