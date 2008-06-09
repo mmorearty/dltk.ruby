@@ -467,17 +467,19 @@ public class JRubySourceParser extends AbstractSourceParser {
 			errorState[0] = false;
 
 			final long sTime = TRACE_AST_DLTK ? System.currentTimeMillis() : 0;
+            final String strFileName = fileName != null ? String
+					.valueOf(fileName) : ""; //$NON-NLS-1$
 
 			char[] fixedContent = fixSpacedParens(content);
 			Node node;
 			if (Arrays.equals(fixedContent, content) != true) {
 			  //ssanders - Parse with reporter to collect parenthesis warnings
-			  parser.parse("", new CharArrayReader(content), proxyProblemReporter); //$NON-NLS-1$
+			  parser.parse(strFileName, new CharArrayReader(content), proxyProblemReporter);
 			  //ssanders - However, use modified content to have corrected position info 
-			  node = parser.parse("", new CharArrayReader(fixedContent), null); //$NON-NLS-1$
+			  node = parser.parse(strFileName, new CharArrayReader(fixedContent), null);
 			}
 			else {
-			  node = parser.parse("", new CharArrayReader(content), proxyProblemReporter); //$NON-NLS-1$
+			  node = parser.parse(strFileName, new CharArrayReader(content), proxyProblemReporter);
 			}
 			fixPositions.clear();
 			if (!parser.isSuccess() || errorState[0]) {
@@ -492,7 +494,7 @@ public class JRubySourceParser extends AbstractSourceParser {
                 content2 = fixBrokenCommas(content2);
                 content2 = fixBrokenHashes(content2);
 
-                Node node2 = parser.parse("", new StringReader(content2), null); //$NON-NLS-1$
+                Node node2 = parser.parse(strFileName, new StringReader(content2), null);
                 if (node2 != null)
                     node = node2;
                 else {
@@ -502,15 +504,10 @@ public class JRubySourceParser extends AbstractSourceParser {
                     content2 = fixBrokenCommasUnsafe(content2);
                     content2 = fixBrokenHashesUnsafe(content2);
 
-                    node2 = parser.parse("", new StringReader(content2), new AbstractProblemReporter() { //$NON-NLS-1$
+                    node2 = parser.parse(strFileName, new StringReader(content2), new AbstractProblemReporter() {
 
                       public IMarker reportProblem(IProblem problem) {
                         if (DLTKCore.DEBUG) {
-                          String strFileName = ""; //$NON-NLS-1$
-                          if (fileName != null) {
-                            strFileName = String.valueOf(fileName);
-                          }
-
                           System.out.println("JRubySourceParser.parse(): Fallback Parse Problem - fileName=" + strFileName + //$NON-NLS-1$
                                              ", message=" + problem.getMessage() + ", line=" + problem.getSourceLineNumber()); //$NON-NLS-1$ //$NON-NLS-2$
                         }
