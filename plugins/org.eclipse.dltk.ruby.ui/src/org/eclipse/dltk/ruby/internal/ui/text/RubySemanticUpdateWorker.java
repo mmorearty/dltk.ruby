@@ -11,8 +11,6 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.internal.ui.text;
 
-import java.util.Stack;
-
 import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.expressions.StringLiteral;
 import org.eclipse.dltk.ast.references.VariableReference;
@@ -45,10 +43,7 @@ public class RubySemanticUpdateWorker extends SemanticUpdateWorker {
 		this.content = sourceModule.getSourceAsCharArray();
 	}
 
-	private final Stack stack = new Stack();
-
 	public boolean visitGeneral(ASTNode node) throws Exception {
-		stack.push(node);
 		if (node instanceof RubyRegexpExpression) {
 			handleRegexp(node);
 		} else if (node instanceof RubySymbolReference) {
@@ -79,10 +74,6 @@ public class RubySemanticUpdateWorker extends SemanticUpdateWorker {
 				addHighlightedPosition(end - 1, end - 0, HL_EVAL_EXPR);
 			}
 		}
-	}
-
-	public void endvisitGeneral(ASTNode node) throws Exception {
-		stack.pop();
 	}
 
 	private void handleRegexp(ASTNode node) {
