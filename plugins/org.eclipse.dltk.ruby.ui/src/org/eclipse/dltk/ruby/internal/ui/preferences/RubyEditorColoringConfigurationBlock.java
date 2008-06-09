@@ -14,6 +14,7 @@ import java.io.InputStream;
 import org.eclipse.dltk.internal.ui.editor.ScriptSourceViewer;
 import org.eclipse.dltk.ruby.internal.ui.RubyPreferenceConstants;
 import org.eclipse.dltk.ruby.internal.ui.editor.RubyDocumentSetupParticipant;
+import org.eclipse.dltk.ruby.internal.ui.text.IRubyColorConstants;
 import org.eclipse.dltk.ruby.internal.ui.text.IRubyPartitions;
 import org.eclipse.dltk.ruby.ui.preferences.RubyPreferencesMessages;
 import org.eclipse.dltk.ui.preferences.AbstractScriptEditorColoringConfigurationBlock;
@@ -60,6 +61,14 @@ public class RubyEditorColoringConfigurationBlock extends
 
 			{ PreferencesMessages.DLTKEditorPreferencePage_strings,
 					RubyPreferenceConstants.EDITOR_STRING_COLOR, sCoreCategory },
+			{ PreferencesMessages.DLTKEditorPreferencePage_regexps,
+					RubyPreferenceConstants.EDITOR_REGEXP_COLOR, sCoreCategory },
+			{
+					PreferencesMessages.DLTKEditorPreferencePage_evaluated_expressions,
+					RubyPreferenceConstants.EDITOR_EVAL_EXPR_COLOR,
+					sCoreCategory },
+			{ PreferencesMessages.DLTKEditorPreferencePage_default,
+					IRubyColorConstants.RUBY_DEFAULT, sCoreCategory },
 
 			{ PreferencesMessages.DLTKEditorPreferencePage_numbers,
 					RubyPreferenceConstants.EDITOR_NUMBER_COLOR, sCoreCategory },

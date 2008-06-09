@@ -70,4 +70,8 @@ public interface IRubyColorConstants {
 			+ ".predefined"; //$NON-NLS-1$
 
 	public static final String RUBY_SYMBOLS = "ruby.symbols"; //$NON-NLS-1$
+
+	public static final String RUBY_REGEXP = RUBY_STRING + ".regexp"; //$NON-NLS-1$
+
+	public static final String RUBY_EVAL_EXPR = RUBY_STRING + ".eval"; //$NON-NLS-1$
 }

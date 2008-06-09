@@ -47,8 +47,6 @@ public class RubyStringScanner extends AbstractScriptScanner {
 				getToken(IRubyColorConstants.RUBY_CLASS_VARIABLE)));
 		rules.add(new WordPatternRule(new RubyWordDetector(), "#@", "", //$NON-NLS-1$ //$NON-NLS-2$
 				getToken(IRubyColorConstants.RUBY_INSTANCE_VARIABLE)));
-//		rules.add(new MultiLineRule("#{", "}",
-//				getToken(IRubyColorConstants.RUBY_DEFAULT)));
 
 		setDefaultReturnToken(getToken(IRubyColorConstants.RUBY_STRING));
 

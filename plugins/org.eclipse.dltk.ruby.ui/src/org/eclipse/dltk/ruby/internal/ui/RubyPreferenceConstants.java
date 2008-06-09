@@ -432,6 +432,13 @@ public class RubyPreferenceConstants extends PreferenceConstants {
 	public final static String EDITOR_STRING_UNDERLINE = IRubyColorConstants.RUBY_STRING
 			+ EDITOR_UNDERLINE_SUFFIX;
 
+	public static final String EDITOR_REGEXP_COLOR = IRubyColorConstants.RUBY_REGEXP;
+
+	public static final String EDITOR_REGEXP_BOLD = IRubyColorConstants.RUBY_REGEXP
+			+ EDITOR_BOLD_SUFFIX;
+
+	public static final String EDITOR_EVAL_EXPR_COLOR = IRubyColorConstants.RUBY_EVAL_EXPR;
+
 	/**
 	 * A named preference that controls whether comments are initially folded.
 	 */
@@ -477,6 +484,10 @@ public class RubyPreferenceConstants extends PreferenceConstants {
 				new RGB(127, 0, 85));
 		PreferenceConverter.setDefault(store, EDITOR_STRING_COLOR, new RGB(42,
 				0, 255));
+		PreferenceConverter.setDefault(store, EDITOR_REGEXP_COLOR, new RGB(0,
+				0, 255));
+		PreferenceConverter.setDefault(store, EDITOR_EVAL_EXPR_COLOR, new RGB(
+				0, 0, 128));
 		PreferenceConverter.setDefault(store, EDITOR_SYMBOLS_COLOR, new RGB(42,
 				0, 255));
 		PreferenceConverter.setDefault(store, EDITOR_NUMBER_COLOR, new RGB(0,
@@ -501,6 +512,8 @@ public class RubyPreferenceConstants extends PreferenceConstants {
 
 		store.setDefault(EDITOR_DOC_TOPIC_BOLD, true);
 		store.setDefault(EDITOR_DOC_TOPIC_ITALIC, true);
+
+		store.setDefault(EDITOR_REGEXP_BOLD, true);
 
 		store.setDefault(EDITOR_SYMBOLS_ITALIC, true);
 

@@ -66,7 +66,6 @@ public class RubyCodeScanner extends AbstractScriptScanner {
 		IToken instanceVariable = getToken(IRubyColorConstants.RUBY_INSTANCE_VARIABLE);
 		IToken pseudoVariable = getToken(IRubyColorConstants.RUBY_PSEUDO_VARIABLE);
 		IToken globalVariable = getToken(IRubyColorConstants.RUBY_GLOBAL_VARIABLE);
-		IToken symbols = getToken(IRubyColorConstants.RUBY_SYMBOLS);
 
 		// Add generic whitespace rule.
 		rules.add(new WhitespaceRule(new RubyWhitespaceDetector()));		
@@ -99,9 +98,6 @@ public class RubyCodeScanner extends AbstractScriptScanner {
 		// Class Variables
 		rules.add(new StartWithRule(classVariable, "@@".toCharArray() ) ); //$NON-NLS-1$
 		
-		// Symbols
-		rules.add(new StartWithRule(symbols, ':', true));				
-				
 		setDefaultReturnToken(other);
 		return rules;
 	}

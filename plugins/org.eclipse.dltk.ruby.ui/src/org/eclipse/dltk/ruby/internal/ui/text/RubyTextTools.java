@@ -9,9 +9,13 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.internal.ui.text;
 
+import org.eclipse.dltk.core.ISourceModule;
+import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.internal.ui.editor.semantic.highlighting.PositionUpdater;
 import org.eclipse.dltk.internal.ui.editor.semantic.highlighting.SemanticHighlighting;
-import org.eclipse.dltk.ruby.internal.ui.text.RubyPartitionScanner;
+import org.eclipse.dltk.internal.ui.editor.semantic.highlighting.SemanticPositionUpdater;
+import org.eclipse.dltk.internal.ui.editor.semantic.highlighting.SemanticUpdateWorker;
+import org.eclipse.dltk.ruby.internal.ui.RubyPreferenceConstants;
 import org.eclipse.dltk.ui.text.ScriptSourceViewerConfiguration;
 import org.eclipse.dltk.ui.text.ScriptTextTools;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -45,10 +49,27 @@ public class RubyTextTools extends ScriptTextTools {
 	}
 
 	public SemanticHighlighting[] getSemanticHighlightings() {
-		return new SemanticHighlighting[0];
+		return new SemanticHighlighting[] {
+				new RubySemanticHighlighting(
+						RubyPreferenceConstants.EDITOR_REGEXP_COLOR),
+				new RubySemanticHighlighting(
+						RubyPreferenceConstants.EDITOR_STRING_COLOR),
+				new RubySemanticHighlighting(
+						RubyPreferenceConstants.EDITOR_SYMBOLS_COLOR),
+				new RubySemanticHighlighting(
+						RubyPreferenceConstants.EDITOR_VARIABLE_COLOR),
+				new RubySemanticHighlighting(
+						RubyPreferenceConstants.EDITOR_EVAL_EXPR_COLOR) };
 	}
 
 	public PositionUpdater getSemanticPositionUpdater() {
-		return null;
+		return new SemanticPositionUpdater() {
+
+			protected SemanticUpdateWorker createWorker(
+					ISourceModule sourceModule) throws ModelException {
+				return new RubySemanticUpdateWorker(sourceModule);
+			}
+
+		};
 	}
 }
