@@ -20,7 +20,6 @@ import java.util.regex.Pattern;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.dltk.ast.ASTNode;
-import org.eclipse.dltk.ast.DLTKToken;
 import org.eclipse.dltk.ast.Modifiers;
 import org.eclipse.dltk.ast.declarations.Argument;
 import org.eclipse.dltk.ast.declarations.MethodDeclaration;
@@ -399,8 +398,8 @@ public class RubyASTBuildVisitor implements NodeVisitor {
 	 * Tries to convert single JRuby's node to single DLTK AST node. If
 	 * convertion fails, and for ex., more than one or zero nodes were fetched
 	 * as result, then RuntimeException will be thrown. Optoin
-	 * <code>allowZero</code> allows to fetch no dltk nodes and just return
-	 * null without throwing an exception.
+	 * <code>allowZero</code> allows to fetch no dltk nodes and just return null
+	 * without throwing an exception.
 	 * 
 	 * @param node
 	 * @param allowZero
@@ -424,14 +423,18 @@ public class RubyASTBuildVisitor implements NodeVisitor {
 		}
 		if (list.size() > 1) {
 			throw new RuntimeException(
-					MessageFormat.format(Messages.RubyASTBuildVisitor_jrubyNodeHasntBeenConvertedIntoAnyDltkAstNode,
-							new Object[] { node.getClass().getName() }));
+					MessageFormat
+							.format(
+									Messages.RubyASTBuildVisitor_jrubyNodeHasntBeenConvertedIntoAnyDltkAstNode,
+									new Object[] { node.getClass().getName() }));
 		}
 		if (allowZero)
 			return null;
 		throw new RuntimeException(
-				MessageFormat.format(Messages.RubyASTBuildVisitor_jrubyNodeHasntBeenConvertedIntoAnyDltkAstNode,
-				new Object[] { node.getClass().getName() }));
+				MessageFormat
+						.format(
+								Messages.RubyASTBuildVisitor_jrubyNodeHasntBeenConvertedIntoAnyDltkAstNode,
+								new Object[] { node.getClass().getName() }));
 	}
 
 	protected char[] getContent() {
@@ -544,7 +547,7 @@ public class RubyASTBuildVisitor implements NodeVisitor {
 	}
 
 	public Instruction visitBlockPassNode(BlockPassNode iVisited) {
-		ASTNode args = collectSingleNodeSafe(iVisited.getArgsNode());
+		// ASTNode args = collectSingleNodeSafe(iVisited.getArgsNode());
 		ASTNode body = collectSingleNodeSafe(iVisited.getBodyNode());
 		ISourcePosition pos = iVisited.getPosition();
 		RubyBlock e = new RubyBlock(pos.getStartOffset(), pos.getEndOffset(),
@@ -567,7 +570,7 @@ public class RubyASTBuildVisitor implements NodeVisitor {
 		Node pathNode = iVisited.getConstNode();
 		ASTNode pathResult = null;
 		if (pathNode != null)
-			pathResult = (ASTNode) collectSingleNodeSafe(pathNode);
+			pathResult = collectSingleNodeSafe(pathNode);
 		ASTNode value = collectSingleNodeSafe(iVisited.getValueNode());
 		ISourcePosition position = iVisited.getPosition();
 		int start = position.getStartOffset();
@@ -697,11 +700,9 @@ public class RubyASTBuildVisitor implements NodeVisitor {
 						RubyPlugin
 								.log("Ruby AST: function call, non-empty args, no closing paren; " //$NON-NLS-1$
 										+ "opening paren at " //$NON-NLS-1$
-										+ lParenOffset
-										+ ", " //$NON-NLS-1$
+										+ lParenOffset + ", " //$NON-NLS-1$
 										+ "last argument ending at " //$NON-NLS-1$
-										+ lastArgEnd
-										+ ", function name " //$NON-NLS-1$
+										+ lastArgEnd + ", function name " //$NON-NLS-1$
 										+ methodName);
 					callNode.setEnd(lastArgEnd); // probably no closing paren
 				}
@@ -727,13 +728,14 @@ public class RubyASTBuildVisitor implements NodeVisitor {
 		if (collector.getList().size() > 1) {
 			if (TRACE_RECOVERING)
 				RubyPlugin.log("DLTKASTBuildVisitor.visitCallNode(" //$NON-NLS-1$
-						+ methodName + "): receiver " //$NON-NLS-1$
+						+ methodName
+						+ "): receiver " //$NON-NLS-1$
 						+ iVisited.getReceiverNode().getClass().getName()
 						+ " turned into multiple nodes"); //$NON-NLS-1$
 		}
 		ASTNode recv;
 		if (collector.getList().size() < 1) {
-			recv = new NumericLiteral(new DLTKToken(0, "")); // FIXME //$NON-NLS-1$
+			recv = new NumericLiteral(-1, -1, 0);
 			recv.setStart(iVisited.getPosition().getStartOffset());
 			recv.setEnd(iVisited.getPosition().getEndOffset() + 1);
 		} else
@@ -745,8 +747,8 @@ public class RubyASTBuildVisitor implements NodeVisitor {
 		RubyCallArgumentsList argList = new RubyCallArgumentsList();
 		Node argsNode = iVisited.getArgsNode();
 		if (argsNode != null) {
-            argList.setStart(argsNode.getPosition().getStartOffset());
-            argList.setEnd(argsNode.getPosition().getEndOffset());
+			argList.setStart(argsNode.getPosition().getStartOffset());
+			argList.setEnd(argsNode.getPosition().getEndOffset());
 
 			states.push(new ArgumentsState(argList));
 			if (argsNode instanceof ListNode) {
@@ -906,7 +908,8 @@ public class RubyASTBuildVisitor implements NodeVisitor {
 				bodyNode = ((NewlineNode) bodyNode).getNextNode();
 			if (bodyNode instanceof BlockNode) {
 				BlockNode blockNode = (BlockNode) bodyNode;
-				end = blockNode.getLast().getPosition().getEndOffset() + 1; // /XXX!!!!
+				// XXX !!!!
+				end = blockNode.getLast().getPosition().getEndOffset() + 1;
 			}
 			pos = fixBorders(pos);
 			Block bl = new Block(pos.getStartOffset(), (end == -1) ? pos
@@ -1111,7 +1114,8 @@ public class RubyASTBuildVisitor implements NodeVisitor {
 						aa.setModifier(RubyMethodArgument.SIMPLE);
 						arguments.add(aa);
 					} else {
-						System.err.println(Messages.RubyASTBuildVisitor_unknownArgumentType);
+						System.err
+								.println(Messages.RubyASTBuildVisitor_unknownArgumentType);
 					}
 				}
 			}
@@ -1176,8 +1180,8 @@ public class RubyASTBuildVisitor implements NodeVisitor {
 
 	// method
 	public Instruction visitDefnNode(DefnNode iVisited) {
-// Collection comments = iVisited.getComments();
-// System.out.println(comments);
+		// Collection comments = iVisited.getComments();
+		// System.out.println(comments);
 		ArgumentNode nameNode = iVisited.getNameNode();
 
 		ISourcePosition pos = fixNamePosition(nameNode.getPosition());
@@ -1208,7 +1212,7 @@ public class RubyASTBuildVisitor implements NodeVisitor {
 			} else
 				bodyNode.accept(this);
 		}
-		ArgsNode args = (ArgsNode) iVisited.getArgsNode();
+		ArgsNode args = iVisited.getArgsNode();
 		if (args != null) {
 			List arguments = processMethodArguments(args);
 			method.acceptArguments(arguments);
@@ -1275,7 +1279,7 @@ public class RubyASTBuildVisitor implements NodeVisitor {
 		}
 		states.peek().add(method);
 		states.push(new MethodState(method));
-		ArgsNode args = (ArgsNode) iVisited.getArgsNode();
+		ArgsNode args = iVisited.getArgsNode();
 		if (args != null) {
 			List list = processMethodArguments(args);
 			method.acceptArguments(list);
@@ -1340,8 +1344,8 @@ public class RubyASTBuildVisitor implements NodeVisitor {
 		RubyCallArgumentsList argList = new RubyCallArgumentsList();
 		Node argsNode = iVisited.getArgsNode();
 		if (argsNode != null) {
-		    argList.setStart(argsNode.getPosition().getStartOffset());
-		    argList.setEnd(argsNode.getPosition().getEndOffset());
+			argList.setStart(argsNode.getPosition().getStartOffset());
+			argList.setEnd(argsNode.getPosition().getEndOffset());
 
 			states.push(new ArgumentsState(argList));
 			if (argsNode instanceof ListNode) {
@@ -1480,7 +1484,8 @@ public class RubyASTBuildVisitor implements NodeVisitor {
 			}
 		} else {
 			if (!JRubySourceParser.isSilentState()) {
-				throw new RuntimeException(Messages.RubyASTBuildVisitor_unpairedHash);
+				throw new RuntimeException(
+						Messages.RubyASTBuildVisitor_unpairedHash);
 			}
 		}
 
@@ -1676,7 +1681,8 @@ public class RubyASTBuildVisitor implements NodeVisitor {
 				bodyNode = ((NewlineNode) bodyNode).getNextNode();
 			if (bodyNode instanceof BlockNode) {
 				BlockNode blockNode = (BlockNode) bodyNode;
-				end = blockNode.getLast().getPosition().getEndOffset(); // /XXX!!!!
+				// XXX!!!!
+				end = blockNode.getLast().getPosition().getEndOffset();
 			} else {
 				if (TRACE_RECOVERING)
 					RubyPlugin.log("DLTKASTBuildVisitor.visitModuleNode(" //$NON-NLS-1$
@@ -1974,7 +1980,7 @@ public class RubyASTBuildVisitor implements NodeVisitor {
 		CallArgumentsList callArguments = processCallArguments(argsNode);
 
 		Node iterNode = iVisited.getIterNode();
-		ASTNode block = (ASTNode) collectSingleNodeSafe(iterNode);
+		ASTNode block = collectSingleNodeSafe(iterNode);
 
 		ISourcePosition pos = iVisited.getPosition();
 
@@ -2063,7 +2069,7 @@ public class RubyASTBuildVisitor implements NodeVisitor {
 		if (expressionsStatement instanceof org.eclipse.dltk.ast.ASTListNode) {
 			org.eclipse.dltk.ast.ASTListNode list = (org.eclipse.dltk.ast.ASTListNode) expressionsStatement;
 			statement.setExpressions(list.getChilds());
-		} else if (expressionsStatement instanceof ASTNode) {
+		} else {
 			List list = new ArrayList(1);
 			list.add(expressionsStatement);
 			statement.setExpressions(list);
