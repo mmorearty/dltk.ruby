@@ -1547,21 +1547,21 @@ public class RubyASTBuildVisitor implements NodeVisitor {
 	}
 
 	public Instruction visitLocalVarNode(LocalVarNode iVisited) {
-		ISourcePosition pos = fixNamePosition(iVisited.getPosition());
-		String varName = String.copyValueOf(content, pos.getStartOffset(), pos
-				.getEndOffset()
-				- pos.getStartOffset());
-		processVariableReference(iVisited, varName, RubyVariableKind.LOCAL);
+		processVariableReference(iVisited, iVisited.getName(),
+				RubyVariableKind.LOCAL);
 		return null;
 	}
 
 	private void processVariableReference(Node iVisited, String varName,
 			RubyVariableKind varKind) {
-		ISourcePosition pos2 = fixNamePosition(iVisited.getPosition());
-		if (varName.endsWith("\r")) // varName.trim() ? //$NON-NLS-1$
-			varName = varName.substring(0, varName.length() - 1);
-		VariableReference node = new VariableReference(pos2.getStartOffset(),
-				pos2.getEndOffset(), varName, varKind);
+		final ISourcePosition pos = iVisited.getPosition();
+		final int start = pos.getStartOffset();
+		int end = pos.getEndOffset();
+		if (end - start > varName.length()) {
+			end = start + varName.length();
+		}
+		VariableReference node = new VariableReference(start, end, varName,
+				varKind);
 		states.peek().add(node);
 	}
 
@@ -1921,14 +1921,46 @@ public class RubyASTBuildVisitor implements NodeVisitor {
 	public Instruction visitStrNode(StrNode iVisited) {
 		String value = iVisited.getValue().toString();
 		ISourcePosition position = iVisited.getPosition();
-		if (value.length() == 0) {
-			value = String.copyValueOf(content, position.getStartOffset(),
-					position.getEndOffset() - position.getStartOffset());
+		int start = position.getStartOffset();
+		int end = position.getEndOffset();
+		if (value.length() == 0 && !isEmptyString(start, end)) {
+			// FIXME why do we need this code? only for the __FILE__?
+			value = String.copyValueOf(content, start, end - start);
 		}
-		states.peek().add(
-				new StringLiteral(position.getStartOffset(), position
-						.getEndOffset(), value));
+		states.peek().add(new StringLiteral(start, end, value));
 		return null;
+	}
+
+	private boolean isEmptyString(int start, int end) {
+		if (end - start == 2) {
+			if (content[start] == '\'' && content[start + 1] == '\''
+					|| content[start] == '"' && content[start + 1] == '"') {
+				return true;
+			}
+		} else if (end - start == 3) {
+			if (content[start] == '%') {
+				final char starter = content[start + 1];
+				if (!RubySyntaxUtils.isValidPercentStringStarter(starter)) {
+					final char terminator = RubySyntaxUtils
+							.getPercentStringTerminator(starter);
+					if (terminator != 0 && content[start + 2] == terminator) {
+						return true;
+					}
+				}
+			}
+		} else if (end - start == 4) {
+			if (content[start] == '%') {
+				if (RubySyntaxUtils
+						.isValidPercentStringStarter(content[start + 1])) {
+					final char terminator = RubySyntaxUtils
+							.getPercentStringTerminator(content[start + 2]);
+					if (terminator != 0 && content[start + 3] == terminator) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
 	}
 
 	public Instruction visitSValueNode(SValueNode iVisited) {
@@ -2193,10 +2225,18 @@ public class RubyASTBuildVisitor implements NodeVisitor {
 	 * @see NodeVisitor#visitSymbolNode(SymbolNode)
 	 */
 	public Instruction visitSymbolNode(SymbolNode iVisited) { // done
-		ISourcePosition position = iVisited.getPosition();
-
-		RubySymbolReference sr = new RubySymbolReference(position
-				.getStartOffset(), position.getEndOffset(), iVisited.getName());
+		final String symName = iVisited.getName();
+		final ISourcePosition position = iVisited.getPosition();
+		final int start = position.getStartOffset();
+		int nameLen = symName.length();
+		if (content[start] == ':') {
+			++nameLen;
+		}
+		int end = position.getEndOffset();
+		if (end - start > nameLen) {
+			end = start + nameLen;
+		}
+		RubySymbolReference sr = new RubySymbolReference(start, end, symName);
 		states.peek().add(sr);
 
 		return null;
