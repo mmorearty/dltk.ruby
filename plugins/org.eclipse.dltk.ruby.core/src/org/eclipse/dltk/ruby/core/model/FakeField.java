@@ -35,4 +35,8 @@ public class FakeField extends SourceField {
 	public ISourceRange getSourceRange() throws ModelException {
 		return new SourceRange(offset,length);
 	}
+
+	public boolean exists() {
+		return true;
+	}
 }
