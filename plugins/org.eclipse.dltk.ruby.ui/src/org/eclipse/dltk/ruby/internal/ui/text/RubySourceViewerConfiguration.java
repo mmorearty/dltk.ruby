@@ -15,6 +15,7 @@ package org.eclipse.dltk.ruby.internal.ui.text;
 import java.util.Map;
 
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.dltk.compiler.task.TodoTaskPreferences;
 import org.eclipse.dltk.internal.ui.editor.EditorUtility;
 import org.eclipse.dltk.internal.ui.editor.ScriptSourceViewer;
 import org.eclipse.dltk.internal.ui.text.HTMLTextPresenter;
@@ -136,8 +137,8 @@ public class RubySourceViewerConfiguration extends
 				getColorManager(), fPreferenceStore);
 		fCommentScanner = new ScriptCommentScanner(getColorManager(),
 				fPreferenceStore, IRubyColorConstants.RUBY_SINGLE_LINE_COMMENT,
-				IRubyColorConstants.RUBY_TODO_COMMENT, RubyPlugin.getDefault()
-						.getPluginPreferences());
+				IRubyColorConstants.RUBY_TODO_COMMENT, new TodoTaskPreferences(
+						RubyPlugin.getDefault().getPluginPreferences()));
 
 		fDocScanner = new RubyDocScanner(getColorManager(), fPreferenceStore);
 	}
