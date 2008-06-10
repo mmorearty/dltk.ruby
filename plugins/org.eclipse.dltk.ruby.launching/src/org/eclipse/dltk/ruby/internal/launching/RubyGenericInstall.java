@@ -51,6 +51,7 @@ public class RubyGenericInstall extends AbstractInterpreterInstall {
 			InterpreterConfig config = ScriptLaunchUtil
 					.createInterpreterConfig(exeEnv, builderFile, builderFile
 							.getParent());
+			config.removeEnvVar("RUBYOPT"); //$NON-NLS-1$
 			// config.addInterpreterArg("-KU"); //$NON-NLS-1$
 			final Process process = ScriptLaunchUtil.runScriptWithInterpreter(
 					exeEnv, RubyGenericInstall.this.getInstallLocation()
