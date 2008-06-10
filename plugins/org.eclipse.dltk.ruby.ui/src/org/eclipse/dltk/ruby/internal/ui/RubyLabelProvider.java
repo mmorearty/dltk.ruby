@@ -13,11 +13,13 @@ package org.eclipse.dltk.ruby.internal.ui;
 
 import org.eclipse.core.resources.IStorage;
 import org.eclipse.dltk.core.IBuildpathEntry;
+import org.eclipse.dltk.core.IMethod;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.IProjectFragment;
 import org.eclipse.dltk.core.IScriptFolder;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.IType;
+import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.core.environment.EnvironmentPathUtils;
 import org.eclipse.dltk.ui.ScriptElementLabels;
 import org.eclipse.dltk.ui.viewsupport.StorageLabelProvider;
@@ -29,6 +31,7 @@ public class RubyLabelProvider extends LabelProvider {
 	public static final String PACKAGE_SEPARATOR = "::"; //$NON-NLS-1$
 	public static final String SEPARATOR = " - "; //$NON-NLS-1$
 	public static final String FOLDER_SEPARATOR = "/"; //$NON-NLS-1$
+	public static final String METHOD_SEPARATOR = "#"; //$NON-NLS-1$
 
 	private final StorageLabelProvider fStorageLabelProvider;
 
@@ -52,6 +55,10 @@ public class RubyLabelProvider extends LabelProvider {
 			final StringBuffer sb = new StringBuffer();
 			appendQualifiedType((IType) element, sb);
 			return sb.toString();
+		} else if (element instanceof IMethod) {
+			final StringBuffer sb = new StringBuffer();
+			appendQualifiedMethod((IMethod) element, sb);
+			return sb.toString();
 		}
 		return super.getText(element);
 	}
@@ -65,13 +72,48 @@ public class RubyLabelProvider extends LabelProvider {
 		fStorageLabelProvider.dispose();
 	}
 
+	public static void appendQualifiedMethod(IMethod method, StringBuffer sb) {
+		final IModelElement parent = method.getParent();
+		final IType type;
+		if (parent instanceof IType) {
+			type = (IType) parent;
+		} else {
+			type = null;
+		}
+		if (type != null) {
+			ISourceModule module = appendType(type, sb);
+			sb.append(METHOD_SEPARATOR);
+			sb.append(method.getElementName());
+			String[] parameters;
+			try {
+				parameters = method.getParameters();
+			} catch (ModelException e) {
+				parameters = null;
+			}
+			if (parameters != null) {
+				sb.append('(');
+				for (int i = 0; i < parameters.length; ++i) {
+					if (i != 0) {
+						sb.append(", "); //$NON-NLS-1$
+					}
+					sb.append(parameters[i]);
+				}
+				sb.append(')');
+			}
+			if (module != null) {
+				sb.append(SEPARATOR);
+				appendSourceModule(module, sb);
+			}
+		}
+	}
+
 	public static void appendQualifiedType(IType type, StringBuffer sb) {
 		sb.append(type.getElementName());
 		final IModelElement parent = type.getParent();
 		final ISourceModule parentModule;
 		if (parent instanceof IType) {
 			sb.append(SEPARATOR);
-			parentModule = RubyLabelProvider.appendType((IType) parent, sb);
+			parentModule = appendType((IType) parent, sb);
 		} else if (parent instanceof ISourceModule) {
 			parentModule = (ISourceModule) parent;
 		} else {
@@ -87,7 +129,7 @@ public class RubyLabelProvider extends LabelProvider {
 		final IModelElement parent = type.getParent();
 		if (parent instanceof IType) {
 			final ISourceModule module = appendType((IType) parent, sb);
-			sb.append(RubyLabelProvider.PACKAGE_SEPARATOR);
+			sb.append(PACKAGE_SEPARATOR);
 			sb.append(type.getElementName());
 			return module;
 		} else {
@@ -116,7 +158,7 @@ public class RubyLabelProvider extends LabelProvider {
 					sb.append(' ');
 					sb.append(ScriptElementLabels.BUILTINS_FRAGMENT);
 				} else if (fragment.isExternal()) {
-					sb.append(RubyLabelProvider.SEPARATOR);
+					sb.append(SEPARATOR);
 					sb.append(EnvironmentPathUtils.getLocalPath(
 							fragment.getPath()).toPortableString());
 				}
@@ -137,7 +179,7 @@ public class RubyLabelProvider extends LabelProvider {
 		}
 		if (!folder.isRootFolder()) {
 			sb.append(folder.getElementName());
-			sb.append(RubyLabelProvider.FOLDER_SEPARATOR);
+			sb.append(FOLDER_SEPARATOR);
 		}
 		return fragment;
 	}
