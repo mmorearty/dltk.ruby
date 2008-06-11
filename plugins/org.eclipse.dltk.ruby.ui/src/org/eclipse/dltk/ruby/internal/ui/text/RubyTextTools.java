@@ -59,6 +59,12 @@ public class RubyTextTools extends ScriptTextTools {
 				new RubySemanticHighlighting(
 						RubyPreferenceConstants.EDITOR_VARIABLE_COLOR),
 				new RubySemanticHighlighting(
+						RubyPreferenceConstants.EDITOR_INSTANCE_VARIABLE_COLOR),
+				new RubySemanticHighlighting(
+						RubyPreferenceConstants.EDITOR_CLASS_VARIABLE_COLOR),
+				new RubySemanticHighlighting(
+						RubyPreferenceConstants.EDITOR_GLOBAL_VARIABLE_COLOR),
+				new RubySemanticHighlighting(
 						RubyPreferenceConstants.EDITOR_EVAL_EXPR_COLOR) };
 	}
 

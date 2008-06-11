@@ -27,8 +27,11 @@ public class RubySemanticUpdateWorker extends SemanticUpdateWorker {
 	private static final int HL_REGEXP = 0;
 	private static final int HL_STRING = 1;
 	private static final int HL_SYMBOL = 2;
-	private static final int HL_VARIABLE = 3;
-	private static final int HL_EVAL_EXPR = 4;
+	private static final int HL_LOCAL_VARIABLE = 3;
+	private static final int HL_INSTANCE_VARIABLE = 4;
+	private static final int HL_CLASS_VARIABLE = 5;
+	private static final int HL_GLOBAL_VARIABLE = 6;
+	private static final int HL_EVAL_EXPR = 7;
 
 	private final char[] content;
 
@@ -50,8 +53,7 @@ public class RubySemanticUpdateWorker extends SemanticUpdateWorker {
 			addHighlightedPosition(node.sourceStart(), node.sourceEnd(),
 					HL_SYMBOL);
 		} else if (node instanceof VariableReference) {
-			addHighlightedPosition(node.sourceStart(), node.sourceEnd(),
-					HL_VARIABLE);
+			handleVariableReference((VariableReference) node);
 		} else if (node instanceof StringLiteral) {
 			addHighlightedPosition(node.sourceStart(), node.sourceEnd(),
 					HL_STRING);
@@ -59,6 +61,27 @@ public class RubySemanticUpdateWorker extends SemanticUpdateWorker {
 			handleEvaluatableExpression(node);
 		}
 		return true;
+	}
+
+	private void handleVariableReference(VariableReference ref) {
+		final String varName = ref.getName();
+		if (varName.length() != 0) {
+			if (varName.charAt(0) == '$') {
+				addHighlightedPosition(ref.sourceStart(), ref.sourceEnd(),
+						HL_GLOBAL_VARIABLE);
+			} else if (varName.charAt(0) == '@') {
+				if (varName.length() > 2 && varName.charAt(1) == '@') {
+					addHighlightedPosition(ref.sourceStart(), ref.sourceEnd(),
+							HL_CLASS_VARIABLE);
+				} else {
+					addHighlightedPosition(ref.sourceStart(), ref.sourceEnd(),
+							HL_INSTANCE_VARIABLE);
+				}
+			} else {
+				addHighlightedPosition(ref.sourceStart(), ref.sourceEnd(),
+						HL_LOCAL_VARIABLE);
+			}
+		}
 	}
 
 	private void handleEvaluatableExpression(ASTNode node) {
