@@ -18,6 +18,7 @@ import org.eclipse.dltk.ui.text.AbstractScriptScanner;
 import org.eclipse.dltk.ui.text.IColorManager;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.rules.IToken;
+import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.rules.WhitespaceRule;
 import org.eclipse.jface.text.rules.WordRule;
 
@@ -98,6 +99,12 @@ public class RubyCodeScanner extends AbstractScriptScanner {
 		// Class Variables
 		rules.add(new StartWithRule(classVariable, "@@".toCharArray() ) ); //$NON-NLS-1$
 		
+		// Symbols
+		if (!RubyTextTools.USE_SEMANTIC_HL) {
+			final Token symbols = getToken(IRubyColorConstants.RUBY_SYMBOLS);
+			rules.add(new StartWithRule(symbols, ':', true));
+		}
+				
 		setDefaultReturnToken(other);
 		return rules;
 	}

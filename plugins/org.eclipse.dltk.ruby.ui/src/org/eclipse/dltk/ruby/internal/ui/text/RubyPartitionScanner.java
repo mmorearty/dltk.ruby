@@ -14,6 +14,7 @@ import java.util.List;
 
 import org.eclipse.dltk.ruby.internal.ui.text.rules.RubyGlobalVarRule;
 import org.eclipse.dltk.ruby.internal.ui.text.rules.RubyPercentStringRule;
+import org.eclipse.dltk.ruby.internal.ui.text.rules.RubySlashRegexpRule;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.rules.EndOfLineRule;
 import org.eclipse.jface.text.rules.IPredicateRule;
@@ -52,10 +53,14 @@ public class RubyPartitionScanner extends RuleBasedPartitionScanner {
 		rules.add(new EndOfLineRule("#", comment)); //$NON-NLS-1$
 
 		rules.add(new MultiLineRule("\"", "\"", string, '\\', true)); //$NON-NLS-1$ //$NON-NLS-2$
-		
+
 		rules.add(new MultiLineRule("'", "'", singleQuoteString, '\\', true)); //$NON-NLS-1$ //$NON-NLS-2$
 
-		rules.add(new RubyPercentStringRule(string, false));
+		rules.add(new RubyPercentStringRule(string, true));
+
+		if (!RubyTextTools.USE_SEMANTIC_HL) {
+			// rules.add(new RubySlashRegexpRule(string));
+		}
 
 		rules.add(new RubyGlobalVarRule(defaultToken));
 

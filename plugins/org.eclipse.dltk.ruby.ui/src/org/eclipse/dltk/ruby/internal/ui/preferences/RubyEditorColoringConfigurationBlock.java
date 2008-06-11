@@ -16,6 +16,7 @@ import org.eclipse.dltk.ruby.internal.ui.RubyPreferenceConstants;
 import org.eclipse.dltk.ruby.internal.ui.editor.RubyDocumentSetupParticipant;
 import org.eclipse.dltk.ruby.internal.ui.text.IRubyColorConstants;
 import org.eclipse.dltk.ruby.internal.ui.text.IRubyPartitions;
+import org.eclipse.dltk.ruby.internal.ui.text.RubyTextTools;
 import org.eclipse.dltk.ruby.ui.preferences.RubyPreferencesMessages;
 import org.eclipse.dltk.ui.preferences.AbstractScriptEditorColoringConfigurationBlock;
 import org.eclipse.dltk.ui.preferences.IPreferenceConfigurationBlock;
@@ -61,6 +62,7 @@ public class RubyEditorColoringConfigurationBlock extends
 
 			{ PreferencesMessages.DLTKEditorPreferencePage_strings,
 					RubyPreferenceConstants.EDITOR_STRING_COLOR, sCoreCategory },
+/*					
 			{ PreferencesMessages.DLTKEditorPreferencePage_regexps,
 					RubyPreferenceConstants.EDITOR_REGEXP_COLOR, sCoreCategory },
 			{
@@ -69,15 +71,16 @@ public class RubyEditorColoringConfigurationBlock extends
 					sCoreCategory },
 			{ PreferencesMessages.DLTKEditorPreferencePage_default,
 					IRubyColorConstants.RUBY_DEFAULT, sCoreCategory },
-
+*/
 			{ PreferencesMessages.DLTKEditorPreferencePage_numbers,
 					RubyPreferenceConstants.EDITOR_NUMBER_COLOR, sCoreCategory },
-
+/*
 			{ RubyPreferencesMessages.RubyConstants,
 					RubyPreferenceConstants.EDITOR_CONST_COLOR, sCoreCategory },
 			{ RubyPreferencesMessages.RubyLocalVariable,
 					RubyPreferenceConstants.EDITOR_VARIABLE_COLOR,
 					sCoreCategory },
+*/					
 			{ RubyPreferencesMessages.RubyClassVariable,
 					RubyPreferenceConstants.EDITOR_CLASS_VARIABLE_COLOR,
 					sCoreCategory },

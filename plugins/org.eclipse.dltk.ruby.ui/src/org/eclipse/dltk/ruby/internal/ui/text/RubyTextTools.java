@@ -24,6 +24,8 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 public class RubyTextTools extends ScriptTextTools {
 
+	public static final boolean USE_SEMANTIC_HL = false;
+
 	private IPartitionTokenScanner fPartitionScanner;
 
 	private final static String[] LEGAL_CONTENT_TYPES = new String[] {
@@ -49,6 +51,9 @@ public class RubyTextTools extends ScriptTextTools {
 	}
 
 	public SemanticHighlighting[] getSemanticHighlightings() {
+		if (!USE_SEMANTIC_HL) {
+			return super.getSemanticHighlightings();
+		}
 		return new SemanticHighlighting[] {
 				new RubySemanticHighlighting(
 						RubyPreferenceConstants.EDITOR_REGEXP_COLOR),
@@ -74,6 +79,9 @@ public class RubyTextTools extends ScriptTextTools {
 	}
 
 	public PositionUpdater getSemanticPositionUpdater() {
+		if (!USE_SEMANTIC_HL) {
+			return super.getSemanticPositionUpdater();
+		}
 		return new SemanticPositionUpdater() {
 
 			protected SemanticUpdateWorker createWorker(
