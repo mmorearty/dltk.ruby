@@ -20,7 +20,9 @@ public class RubyConstantDeclaration extends ASTNode {
 	private final SimpleReference name;
 	private final ASTNode value;
 
-	public RubyConstantDeclaration(ASTNode path, SimpleReference name, ASTNode value) {
+	public RubyConstantDeclaration(int start, int end, ASTNode path,
+			SimpleReference name, ASTNode value) {
+		super(start, end);
 		this.path = path;
 		this.name = name;
 		this.value = value;

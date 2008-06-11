@@ -583,8 +583,9 @@ public class RubyASTBuildVisitor implements NodeVisitor {
 		}
 		SimpleReference name = new SimpleReference(start, end, iVisited
 				.getName());
-		RubyConstantDeclaration node = new RubyConstantDeclaration(pathResult,
-				name, value);
+		RubyConstantDeclaration node = new RubyConstantDeclaration(position
+				.getStartOffset(), position.getEndOffset(), pathResult, name,
+				value);
 		states.peek().add(node);
 		return null;
 	}
