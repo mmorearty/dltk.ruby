@@ -73,6 +73,8 @@ public class RubyEditorColoringConfigurationBlock extends
 			{ PreferencesMessages.DLTKEditorPreferencePage_numbers,
 					RubyPreferenceConstants.EDITOR_NUMBER_COLOR, sCoreCategory },
 
+			{ RubyPreferencesMessages.RubyConstants,
+					RubyPreferenceConstants.EDITOR_CONST_COLOR, sCoreCategory },
 			{ RubyPreferencesMessages.RubyLocalVariable,
 					RubyPreferenceConstants.EDITOR_VARIABLE_COLOR,
 					sCoreCategory },
@@ -125,8 +127,11 @@ public class RubyEditorColoringConfigurationBlock extends
 	}
 
 	protected InputStream getPreviewContentReader() {
-		return getClass()
-		.getResourceAsStream(PREVIEW_FILE_NAME);
+		return getClass().getResourceAsStream(PREVIEW_FILE_NAME);
 	}
+
+	// protected ScriptTextTools getTextTools() {
+	// return RubyUI.getDefault().getTextTools();
+	// }
 
 }
