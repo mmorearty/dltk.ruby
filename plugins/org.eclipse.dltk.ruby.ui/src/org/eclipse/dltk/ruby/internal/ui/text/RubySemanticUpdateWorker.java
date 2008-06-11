@@ -11,12 +11,23 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.internal.ui.text;
 
+import java.util.Stack;
+
 import org.eclipse.dltk.ast.ASTNode;
+import org.eclipse.dltk.ast.declarations.Declaration;
+import org.eclipse.dltk.ast.expressions.BigNumericLiteral;
+import org.eclipse.dltk.ast.expressions.CallExpression;
+import org.eclipse.dltk.ast.expressions.FloatNumericLiteral;
+import org.eclipse.dltk.ast.expressions.NumericLiteral;
 import org.eclipse.dltk.ast.expressions.StringLiteral;
+import org.eclipse.dltk.ast.references.SimpleReference;
 import org.eclipse.dltk.ast.references.VariableReference;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.internal.ui.editor.semantic.highlighting.SemanticUpdateWorker;
+import org.eclipse.dltk.ruby.ast.RubyConstantDeclaration;
+import org.eclipse.dltk.ruby.ast.RubyDRegexpExpression;
+import org.eclipse.dltk.ruby.ast.RubyDynamicStringExpression;
 import org.eclipse.dltk.ruby.ast.RubyEvaluatableStringExpression;
 import org.eclipse.dltk.ruby.ast.RubyRegexpExpression;
 import org.eclipse.dltk.ruby.ast.RubySymbolReference;
@@ -31,7 +42,10 @@ public class RubySemanticUpdateWorker extends SemanticUpdateWorker {
 	private static final int HL_INSTANCE_VARIABLE = 4;
 	private static final int HL_CLASS_VARIABLE = 5;
 	private static final int HL_GLOBAL_VARIABLE = 6;
-	private static final int HL_EVAL_EXPR = 7;
+	private static final int HL_CONST = 7;
+	private static final int HL_NUMBER = 8;
+	private static final int HL_EVAL_EXPR = 9;
+	private static final int HL_DEFAULT = 10;
 
 	private final char[] content;
 
@@ -46,8 +60,14 @@ public class RubySemanticUpdateWorker extends SemanticUpdateWorker {
 		this.content = sourceModule.getSourceAsCharArray();
 	}
 
+	private static final boolean ACTIVE = true;
+
 	public boolean visitGeneral(ASTNode node) throws Exception {
-		if (node instanceof RubyRegexpExpression) {
+		if (!ACTIVE) {
+			return true;
+		}
+		if (node instanceof RubyRegexpExpression
+				|| node instanceof RubyDRegexpExpression) {
 			handleRegexp(node);
 		} else if (node instanceof RubySymbolReference) {
 			addHighlightedPosition(node.sourceStart(), node.sourceEnd(),
@@ -55,13 +75,59 @@ public class RubySemanticUpdateWorker extends SemanticUpdateWorker {
 		} else if (node instanceof VariableReference) {
 			handleVariableReference((VariableReference) node);
 		} else if (node instanceof StringLiteral) {
+			if (isStringLiteralNeeded(node)) {
+				addHighlightedPosition(node.sourceStart(), node.sourceEnd(),
+						HL_STRING);
+			}
+		} else if (node instanceof NumericLiteral
+				|| node instanceof FloatNumericLiteral
+				|| node instanceof BigNumericLiteral) {
 			addHighlightedPosition(node.sourceStart(), node.sourceEnd(),
-					HL_STRING);
+					HL_NUMBER);
 		} else if (node instanceof RubyEvaluatableStringExpression) {
 			handleEvaluatableExpression(node);
+		} else if (node instanceof CallExpression) {
+			final CallExpression call = (CallExpression) node;
+			if (!RubySyntaxUtils.isRubyOperator(call.getName())
+					&& call.sourceStart() >= 0
+					&& call.sourceEnd() > call.sourceStart()) {
+				addHighlightedPosition(call.sourceStart(), call.sourceEnd(),
+						HL_DEFAULT);
+			}
+		} else if (node instanceof Declaration) {
+			final Declaration declaration = (Declaration) node;
+			addHighlightedPosition(declaration.getNameStart(), declaration
+					.getNameEnd(), HL_DEFAULT);
+		} else if (node instanceof RubyConstantDeclaration) {
+			final RubyConstantDeclaration declaration = (RubyConstantDeclaration) node;
+			final SimpleReference name = declaration.getName();
+			addHighlightedPosition(name.sourceStart(), name.sourceEnd(),
+					HL_CONST);
+		}
+		stack.push(node);
+		return true;
+	}
+
+	private boolean isStringLiteralNeeded(ASTNode node) {
+		if (stack.empty()) {
+			return true;
+		}
+		final ASTNode top = (ASTNode) stack.peek();
+		if (top instanceof RubyDRegexpExpression) {
+			return false;
+		}
+		if (top instanceof RubyDynamicStringExpression) {
+			return node.sourceStart() >= top.sourceStart()
+					&& node.sourceEnd() <= top.sourceEnd();
 		}
 		return true;
 	}
+
+	public void endvisitGeneral(ASTNode node) throws Exception {
+		stack.pop();
+	}
+
+	private final Stack stack = new Stack();
 
 	private void handleVariableReference(VariableReference ref) {
 		final String varName = ref.getName();
@@ -102,10 +168,11 @@ public class RubySemanticUpdateWorker extends SemanticUpdateWorker {
 	private void handleRegexp(ASTNode node) {
 		int start = node.sourceStart();
 		int end = node.sourceEnd();
-		if (start >= 1 && content[start - 1] == '/' && end < content.length
-				&& content[end] == '/') {
+		if (start >= 1 && content[start - 1] == '/') {
 			--start;
-			++end;
+			if (end < content.length && content[end] == '/') {
+				++end;
+			}
 			while (end < content.length
 					&& RubySyntaxUtils.isValidRegexpModifier(content[end])) {
 				++end;

@@ -439,6 +439,11 @@ public class RubyPreferenceConstants extends PreferenceConstants {
 
 	public static final String EDITOR_EVAL_EXPR_COLOR = IRubyColorConstants.RUBY_EVAL_EXPR;
 
+	public static final String EDITOR_EVAL_EXPR_BOL = IRubyColorConstants.RUBY_EVAL_EXPR
+			+ EDITOR_BOLD_SUFFIX;
+	
+	public static final String EDITOR_CONST_COLOR = IRubyColorConstants.RUBY_CONST;
+
 	/**
 	 * A named preference that controls whether comments are initially folded.
 	 */
@@ -469,6 +474,9 @@ public class RubyPreferenceConstants extends PreferenceConstants {
 	public static void initializeDefaultValues(IPreferenceStore store) {
 		PreferenceConstants.initializeDefaultValues(store);
 
+		PreferenceConverter.setDefault(store, IRubyColorConstants.RUBY_DEFAULT,
+				new RGB(0, 0, 0));
+
 		PreferenceConverter.setDefault(store, COMMENT_TASK_TAGS_COLOR, new RGB(
 				127, 159, 191));
 		PreferenceConverter.setDefault(store, EDITOR_SINGLE_LINE_COMMENT_COLOR,
@@ -494,9 +502,11 @@ public class RubyPreferenceConstants extends PreferenceConstants {
 				0, 0));
 		PreferenceConverter.setDefault(store, EDITOR_PSEUDO_VARIABLE_COLOR,
 				new RGB(127, 0, 85));
+		PreferenceConverter.setDefault(store, EDITOR_CONST_COLOR, new RGB(0, 0,
+				0));
 
-		PreferenceConverter.setDefault(store, EDITOR_VARIABLE_COLOR, new RGB(
-				200, 0, 0));
+		PreferenceConverter.setDefault(store, EDITOR_VARIABLE_COLOR, new RGB(0,
+				0, 0));
 		PreferenceConverter.setDefault(store, EDITOR_CLASS_VARIABLE_COLOR,
 				new RGB(200, 0, 0));
 		PreferenceConverter.setDefault(store, EDITOR_INSTANCE_VARIABLE_COLOR,
@@ -515,6 +525,7 @@ public class RubyPreferenceConstants extends PreferenceConstants {
 
 		store.setDefault(EDITOR_REGEXP_BOLD, true);
 
+		store.setDefault(EDITOR_EVAL_EXPR_BOL, true);
 		store.setDefault(EDITOR_SYMBOLS_ITALIC, true);
 
 		store.setDefault(EDITOR_KEYWORD_BOLD, true);

@@ -25,6 +25,7 @@ public final class RubyPreferencesMessages extends NLS {
 	public static String RubyGlobalVariable;
 	public static String RubyPseudoVariable;
 	public static String RubySymbols;
+	public static String RubyConstants;
 		
 	private RubyPreferencesMessages() {
 		// Do not instantiate
