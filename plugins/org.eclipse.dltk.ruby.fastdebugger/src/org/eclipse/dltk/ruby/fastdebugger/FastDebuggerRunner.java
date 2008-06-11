@@ -158,9 +158,7 @@ public class FastDebuggerRunner extends DebuggingEngineRunner {
 			IFileHandle[] children = gemDir.getChildren();
 			for (int i = 0; i < children.length; i++) {
 				String name = children[i].getName();
-				if (name.indexOf('-') != -1
-						&& "ruby-debug".equals(name.substring(0, //$NON-NLS-1$
-								name.lastIndexOf('-')))) {
+				if (name.startsWith("ruby-debug-base")) {
 					return true;
 				}
 			}
