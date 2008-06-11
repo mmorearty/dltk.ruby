@@ -88,11 +88,13 @@ public class RubySemanticUpdateWorker extends SemanticUpdateWorker {
 			handleEvaluatableExpression(node);
 		} else if (node instanceof CallExpression) {
 			final CallExpression call = (CallExpression) node;
-			if (!RubySyntaxUtils.isRubyOperator(call.getName())
-					&& call.sourceStart() >= 0
-					&& call.sourceEnd() > call.sourceStart()) {
-				addHighlightedPosition(call.sourceStart(), call.sourceEnd(),
-						HL_DEFAULT);
+			if (!RubySyntaxUtils.isRubyOperator(call.getName())) {
+				final SimpleReference callName = call.getCallName();
+				if (callName.sourceStart() >= 0
+						&& callName.sourceEnd() > callName.sourceStart()) {
+					addHighlightedPosition(call.sourceStart(),
+							call.sourceEnd(), HL_DEFAULT);
+				}
 			}
 		} else if (node instanceof Declaration) {
 			final Declaration declaration = (Declaration) node;
