@@ -17,4 +17,20 @@ public class RubyOpenTypeAction extends OpenTypeAction {
 	protected IDLTKUILanguageToolkit getUILanguageToolkit() {
 		return RubyUILanguageToolkit.getInstance();
 	}
+
+	protected String getOpenTypeErrorMessage() {
+		return "An exception occurred while opening the class/module.";
+	}
+
+	protected String getOpenTypeErrorTitle() {
+		return "Open Class/Module";
+	}
+
+	protected String getOpenTypeDialogMessage() {
+		return "&Select a class/module to open (? = any character, * = any String, TZ = TimeZone):";
+	}
+
+	protected String getOpenTypeDialogTitle() {
+		return "Open Class/Module";
+	}
 }
