@@ -765,8 +765,10 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 
 		String starting = content.substring(pos, position).trim();
 
-		if (receiver == null)
+		if (receiver == null) {
 			completeSimpleRef(moduleDeclaration, starting, position);
+			completeConstant(moduleDeclaration, starting, position, false);
+		}
 
 		this.setSourceRange(position - starting.length(), position);
 
