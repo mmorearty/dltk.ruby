@@ -24,6 +24,7 @@ import org.eclipse.dltk.ast.references.SimpleReference;
 import org.eclipse.dltk.ast.references.VariableReference;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
+import org.eclipse.dltk.internal.ui.editor.semantic.highlighting.SemanticHighlighting;
 import org.eclipse.dltk.internal.ui.editor.semantic.highlighting.SemanticUpdateWorker;
 import org.eclipse.dltk.ruby.ast.RubyConstantDeclaration;
 import org.eclipse.dltk.ruby.ast.RubyDRegexpExpression;
@@ -32,8 +33,34 @@ import org.eclipse.dltk.ruby.ast.RubyEvaluatableStringExpression;
 import org.eclipse.dltk.ruby.ast.RubyRegexpExpression;
 import org.eclipse.dltk.ruby.ast.RubySymbolReference;
 import org.eclipse.dltk.ruby.core.utils.RubySyntaxUtils;
+import org.eclipse.dltk.ruby.internal.ui.RubyPreferenceConstants;
 
 public class RubySemanticUpdateWorker extends SemanticUpdateWorker {
+
+	public static SemanticHighlighting[] getSemanticHighlightings() {
+		return new SemanticHighlighting[] {
+				new RubySemanticHighlighting(
+						RubyPreferenceConstants.EDITOR_REGEXP_COLOR),
+				new RubySemanticHighlighting(
+						RubyPreferenceConstants.EDITOR_STRING_COLOR),
+				new RubySemanticHighlighting(
+						RubyPreferenceConstants.EDITOR_SYMBOLS_COLOR),
+				new RubySemanticHighlighting(
+						RubyPreferenceConstants.EDITOR_VARIABLE_COLOR),
+				new RubySemanticHighlighting(
+						RubyPreferenceConstants.EDITOR_INSTANCE_VARIABLE_COLOR),
+				new RubySemanticHighlighting(
+						RubyPreferenceConstants.EDITOR_CLASS_VARIABLE_COLOR),
+				new RubySemanticHighlighting(
+						RubyPreferenceConstants.EDITOR_GLOBAL_VARIABLE_COLOR),
+				new RubySemanticHighlighting(
+						RubyPreferenceConstants.EDITOR_CONST_COLOR),
+				new RubySemanticHighlighting(
+						RubyPreferenceConstants.EDITOR_NUMBER_COLOR),
+				new RubySemanticHighlighting(
+						RubyPreferenceConstants.EDITOR_EVAL_EXPR_COLOR),
+				new RubySemanticHighlighting(IRubyColorConstants.RUBY_DEFAULT) };
+	}
 
 	private static final int HL_REGEXP = 0;
 	private static final int HL_STRING = 1;
