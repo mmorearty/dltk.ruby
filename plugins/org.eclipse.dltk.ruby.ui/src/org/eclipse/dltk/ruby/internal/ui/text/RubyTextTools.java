@@ -15,7 +15,6 @@ import org.eclipse.dltk.internal.ui.editor.semantic.highlighting.PositionUpdater
 import org.eclipse.dltk.internal.ui.editor.semantic.highlighting.SemanticHighlighting;
 import org.eclipse.dltk.internal.ui.editor.semantic.highlighting.SemanticPositionUpdater;
 import org.eclipse.dltk.internal.ui.editor.semantic.highlighting.SemanticUpdateWorker;
-import org.eclipse.dltk.ruby.internal.ui.RubyPreferenceConstants;
 import org.eclipse.dltk.ui.text.ScriptSourceViewerConfiguration;
 import org.eclipse.dltk.ui.text.ScriptTextTools;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -54,28 +53,7 @@ public class RubyTextTools extends ScriptTextTools {
 		if (!USE_SEMANTIC_HL) {
 			return super.getSemanticHighlightings();
 		}
-		return new SemanticHighlighting[] {
-				new RubySemanticHighlighting(
-						RubyPreferenceConstants.EDITOR_REGEXP_COLOR),
-				new RubySemanticHighlighting(
-						RubyPreferenceConstants.EDITOR_STRING_COLOR),
-				new RubySemanticHighlighting(
-						RubyPreferenceConstants.EDITOR_SYMBOLS_COLOR),
-				new RubySemanticHighlighting(
-						RubyPreferenceConstants.EDITOR_VARIABLE_COLOR),
-				new RubySemanticHighlighting(
-						RubyPreferenceConstants.EDITOR_INSTANCE_VARIABLE_COLOR),
-				new RubySemanticHighlighting(
-						RubyPreferenceConstants.EDITOR_CLASS_VARIABLE_COLOR),
-				new RubySemanticHighlighting(
-						RubyPreferenceConstants.EDITOR_GLOBAL_VARIABLE_COLOR),
-				new RubySemanticHighlighting(
-						RubyPreferenceConstants.EDITOR_CONST_COLOR),
-				new RubySemanticHighlighting(
-						RubyPreferenceConstants.EDITOR_NUMBER_COLOR),
-				new RubySemanticHighlighting(
-						RubyPreferenceConstants.EDITOR_EVAL_EXPR_COLOR),
-				new RubySemanticHighlighting(IRubyColorConstants.RUBY_DEFAULT) };
+		return RubySemanticUpdateWorker.getSemanticHighlightings();
 	}
 
 	public PositionUpdater getSemanticPositionUpdater() {
