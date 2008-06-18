@@ -52,15 +52,13 @@ public class RubyPartitionScanner extends RuleBasedPartitionScanner {
 
 		rules.add(new EndOfLineRule("#", comment)); //$NON-NLS-1$
 
-		rules.add(new MultiLineRule("\"", "\"", string, '\\', true)); //$NON-NLS-1$ //$NON-NLS-2$
+		rules.add(new MultiLineRule("\"", "\"", string, '\\', false)); //$NON-NLS-1$ //$NON-NLS-2$
 
-		rules.add(new MultiLineRule("'", "'", singleQuoteString, '\\', true)); //$NON-NLS-1$ //$NON-NLS-2$
+		rules.add(new MultiLineRule("'", "'", singleQuoteString, '\\', false)); //$NON-NLS-1$ //$NON-NLS-2$
 
 		rules.add(new RubyPercentStringRule(string, false));
 
-		if (!RubyTextTools.USE_SEMANTIC_HL) {
-			// rules.add(new RubySlashRegexpRule(string));
-		}
+		rules.add(new RubySlashRegexpRule(string));
 
 		rules.add(new RubyGlobalVarRule(defaultToken));
 
