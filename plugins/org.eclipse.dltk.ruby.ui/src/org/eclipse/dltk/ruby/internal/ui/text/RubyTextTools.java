@@ -9,12 +9,13 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.internal.ui.text;
 
-import org.eclipse.dltk.core.ISourceModule;
+import org.eclipse.dltk.ast.ASTVisitor;
+import org.eclipse.dltk.compiler.env.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
-import org.eclipse.dltk.internal.ui.editor.semantic.highlighting.PositionUpdater;
-import org.eclipse.dltk.internal.ui.editor.semantic.highlighting.SemanticHighlighting;
-import org.eclipse.dltk.internal.ui.editor.semantic.highlighting.SemanticPositionUpdater;
-import org.eclipse.dltk.internal.ui.editor.semantic.highlighting.SemanticUpdateWorker;
+import org.eclipse.dltk.ruby.core.RubyNature;
+import org.eclipse.dltk.ui.editor.highlighting.ISemanticHighlighter;
+import org.eclipse.dltk.ui.editor.highlighting.SemanticHighlighting;
+import org.eclipse.dltk.ui.editor.highlighting.ASTSemanticHighlighter;
 import org.eclipse.dltk.ui.text.ScriptSourceViewerConfiguration;
 import org.eclipse.dltk.ui.text.ScriptTextTools;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -23,7 +24,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 public class RubyTextTools extends ScriptTextTools {
 
-	public static final boolean USE_SEMANTIC_HL = false;
+	public static final boolean USE_SEMANTIC_HL = true;
 
 	private IPartitionTokenScanner fPartitionScanner;
 
@@ -56,15 +57,19 @@ public class RubyTextTools extends ScriptTextTools {
 		return RubySemanticUpdateWorker.getSemanticHighlightings();
 	}
 
-	public PositionUpdater getSemanticPositionUpdater() {
+	public ISemanticHighlighter getSemanticPositionUpdater() {
 		if (!USE_SEMANTIC_HL) {
 			return super.getSemanticPositionUpdater();
 		}
-		return new SemanticPositionUpdater() {
+		return new ASTSemanticHighlighter() {
 
-			protected SemanticUpdateWorker createWorker(
-					ISourceModule sourceModule) throws ModelException {
-				return new RubySemanticUpdateWorker(sourceModule);
+			protected ASTVisitor createVisitor(ISourceModule code)
+					throws ModelException {
+				return new RubySemanticUpdateWorker(this, code);
+			}
+
+			protected String getNature() {
+				return RubyNature.NATURE_ID;
 			}
 
 		};

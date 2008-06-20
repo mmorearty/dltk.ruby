@@ -13,10 +13,10 @@ import java.io.InputStream;
 
 import org.eclipse.dltk.internal.ui.editor.ScriptSourceViewer;
 import org.eclipse.dltk.ruby.internal.ui.RubyPreferenceConstants;
+import org.eclipse.dltk.ruby.internal.ui.RubyUI;
 import org.eclipse.dltk.ruby.internal.ui.editor.RubyDocumentSetupParticipant;
 import org.eclipse.dltk.ruby.internal.ui.text.IRubyColorConstants;
 import org.eclipse.dltk.ruby.internal.ui.text.IRubyPartitions;
-import org.eclipse.dltk.ruby.internal.ui.text.RubyTextTools;
 import org.eclipse.dltk.ruby.ui.preferences.RubyPreferencesMessages;
 import org.eclipse.dltk.ui.preferences.AbstractScriptEditorColoringConfigurationBlock;
 import org.eclipse.dltk.ui.preferences.IPreferenceConfigurationBlock;
@@ -24,6 +24,7 @@ import org.eclipse.dltk.ui.preferences.OverlayPreferenceStore;
 import org.eclipse.dltk.ui.preferences.PreferencesMessages;
 import org.eclipse.dltk.ui.text.IColorManager;
 import org.eclipse.dltk.ui.text.ScriptSourceViewerConfiguration;
+import org.eclipse.dltk.ui.text.ScriptTextTools;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.source.IOverviewRuler;
@@ -62,25 +63,10 @@ public class RubyEditorColoringConfigurationBlock extends
 
 			{ PreferencesMessages.DLTKEditorPreferencePage_strings,
 					RubyPreferenceConstants.EDITOR_STRING_COLOR, sCoreCategory },
-/*					
-			{ PreferencesMessages.DLTKEditorPreferencePage_regexps,
-					RubyPreferenceConstants.EDITOR_REGEXP_COLOR, sCoreCategory },
-			{
-					PreferencesMessages.DLTKEditorPreferencePage_evaluated_expressions,
-					RubyPreferenceConstants.EDITOR_EVAL_EXPR_COLOR,
-					sCoreCategory },
 			{ PreferencesMessages.DLTKEditorPreferencePage_default,
 					IRubyColorConstants.RUBY_DEFAULT, sCoreCategory },
-*/
 			{ PreferencesMessages.DLTKEditorPreferencePage_numbers,
 					RubyPreferenceConstants.EDITOR_NUMBER_COLOR, sCoreCategory },
-/*
-			{ RubyPreferencesMessages.RubyConstants,
-					RubyPreferenceConstants.EDITOR_CONST_COLOR, sCoreCategory },
-			{ RubyPreferencesMessages.RubyLocalVariable,
-					RubyPreferenceConstants.EDITOR_VARIABLE_COLOR,
-					sCoreCategory },
-*/					
 			{ RubyPreferencesMessages.RubyClassVariable,
 					RubyPreferenceConstants.EDITOR_CLASS_VARIABLE_COLOR,
 					sCoreCategory },
@@ -133,8 +119,8 @@ public class RubyEditorColoringConfigurationBlock extends
 		return getClass().getResourceAsStream(PREVIEW_FILE_NAME);
 	}
 
-	// protected ScriptTextTools getTextTools() {
-	// return RubyUI.getDefault().getTextTools();
-	// }
+	protected ScriptTextTools getTextTools() {
+		return RubyUI.getDefault().getTextTools();
+	}
 
 }
