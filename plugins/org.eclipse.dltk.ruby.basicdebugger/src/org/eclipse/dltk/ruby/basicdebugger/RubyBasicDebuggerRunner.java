@@ -56,12 +56,13 @@ public class RubyBasicDebuggerRunner extends DebuggingEngineRunner {
 	}
 
 	protected InterpreterConfig addEngineConfig(InterpreterConfig config,
-			PreferencesLookupDelegate delegate, ILaunch launch) throws CoreException {
+			PreferencesLookupDelegate delegate, ILaunch launch)
+			throws CoreException {
 		IEnvironment env = getInstall().getEnvironment();
 		IExecutionEnvironment exeEnv = (IExecutionEnvironment) env
 				.getAdapter(IExecutionEnvironment.class);
 		IDeployment deployment = exeEnv.createDeployment();
-		
+
 		DeploymentManager.getInstance().addDeployment(launch, deployment);
 
 		// Get debugger source location
@@ -74,7 +75,7 @@ public class RubyBasicDebuggerRunner extends DebuggingEngineRunner {
 
 		if (getInstall().getInterpreterInstallType() instanceof JRubyInstallType) {
 			newConfig.addEnvVar("JAVA_OPTS", "-Djruby.jit.enabled=false"); //$NON-NLS-1$ //$NON-NLS-2$
-			newConfig.addInterpreterArg("-X-C"); //$NON-NLS-1$
+			//newConfig.addInterpreterArg("-C"); //$NON-NLS-1$
 		}
 
 		newConfig.addInterpreterArg("-r"); //$NON-NLS-1$
@@ -93,8 +94,7 @@ public class RubyBasicDebuggerRunner extends DebuggingEngineRunner {
 				.getPort()));
 		newConfig.addEnvVar(RUBY_KEY_VAR, sessionId);
 
-		String logFileName = getLogFileName(delegate,
-				sessionId);
+		String logFileName = getLogFileName(delegate, sessionId);
 		if (logFileName != null) {
 			newConfig.addEnvVar(RUBY_LOG_VAR, logFileName);
 		}
@@ -107,35 +107,43 @@ public class RubyBasicDebuggerRunner extends DebuggingEngineRunner {
 	}
 
 	/*
-	 * @see org.eclipse.dltk.launching.DebuggingEngineRunner#getDebugPreferenceQualifier()
+	 * @see
+	 * org.eclipse.dltk.launching.DebuggingEngineRunner#getDebugPreferenceQualifier
+	 * ()
 	 */
 	protected String getDebugPreferenceQualifier() {
 		return RubyDebugPlugin.PLUGIN_ID;
 	}
 
 	/*
-	 * @see org.eclipse.dltk.launching.DebuggingEngineRunner#getDebuggingEnginePreferenceQualifier()
+	 * @seeorg.eclipse.dltk.launching.DebuggingEngineRunner#
+	 * getDebuggingEnginePreferenceQualifier()
 	 */
 	protected String getDebuggingEnginePreferenceQualifier() {
 		return RubyBasicDebuggerPlugin.PLUGIN_ID;
 	}
 
 	/*
-	 * @see org.eclipse.dltk.launching.DebuggingEngineRunner#getLoggingEnabledPreferenceKey()
+	 * @seeorg.eclipse.dltk.launching.DebuggingEngineRunner#
+	 * getLoggingEnabledPreferenceKey()
 	 */
 	protected String getLoggingEnabledPreferenceKey() {
 		return RubyBasicDebuggerConstants.ENABLE_LOGGING;
 	}
 
 	/*
-	 * @see org.eclipse.dltk.launching.DebuggingEngineRunner#getLogFileNamePreferenceKey()
+	 * @see
+	 * org.eclipse.dltk.launching.DebuggingEngineRunner#getLogFileNamePreferenceKey
+	 * ()
 	 */
 	protected String getLogFileNamePreferenceKey() {
 		return RubyBasicDebuggerConstants.LOG_FILE_NAME;
 	}
 
 	/*
-	 * @see org.eclipse.dltk.launching.DebuggingEngineRunner#getLogFilePathPreferenceKey()
+	 * @see
+	 * org.eclipse.dltk.launching.DebuggingEngineRunner#getLogFilePathPreferenceKey
+	 * ()
 	 */
 	protected String getLogFilePathPreferenceKey() {
 		return RubyBasicDebuggerConstants.LOG_FILE_PATH;
