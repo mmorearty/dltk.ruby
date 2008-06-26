@@ -13,14 +13,40 @@ module XoredDebuggerUtils
         # File.expand_path      
         CGI.unescape(uri).sub('file:///', '')
     end
-    
+
+    if RUBY_PLATFORM =~ /mswin/
+		PATH_SPLIT_RE = /[\/\\]/
+	else
+		PATH_SPLIT_RE = /\//
+	end
+
     #
     # path -> uri
     #
     def path_to_uri(path)
-       'file:///' + CGI.escape(path).gsub('+', '%20')
+      #puts 'path_to_uri ' + path
+      result = 'file://'
+      segments = path.split PATH_SPLIT_RE
+      index = 0
+      for segment in segments
+        #puts 'segment' + index.to_s + '=[' + segment + ']'
+        if (segment == '' && index == 0)
+          next
+        end
+        segment = escapeSegment(segment)
+        result += '/'
+        result += segment
+        #puts result
+        ++index
+      end
+      return result
     end
-    
+
+    def escapeSegment(string) 
+      string.gsub(/([^a-zA-Z0-9_.:-]+)/n) do
+        '%' + $1.unpack('H2' * $1.size).join('%').upcase
+      end
+    end
     
     def normalize_path(path)
         Pathname.new(path).expand_path.to_s

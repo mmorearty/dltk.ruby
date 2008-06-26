@@ -177,11 +177,15 @@ module XoredDebugger
                     @breakpoint_manager.add_exception_breakpoint(exception, temporary)
                     
                 when 'conditional'
-                    check_command_arguments(command, '-f', '--')
+                    #check_command_arguments(command, '-f', '--')
                     # TODO: add support for conditional breakpoints 
-                    raise BreakpointTypeNotSupportedError
+                    #raise BreakpointTypeNotSupportedError
+                    check_command_arguments(command, '-f', '-n')
+                    file = File.expand_path(uri_to_path(command.arg('-f')))
+                    line = command.arg('-n').to_i
+                    @breakpoint_manager.add_line_breakpoint(file, line, temporary)
                      
-                when 'whatch'
+                when 'watch'
                     check_command_arguments(command, '--')
                     # TODO: add support for watch breakpoints 
                     raise BreakpointTypeNotSupportedError

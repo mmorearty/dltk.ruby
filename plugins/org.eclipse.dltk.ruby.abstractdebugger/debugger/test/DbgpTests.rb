@@ -8,6 +8,7 @@ module XoredDebugger
     Logger.setup(StdoutLogManager.new)
 end
 
+require 'test/UtilsTest'
 require 'test/ResponseTest'
 require 'test/SourceManagerTest'
 require 'test/InitPacketTest'

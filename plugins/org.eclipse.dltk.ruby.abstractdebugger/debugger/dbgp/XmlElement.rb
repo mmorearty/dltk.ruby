@@ -69,7 +69,9 @@ module XoredDebugger
         
         def prepare_data(data)
             if (@encode_data)
-                sprintf('<![CDATA[%s]]>', Base64.encode64(data.to_s))
+            	encoded = Base64.encode64(data.to_s)
+            	encoded.chomp!
+                return '<![CDATA[' + encoded + ']]>'
             else 
                 data
             end

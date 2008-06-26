@@ -108,8 +108,9 @@ module XoredDebugger
             end
             
             depth.times { |index|
-                file = context.stack_frame(index).file
-                method = context.stack_frame(index).method.to_s
+                sf = context.stack_frame(index)
+                file = sf.file
+                method = sf.method.to_s
                 if (method.index('XoredDebugger::') == 0 || !file.index(@debugger.get_debugger_id).nil?)
                     return true
                 end
