@@ -12,19 +12,40 @@
 package org.eclipse.dltk.ruby.internal.ui.text;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.dltk.internal.ui.editor.semantic.highlighting.SemanticHighlighting;
+import org.eclipse.dltk.ui.editor.highlighting.SemanticHighlighting;
 
 public class RubySemanticHighlighting extends SemanticHighlighting {
 
 	private final String preferenceKey;
+	private final String displayName;
+	private final boolean enablement;
 
-	public RubySemanticHighlighting(String preferenceKey) {
+	public RubySemanticHighlighting(String preferenceKey, String displayName) {
+		this(preferenceKey, displayName, true);
+	}
+
+	public RubySemanticHighlighting(String preferenceKey, String displayName,
+			boolean enablement) {
 		Assert.isNotNull(preferenceKey);
 		this.preferenceKey = preferenceKey;
+		this.displayName = displayName;
+		this.enablement = enablement;
 	}
 
 	public String getPreferenceKey() {
 		return preferenceKey;
+	}
+
+	public String getDisplayName() {
+		return displayName;
+	}
+
+	public boolean isSemanticOnly() {
+		return displayName != null;
+	}
+
+	public String getEnabledPreferenceKey() {
+		return enablement ? super.getEnabledPreferenceKey() : null;
 	}
 
 	public int hashCode() {

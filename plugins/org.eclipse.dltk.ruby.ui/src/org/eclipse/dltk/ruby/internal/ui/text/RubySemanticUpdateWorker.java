@@ -14,6 +14,7 @@ package org.eclipse.dltk.ruby.internal.ui.text;
 import java.util.Stack;
 
 import org.eclipse.dltk.ast.ASTNode;
+import org.eclipse.dltk.ast.ASTVisitor;
 import org.eclipse.dltk.ast.declarations.Declaration;
 import org.eclipse.dltk.ast.expressions.BigNumericLiteral;
 import org.eclipse.dltk.ast.expressions.CallExpression;
@@ -22,10 +23,9 @@ import org.eclipse.dltk.ast.expressions.NumericLiteral;
 import org.eclipse.dltk.ast.expressions.StringLiteral;
 import org.eclipse.dltk.ast.references.SimpleReference;
 import org.eclipse.dltk.ast.references.VariableReference;
-import org.eclipse.dltk.core.ISourceModule;
+import org.eclipse.dltk.compiler.env.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
-import org.eclipse.dltk.internal.ui.editor.semantic.highlighting.SemanticHighlighting;
-import org.eclipse.dltk.internal.ui.editor.semantic.highlighting.SemanticUpdateWorker;
+import org.eclipse.dltk.ui.editor.highlighting.SemanticHighlighting;
 import org.eclipse.dltk.ruby.ast.RubyConstantDeclaration;
 import org.eclipse.dltk.ruby.ast.RubyDRegexpExpression;
 import org.eclipse.dltk.ruby.ast.RubyDynamicStringExpression;
@@ -34,32 +34,43 @@ import org.eclipse.dltk.ruby.ast.RubyRegexpExpression;
 import org.eclipse.dltk.ruby.ast.RubySymbolReference;
 import org.eclipse.dltk.ruby.core.utils.RubySyntaxUtils;
 import org.eclipse.dltk.ruby.internal.ui.RubyPreferenceConstants;
+import org.eclipse.dltk.ruby.ui.preferences.RubyPreferencesMessages;
+import org.eclipse.dltk.ui.editor.highlighting.ISemanticHighlightingRequestor;
+import org.eclipse.dltk.ui.preferences.PreferencesMessages;
 
-public class RubySemanticUpdateWorker extends SemanticUpdateWorker {
+public class RubySemanticUpdateWorker extends ASTVisitor {
 
 	public static SemanticHighlighting[] getSemanticHighlightings() {
 		return new SemanticHighlighting[] {
 				new RubySemanticHighlighting(
-						RubyPreferenceConstants.EDITOR_REGEXP_COLOR),
+						RubyPreferenceConstants.EDITOR_REGEXP_COLOR,
+						PreferencesMessages.DLTKEditorPreferencePage_regexps),
 				new RubySemanticHighlighting(
-						RubyPreferenceConstants.EDITOR_STRING_COLOR),
+						RubyPreferenceConstants.EDITOR_STRING_COLOR, null),
 				new RubySemanticHighlighting(
-						RubyPreferenceConstants.EDITOR_SYMBOLS_COLOR),
+						RubyPreferenceConstants.EDITOR_SYMBOLS_COLOR, null),
 				new RubySemanticHighlighting(
-						RubyPreferenceConstants.EDITOR_VARIABLE_COLOR),
+						RubyPreferenceConstants.EDITOR_VARIABLE_COLOR,
+						RubyPreferencesMessages.RubyLocalVariable),
 				new RubySemanticHighlighting(
-						RubyPreferenceConstants.EDITOR_INSTANCE_VARIABLE_COLOR),
+						RubyPreferenceConstants.EDITOR_INSTANCE_VARIABLE_COLOR,
+						null),
 				new RubySemanticHighlighting(
-						RubyPreferenceConstants.EDITOR_CLASS_VARIABLE_COLOR),
+						RubyPreferenceConstants.EDITOR_CLASS_VARIABLE_COLOR,
+						null),
 				new RubySemanticHighlighting(
-						RubyPreferenceConstants.EDITOR_GLOBAL_VARIABLE_COLOR),
+						RubyPreferenceConstants.EDITOR_GLOBAL_VARIABLE_COLOR,
+						null),
 				new RubySemanticHighlighting(
-						RubyPreferenceConstants.EDITOR_CONST_COLOR),
+						RubyPreferenceConstants.EDITOR_CONST_COLOR,
+						RubyPreferencesMessages.RubyConstants),
 				new RubySemanticHighlighting(
-						RubyPreferenceConstants.EDITOR_NUMBER_COLOR),
+						RubyPreferenceConstants.EDITOR_NUMBER_COLOR, null),
 				new RubySemanticHighlighting(
-						RubyPreferenceConstants.EDITOR_EVAL_EXPR_COLOR),
-				new RubySemanticHighlighting(IRubyColorConstants.RUBY_DEFAULT) };
+						RubyPreferenceConstants.EDITOR_EVAL_EXPR_COLOR,
+						PreferencesMessages.DLTKEditorPreferencePage_evaluated_expressions),
+				new RubySemanticHighlighting(IRubyColorConstants.RUBY_DEFAULT,
+						null) };
 	}
 
 	private static final int HL_REGEXP = 0;
@@ -74,17 +85,17 @@ public class RubySemanticUpdateWorker extends SemanticUpdateWorker {
 	private static final int HL_EVAL_EXPR = 9;
 	private static final int HL_DEFAULT = 10;
 
+	private final ISemanticHighlightingRequestor requestor;
 	private final char[] content;
 
 	/**
-	 * @param presenter
-	 * @param highlightings
-	 * @param sourceModule
+	 * @param code
 	 * @throws ModelException
 	 */
-	public RubySemanticUpdateWorker(ISourceModule sourceModule)
-			throws ModelException {
-		this.content = sourceModule.getSourceAsCharArray();
+	public RubySemanticUpdateWorker(ISemanticHighlightingRequestor requestor,
+			ISourceModule code) throws ModelException {
+		this.requestor = requestor;
+		this.content = code.getSourceContents().toCharArray();
 	}
 
 	private static final boolean ACTIVE = true;
@@ -97,19 +108,19 @@ public class RubySemanticUpdateWorker extends SemanticUpdateWorker {
 				|| node instanceof RubyDRegexpExpression) {
 			handleRegexp(node);
 		} else if (node instanceof RubySymbolReference) {
-			addHighlightedPosition(node.sourceStart(), node.sourceEnd(),
+			requestor.addPosition(node.sourceStart(), node.sourceEnd(),
 					HL_SYMBOL);
 		} else if (node instanceof VariableReference) {
 			handleVariableReference((VariableReference) node);
 		} else if (node instanceof StringLiteral) {
 			if (isStringLiteralNeeded(node)) {
-				addHighlightedPosition(node.sourceStart(), node.sourceEnd(),
+				requestor.addPosition(node.sourceStart(), node.sourceEnd(),
 						HL_STRING);
 			}
 		} else if (node instanceof NumericLiteral
 				|| node instanceof FloatNumericLiteral
 				|| node instanceof BigNumericLiteral) {
-			addHighlightedPosition(node.sourceStart(), node.sourceEnd(),
+			requestor.addPosition(node.sourceStart(), node.sourceEnd(),
 					HL_NUMBER);
 		} else if (node instanceof RubyEvaluatableStringExpression) {
 			handleEvaluatableExpression(node);
@@ -119,18 +130,18 @@ public class RubySemanticUpdateWorker extends SemanticUpdateWorker {
 				final SimpleReference callName = call.getCallName();
 				if (callName.sourceStart() >= 0
 						&& callName.sourceEnd() > callName.sourceStart()) {
-					addHighlightedPosition(call.sourceStart(),
-							call.sourceEnd(), HL_DEFAULT);
+					requestor.addPosition(call.sourceStart(), call.sourceEnd(),
+							HL_DEFAULT);
 				}
 			}
 		} else if (node instanceof Declaration) {
 			final Declaration declaration = (Declaration) node;
-			addHighlightedPosition(declaration.getNameStart(), declaration
+			requestor.addPosition(declaration.getNameStart(), declaration
 					.getNameEnd(), HL_DEFAULT);
 		} else if (node instanceof RubyConstantDeclaration) {
 			final RubyConstantDeclaration declaration = (RubyConstantDeclaration) node;
 			final SimpleReference name = declaration.getName();
-			addHighlightedPosition(name.sourceStart(), name.sourceEnd(),
+			requestor.addPosition(name.sourceStart(), name.sourceEnd(),
 					HL_CONST);
 		}
 		stack.push(node);
@@ -162,18 +173,18 @@ public class RubySemanticUpdateWorker extends SemanticUpdateWorker {
 		final String varName = ref.getName();
 		if (varName.length() != 0) {
 			if (varName.charAt(0) == '$') {
-				addHighlightedPosition(ref.sourceStart(), ref.sourceEnd(),
+				requestor.addPosition(ref.sourceStart(), ref.sourceEnd(),
 						HL_GLOBAL_VARIABLE);
 			} else if (varName.charAt(0) == '@') {
 				if (varName.length() > 2 && varName.charAt(1) == '@') {
-					addHighlightedPosition(ref.sourceStart(), ref.sourceEnd(),
+					requestor.addPosition(ref.sourceStart(), ref.sourceEnd(),
 							HL_CLASS_VARIABLE);
 				} else {
-					addHighlightedPosition(ref.sourceStart(), ref.sourceEnd(),
+					requestor.addPosition(ref.sourceStart(), ref.sourceEnd(),
 							HL_INSTANCE_VARIABLE);
 				}
 			} else {
-				addHighlightedPosition(ref.sourceStart(), ref.sourceEnd(),
+				requestor.addPosition(ref.sourceStart(), ref.sourceEnd(),
 						HL_LOCAL_VARIABLE);
 			}
 		}
@@ -188,8 +199,8 @@ public class RubySemanticUpdateWorker extends SemanticUpdateWorker {
 				--end;
 			}
 			if (content[end - 1] == '}') {
-				addHighlightedPosition(start, start + 2, HL_EVAL_EXPR);
-				addHighlightedPosition(end - 1, end - 0, HL_EVAL_EXPR);
+				requestor.addPosition(start, start + 2, HL_EVAL_EXPR);
+				requestor.addPosition(end - 1, end - 0, HL_EVAL_EXPR);
 			}
 		}
 	}
@@ -220,7 +231,7 @@ public class RubySemanticUpdateWorker extends SemanticUpdateWorker {
 				}
 			}
 		}
-		addHighlightedPosition(start, end, HL_REGEXP);
+		requestor.addPosition(start, end, HL_REGEXP);
 	}
 
 }
