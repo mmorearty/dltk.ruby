@@ -30,9 +30,9 @@ module XoredDebugger
             assert(response_xml.index('command="cmd"') != nil)
             assert(response_xml.index('transaction_id="5"') != nil)
             assert(response_xml.index('success="true"') != nil)
-            assert(response_xml.index('test="1"') != nil)
-            assert(response_xml.index("<![CDATA[SGVsbG8=\n]]>") != nil)
-            
+            assert_match 'test="2"', response_xml
+            assert_match "<![CDATA[SGVsbG8=]]>", response_xml
+
             response = Response.new(command)
             response.add_attribute('test', 1)
             response.add_attribute('success', true)
