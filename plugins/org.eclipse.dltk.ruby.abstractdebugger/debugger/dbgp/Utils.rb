@@ -1,5 +1,6 @@
 # TODO: Perform more smart conversions 
 require 'cgi'
+require 'pathname'
 require 'common/Params'  
 require 'dbgp/InitPacket'
 require 'dbgp/ErrorElement'
@@ -10,8 +11,12 @@ module XoredDebuggerUtils
     # uri -> path
     #
     def uri_to_path(uri)
-        # File.expand_path      
-        CGI.unescape(uri).sub('file:///', '')
+        # File.expand_path
+        result = CGI.unescape(uri).sub('file:///', '')
+      	if !Pathname.new(result).absolute?
+       		result = '/' + result
+       	end
+        return result
     end
 
     if RUBY_PLATFORM =~ /mswin/
