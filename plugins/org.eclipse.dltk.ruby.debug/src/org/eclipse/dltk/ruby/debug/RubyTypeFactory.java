@@ -14,7 +14,7 @@ public class RubyTypeFactory implements IScriptTypeFactory {
 			"Regexp", "String", "Symbol", "TrueClass" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
 	public IScriptType buildType(String type) {
-		if (STRING.equals(type)) { //$NON-NLS-1$
+		if (STRING.equals(type)) {
 			return new StringScriptType(type);
 		}
 
