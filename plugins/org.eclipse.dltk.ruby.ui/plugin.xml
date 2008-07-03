@@ -149,6 +149,11 @@
 	          class="org.eclipse.dltk.ruby.internal.ui.preferences.RubyEditorSyntaxColoringPreferencePage"
 	          id="org.eclipse.dltk.ruby.preferences.editor.syntaxcoloring"
 	          name="%RubyEditorSyntaxColoringPreferencePage.name"/>
+	    <page
+    	      category="org.eclipse.dltk.ruby.preferences.editor"
+        	  class="org.eclipse.dltk.ruby.internal.ui.preferences.RubyEditorHoverPreferencePage"
+	          id="org.eclipse.dltk.ruby.preferences.editor.hovers"
+    	      name="%RubyEditorHoversPreferencePage.name"/>    
 	    <page category="org.eclipse.dltk.ruby.preferences.editor"
 	    	  class="org.eclipse.dltk.ruby.internal.ui.preferences.RubyFoldingPreferencePage"
 	    	  id="org.eclipse.dltk.ruby.preferences.editor.folding"
