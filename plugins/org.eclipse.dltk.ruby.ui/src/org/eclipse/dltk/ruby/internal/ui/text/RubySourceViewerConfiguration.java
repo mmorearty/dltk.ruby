@@ -310,7 +310,7 @@ public class RubySourceViewerConfiguration extends
 				IDocument.DEFAULT_CONTENT_TYPE);
 	}
 
-	public ContentAssistPreference getContentAssistPreference() {
+	protected ContentAssistPreference getContentAssistPreference() {
 		return RubyContentAssistPreference.getDefault();
 	}
 
