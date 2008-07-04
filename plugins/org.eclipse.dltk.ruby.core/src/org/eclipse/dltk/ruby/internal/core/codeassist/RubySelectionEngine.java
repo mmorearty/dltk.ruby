@@ -53,6 +53,7 @@ import org.eclipse.dltk.core.search.TypeNameMatchRequestor;
 import org.eclipse.dltk.internal.core.ModelElement;
 import org.eclipse.dltk.ruby.ast.RubyAssignment;
 import org.eclipse.dltk.ruby.ast.RubyColonExpression;
+import org.eclipse.dltk.ruby.ast.RubyMethodArgument;
 import org.eclipse.dltk.ruby.ast.RubySuperExpression;
 import org.eclipse.dltk.ruby.core.RubyPlugin;
 import org.eclipse.dltk.ruby.core.model.FakeField;
@@ -163,6 +164,9 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 					selectTypes(parsedUnit, node);
 				} else if (node instanceof VariableReference) {
 					selectionOnVariable(parsedUnit, (VariableReference) node);
+				} else if (node instanceof RubyMethodArgument) {
+					selectOnMethodArgument(parsedUnit,
+							(RubyMethodArgument) node);
 				} else if (node instanceof RubySuperExpression) {
 					selectOnSuper(parsedUnit, (RubySuperExpression) node);
 				} else {
@@ -360,6 +364,12 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 						.getScriptProject(), unqualifiedName, requestor);
 			}
 		}
+	}
+
+	private void selectOnMethodArgument(ModuleDeclaration parsedUnit,
+			RubyMethodArgument arg) {
+		selectionElements.add(createLocalVariable(arg.getName(), arg
+				.sourceStart(), arg.sourceEnd()));
 	}
 
 	private void selectionOnVariable(ModuleDeclaration parsedUnit,
