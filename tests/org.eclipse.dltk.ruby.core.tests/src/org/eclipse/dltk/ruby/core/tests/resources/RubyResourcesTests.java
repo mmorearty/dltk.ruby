@@ -13,10 +13,13 @@
 
 package org.eclipse.dltk.ruby.core.tests.resources;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IScriptModel;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ISourceModule;
+import org.eclipse.dltk.core.IType;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.core.tests.model.AbstractModelTests;
 import org.eclipse.dltk.internal.core.ModelManager;
@@ -77,4 +80,25 @@ public class RubyResourcesTests extends AbstractModelTests {
 		assertTrue(module1.equals(module1a));
 		assertTrue(module1a.equals(module1));
 	}
+
+	public void testTypeEquals() {
+		final IProject project = getProject(PROJECT1);
+		final ISourceModule module1 = (ISourceModule) DLTKCore.create(project
+				.getFile("class1.rb"));
+		final ISourceModule module2 = (ISourceModule) DLTKCore.create(project
+				.getFile("class2.rb"));
+		final IType type1 = module1.getType("A001");
+		final IType type2 = module2.getType("A001");
+		assertFalse(type1.equals(type2));
+	}
+
+	public void testSourceModuleEquals() {
+		final IProject project = getProject(PROJECT1);
+		final ISourceModule module1 = (ISourceModule) DLTKCore.create(project
+				.getFile("folder1/class3.rb"));
+		final ISourceModule module2 = (ISourceModule) DLTKCore.create(project
+				.getFile("folder2/class3.rb"));
+		assertFalse(module1.equals(module2));
+	}
+
 }
