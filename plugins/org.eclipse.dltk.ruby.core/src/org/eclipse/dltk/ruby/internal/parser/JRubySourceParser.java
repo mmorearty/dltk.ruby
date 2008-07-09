@@ -64,7 +64,7 @@ public class JRubySourceParser extends AbstractSourceParser {
 	}
 
 	private final class ASTPositionsCorrector extends ASTVisitor {
-		public boolean visitGeneral (ASTNode node) throws Exception {
+		public boolean visitGeneral(ASTNode node) throws Exception {
 			if (node.sourceStart() < 0 || node.sourceEnd() < 0)
 				return true;
 			int st = 0;
@@ -102,8 +102,8 @@ public class JRubySourceParser extends AbstractSourceParser {
 				declaration.setNameEnd(declaration.getNameEnd() - n_en
 						* magicLength);
 			}
-//			if (st == 0 && en == 0 && n_st == 0 && n_en == 0)
-//				return false;
+			// if (st == 0 && en == 0 && n_st == 0 && n_en == 0)
+			// return false;
 
 			return true;
 		}
@@ -117,39 +117,69 @@ public class JRubySourceParser extends AbstractSourceParser {
 			Platform.getDebugOption("org.eclipse.dltk.core/traceAST/dltk")) //$NON-NLS-1$
 			.booleanValue();
 
-	private static final Pattern DOT_FIXER = Pattern.compile("\\.(?=[\\s,\\)\\]\\}]|$)"); //$NON-NLS-1$
-	private static final Pattern DOLLAR_FIXER = Pattern.compile("\\$(?=[\\s,\\)\\]\\}]|$)"); //$NON-NLS-1$
-	private static final Pattern AT_FIXER = Pattern.compile("@(?=[\\s,\\)\\]\\}]|$)"); //$NON-NLS-1$
-	private static final Pattern COLON_FIXER1 = Pattern.compile("::(?=[\\s,\\)\\]\\}]|$)"); //$NON-NLS-1$
-	private static final Pattern COLON_FIXER2 = Pattern.compile("(?:=>.*,[\\s]*)(:)(?=[\\s]*(?=[,}\\)]))", Pattern.MULTILINE); //$NON-NLS-1$
-	private static final Pattern COLON_FIXER3 = Pattern.compile(":(?=[\\s]*(?=[,}\\)]))", Pattern.MULTILINE); //$NON-NLS-1$
-	private static final Pattern COLON_FIXER_UNSAFE1 = Pattern.compile("(?:=>.*,[\\s]*)(:)(?=[\\s]*$)", Pattern.MULTILINE); //$NON-NLS-1$
-	private static final Pattern COLON_FIXER_UNSAFE2 = Pattern.compile(":(?=[\\s]*$)", Pattern.MULTILINE); //$NON-NLS-1$
+	private static final Pattern DOT_FIXER = Pattern
+			.compile("\\.(?=[\\s,\\)\\]\\}]|$)"); //$NON-NLS-1$
+	private static final Pattern DOLLAR_FIXER = Pattern
+			.compile("\\$(?=[\\s,\\)\\]\\}]|$)"); //$NON-NLS-1$
+	private static final Pattern AT_FIXER = Pattern
+			.compile("@(?=[\\s,\\)\\]\\}]|$)"); //$NON-NLS-1$
+	private static final Pattern COLON_FIXER1 = Pattern
+			.compile("::(?=[\\s,\\)\\]\\}]|$)"); //$NON-NLS-1$
+	private static final Pattern COLON_FIXER2 = Pattern.compile(
+			"(?:=>.*,[\\s]*)(:)(?=[\\s]*(?=[,}\\)]))", Pattern.MULTILINE); //$NON-NLS-1$
+	private static final Pattern COLON_FIXER3 = Pattern.compile(
+			":(?=[\\s]*(?=[,}\\)]))", Pattern.MULTILINE); //$NON-NLS-1$
+	private static final Pattern COLON_FIXER_UNSAFE1 = Pattern.compile(
+			"(?:=>.*,[\\s]*)(:)(?=[\\s]*$)", Pattern.MULTILINE); //$NON-NLS-1$
+	private static final Pattern COLON_FIXER_UNSAFE2 = Pattern.compile(
+			":(?=[\\s]*$)", Pattern.MULTILINE); //$NON-NLS-1$
 	private static final Pattern INST_BRACK_FIXER = Pattern.compile("@(])"); //$NON-NLS-1$
 	private static final Pattern GLOB_BRACK_FIXER = Pattern.compile("\\$(])"); //$NON-NLS-1$
-    private static final Pattern COMMA_FIXER1 = Pattern.compile("(?:=>.*)(,)(?=[\\s)]*do)", Pattern.MULTILINE); //$NON-NLS-1$
-    private static final Pattern COMMA_FIXER2 = Pattern.compile(",(?=[\\s)]*do)", Pattern.MULTILINE); //$NON-NLS-1$
-    private static final Pattern COMMA_FIXER3 = Pattern.compile("(?:=>.*,[^=>\r\n]*)([\\:a-zA-Z0-9_!?])(?=[\\s)]*do)", Pattern.MULTILINE); //$NON-NLS-1$
-    private static final Pattern COMMA_FIXER4 = Pattern.compile("(?:=>.*)(,)(?=[\\s]*[)][\\s]*$)", Pattern.MULTILINE); //$NON-NLS-1$
-    private static final Pattern COMMA_FIXER5 = Pattern.compile(",(?=[\\s]*[)][\\s]*$)", Pattern.MULTILINE); //$NON-NLS-1$
-    private static final Pattern COMMA_FIXER6 = Pattern.compile("(?:=>.*,[^=>\r\n]*)([\\:a-zA-Z0-9_!?])(?=[\\s]*[)][\\s]*$)", Pattern.MULTILINE); //$NON-NLS-1$
-    private static final Pattern COMMA_FIXER_UNSAFE1 = Pattern.compile("(?:=>.*)(,)(?=[\\s)]*$)", Pattern.MULTILINE); //$NON-NLS-1$
-    private static final Pattern COMMA_FIXER_UNSAFE2 = Pattern.compile(",(?=[\\s)]*$)", Pattern.MULTILINE); //$NON-NLS-1$
-    private static final Pattern COMMA_FIXER_UNSAFE3 = Pattern.compile("(?:=>.*,[^=>\r\n]*)([\\:a-zA-Z0-9_!?])(?=[\\s)]*$)", Pattern.MULTILINE); //$NON-NLS-1$
-    private static final Pattern HASH_FIXER1 = Pattern.compile("=>(?=[\\s)]*do)", Pattern.MULTILINE); //$NON-NLS-1$
-    private static final Pattern HASH_FIXER2 = Pattern.compile("=>(?=[\\s]*[,}\\)])", Pattern.MULTILINE); //$NON-NLS-1$
-    private static final Pattern HASH_FIXER_UNSAFE1 = Pattern.compile("=>(?=[\\s)]*$)", Pattern.MULTILINE); //$NON-NLS-1$
-    private static final Pattern HASH_FIXER_UNSAFE2 = Pattern.compile("^(?:\\s*)(\\s)(?:[a-zA-Z0-9_\"\':]+[\\s]*=>.*$)", Pattern.MULTILINE); //$NON-NLS-1$
+	private static final Pattern COMMA_FIXER1 = Pattern.compile(
+			"(?:=>.*)(,)(?=[\\s)]*do)", Pattern.MULTILINE); //$NON-NLS-1$
+	private static final Pattern COMMA_FIXER2 = Pattern.compile(
+			",(?=[\\s)]*do)", Pattern.MULTILINE); //$NON-NLS-1$
+	private static final Pattern COMMA_FIXER3 = Pattern
+			.compile(
+					"(?:=>.*,[^=>\r\n]*)([\\:a-zA-Z0-9_!?])(?=[\\s)]*do)", Pattern.MULTILINE); //$NON-NLS-1$
+	private static final Pattern COMMA_FIXER4 = Pattern.compile(
+			"(?:=>.*)(,)(?=[\\s]*[)][\\s]*$)", Pattern.MULTILINE); //$NON-NLS-1$
+	private static final Pattern COMMA_FIXER5 = Pattern.compile(
+			",(?=[\\s]*[)][\\s]*$)", Pattern.MULTILINE); //$NON-NLS-1$
+	private static final Pattern COMMA_FIXER6 = Pattern
+			.compile(
+					"(?:=>.*,[^=>\r\n]*)([\\:a-zA-Z0-9_!?])(?=[\\s]*[)][\\s]*$)", Pattern.MULTILINE); //$NON-NLS-1$
+	private static final Pattern COMMA_FIXER_UNSAFE1 = Pattern.compile(
+			"(?:=>.*)(,)(?=[\\s)]*$)", Pattern.MULTILINE); //$NON-NLS-1$
+	private static final Pattern COMMA_FIXER_UNSAFE2 = Pattern.compile(
+			",(?=[\\s)]*$)", Pattern.MULTILINE); //$NON-NLS-1$
+	private static final Pattern COMMA_FIXER_UNSAFE3 = Pattern
+			.compile(
+					"(?:=>.*,[^=>\r\n]*)([\\:a-zA-Z0-9_!?])(?=[\\s)]*$)", Pattern.MULTILINE); //$NON-NLS-1$
+	private static final Pattern HASH_FIXER1 = Pattern.compile(
+			"=>(?=[\\s)]*do)", Pattern.MULTILINE); //$NON-NLS-1$
+	private static final Pattern HASH_FIXER2 = Pattern.compile(
+			"=>(?=[\\s]*[,}\\)])", Pattern.MULTILINE); //$NON-NLS-1$
+	private static final Pattern HASH_FIXER_UNSAFE1 = Pattern.compile(
+			"=>(?=[\\s)]*$)", Pattern.MULTILINE); //$NON-NLS-1$
+	private static final Pattern HASH_FIXER_UNSAFE2 = Pattern
+			.compile(
+					"^(?:\\s*)(\\s)(?:[a-zA-Z0-9_\"\':]+[\\s]*=>.*$)", Pattern.MULTILINE); //$NON-NLS-1$
 	private IProblemReporter problemReporter;
-	private static final String missingName  = "_missing_method_name_"; //$NON-NLS-1$
+	private static final String missingName = "_missing_method_name_"; //$NON-NLS-1$
 	private static final String missingName2 = "NoConstant___________"; //$NON-NLS-1$
 	private static final String missingName3 = "_missing_param_name__"; //$NON-NLS-1$
 	private static final String missingName4 = "_m_key_ => _m_value__"; //$NON-NLS-1$
-	private static final int magicLength = missingName.length(); // missingName.len should == missingName2.len
+	private static final int magicLength = missingName.length(); // missingName.
+	// len
+	// should ==
+	// missingName2
+	// .len
 
 	private final List fixPositions = new ArrayList();
 
-	private String fixBrokenThings(Pattern pattern, String content, String replacement, int delta) {
+	private String fixBrokenThings(Pattern pattern, String content,
+			String replacement, int delta) {
 		Matcher matcher = pattern.matcher(content);
 		StringBuffer result = new StringBuffer();
 		int regionStart = 0;
@@ -157,10 +187,11 @@ public class JRubySourceParser extends AbstractSourceParser {
 			int offset = matcher.start(matcher.groupCount());
 			if (offset > regionStart)
 				result.append(content.subSequence(regionStart, offset));
-			fixPositions.add(new Integer( result.length() ));
+			fixPositions.add(new Integer(result.length()));
 			result.append(replacement);
-//			fixPositions.add(new Integer(offset + fixPositions.size() * magicLength));			
-			regionStart = offset + delta; //2
+			// fixPositions.add(new Integer(offset + fixPositions.size() *
+			// magicLength));
+			regionStart = offset + delta; // 2
 		}
 		if (regionStart < content.length() - 1)
 			result.append(content.subSequence(regionStart, content.length()));
@@ -169,112 +200,128 @@ public class JRubySourceParser extends AbstractSourceParser {
 		else
 			return result.toString();
 	}
-	
+
 	private String fixBrokenDots(String content) {
 		return fixBrokenThings(DOT_FIXER, content, "." + missingName, 1); //$NON-NLS-1$
 	}
-	
+
 	private String fixBrokenColons(String content) {
-		String content2 = fixBrokenThings(COLON_FIXER1, content, "::" + missingName2, 2); //$NON-NLS-1$
-		content2 = fixBrokenThings(COLON_FIXER2, content2, ":" + missingName4, 1); //$NON-NLS-1$
+		String content2 = fixBrokenThings(COLON_FIXER1, content,
+				"::" + missingName2, 2); //$NON-NLS-1$
+		content2 = fixBrokenThings(COLON_FIXER2, content2,
+				":" + missingName4, 1); //$NON-NLS-1$
 		return fixBrokenThings(COLON_FIXER3, content2, ":" + missingName2, 1); //$NON-NLS-1$
 	}
 
-    private String fixBrokenColonsUnsafe(String content) {
-      String content2 = fixBrokenThings(COLON_FIXER_UNSAFE1, content, ":" + missingName4, 1); //$NON-NLS-1$
-      return fixBrokenThings(COLON_FIXER_UNSAFE2, content2, ":" + missingName2, 1); //$NON-NLS-1$
-    }
+	private String fixBrokenColonsUnsafe(String content) {
+		String content2 = fixBrokenThings(COLON_FIXER_UNSAFE1, content,
+				":" + missingName4, 1); //$NON-NLS-1$
+		return fixBrokenThings(COLON_FIXER_UNSAFE2, content2,
+				":" + missingName2, 1); //$NON-NLS-1$
+	}
 
 	private String fixBrokenDollars(String content) {
 		return fixBrokenThings(DOLLAR_FIXER, content, "$" + missingName, 1); //$NON-NLS-1$
 	}
-	
+
 	private String fixBrokenAts(String content) {
 		return fixBrokenThings(AT_FIXER, content, "@" + missingName, 1); //$NON-NLS-1$
 	}
-	
+
 	private String fixBrokenInstbracks(String content) {
 		return fixBrokenThings(INST_BRACK_FIXER, content, "@" + missingName, 1); //$NON-NLS-1$
 	}
-	
+
 	private String fixBrokenGlobbracks(String content) {
 		return fixBrokenThings(GLOB_BRACK_FIXER, content, "$" + missingName, 1); //$NON-NLS-1$
 	}
 
-    private String fixBrokenParens(String content) {
-      char[] contents = content.toCharArray();
-      StringBuffer buffer = new StringBuffer(contents.length);
-      int depth = 0;
-      int start = contents.length;
+	private String fixBrokenParens(String content) {
+		char[] contents = content.toCharArray();
+		StringBuffer buffer = new StringBuffer(contents.length);
+		int depth = 0;
+		int start = contents.length;
 
-      for (int cnt = (start - 1); cnt >= 0; cnt--) {
-        if (contents[cnt] == '(') {
-          depth--;
+		for (int cnt = (start - 1); cnt >= 0; cnt--) {
+			if (contents[cnt] == '(') {
+				depth--;
 
-          if (depth < 0) {
-            int eol = cnt;
-            for (int cnt2 = cnt; cnt2 < start; cnt2++) {
-              if ((contents[cnt2] == '\r') || (contents[cnt2] == '\n')) {
-                eol = cnt2;
+				if (depth < 0) {
+					int eol = cnt;
+					for (int cnt2 = cnt; cnt2 < start; cnt2++) {
+						if ((contents[cnt2] == '\r')
+								|| (contents[cnt2] == '\n')) {
+							eol = cnt2;
 
-                break;
-              }
-            }
+							break;
+						}
+					}
 
-            buffer.insert(0, contents, eol, (start - eol));
-            buffer.insert(0, ')');
-            buffer.insert(0, contents, cnt, (eol - cnt));
-            start = cnt;
-            depth = 0;
-          }
-        }
-        else if (contents[cnt] == ')') {
-          depth++;
-        }
-      }
+					buffer.insert(0, contents, eol, (start - eol));
+					buffer.insert(0, ')');
+					buffer.insert(0, contents, cnt, (eol - cnt));
+					start = cnt;
+					depth = 0;
+				}
+			} else if (contents[cnt] == ')') {
+				depth++;
+			}
+		}
 
-      if (start > 0) {
-    	  buffer.insert(0, contents, 0, start);
-      }
+		if (start > 0) {
+			buffer.insert(0, contents, 0, start);
+		}
 
-      return buffer.toString();
-    }
+		return buffer.toString();
+	}
 
-    private String fixBrokenCommas(String content) {
-      String content2 = content;
-      content2 = fixBrokenThings(COMMA_FIXER1, content2, "," + missingName4 + " ", 1); //$NON-NLS-1$ //$NON-NLS-2$
-      content2 = fixBrokenThings(COMMA_FIXER2, content2, "," + missingName3 + " ", 1); //$NON-NLS-1$ //$NON-NLS-2$
-      content2 = fixBrokenThings(COMMA_FIXER3, content2, missingName4 + " ", 1); //$NON-NLS-1$
-      content2 = fixBrokenThings(COMMA_FIXER4, content2, "," + missingName4, 1); //$NON-NLS-1$
-      content2 = fixBrokenThings(COMMA_FIXER5, content2, "," + missingName3, 1); //$NON-NLS-1$
-      return fixBrokenThings(COMMA_FIXER6, content2, missingName4 + " ", 1); //$NON-NLS-1$
-    }
+	private String fixBrokenCommas(String content) {
+		String content2 = content;
+		content2 = fixBrokenThings(COMMA_FIXER1, content2,
+				"," + missingName4 + " ", 1); //$NON-NLS-1$ //$NON-NLS-2$
+		content2 = fixBrokenThings(COMMA_FIXER2, content2,
+				"," + missingName3 + " ", 1); //$NON-NLS-1$ //$NON-NLS-2$
+		content2 = fixBrokenThings(COMMA_FIXER3, content2,
+				missingName4 + " ", 1); //$NON-NLS-1$
+		content2 = fixBrokenThings(COMMA_FIXER4, content2,
+				"," + missingName4, 1); //$NON-NLS-1$
+		content2 = fixBrokenThings(COMMA_FIXER5, content2,
+				"," + missingName3, 1); //$NON-NLS-1$
+		return fixBrokenThings(COMMA_FIXER6, content2, missingName4 + " ", 1); //$NON-NLS-1$
+	}
 
-    private String fixBrokenCommasUnsafe(String content) {
-      String content2 = content;
-      content2 = fixBrokenThings(COMMA_FIXER_UNSAFE1, content2, "," + missingName4, 1); //$NON-NLS-1$
-      content2 = fixBrokenThings(COMMA_FIXER_UNSAFE2, content2, "," + missingName3, 1); //$NON-NLS-1$
-      return fixBrokenThings(COMMA_FIXER_UNSAFE3, content2, missingName4 + " ", 1); //$NON-NLS-1$
-    }
+	private String fixBrokenCommasUnsafe(String content) {
+		String content2 = content;
+		content2 = fixBrokenThings(COMMA_FIXER_UNSAFE1, content2,
+				"," + missingName4, 1); //$NON-NLS-1$
+		content2 = fixBrokenThings(COMMA_FIXER_UNSAFE2, content2,
+				"," + missingName3, 1); //$NON-NLS-1$
+		return fixBrokenThings(COMMA_FIXER_UNSAFE3, content2, missingName4
+				+ " ", 1); //$NON-NLS-1$
+	}
 
-    private String fixBrokenHashes(String content) {
-      String content2 = content;
-      content2 = fixBrokenThings(HASH_FIXER1, content2, "=>" + missingName3 + " ", 2); //$NON-NLS-1$ //$NON-NLS-2$
-      return fixBrokenThings(HASH_FIXER2, content2, "=>" + missingName3, 2); //$NON-NLS-1$
-    }
+	private String fixBrokenHashes(String content) {
+		String content2 = content;
+		content2 = fixBrokenThings(HASH_FIXER1, content2,
+				"=>" + missingName3 + " ", 2); //$NON-NLS-1$ //$NON-NLS-2$
+		return fixBrokenThings(HASH_FIXER2, content2, "=>" + missingName3, 2); //$NON-NLS-1$
+	}
 
-    private String fixBrokenHashesUnsafe(String content) {
-      String content2 = content;
-      content2 = fixBrokenThings(HASH_FIXER_UNSAFE1, content2, "=>" + missingName3, 2); //$NON-NLS-1$
-      return fixBrokenThings(HASH_FIXER_UNSAFE2, content2, " " + missingName + " ", 1); //$NON-NLS-1$ //$NON-NLS-2$
-    }
+	private String fixBrokenHashesUnsafe(String content) {
+		String content2 = content;
+		content2 = fixBrokenThings(HASH_FIXER_UNSAFE1, content2,
+				"=>" + missingName3, 2); //$NON-NLS-1$
+		return fixBrokenThings(HASH_FIXER_UNSAFE2, content2,
+				" " + missingName + " ", 1); //$NON-NLS-1$ //$NON-NLS-2$
+	}
 
 	private final boolean[] errorState = new boolean[1];
 
-  private RubyParserResult parserResult;
-  public RubyParserResult getParserResult() {
-    return parserResult;
-  }
+	private RubyParserResult parserResult;
+
+	public RubyParserResult getParserResult() {
+		return parserResult;
+	}
 
 	private class ProxyProblemReporter extends ProblemReporterProxy {
 
@@ -290,13 +337,14 @@ public class JRubySourceParser extends AbstractSourceParser {
 		}
 
 	}
-	
+
 	public JRubySourceParser() {
 		this.problemReporter = null;
 	}
 
 	/**
 	 * Should return visitor for creating ModuleDeclaration from JRuby's AST
+	 * 
 	 * @param module
 	 * @param content
 	 * @return
@@ -307,158 +355,160 @@ public class JRubySourceParser extends AbstractSourceParser {
 	}
 
 	private boolean isMethodNameChar(char inputChar, char prevChar) {
-	  return (((inputChar >= 'a') && (inputChar <= 'z')) ||
-              ((inputChar >= '0') && (inputChar <= '9')) ||
-              ((inputChar >= 'A') && (inputChar <= 'Z')) ||
-              (inputChar == '_') ||
-              ((inputChar == '?') && isMethodNameChar(prevChar, '@')) ||
-              ((inputChar == '!') && isMethodNameChar(prevChar, '@')));
+		return (((inputChar >= 'a') && (inputChar <= 'z'))
+				|| ((inputChar >= '0') && (inputChar <= '9'))
+				|| ((inputChar >= 'A') && (inputChar <= 'Z'))
+				|| (inputChar == '_')
+				|| ((inputChar == '?') && isMethodNameChar(prevChar, '@')) || ((inputChar == '!') && isMethodNameChar(
+				prevChar, '@')));
 	}
 
 	private boolean isPrefixKeyword(char[] content, int endOffset) {
-	  boolean isPrefixKeyword = false;
-	  int startOffset = -1;
+		boolean isPrefixKeyword = false;
+		int startOffset = -1;
 
-	  if (endOffset >= 5) {
-        startOffset = (endOffset - 5);
-        isPrefixKeyword = "return".equals(String.valueOf(content, startOffset, 6)); //$NON-NLS-1$
+		if (endOffset >= 5) {
+			startOffset = (endOffset - 5);
+			isPrefixKeyword = "return".equals(String.valueOf(content, startOffset, 6)); //$NON-NLS-1$
 
-        if (!isPrefixKeyword) {
-          isPrefixKeyword = "unless".equals(String.valueOf(content, startOffset, 6)); //$NON-NLS-1$
-        }
-	  }
+			if (!isPrefixKeyword) {
+				isPrefixKeyword = "unless".equals(String.valueOf(content, startOffset, 6)); //$NON-NLS-1$
+			}
+		}
 
-      if (!isPrefixKeyword && endOffset >= 4) {
-        startOffset = (endOffset - 4);
-        isPrefixKeyword = "while".equals(String.valueOf(content, startOffset, 5)); //$NON-NLS-1$
+		if (!isPrefixKeyword && endOffset >= 4) {
+			startOffset = (endOffset - 4);
+			isPrefixKeyword = "while".equals(String.valueOf(content, startOffset, 5)); //$NON-NLS-1$
 
-        if (!isPrefixKeyword) {
-          isPrefixKeyword = "elsif".equals(String.valueOf(content, startOffset, 5)); //$NON-NLS-1$
-        }
+			if (!isPrefixKeyword) {
+				isPrefixKeyword = "elsif".equals(String.valueOf(content, startOffset, 5)); //$NON-NLS-1$
+			}
 
-        if (!isPrefixKeyword) {
-          isPrefixKeyword = "until".equals(String.valueOf(content, startOffset, 5)); //$NON-NLS-1$
-        }
-      }
+			if (!isPrefixKeyword) {
+				isPrefixKeyword = "until".equals(String.valueOf(content, startOffset, 5)); //$NON-NLS-1$
+			}
+		}
 
-      if (!isPrefixKeyword && endOffset >= 3) {
-        startOffset = (endOffset - 3);
-        isPrefixKeyword = "then".equals(String.valueOf(content, startOffset, 4)); //$NON-NLS-1$
+		if (!isPrefixKeyword && endOffset >= 3) {
+			startOffset = (endOffset - 3);
+			isPrefixKeyword = "then".equals(String.valueOf(content, startOffset, 4)); //$NON-NLS-1$
 
-        if (!isPrefixKeyword) {
-          isPrefixKeyword = "case".equals(String.valueOf(content, startOffset, 4)); //$NON-NLS-1$
-        }
-      }
+			if (!isPrefixKeyword) {
+				isPrefixKeyword = "case".equals(String.valueOf(content, startOffset, 4)); //$NON-NLS-1$
+			}
+		}
 
-      if (!isPrefixKeyword && endOffset >= 2) {
-        startOffset = (endOffset - 2);
-        isPrefixKeyword = "and".equals(String.valueOf(content, startOffset, 3)); //$NON-NLS-1$
-      }
+		if (!isPrefixKeyword && endOffset >= 2) {
+			startOffset = (endOffset - 2);
+			isPrefixKeyword = "and".equals(String.valueOf(content, startOffset, 3)); //$NON-NLS-1$
+		}
 
-	  if (!isPrefixKeyword && endOffset >= 1) {
-	    startOffset = (endOffset - 1);
-	    isPrefixKeyword = "if".equals(String.valueOf(content, startOffset, 2)); //$NON-NLS-1$
+		if (!isPrefixKeyword && endOffset >= 1) {
+			startOffset = (endOffset - 1);
+			isPrefixKeyword = "if".equals(String.valueOf(content, startOffset, 2)); //$NON-NLS-1$
 
-	    if (!isPrefixKeyword) {
-	      isPrefixKeyword = "or".equals(String.valueOf(content, startOffset, 2)); //$NON-NLS-1$
-	    }
-	  }
+			if (!isPrefixKeyword) {
+				isPrefixKeyword = "or".equals(String.valueOf(content, startOffset, 2)); //$NON-NLS-1$
+			}
+		}
 
-	  if (isPrefixKeyword) {
-	    isPrefixKeyword = ((startOffset == 0) ||
-	                       !isMethodNameChar(content[startOffset - 1],
-	                                         (startOffset > 1) ? content[startOffset - 2] : '@'));
-	  }
+		if (isPrefixKeyword) {
+			isPrefixKeyword = ((startOffset == 0) || !isMethodNameChar(
+					content[startOffset - 1],
+					(startOffset > 1) ? content[startOffset - 2] : '@'));
+		}
 
-	  return isPrefixKeyword;
+		return isPrefixKeyword;
 	}
 
 	private char[] fixSpacedParens(char[] content) {
-	  char[] fixedContent = new char[content.length];
-	  System.arraycopy(content, 0, fixedContent, 0, content.length);
+		char[] fixedContent = new char[content.length];
+		System.arraycopy(content, 0, fixedContent, 0, content.length);
 
-	  boolean inComment = false;
-	  boolean inSingleString = false;
-	  boolean inDoubleString = false;
-	  boolean inBackQuoteString = false;
-	  boolean inBraceString = false;
-	  boolean inInterpString = false;
-	  boolean inRegexp = false;
-	  for (int cnt = 0, max = fixedContent.length; cnt < max; cnt++) {
-	    //ssanders - If there is a space between a method name and its opening parenthesis
-	    if ((cnt > 1) && !inComment && !inSingleString && !inDoubleString && !inBackQuoteString && !inBraceString && !inRegexp && (fixedContent[cnt] == '(') && (fixedContent[cnt - 1] == ' ')) {
-	      if (isMethodNameChar(fixedContent[cnt - 2], (cnt > 2) ? fixedContent[cnt - 3] : '@')) {
-	        if (!isPrefixKeyword(fixedContent, (cnt - 2))) {
-	          //ssanders - Invert the space and parenthesis to correct warning and position info
-	          fixedContent[cnt - 1] = '(';
-	          fixedContent[cnt] = ' ';
-	        }
-	      }
-	    }
-	    else if (fixedContent[cnt] == '#') {
-	      if ((inSingleString || inDoubleString || inBackQuoteString || inBraceString || inRegexp) && (fixedContent[cnt + 1] == '{')) {
-	        inInterpString = true;
-	      }
-	      else if (!inSingleString && !inDoubleString && !inBackQuoteString && !inBraceString) {
-	        inComment = true;
-	      }
-	    }
-	    else if ((fixedContent[cnt] == '\r') || (fixedContent[cnt] == '\n')) {
-	      inComment = false;
-	    }
-        else if (fixedContent[cnt] == '"') {
-          if ((cnt < 1) || (fixedContent[cnt - 1] != '\\')) {
-            if (!inComment & !inInterpString) {
-              inDoubleString = !inDoubleString;
-            }
-          }
-        }
-        else if (fixedContent[cnt] == '\'') {
-          if ((cnt < 1) || (fixedContent[cnt - 1] != '\\')) {
-            if (!inComment) {
-              inSingleString = !inSingleString;
-            }
-          }
-        }
-        else if (fixedContent[cnt] == '`') {
-          if ((cnt < 1) || (fixedContent[cnt - 1] != '\\')) {
-            if (!inComment) {
-              inBackQuoteString = !inBackQuoteString;
-            }
-          }
-        }
-        else if (fixedContent[cnt] == '{') {
-          if ((cnt < 1) || (fixedContent[cnt - 1] == '%')) {
-            if (!inComment) {
-              inBraceString = true;
-            }
-          }
-        }
-        else if (fixedContent[cnt] == '}') {
-          if ((cnt < 1) || (fixedContent[cnt - 1] != '\\')) {
-            if (!inComment) {
-              if (inInterpString) {
-                inInterpString = false;
-              }
-              else {
-                inBraceString = false;
-              }
-            }
-          }
-        }
-        else if (fixedContent[cnt] == '/') {
-          if ((cnt < 1) || (fixedContent[cnt - 1] != '\\')) {
-            if (!inComment && !inSingleString && !inDoubleString && !inBackQuoteString && !inBraceString) {
-              inRegexp = !inRegexp;
-            }
-          }
-        }
-	  }
-	  
-	  return fixedContent;
+		boolean inComment = false;
+		boolean inSingleString = false;
+		boolean inDoubleString = false;
+		boolean inBackQuoteString = false;
+		boolean inBraceString = false;
+		boolean inInterpString = false;
+		boolean inRegexp = false;
+		for (int cnt = 0, max = fixedContent.length; cnt < max; cnt++) {
+			// ssanders - If there is a space between a method name and its
+			// opening parenthesis
+			if ((cnt > 1) && !inComment && !inSingleString && !inDoubleString
+					&& !inBackQuoteString && !inBraceString && !inRegexp
+					&& (fixedContent[cnt] == '(')
+					&& (fixedContent[cnt - 1] == ' ')) {
+				if (isMethodNameChar(fixedContent[cnt - 2],
+						(cnt > 2) ? fixedContent[cnt - 3] : '@')) {
+					if (!isPrefixKeyword(fixedContent, (cnt - 2))) {
+						// ssanders - Invert the space and parenthesis to
+						// correct warning and position info
+						fixedContent[cnt - 1] = '(';
+						fixedContent[cnt] = ' ';
+					}
+				}
+			} else if (fixedContent[cnt] == '#') {
+				if ((inSingleString || inDoubleString || inBackQuoteString
+						|| inBraceString || inRegexp)
+						&& (fixedContent[cnt + 1] == '{')) {
+					inInterpString = true;
+				} else if (!inSingleString && !inDoubleString
+						&& !inBackQuoteString && !inBraceString) {
+					inComment = true;
+				}
+			} else if ((fixedContent[cnt] == '\r')
+					|| (fixedContent[cnt] == '\n')) {
+				inComment = false;
+			} else if (fixedContent[cnt] == '"') {
+				if ((cnt < 1) || (fixedContent[cnt - 1] != '\\')) {
+					if (!inComment & !inInterpString) {
+						inDoubleString = !inDoubleString;
+					}
+				}
+			} else if (fixedContent[cnt] == '\'') {
+				if ((cnt < 1) || (fixedContent[cnt - 1] != '\\')) {
+					if (!inComment) {
+						inSingleString = !inSingleString;
+					}
+				}
+			} else if (fixedContent[cnt] == '`') {
+				if ((cnt < 1) || (fixedContent[cnt - 1] != '\\')) {
+					if (!inComment) {
+						inBackQuoteString = !inBackQuoteString;
+					}
+				}
+			} else if (fixedContent[cnt] == '{') {
+				if ((cnt < 1) || (fixedContent[cnt - 1] == '%')) {
+					if (!inComment) {
+						inBraceString = true;
+					}
+				}
+			} else if (fixedContent[cnt] == '}') {
+				if ((cnt < 1) || (fixedContent[cnt - 1] != '\\')) {
+					if (!inComment) {
+						if (inInterpString) {
+							inInterpString = false;
+						} else {
+							inBraceString = false;
+						}
+					}
+				}
+			} else if (fixedContent[cnt] == '/') {
+				if ((cnt < 1) || (fixedContent[cnt - 1] != '\\')) {
+					if (!inComment && !inSingleString && !inDoubleString
+							&& !inBackQuoteString && !inBraceString) {
+						inRegexp = !inRegexp;
+					}
+				}
+			}
+		}
+
+		return fixedContent;
 	}
 
-	public ModuleDeclaration parse(final char[] fileName, char[] content, IProblemReporter reporter) {
+	public ModuleDeclaration parse(final char[] fileName, char[] content,
+			IProblemReporter reporter) {
 		this.problemReporter = reporter;
 		try {
 			DLTKRubyParser parser = new DLTKRubyParser();
@@ -467,19 +517,23 @@ public class JRubySourceParser extends AbstractSourceParser {
 			errorState[0] = false;
 
 			final long sTime = TRACE_AST_DLTK ? System.currentTimeMillis() : 0;
-            final String strFileName = fileName != null ? String
+			final String strFileName = fileName != null ? String
 					.valueOf(fileName) : ""; //$NON-NLS-1$
 
 			char[] fixedContent = fixSpacedParens(content);
 			Node node;
 			if (Arrays.equals(fixedContent, content) != true) {
-			  //ssanders - Parse with reporter to collect parenthesis warnings
-			  parser.parse(strFileName, new CharArrayReader(content), proxyProblemReporter);
-			  //ssanders - However, use modified content to have corrected position info 
-			  node = parser.parse(strFileName, new CharArrayReader(fixedContent), null);
-			}
-			else {
-			  node = parser.parse(strFileName, new CharArrayReader(content), proxyProblemReporter);
+				// ssanders - Parse with reporter to collect parenthesis
+				// warnings
+				parser.parse(strFileName, new CharArrayReader(content),
+						proxyProblemReporter);
+				// ssanders - However, use modified content to have corrected
+				// position info
+				node = parser.parse(strFileName, new CharArrayReader(
+						fixedContent), null);
+			} else {
+				node = parser.parse(strFileName, new CharArrayReader(content),
+						proxyProblemReporter);
 			}
 			fixPositions.clear();
 			if (!parser.isSuccess() || errorState[0]) {
@@ -491,36 +545,42 @@ public class JRubySourceParser extends AbstractSourceParser {
 				content2 = fixBrokenGlobbracks(content2);
 
 				content2 = fixBrokenParens(content2);
-                content2 = fixBrokenCommas(content2);
-                content2 = fixBrokenHashes(content2);
+				content2 = fixBrokenCommas(content2);
+				content2 = fixBrokenHashes(content2);
 
-                Node node2 = parser.parse(strFileName, new StringReader(content2), null);
-                if (node2 != null)
-                    node = node2;
-                else {
-                    fixPositions.clear();
+				Node node2 = parser.parse(strFileName, new StringReader(
+						content2), null);
+				if (node2 != null)
+					node = node2;
+				else {
+					fixPositions.clear();
 
-                    content2 = fixBrokenColonsUnsafe(content2);
-                    content2 = fixBrokenCommasUnsafe(content2);
-                    content2 = fixBrokenHashesUnsafe(content2);
+					content2 = fixBrokenColonsUnsafe(content2);
+					content2 = fixBrokenCommasUnsafe(content2);
+					content2 = fixBrokenHashesUnsafe(content2);
 
-                    node2 = parser.parse(strFileName, new StringReader(content2), new AbstractProblemReporter() {
+					node2 = parser.parse(strFileName,
+							new StringReader(content2),
+							new AbstractProblemReporter() {
 
-                      public IMarker reportProblem(IProblem problem) {
-                        if (DLTKCore.DEBUG) {
-                          System.out.println("JRubySourceParser.parse(): Fallback Parse Problem - fileName=" + strFileName + //$NON-NLS-1$
-                                             ", message=" + problem.getMessage() + ", line=" + problem.getSourceLineNumber()); //$NON-NLS-1$ //$NON-NLS-2$
-                        }
+								public IMarker reportProblem(IProblem problem) {
+									if (DLTKCore.DEBUG) {
+										System.out
+												.println("JRubySourceParser.parse(): Fallback Parse Problem - fileName=" + strFileName + //$NON-NLS-1$
+														", message=" //$NON-NLS-1$
+														+ problem.getMessage()
+														+ ", line=" + problem.getSourceLineNumber()); //$NON-NLS-1$
+									}
 
-                        return null;
-                      }
+									return null;
+								}
 
-                    });
-                    if (node2 != null)
-                      node = node2;
-                    else
-                      fixPositions.clear();
-                }
+							});
+					if (node2 != null)
+						node = node2;
+					else
+						fixPositions.clear();
+				}
 				content = content2.toCharArray();
 			}
 
@@ -551,15 +611,15 @@ public class JRubySourceParser extends AbstractSourceParser {
 						+ " ms"); //$NON-NLS-1$
 			}
 			this.parserResult = parser.getParserResult();
-			
-            if (!parser.isSuccess() && module.isEmpty()) {
-            	module = new FakeModuleDeclaration(content.length);
+
+			if (!parser.isSuccess() && module.isEmpty()) {
+				module = new FakeModuleDeclaration(content.length);
 				minimumParse(content, module);
 			}
-			
+
 			return module;
 		} catch (Throwable t) {
-			if( DLTKCore.DEBUG ) {
+			if (DLTKCore.DEBUG) {
 				t.printStackTrace();
 			}
 			if (isSilentState()) {
