@@ -329,11 +329,11 @@ public class JRubySourceParser extends AbstractSourceParser {
 			super(original);
 		}
 
-		public IMarker reportProblem(IProblem problem) throws CoreException {
+		public void reportProblem(IProblem problem) throws CoreException {
 			if (problem.isError()) {
 				errorState[0] = true;
 			}
-			return super.reportProblem(problem);
+			super.reportProblem(problem);
 		}
 
 	}
@@ -563,7 +563,7 @@ public class JRubySourceParser extends AbstractSourceParser {
 							new StringReader(content2),
 							new AbstractProblemReporter() {
 
-								public IMarker reportProblem(IProblem problem) {
+								public void reportProblem(IProblem problem) {
 									if (DLTKCore.DEBUG) {
 										System.out
 												.println("JRubySourceParser.parse(): Fallback Parse Problem - fileName=" + strFileName + //$NON-NLS-1$
@@ -571,8 +571,6 @@ public class JRubySourceParser extends AbstractSourceParser {
 														+ problem.getMessage()
 														+ ", line=" + problem.getSourceLineNumber()); //$NON-NLS-1$
 									}
-
-									return null;
 								}
 
 							});
