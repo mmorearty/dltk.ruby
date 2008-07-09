@@ -314,15 +314,15 @@ public class JRubySourceParser extends AbstractSourceParser {
 				" " + missingName + " ", 1); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
-	private final boolean[] errorState = new boolean[1];
-
 	private RubyParserResult parserResult;
 
 	public RubyParserResult getParserResult() {
 		return parserResult;
 	}
 
-	private class ProxyProblemReporter extends ProblemReporterProxy {
+	private static class ProxyProblemReporter extends ProblemReporterProxy {
+
+		boolean errorState = false;
 
 		public ProxyProblemReporter(IProblemReporter original) {
 			super(original);
@@ -330,7 +330,7 @@ public class JRubySourceParser extends AbstractSourceParser {
 
 		public void reportProblem(IProblem problem) throws CoreException {
 			if (problem.isError()) {
-				errorState[0] = true;
+				errorState = true;
 			}
 			super.reportProblem(problem);
 		}
@@ -513,7 +513,6 @@ public class JRubySourceParser extends AbstractSourceParser {
 			DLTKRubyParser parser = new DLTKRubyParser();
 			ProxyProblemReporter proxyProblemReporter = new ProxyProblemReporter(
 					problemReporter);
-			errorState[0] = false;
 
 			final long sTime = TRACE_AST_DLTK ? System.currentTimeMillis() : 0;
 			final String strFileName = fileName != null ? String
@@ -535,7 +534,7 @@ public class JRubySourceParser extends AbstractSourceParser {
 						proxyProblemReporter);
 			}
 			fixPositions.clear();
-			if (!parser.isSuccess() || errorState[0]) {
+			if (!parser.isSuccess() || proxyProblemReporter.errorState) {
 				String content2 = fixBrokenDots(String.valueOf(fixedContent));
 				content2 = fixBrokenColons(content2);
 				content2 = fixBrokenDollars(content2);
