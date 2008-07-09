@@ -40,10 +40,9 @@ public abstract class AbstractASTTest extends AbstractModelTests {
 			return lastInfo;
 		}
 
-		public IMarker reportProblem(IProblem problem) throws CoreException {
+		public void reportProblem(IProblem problem) throws CoreException {
 			count++;
 			lastInfo = problem.getMessage();
-			return null;
 		}
 
 	}
