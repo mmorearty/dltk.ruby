@@ -273,7 +273,7 @@ public class RubyTypeInferencingUtils {
 	}
 
 	public static ModuleDeclaration parseSource(ISourceModule module) {
-		return SourceParserUtil.getModuleDeclaration(module, null);
+		return SourceParserUtil.getModuleDeclaration(module);
 	}
 
 	public static IEvaluatedType getAmbiguousMetaType(IEvaluatedType receiver) {

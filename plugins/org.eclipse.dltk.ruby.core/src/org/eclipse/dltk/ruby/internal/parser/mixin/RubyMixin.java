@@ -28,7 +28,7 @@ public class RubyMixin implements IMixinParser {
 	public void parserSourceModule(boolean signature, ISourceModule module) {
 		try {
 			ModuleDeclaration moduleDeclaration = SourceParserUtil
-					.getModuleDeclaration(module, null);
+					.getModuleDeclaration(module);
 			RubyMixinBuildVisitor visitor = new RubyMixinBuildVisitor(
 					moduleDeclaration, module, signature, requestor);
 			moduleDeclaration.traverse(visitor);

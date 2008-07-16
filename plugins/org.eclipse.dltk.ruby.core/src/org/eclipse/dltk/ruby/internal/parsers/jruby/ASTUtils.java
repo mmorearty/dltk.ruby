@@ -244,7 +244,7 @@ public class ASTUtils {
     }
 
     public static ModuleDeclaration getAST(ISourceModule module) {
-        return SourceParserUtil.getModuleDeclaration(module, null);
+        return SourceParserUtil.getModuleDeclaration(module);
     }
 
     public static ModuleDeclaration getAST(char[] cs) {

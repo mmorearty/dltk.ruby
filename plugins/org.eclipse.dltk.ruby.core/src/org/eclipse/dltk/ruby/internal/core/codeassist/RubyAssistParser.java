@@ -31,9 +31,9 @@ public abstract class RubyAssistParser implements IAssistParser {
 
 	public ModuleDeclaration parse(ISourceModule sourceUnit) {
 		ModuleDeclaration module = null;
-		module = SourceParserUtil.getModuleDeclaration(
-				(org.eclipse.dltk.core.ISourceModule) sourceUnit
-						.getModelElement(), null);
+		module = SourceParserUtil
+				.getModuleDeclaration((org.eclipse.dltk.core.ISourceModule) sourceUnit
+						.getModelElement());
 
 		return module;
 	}
