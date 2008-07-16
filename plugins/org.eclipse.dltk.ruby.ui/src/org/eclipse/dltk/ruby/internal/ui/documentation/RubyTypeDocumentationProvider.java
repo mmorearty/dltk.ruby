@@ -28,7 +28,7 @@ public class RubyTypeDocumentationProvider implements
 				.getAncestor(IModelElement.SOURCE_MODULE);
 		if (module != null) {
 			try {
-				ModuleDeclaration unit = SourceParserUtil.getModuleDeclaration(module, null);
+				ModuleDeclaration unit = SourceParserUtil.getModuleDeclaration(module);
 				ISourceRange sourceRange = element.getSourceRange();
 				ASTNode minimalNode = ASTUtils.findMinimalNode(unit,
 						sourceRange.getOffset(), sourceRange.getOffset()
