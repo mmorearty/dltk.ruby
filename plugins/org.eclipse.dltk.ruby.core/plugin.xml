@@ -17,6 +17,14 @@
             nature="org.eclipse.dltk.ruby.core.nature"
             priority="0"/>
    </extension>
+   <extension
+         point="org.eclipse.dltk.validators.core.validator">
+      <validatorType
+            class="org.eclipse.dltk.ruby.internal.parser.RubyTodoParserType"
+            id="org.eclipse.dltk.ruby.todo"
+            nature="org.eclipse.dltk.ruby.core.nature">
+      </validatorType>
+   </extension>
   <extension
         point="org.eclipse.dltk.core.mixin">
      <mixin
