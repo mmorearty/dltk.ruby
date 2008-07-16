@@ -73,7 +73,7 @@ public class SourceModuleInfoCacheTest extends AbstractModelTests {
 				.findElement(new Path(resource1));
 		ISourceModuleInfoCache getSourceModuleInfoCache = getSourceModuleInfoCache();
 		final ISourceModuleInfoCache cache = getSourceModuleInfoCache;
-		SourceParserUtil.getModuleDeclaration(module1, null);
+		SourceParserUtil.getModuleDeclaration(module1);
 		ISourceModuleInfoCache.ISourceModuleInfo cacheEntry = cache
 				.get(module1);
 		assertNotNull(cacheEntry);
@@ -94,7 +94,7 @@ public class SourceModuleInfoCacheTest extends AbstractModelTests {
 		final ISourceModule module1 = (ISourceModule) project
 				.findElement(new Path(resource1));
 		final ISourceModuleInfoCache cache = getSourceModuleInfoCache();
-		SourceParserUtil.getModuleDeclaration(module1, null);
+		SourceParserUtil.getModuleDeclaration(module1);
 		ISourceModuleInfoCache.ISourceModuleInfo cacheEntry = cache
 				.get(module1);
 		assertNotNull(cacheEntry);
