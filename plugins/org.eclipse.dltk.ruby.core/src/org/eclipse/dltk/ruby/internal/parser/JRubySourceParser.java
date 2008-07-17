@@ -19,7 +19,6 @@ import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.ASTVisitor;
@@ -328,7 +327,7 @@ public class JRubySourceParser extends AbstractSourceParser {
 			super(original);
 		}
 
-		public void reportProblem(IProblem problem) throws CoreException {
+		public void reportProblem(IProblem problem) {
 			if (problem.isError()) {
 				errorState = true;
 			}
