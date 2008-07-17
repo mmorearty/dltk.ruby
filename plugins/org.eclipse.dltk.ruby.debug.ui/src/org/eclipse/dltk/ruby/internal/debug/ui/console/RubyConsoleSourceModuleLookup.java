@@ -15,6 +15,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.DLTKLanguageManager;
 import org.eclipse.dltk.core.IDLTKLanguageToolkit;
 import org.eclipse.dltk.core.IProjectFragment;
@@ -25,18 +26,14 @@ import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.core.environment.EnvironmentPathUtils;
 import org.eclipse.dltk.core.search.IDLTKSearchScope;
 import org.eclipse.dltk.core.search.SearchEngine;
-import org.eclipse.dltk.internal.core.Model;
-import org.eclipse.dltk.internal.core.ModelManager;
 import org.eclipse.dltk.internal.core.ProjectFragment;
 import org.eclipse.dltk.internal.core.util.Util;
 
 public class RubyConsoleSourceModuleLookup {
 
 	private final IDLTKSearchScope scope;
-	private final Model model;
 
 	public RubyConsoleSourceModuleLookup(IDLTKLanguageToolkit toolkit) {
-		this.model = ModelManager.getModelManager().getModel();
 		scope = SearchEngine.createWorkspaceScope(toolkit);
 	}
 
@@ -69,7 +66,7 @@ public class RubyConsoleSourceModuleLookup {
 						|| !DLTKLanguageManager.hasScriptNature(project))
 					continue;
 
-				IScriptProject scriptProject = model.getScriptProject(project);
+				IScriptProject scriptProject = DLTKCore.create(project);
 				final ISourceModule module = findInProject(scriptProject, path,
 						isFullPath);
 				if (module != null) {
