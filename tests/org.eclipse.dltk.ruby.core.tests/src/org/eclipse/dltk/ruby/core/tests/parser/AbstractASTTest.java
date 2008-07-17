@@ -9,8 +9,6 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.core.tests.parser;
 
-import org.eclipse.core.resources.IMarker;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.ASTVisitor;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
@@ -23,7 +21,8 @@ import org.eclipse.dltk.ruby.core.tests.Activator;
 
 public abstract class AbstractASTTest extends AbstractModelTests {
 
-	protected static class CountingProblemReporter extends AbstractProblemReporter {
+	protected static class CountingProblemReporter extends
+			AbstractProblemReporter {
 
 		public int count = 0;
 		public String lastInfo = "<no errors>";
@@ -40,7 +39,7 @@ public abstract class AbstractASTTest extends AbstractModelTests {
 			return lastInfo;
 		}
 
-		public void reportProblem(IProblem problem) throws CoreException {
+		public void reportProblem(IProblem problem) {
 			count++;
 			lastInfo = problem.getMessage();
 		}
@@ -59,8 +58,8 @@ public abstract class AbstractASTTest extends AbstractModelTests {
 
 	protected ModuleDeclaration getAST(String content) {
 		problems.reset();
-		return DLTKLanguageManager.getSourceParser(RubyNature.NATURE_ID)
-				.parse(null, content.toCharArray(), problems);
+		return DLTKLanguageManager.getSourceParser(RubyNature.NATURE_ID).parse(
+				null, content.toCharArray(), problems);
 	}
 
 	protected ASTNode getNodeAt(ASTNode root, final int start, final int end)
