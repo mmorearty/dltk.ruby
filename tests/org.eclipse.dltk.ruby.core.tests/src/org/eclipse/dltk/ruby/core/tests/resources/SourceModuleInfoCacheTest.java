@@ -22,7 +22,6 @@ import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ISourceModuleInfoCache;
 import org.eclipse.dltk.core.SourceParserUtil;
 import org.eclipse.dltk.core.tests.model.AbstractModelTests;
-import org.eclipse.dltk.internal.core.Model;
 import org.eclipse.dltk.internal.core.ModelManager;
 import org.eclipse.dltk.ruby.core.tests.Activator;
 
@@ -50,10 +49,6 @@ public class SourceModuleInfoCacheTest extends AbstractModelTests {
 		super.tearDown();
 	}
 
-	private IScriptModel getModel() {
-		return ModelManager.getModelManager().getModel();
-	}
-
 	private ISourceModuleInfoCache getSourceModuleInfoCache() {
 		return ModelManager.getModelManager().getSourceModuleInfoCache();
 	}
@@ -66,7 +61,7 @@ public class SourceModuleInfoCacheTest extends AbstractModelTests {
 	private static final String AST = "ast";
 
 	public void testCacheResourceChanged() throws CoreException {
-		final IScriptModel model = getModel();
+		final IScriptModel model = getScriptModel();
 		final String resource1 = "resource001.rb";
 		final IScriptProject project = model.getScriptProject(PROJECT);
 		final ISourceModule module1 = (ISourceModule) project
@@ -88,7 +83,7 @@ public class SourceModuleInfoCacheTest extends AbstractModelTests {
 	}
 
 	public void testCacheResourceDeleted() throws CoreException {
-		final IScriptModel model = getModel();
+		final IScriptModel model = getScriptModel();
 		final String resource1 = "resource001.rb";
 		final IScriptProject project = model.getScriptProject(PROJECT);
 		final ISourceModule module1 = (ISourceModule) project
