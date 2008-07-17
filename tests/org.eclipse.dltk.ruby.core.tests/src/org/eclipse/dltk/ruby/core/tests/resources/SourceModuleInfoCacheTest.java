@@ -55,11 +55,6 @@ public class SourceModuleInfoCacheTest extends AbstractModelTests {
 
 	private static final String PROJECT = "resource1";
 
-	/**
-	 * Should be the same as {@link SourceParserUtil#AST}
-	 */
-	private static final String AST = "ast";
-
 	public void testCacheResourceChanged() throws CoreException {
 		final IScriptModel model = getScriptModel();
 		final String resource1 = "resource001.rb";
@@ -72,14 +67,14 @@ public class SourceModuleInfoCacheTest extends AbstractModelTests {
 		ISourceModuleInfoCache.ISourceModuleInfo cacheEntry = cache
 				.get(module1);
 		assertNotNull(cacheEntry);
-		assertNotNull(cacheEntry.get(AST));
+		assertFalse(cacheEntry.isEmpty());
 		IFile file = project.getProject().getFile(resource1);
 		final String source = module1.getSource() + "\n\n" + "#END OF FILE";
 		file.setContents(new ByteArrayInputStream(source.getBytes()), true,
 				false, null);
 		cacheEntry = cache.get(module1);
 		assertNotNull(cacheEntry);
-		assertNull(cacheEntry.get(AST));
+		assertTrue(cacheEntry.isEmpty());
 	}
 
 	public void testCacheResourceDeleted() throws CoreException {
@@ -93,11 +88,11 @@ public class SourceModuleInfoCacheTest extends AbstractModelTests {
 		ISourceModuleInfoCache.ISourceModuleInfo cacheEntry = cache
 				.get(module1);
 		assertNotNull(cacheEntry);
-		assertNotNull(cacheEntry.get(AST));
+		assertFalse(cacheEntry.isEmpty());
 		project.getProject().getFile(resource1).delete(true, null);
 		cacheEntry = cache.get(module1);
 		assertNotNull(cacheEntry);
-		assertNull(cacheEntry.get(AST));
+		assertTrue(cacheEntry.isEmpty());
 	}
 
 }
