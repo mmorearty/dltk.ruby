@@ -9,10 +9,6 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.core.tests.search.mixin;
 
-import org.eclipse.core.resources.IncrementalProjectBuilder;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IBuildpathEntry;
@@ -26,16 +22,17 @@ import org.eclipse.dltk.ruby.core.RubyLanguageToolkit;
 import org.eclipse.dltk.ruby.core.tests.Activator;
 
 /**
- * Tests for mixin model. Checks operations with a source modules and buildpaths.
- * For model building tests see AutoMixinTests.
+ * Tests for mixin model. Checks operations with a source modules and
+ * buildpaths. For model building tests see AutoMixinTests.
  * 
- * Warning! Tests results depends of test execution order cause tests modifies a project.
+ * Warning! Tests results depends of test execution order cause tests modifies a
+ * project.
  * 
  * @author fourdman
  * 
  */
-public class MixinModelManipulationTests extends AbstractDLTKSearchTests implements
-		IDLTKSearchConstants {
+public class MixinModelManipulationTests extends AbstractDLTKSearchTests
+		implements IDLTKSearchConstants {
 	private static final String PROJECT_NAME = "mixins";
 
 	public MixinModelManipulationTests(String name) {
@@ -46,32 +43,17 @@ public class MixinModelManipulationTests extends AbstractDLTKSearchTests impleme
 		return new Suite(MixinModelManipulationTests.class);
 	}
 
-	public void setUpSuite() throws Exception {
-		super.setUpSuite();
-		up();
+	protected void setUp() throws Exception {
+		super.setUp();
+		SCRIPT_PROJECT = setUpScriptProject(PROJECT_NAME);
 		waitUntilIndexesReady();
-		buildAll();
 	}
 
-	public void tearDownSuite() throws Exception {
-		deleteProject(PROJECT_NAME);
-		super.tearDownSuite();
-	}
-
-	private void up() throws Exception {
+	protected void tearDown() throws Exception {
 		if (SCRIPT_PROJECT != null) {
-			deleteProject (SCRIPT_PROJECT.getElementName());
+			deleteProject(SCRIPT_PROJECT.getElementName());
 		}
-//		if (SCRIPT_PROJECT == null) {
-			SCRIPT_PROJECT = setUpScriptProject(PROJECT_NAME);
-//		}
-	}
-	
-	private void buildAll() throws CoreException {
-		ResourcesPlugin.getWorkspace()
-				.build(IncrementalProjectBuilder.FULL_BUILD,
-						new NullProgressMonitor());
-		waitForAutoBuild();
+		super.tearDown();
 	}
 
 	public void REM_testTotalKeysCount() {
@@ -79,7 +61,7 @@ public class MixinModelManipulationTests extends AbstractDLTKSearchTests impleme
 		String[] keys = model.findKeys("*");
 		assertEquals(26, keys.length);
 	}
-	
+
 	// If fails, call ghostbusters, please
 	public void testForGhosts() {
 		MixinModel model = new MixinModel(RubyLanguageToolkit.getDefault());
@@ -100,7 +82,7 @@ public class MixinModelManipulationTests extends AbstractDLTKSearchTests impleme
 				"src2.rb");
 		sourceModule.delete(true, null);
 
-		buildAll();
+		waitUntilIndexesReady();
 
 		Object objs2[] = mixinElement.getAllObjects();
 		assertEquals(1, objs2.length);
@@ -119,7 +101,7 @@ public class MixinModelManipulationTests extends AbstractDLTKSearchTests impleme
 				"src1.rb");
 		sourceModule.delete(true, null);
 
-		buildAll();
+		waitUntilIndexesReady();
 
 		mixinElement = model.get("D");
 
@@ -139,7 +121,7 @@ public class MixinModelManipulationTests extends AbstractDLTKSearchTests impleme
 		String contents = "class Foo\n def bar\n end\n end\n";
 		scriptFolder.createSourceModule("MoreFoo.rb", contents, true, null);
 
-		buildAll();
+		waitUntilIndexesReady();
 
 		mixinElement = model.get("Foo");
 		Object objs2[] = mixinElement.getAllObjects();
@@ -154,14 +136,12 @@ public class MixinModelManipulationTests extends AbstractDLTKSearchTests impleme
 
 		IScriptFolder scriptFolder = getScriptFolder(PROJECT_NAME, "src",
 				new Path(""));
-		String contents = "class Buzzy\n" +
-						  "    def myFyb\n " +
-						  "    end\n " +
-						  "end\n";
-		
+		String contents = "class Buzzy\n" + "    def myFyb\n " + "    end\n "
+				+ "end\n";
+
 		scriptFolder.createSourceModule("Buzzy.rb", contents, true, null);
 
-		buildAll();
+		waitUntilIndexesReady();
 
 		mixinElement = model.get("Buzzy");
 		assertNotNull(mixinElement);
@@ -182,12 +162,12 @@ public class MixinModelManipulationTests extends AbstractDLTKSearchTests impleme
 				.newSourceEntry(new Path("/mixins/src3"));
 		SCRIPT_PROJECT.setRawBuildpath(newRawBuildpath, null);
 
-		buildAll();
+		waitUntilIndexesReady();
 
 		mixinElement = model.get("Cat");
 		assertNotNull(mixinElement);
 		Object[] allObjects = mixinElement.getAllObjects();
-		assertTrue (allObjects.length > 0);
+		assertTrue(allObjects.length > 0);
 	}
 
 	public void testBuildpathDeletion() throws Exception {
@@ -211,7 +191,7 @@ public class MixinModelManipulationTests extends AbstractDLTKSearchTests impleme
 
 		SCRIPT_PROJECT.setRawBuildpath(newRawBuildpath, null);
 
-		buildAll();
+		waitUntilIndexesReady();
 
 		mixinElement = model.get("Dragon");
 		assertNull(mixinElement);
