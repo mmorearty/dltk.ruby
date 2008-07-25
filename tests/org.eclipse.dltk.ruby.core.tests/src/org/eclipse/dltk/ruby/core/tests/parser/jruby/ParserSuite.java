@@ -27,10 +27,6 @@ import org.eclipse.dltk.ruby.core.tests.Activator;
 
 public class ParserSuite extends TestSuite {
 
-	private interface IAssertion {
-		void check();
-	}
-
 	public ParserSuite(String testsDirectory) {
 		super(testsDirectory);
 		Enumeration entryPaths = Activator.getDefault().getBundle().getEntryPaths(testsDirectory);
@@ -76,7 +72,7 @@ public class ParserSuite extends TestSuite {
 	}
 	
 	public static String loadContent(String path) throws IOException {
-		InputStream stream = Activator.getDefault().openResource(path);
+		InputStream stream = Activator.openResource(path);
 		int length = stream.available();
 		byte[] data = new byte[length];
 		stream.read(data);

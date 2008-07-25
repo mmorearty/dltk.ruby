@@ -61,7 +61,7 @@ public class Activator extends Plugin {
 		return plugin;
 	}
 	public static InputStream openResource(String path) throws IOException {
-		URL url =  Activator.getDefault().getBundle().getEntry(path);
+		URL url = getDefault().getBundle().getEntry(path);
 		return new BufferedInputStream(url.openStream());		
 	}
 }
