@@ -22,7 +22,6 @@ import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.IType;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.core.tests.model.AbstractModelTests;
-import org.eclipse.dltk.internal.core.ModelManager;
 import org.eclipse.dltk.ruby.core.tests.Activator;
 
 public class RubyResourcesTests extends AbstractModelTests {
@@ -53,7 +52,7 @@ public class RubyResourcesTests extends AbstractModelTests {
 	}
 
 	public void testModelElementEquals() throws ModelException {
-		final IScriptModel model = ModelManager.getModelManager().getModel();
+		final IScriptModel model = getScriptModel();
 		final IScriptProject project1 = model.getScriptProject(PROJECT1);
 		assertNotNull(project1);
 		final IScriptProject project2 = model.getScriptProject(PROJECT2);
