@@ -20,4 +20,10 @@ public class RubyDebugUILanguageToolkit extends AbstractDebugUILanguageToolkit {
 		return RubyDebugUIPlugin.getDefault().getPreferenceStore();
 	}
 
+	/*
+	 * @see org.eclipse.dltk.debug.ui.AbstractDebugUILanguageToolkit#getVariablesViewPreferencePages()
+	 */
+	public String[] getVariablesViewPreferencePages() {
+		return new String[] { "org.eclipse.dltk.ruby.preferences.debug.detailFormatters" };
+	}
 }
