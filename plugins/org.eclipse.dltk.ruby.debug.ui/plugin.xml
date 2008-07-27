@@ -166,6 +166,11 @@
         class="org.eclipse.dltk.debug.ui.preferences.ScriptStepFilterPreferencePage:org.eclipse.dltk.ruby.core.nature"
         id="org.eclipse.dltk.ruby.debug.ui.stepfilter"
         name="%RubyStepFiltersPreferencePage.name" />
+      <page
+        category="org.eclipse.dltk.ruby.preferences.debug"
+        class="org.eclipse.dltk.debug.ui.preferences.ScriptDetailFormattersPreferencePage:org.eclipse.dltk.ruby.core.nature"
+        id="org.eclipse.dltk.ruby.preferences.debug.detailFormatters"
+        name="%RubyDetailFormattersPreferencePage.name" />    
 	</extension>
 
     <extension point="org.eclipse.ui.propertyPages">
@@ -430,5 +435,15 @@
       commandId="org.eclipse.dltk.ruby.debug.ui.commands.toggleLocalVariables"
       class="org.eclipse.dltk.ruby.internal.debug.ui.handlers.ToggleLocalVariablesHandler" />      
   </extension>
+
+  <extension point="org.eclipse.core.runtime.preferences">
+    <initializer class="org.eclipse.dltk.ruby.internal.debug.ui.RubyDebugUIPreferenceInitializer" />
+  </extension>
+	
+  <extension point="org.eclipse.dltk.debug.ui.language">
+    <language
+      class="org.eclipse.dltk.ruby.internal.debug.ui.RubyDebugUILanguageToolkit"
+      nature="org.eclipse.dltk.ruby.core.nature"/>
+  </extension>	
 	
 </plugin>
