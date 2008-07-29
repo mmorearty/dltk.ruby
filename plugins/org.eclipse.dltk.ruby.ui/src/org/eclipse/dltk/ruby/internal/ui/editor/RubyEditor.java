@@ -14,33 +14,29 @@ import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.dltk.core.IDLTKLanguageToolkit;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.internal.ui.actions.FoldingActionGroup;
-import org.eclipse.dltk.internal.ui.editor.DLTKEditorMessages;
 import org.eclipse.dltk.internal.ui.editor.ScriptEditor;
 import org.eclipse.dltk.internal.ui.editor.ScriptOutlinePage;
-import org.eclipse.dltk.internal.ui.editor.ToggleCommentAction;
 import org.eclipse.dltk.ruby.core.RubyLanguageToolkit;
 import org.eclipse.dltk.ruby.internal.ui.RubyUI;
+import org.eclipse.dltk.ruby.internal.ui.actions.RubyGenerateActionGroup;
 import org.eclipse.dltk.ruby.internal.ui.text.IRubyPartitions;
 import org.eclipse.dltk.ruby.internal.ui.text.RubyPairMatcher;
 import org.eclipse.dltk.ruby.internal.ui.text.folding.RubyFoldingStructureProvider;
-import org.eclipse.dltk.ui.actions.IScriptEditorActionDefinitionIds;
 import org.eclipse.dltk.ui.text.ScriptTextTools;
 import org.eclipse.dltk.ui.text.folding.IFoldingStructureProvider;
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentExtension3;
 import org.eclipse.jface.text.IRegion;
-import org.eclipse.jface.text.ITextOperationTarget;
 import org.eclipse.jface.text.ITextViewerExtension;
 import org.eclipse.jface.text.ITextViewerExtension5;
 import org.eclipse.jface.text.source.ICharacterPairMatcher;
 import org.eclipse.jface.text.source.ISourceViewer;
-import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.actions.ActionGroup;
+import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
-import org.eclipse.ui.texteditor.TextOperationAction;
 
 public class RubyEditor extends ScriptEditor {
 	public static final String EDITOR_ID = "org.eclipse.dltk.ruby.ui.editor.RubyEditor"; //$NON-NLS-1$
@@ -57,7 +53,7 @@ public class RubyEditor extends ScriptEditor {
 	protected void initializeEditor() {
 		super.initializeEditor();
 		setEditorContextMenuId(EDITOR_CONTEXT);
-		setRulerContextMenuId(RULER_CONTEXT);		
+		setRulerContextMenuId(RULER_CONTEXT);
 	}
 
 	protected IPreferenceStore getScriptPreferenceStore() {
@@ -98,7 +94,6 @@ public class RubyEditor extends ScriptEditor {
 		return new FoldingActionGroup(this, getViewer(), RubyUI.getDefault()
 				.getPreferenceStore());
 	}
-	
 
 	public String getEditorId() {
 		return EDITOR_ID;
@@ -118,34 +113,11 @@ public class RubyEditor extends ScriptEditor {
 
 	protected void createActions() {
 		super.createActions();
-
-		Action action = new TextOperationAction(DLTKEditorMessages
-				.getBundleForConstructedKeys(),
-				"Comment.", this, ITextOperationTarget.PREFIX); //$NON-NLS-1$
-		action.setActionDefinitionId(IScriptEditorActionDefinitionIds.COMMENT);
-		setAction("Comment", action); //$NON-NLS-1$
-		markAsStateDependentAction("Comment", true); //$NON-NLS-1$
-
-		action = new TextOperationAction(DLTKEditorMessages
-				.getBundleForConstructedKeys(),
-				"Uncomment.", this, ITextOperationTarget.STRIP_PREFIX); //$NON-NLS-1$
-		action
-				.setActionDefinitionId(IScriptEditorActionDefinitionIds.UNCOMMENT);
-		setAction("Uncomment", action); //$NON-NLS-1$
-		markAsStateDependentAction("Uncomment", true); //$NON-NLS-1$
-
-		action = new ToggleCommentAction(DLTKEditorMessages
-				.getBundleForConstructedKeys(), "ToggleComment.", this); //$NON-NLS-1$
-		action
-				.setActionDefinitionId(IScriptEditorActionDefinitionIds.TOGGLE_COMMENT);
-		setAction("ToggleComment", action); //$NON-NLS-1$
-		markAsStateDependentAction("ToggleComment", true); //$NON-NLS-1$
-
-		ISourceViewer sourceViewer = getSourceViewer();
-		SourceViewerConfiguration configuration = getSourceViewerConfiguration();
-		((ToggleCommentAction) action).configure(sourceViewer, configuration);
+		ActionGroup generateActions = new RubyGenerateActionGroup(this, ITextEditorActionConstants.GROUP_EDIT);
+		fActionGroups.addGroup(generateActions);
+		fContextMenuGroup.addGroup(generateActions);
 	}
-	
+
 	public void createPartControl(Composite parent) {
 		super.createPartControl(parent);
 
@@ -190,7 +162,7 @@ public class RubyEditor extends ScriptEditor {
 			notifyDoSetInput(element);
 		}
 	}
-	
+
 	public void dispose() {
 		ISourceViewer sourceViewer = getSourceViewer();
 		if (sourceViewer instanceof ITextViewerExtension)
@@ -198,7 +170,7 @@ public class RubyEditor extends ScriptEditor {
 					.removeVerifyKeyListener(fBracketInserter);
 		super.dispose();
 	}
-	
+
 	protected void configureSourceViewerDecorationSupport(
 			SourceViewerDecorationSupport support) {
 		support.setCharacterPairMatcher(bracketMatcher);
@@ -207,7 +179,7 @@ public class RubyEditor extends ScriptEditor {
 
 		super.configureSourceViewerDecorationSupport(support);
 	}
-	
+
 	/**
 	 * Jumps to the matching bracket.
 	 */
@@ -230,7 +202,7 @@ public class RubyEditor extends ScriptEditor {
 		int sourceCaretOffset = selection.getOffset() + selection.getLength();
 		if (isSurroundedByBrackets(document, sourceCaretOffset))
 			sourceCaretOffset -= selection.getLength();
-		
+
 		IRegion region = bracketMatcher.match(document, sourceCaretOffset);
 		if (region == null) {
 			setStatusLineErrorMessage(Messages.RubyEditor_noMatchingBracketFound);
@@ -273,5 +245,5 @@ public class RubyEditor extends ScriptEditor {
 		sourceViewer.setSelectedRange(targetOffset, selection.getLength());
 		sourceViewer.revealRange(targetOffset, selection.getLength());
 	}
-	
+
 }
