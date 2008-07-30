@@ -140,7 +140,7 @@ public class OldCodeFormatter extends CodeFormatter {
 		// .equalsIgnoreCase("true");
 		// return isDebug;
 
-		return true;
+		return false;
 	}
 
 	protected String formatString(String unformatted,
