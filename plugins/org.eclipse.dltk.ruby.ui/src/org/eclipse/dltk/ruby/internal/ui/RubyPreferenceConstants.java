@@ -441,7 +441,7 @@ public class RubyPreferenceConstants extends PreferenceConstants {
 
 	public static final String EDITOR_EVAL_EXPR_BOL = IRubyColorConstants.RUBY_EVAL_EXPR
 			+ EDITOR_BOLD_SUFFIX;
-	
+
 	public static final String EDITOR_CONST_COLOR = IRubyColorConstants.RUBY_CONST;
 
 	/**
@@ -470,6 +470,11 @@ public class RubyPreferenceConstants extends PreferenceConstants {
 	 */
 	public static final String COMMENT_TASK_TAGS_BOLD = COMMENT_TASK_TAGS_COLOR
 			+ EDITOR_BOLD_SUFFIX;
+
+	/**
+	 * A preference that controls the selected formatter.
+	 */
+	public static final String FORMATTER_ID = "formatterId"; //$NON-NLS-1$
 
 	public static void initializeDefaultValues(IPreferenceStore store) {
 		PreferenceConstants.initializeDefaultValues(store);
