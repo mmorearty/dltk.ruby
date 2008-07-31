@@ -121,7 +121,7 @@ public final class Arity implements Serializable {
     }
     
     public static Arity procArityOf(Node node) {
-        if (node instanceof AttrAssignNode && node != null) {
+        if (node != null && node instanceof AttrAssignNode) {
             node = ((AttrAssignNode) node).getArgsNode();
         }
         if (node == null) {
