@@ -50,8 +50,8 @@ public class IterNode extends Node {
     
     // What static scoping relationship exists when it comes into being.
     private StaticScope scope;
-    
-    private transient ICallable callable;
+
+	// private transient ICallable callable;
 
     public IterNode(ISourcePosition position, Node varNode, StaticScope scope, Node bodyNode) {
         this(position, varNode, scope, bodyNode, NodeTypes.ITERNODE);
