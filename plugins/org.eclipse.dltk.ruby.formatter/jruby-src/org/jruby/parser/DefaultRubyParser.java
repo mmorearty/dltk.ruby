@@ -2679,7 +2679,7 @@ case 375:
 		  /* and subtract as neeeded.*/
 		  if ((((Node)yyVals[-1+yyTop]) instanceof DStrNode) && extraLength > 0) {
 		     Node strNode = ((DStrNode)((Node)yyVals[-1+yyTop])).get(0);
-//		     assert strNode != null;
+		     assert strNode != null;
 		     strNode.getPosition().adjustStartOffset(-extraLength);
 		  }
               }
@@ -3250,7 +3250,7 @@ case 492:
                   yyVal = null;
 	      }
   break;
-					// line 7423 "-"
+					// line 7418 "-"
         }
         yyTop -= yyLen[yyN];
         yyState = yyStates[yyTop];
@@ -3325,4 +3325,4 @@ case 492:
 	return lexer.getPosition(null, inclusive);
     }
 }
-					// line 7503 "-"
+					// line 7498 "-"
