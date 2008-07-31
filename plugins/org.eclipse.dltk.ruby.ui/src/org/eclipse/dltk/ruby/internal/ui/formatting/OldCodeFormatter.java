@@ -19,6 +19,8 @@ import org.eclipse.text.edits.ReplaceEdit;
 import org.eclipse.text.edits.TextEdit;
 
 public class OldCodeFormatter extends CodeFormatter {
+	
+	public static final boolean DEBUG = false;
 
 	private final static String BLOCK_BEGIN_RE = "(class|module|def|if|unless|case|while|until|for|begin|do)"; //$NON-NLS-1$
 	private final static String BLOCK_MID_RE = "(else|elsif|when|rescue|ensure)"; //$NON-NLS-1$
@@ -133,14 +135,7 @@ public class OldCodeFormatter extends CodeFormatter {
 	}
 
 	private boolean isDebug() {
-		// String codeFormatterOption =
-		// Platform.getDebugOption(RubyCore.PLUGIN_ID + "/codeformatter");
-		// boolean isDebug = codeFormatterOption == null ? false :
-		// codeFormatterOption
-		// .equalsIgnoreCase("true");
-		// return isDebug;
-
-		return false;
+		return DEBUG;
 	}
 
 	protected String formatString(String unformatted,
