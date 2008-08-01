@@ -1,6 +1,9 @@
 package org.eclipse.dltk.ruby.formatter.internal;
 
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Plugin;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.dltk.ui.DLTKUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -37,6 +40,15 @@ public class RubyFormatterPlugin extends Plugin {
 	 */
 	public static RubyFormatterPlugin getDefault() {
 		return plugin;
+	}
+
+	public static void warn(String message) {
+		warn(message, null);
+	}
+
+	public static void warn(String message, Throwable throwable) {
+		DLTKUIPlugin.log(new Status(IStatus.WARNING, PLUGIN_ID, 0, message,
+				throwable));
 	}
 
 }
