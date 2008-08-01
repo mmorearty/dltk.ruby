@@ -78,3 +78,37 @@ puts a
 a = 1
 a += 1 until a >= 10
 puts a
+==== case
+digit = 0
+case age
+when 0
+puts "zero"
+when 1
+puts "one"
+when 2
+puts "two"
+else
+puts "other"
+end
+==
+digit = 0
+case age
+	when 0
+		puts "zero"
+	when 1
+		puts "one"
+	when 2
+		puts "two"
+	else
+		puts "other"
+end
+==== case-else-only
+case
+else
+puts "other"
+end
+==
+case
+	else
+		puts "other"
+end
