@@ -330,9 +330,9 @@ stmt          : kALIAS fitem {
               }
               | stmt kWHILE_MOD expr_value {
                   if ($1 != null && $1 instanceof BeginNode) {
-                      $$ = new WhileNode(getPosition($1), support.getConditionNode($3), $<BeginNode>1.getBodyNode(), false);
+                      $$ = new WhileNode.Inline(getPosition($1), support.getConditionNode($3), $<BeginNode>1.getBodyNode(), false);
                   } else {
-                      $$ = new WhileNode(getPosition($1), support.getConditionNode($3), $1, true);
+                      $$ = new WhileNode.Inline(getPosition($1), support.getConditionNode($3), $1, true);
                   }
               }
               | stmt kUNTIL_MOD expr_value {
@@ -1079,7 +1079,7 @@ primary       : literal
 	      } expr_value do {
 		  lexer.getConditionState().end();
 	      } compstmt kEND {
-                  $$ = new WhileNode(support.union($1, $7), support.getConditionNode($3), $6);
+                  $$ = new WhileNode(support.union($1, $7), support.getConditionNode($3), $6, $7);
               }
               | kUNTIL {
                   lexer.getConditionState().begin();

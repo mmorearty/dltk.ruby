@@ -21,6 +21,7 @@ import org.eclipse.dltk.formatter.nodes.IFormatterDocument;
 import org.eclipse.dltk.formatter.nodes.IFormatterTextNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterClassNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterMethodNode;
+import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterWhileNode;
 import org.jruby.ast.ArgumentNode;
 import org.jruby.ast.ClassNode;
 import org.jruby.ast.DefnNode;
@@ -28,6 +29,7 @@ import org.jruby.ast.DefsNode;
 import org.jruby.ast.MethodDefNode;
 import org.jruby.ast.ModuleNode;
 import org.jruby.ast.Node;
+import org.jruby.ast.WhileNode;
 import org.jruby.ast.visitor.AbstractVisitor;
 import org.jruby.evaluator.Instruction;
 import org.jruby.lexer.yacc.ISourcePosition;
@@ -102,6 +104,19 @@ public class RubyFormatterNodeBuilder extends AbstractFormatterNodeBuilder {
 				checkedPop(classNode, visited.getEnd().getPosition()
 						.getStartOffset());
 				classNode.setEnd(createTextNode(document, visited.getEnd()));
+			}
+
+			public Instruction visitWhileNode(WhileNode visited) {
+				FormatterWhileNode whileNode = new FormatterWhileNode(document);
+				whileNode.setBegin(createTextNode(document, visited
+						.getStartOffset(), visited.getBodyNode()
+						.getStartOffset()));
+				push(whileNode);
+				visitChildren(visited);
+				checkedPop(whileNode, visited.getEnd().getPosition()
+						.getStartOffset());
+				whileNode.setEnd(createTextNode(document, visited.getEnd()));
+				return null;
 			}
 
 			private void visitChildren(Node visited) {
