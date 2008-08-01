@@ -26,6 +26,7 @@ import org.jruby.ast.ClassNode;
 import org.jruby.ast.DefnNode;
 import org.jruby.ast.DefsNode;
 import org.jruby.ast.MethodDefNode;
+import org.jruby.ast.ModuleNode;
 import org.jruby.ast.Node;
 import org.jruby.ast.visitor.AbstractVisitor;
 import org.jruby.evaluator.Instruction;
@@ -50,6 +51,24 @@ public class RubyFormatterNodeBuilder extends AbstractFormatterNodeBuilder {
 			}
 
 			public Instruction visitClassNode(ClassNode visited) {
+				FormatterClassNode classNode = new FormatterClassNode(document);
+				classNode.setBegin(createTextNode(document, visited
+						.getStartOffset(), visited.getBodyNode()
+						.getStartOffset()));
+				push(classNode);
+				visitChildren(visited);
+				checkedPop(classNode, visited.getEnd().getPosition()
+						.getStartOffset());
+				classNode.setEnd(createTextNode(document, visited.getEnd()));
+				return null;
+			}
+
+			/*
+			 * @see
+			 * org.jruby.ast.visitor.AbstractVisitor#visitModuleNode(org.jruby
+			 * .ast.ModuleNode)
+			 */
+			public Instruction visitModuleNode(ModuleNode visited) {
 				FormatterClassNode classNode = new FormatterClassNode(document);
 				classNode.setBegin(createTextNode(document, visited
 						.getStartOffset(), visited.getBodyNode()
