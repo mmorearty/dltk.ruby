@@ -11,22 +11,13 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.formatter.tests;
 
-import junit.framework.Test;
 import junit.framework.TestSuite;
 
-public class AllTests {
+public class ModulesTest extends AbstractFormatterTest {
 
-	static final String CHARSET = "ISO-8859-1";
-
-	public static Test suite() {
-		TestSuite suite = new TestSuite(
-				"Test for org.eclipse.dltk.ruby.formatter.tests");
-		// $JUnit-BEGIN$
-		suite.addTestSuite(SimpleTests.class);
-		suite.addTest(ClassesAndMethodsTest.suite());
-		suite.addTest(ModulesTest.suite());
-		// $JUnit-END$
-		return suite;
+	public static TestSuite suite() {
+		return createScriptedSuite(ModulesTest.class.getName(),
+				"scripts/modules.rb");
 	}
 
 }
