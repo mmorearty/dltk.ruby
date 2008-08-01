@@ -23,6 +23,7 @@ public class FormatterWriter implements IFormatterVisitor {
 
 	private boolean lineStarted = false;
 	private char lastChar = 0;
+	private final StringBuffer emptyLines = new StringBuffer();
 
 	public void visit(IFormatterContext context, IFormatterTextNode node)
 			throws Exception {
@@ -47,19 +48,30 @@ public class FormatterWriter implements IFormatterVisitor {
 				writer.write(ch);
 				lineStarted = false;
 			} else if (ch == '\n' && lastChar == '\r') {
-				writer.write(ch); // windows EOL = "\r\n"
+				if (emptyLines.length() == 0) {
+					writer.write(ch); // windows EOL = "\r\n"
+				} else {
+					emptyLines.append(ch);
+				}
+			} else {
+				indent.setLength(0);// add option "trim empty lines"
+				emptyLines.append(ch);
 			}
-		} else if (lineStarted) {
-			writer.write(ch);
-		} else {
+		} else if (!lineStarted) {
 			if (Character.isWhitespace(ch)) {
 				indent.append(ch);
 			} else {
+				if (emptyLines.length() != 0) {
+					writer.write(emptyLines.toString());
+					emptyLines.setLength(0);
+				}
 				writeIndent(context);
 				lineStarted = true;
 				indent.setLength(0);
 				writer.write(ch);
 			}
+		} else {
+			writer.write(ch);
 		}
 		lastChar = ch;
 	}
