@@ -37,46 +37,50 @@ import org.jruby.ast.types.INameNode;
 import org.jruby.ast.visitor.NodeVisitor;
 import org.jruby.evaluator.Instruction;
 import org.jruby.lexer.yacc.ISourcePosition;
+import org.jruby.lexer.yacc.ISourcePositionHolder;
 import org.jruby.parser.StaticScope;
 import org.jruby.runtime.Visibility;
 
 /**
  * method definition node.
  * 
- * @author  jpetersen
+ * @author jpetersen
  */
 public class DefnNode extends MethodDefNode implements INameNode {
-    static final long serialVersionUID = -7634791007500033454L;
+	static final long serialVersionUID = -7634791007500033454L;
 
-    private final Visibility visibility;
-    
-    public DefnNode(ISourcePosition position, ArgumentNode nameNode, ArgsNode argsNode, 
-            StaticScope scope, Node bodyNode, Visibility visibility) {
-        super(position, nameNode, argsNode, scope, bodyNode, NodeTypes.DEFNNODE);
-        
-        this.visibility = visibility;
-    }
+	private final Visibility visibility;
 
-    public Instruction accept(NodeVisitor iVisitor) {
-        return iVisitor.visitDefnNode(this);
-    }
+	public DefnNode(ISourcePosition position, ArgumentNode nameNode,
+			ArgsNode argsNode, StaticScope scope, Node bodyNode,
+			Visibility visibility, ISourcePositionHolder end) {
+		super(position, nameNode, argsNode, scope, bodyNode,
+				NodeTypes.DEFNNODE, end);
 
-    /**
-     * Gets the noex.
-     * @return Returns a int
-     */
-    public Visibility getVisibility() {
-        return visibility;
-    }
-    
-    /**
-     * Get the name of this method
-     */
-    public String getName() {
-        return nameNode.getName();
-    }
-    
-    public List childNodes() {
-        return Node.createList(nameNode, argsNode, bodyNode);
-    }
+		this.visibility = visibility;
+	}
+
+	public Instruction accept(NodeVisitor iVisitor) {
+		return iVisitor.visitDefnNode(this);
+	}
+
+	/**
+	 * Gets the noex.
+	 * 
+	 * @return Returns a int
+	 */
+	public Visibility getVisibility() {
+		return visibility;
+	}
+
+	/**
+	 * Get the name of this method
+	 */
+	public String getName() {
+		return nameNode.getName();
+	}
+
+	public List childNodes() {
+		return Node.createList(nameNode, argsNode, bodyNode);
+	}
 }

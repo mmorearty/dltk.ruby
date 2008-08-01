@@ -323,10 +323,10 @@ stmt          : kALIAS fitem {
                   $$ = $2;
               }
               | stmt kIF_MOD expr_value {
-                  $$ = new IfNode(support.union($1, $3), support.getConditionNode($3), $1, null);
+                  $$ = new IfNode.Inline(support.union($1, $3), support.getConditionNode($3), $1, null);
               }
               | stmt kUNLESS_MOD expr_value {
-                  $$ = new IfNode(support.union($1, $3), support.getConditionNode($3), null, $1);
+                  $$ = new IfNode.Inline(support.union($1, $3), support.getConditionNode($3), null, $1);
               }
               | stmt kWHILE_MOD expr_value {
                   if ($1 != null && $1 instanceof BeginNode) {
@@ -819,7 +819,7 @@ arg           : lhs '=' arg {
                   $$ = new DefinedNode(getPosition($1), $3);
               }
               | arg '?' arg ':' arg {
-                  $$ = new IfNode(getPosition($1), support.getConditionNode($1), $3, $5);
+                  $$ = new IfNode.Inline(getPosition($1), support.getConditionNode($1), $3, $5);
               }
               | primary {
                   $$ = $1;
@@ -1072,7 +1072,7 @@ primary       : literal
                   $$ = new IfNode(support.union($1, $6), support.getConditionNode($2), $4, $5);
               }
               | kUNLESS expr_value then compstmt opt_else kEND {
-                  $$ = new IfNode(support.union($1, $6), support.getConditionNode($2), $5, $4);
+                  $$ = new IfNode.Unless(support.union($1, $6), support.getConditionNode($2), $5, $4);
               }
               | kWHILE { 
                   lexer.getConditionState().begin();
@@ -1110,7 +1110,7 @@ primary       : literal
                   }
 		  support.pushLocalScope();
               } bodystmt kEND {
-                  $$ = new ClassNode(support.union($1, $6), $<Colon3Node>2, support.getCurrentScope(), $5, $3);
+                  $$ = new ClassNode(support.union($1, $6), $<Colon3Node>2, support.getCurrentScope(), $5, $3, $6);
                   support.popCurrentScope();
               }
               | kCLASS tLSHFT expr {
@@ -1140,7 +1140,7 @@ primary       : literal
 		  support.pushLocalScope();
               } f_arglist bodystmt kEND {
                     /* NOEX_PRIVATE for toplevel */
-                  $$ = new DefnNode(support.union($1, $6), new ArgumentNode($2.getPosition(), (String) $2.getValue()), $<ArgsNode>4, support.getCurrentScope(), $5, Visibility.PRIVATE);
+                  $$ = new DefnNode(support.union($1, $6), new ArgumentNode($2.getPosition(), (String) $2.getValue()), $<ArgsNode>4, support.getCurrentScope(), $5, Visibility.PRIVATE, $6);
                   support.popCurrentScope();
                   support.setInDef(false);
               }
@@ -1151,7 +1151,7 @@ primary       : literal
 		  support.pushLocalScope();
                   lexer.setState(LexState.EXPR_END); /* force for args */
               } f_arglist bodystmt kEND {
-                  $$ = new DefsNode(support.union($1, $9), $2, new ArgumentNode($5.getPosition(), (String) $5.getValue()), $<ArgsNode>7, support.getCurrentScope(), $8);
+                  $$ = new DefsNode(support.union($1, $9), $2, new ArgumentNode($5.getPosition(), (String) $5.getValue()), $<ArgsNode>7, support.getCurrentScope(), $8, $9);
                   support.popCurrentScope();
                   support.setInSingle(support.getInSingle() - 1);
               }

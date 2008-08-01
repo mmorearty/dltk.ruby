@@ -31,7 +31,6 @@
 package org.jruby.parser;
 
 /**
- * 
  * @author jpetersen
  */
 public class RubyParserPool {

@@ -39,56 +39,93 @@ import org.jruby.lexer.yacc.ISourcePosition;
 
 /**
  * an 'if' statement.
- * @author  jpetersen
+ * 
+ * @author jpetersen
  */
 public class IfNode extends Node {
-    static final long serialVersionUID = -163780144332979551L;
+	static final long serialVersionUID = -163780144332979551L;
 
-    private final Node condition;
-    private final Node thenBody;
-    private final Node elseBody;
+	private final Node condition;
+	private final Node thenBody;
+	private final Node elseBody;
 
-    public IfNode(ISourcePosition position, Node condition, Node thenBody, Node elseBody) {
-        super(position, NodeTypes.IFNODE);
-        this.condition = condition;
-        this.thenBody = thenBody;
-        this.elseBody = elseBody;
-    }
+	public IfNode(ISourcePosition position, Node condition, Node thenBody,
+			Node elseBody) {
+		super(position, NodeTypes.IFNODE);
+		this.condition = condition;
+		this.thenBody = thenBody;
+		this.elseBody = elseBody;
+	}
 
-    /**
-     * Accept for the visitor pattern.
-     * @param iVisitor the visitor
-     **/
-    public Instruction accept(NodeVisitor iVisitor) {
-        return iVisitor.visitIfNode(this);
-    }
+	/**
+	 * Accept for the visitor pattern.
+	 * 
+	 * @param iVisitor
+	 *            the visitor
+	 **/
+	public Instruction accept(NodeVisitor iVisitor) {
+		return iVisitor.visitIfNode(this);
+	}
 
-    /**
-     * Gets the condition.
-     * @return Returns a Node
-     */
-    public Node getCondition() {
-        return condition;
-    }
+	/**
+	 * Gets the condition.
+	 * 
+	 * @return Returns a Node
+	 */
+	public Node getCondition() {
+		return condition;
+	}
 
-    /**
-     * Gets the elseBody.
-     * @return Returns a Node
-     */
-    public Node getElseBody() {
-        return elseBody;
-    }
+	/**
+	 * Gets the elseBody.
+	 * 
+	 * @return Returns a Node
+	 */
+	public Node getElseBody() {
+		return elseBody;
+	}
 
-    /**
-     * Gets the thenBody.
-     * @return Returns a Node
-     */
-    public Node getThenBody() {
-        return thenBody;
-    }
-    
-    public List childNodes() {
-        return Node.createList(condition, thenBody, elseBody);
-    }
+	/**
+	 * Gets the thenBody.
+	 * 
+	 * @return Returns a Node
+	 */
+	public Node getThenBody() {
+		return thenBody;
+	}
+
+	public List childNodes() {
+		return Node.createList(condition, thenBody, elseBody);
+	}
+
+	public static class Inline extends IfNode {
+
+		/**
+		 * @param position
+		 * @param condition
+		 * @param thenBody
+		 * @param elseBody
+		 */
+		public Inline(ISourcePosition position, Node condition, Node thenBody,
+				Node elseBody) {
+			super(position, condition, thenBody, elseBody);
+		}
+
+	}
+
+	public static class Unless extends IfNode {
+
+		/**
+		 * @param position
+		 * @param condition
+		 * @param thenBody
+		 * @param elseBody
+		 */
+		public Unless(ISourcePosition position, Node condition, Node thenBody,
+				Node elseBody) {
+			super(position, condition, thenBody, elseBody);
+		}
+
+	}
 
 }

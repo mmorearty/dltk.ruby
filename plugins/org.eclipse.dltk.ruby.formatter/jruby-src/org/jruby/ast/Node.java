@@ -73,6 +73,10 @@ public abstract class Node implements ISourcePositionHolder, InstructionContext,
     public ISourcePosition getPosition() {
         return position;
     }
+    
+    public int getStartOffset() {
+    	return getPosition().getStartOffset();
+    }
 
     public void setPosition(ISourcePosition position) {
         this.position = position;

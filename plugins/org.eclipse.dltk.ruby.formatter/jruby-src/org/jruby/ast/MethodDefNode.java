@@ -34,6 +34,7 @@ package org.jruby.ast;
  */
 import org.jruby.ast.types.INameNode;
 import org.jruby.lexer.yacc.ISourcePosition;
+import org.jruby.lexer.yacc.ISourcePositionHolder;
 import org.jruby.parser.StaticScope;
 
 public abstract class MethodDefNode extends Node implements INameNode {
@@ -42,13 +43,15 @@ public abstract class MethodDefNode extends Node implements INameNode {
 	protected final ArgsNode argsNode;
 	protected final StaticScope scope;
 	protected final Node bodyNode;
-
-	public MethodDefNode(ISourcePosition position, ArgumentNode nameNode, ArgsNode argsNode, StaticScope scope, Node bodyNode, int id) {
+	protected final ISourcePositionHolder end;
+	
+	public MethodDefNode(ISourcePosition position, ArgumentNode nameNode, ArgsNode argsNode, StaticScope scope, Node bodyNode, int id, ISourcePositionHolder end) {
 		super(position, id);
 		this.nameNode = nameNode;
 		this.argsNode = argsNode;
 		this.scope = scope;
 		this.bodyNode = bodyNode;
+		this.end = end;
 	}
 
 	/**
@@ -91,5 +94,9 @@ public abstract class MethodDefNode extends Node implements INameNode {
 	 */
 	public String getName() {
 	    return nameNode.getName();
+	}
+	
+	public ISourcePositionHolder getEnd() {
+		return end;
 	}
 }

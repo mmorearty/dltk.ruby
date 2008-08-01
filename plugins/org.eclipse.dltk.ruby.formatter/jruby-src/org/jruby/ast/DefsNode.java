@@ -36,48 +36,56 @@ import org.jruby.ast.types.INameNode;
 import org.jruby.ast.visitor.NodeVisitor;
 import org.jruby.evaluator.Instruction;
 import org.jruby.lexer.yacc.ISourcePosition;
+import org.jruby.lexer.yacc.ISourcePositionHolder;
 import org.jruby.parser.StaticScope;
 
-/** Represents a singleton method definition.
- *
- * @author  jpetersen
+/**
+ * Represents a singleton method definition.
+ * 
+ * @author jpetersen
  */
 public class DefsNode extends MethodDefNode implements INameNode {
-    static final long serialVersionUID = -4472719020304670080L;
+	static final long serialVersionUID = -4472719020304670080L;
 
-    private final Node receiverNode;
-    public DefsNode(ISourcePosition position, Node receiverNode, ArgumentNode nameNode, ArgsNode argsNode, 
-            StaticScope scope, Node bodyNode) {
-        super(position, nameNode, argsNode, scope, bodyNode, NodeTypes.DEFSNODE);
-        
-        this.receiverNode = receiverNode;
-    }
+	private final Node receiverNode;
 
-    /**
-     * Accept for the visitor pattern.
-     * @param iVisitor the visitor
-     **/
-    public Instruction accept(NodeVisitor iVisitor) {
-        return iVisitor.visitDefsNode(this);
-    }
+	public DefsNode(ISourcePosition position, Node receiverNode,
+			ArgumentNode nameNode, ArgsNode argsNode, StaticScope scope,
+			Node bodyNode, ISourcePositionHolder end) {
+		super(position, nameNode, argsNode, scope, bodyNode,
+				NodeTypes.DEFSNODE, end);
 
-    /**
-     * Gets the receiverNode.
-     * @return Returns a Node
-     */
-    public Node getReceiverNode() {
-        return receiverNode;
-    }
-    
-    /**
-     * Gets the name of this method
-     */
-    public String getName() {
-        return nameNode.getName();
-    }
-    
-    public List childNodes() {
-        return Node.createList(receiverNode, nameNode, argsNode, bodyNode);
-    }
+		this.receiverNode = receiverNode;
+	}
+
+	/**
+	 * Accept for the visitor pattern.
+	 * 
+	 * @param iVisitor
+	 *            the visitor
+	 **/
+	public Instruction accept(NodeVisitor iVisitor) {
+		return iVisitor.visitDefsNode(this);
+	}
+
+	/**
+	 * Gets the receiverNode.
+	 * 
+	 * @return Returns a Node
+	 */
+	public Node getReceiverNode() {
+		return receiverNode;
+	}
+
+	/**
+	 * Gets the name of this method
+	 */
+	public String getName() {
+		return nameNode.getName();
+	}
+
+	public List childNodes() {
+		return Node.createList(receiverNode, nameNode, argsNode, bodyNode);
+	}
 
 }
