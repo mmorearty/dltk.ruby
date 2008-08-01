@@ -28,7 +28,7 @@ end
 class Hello
 
 def method1
-return 1 
+return 1
 end
 
 def method2
@@ -40,7 +40,7 @@ end
 class Hello
 
 	def method1
-		return 1 
+		return 1
 	end
 
 	def method2
