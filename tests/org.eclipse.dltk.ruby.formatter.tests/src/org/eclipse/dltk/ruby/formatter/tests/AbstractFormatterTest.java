@@ -80,17 +80,23 @@ public abstract class AbstractFormatterTest extends TestCase {
 	private static final String TEST_MARKER = "====";
 	private static final String RESPONSE_MARKER = "==";
 
+	public static TestSuite createScriptedSuite(String suiteName,
+			String resourceName) {
+		return createScriptedSuite(suiteName, resourceName, 0);
+	}
+
 	/**
 	 * @param resourceName
 	 * @return
 	 */
 	public static TestSuite createScriptedSuite(String suiteName,
-			String resourceName) {
+			String resourceName, int beginTestIndex) {
 		final TestSuite suite = new TestSuite(suiteName);
 		try {
-			String content = new String(readResource(resourceName));
-			String[] lines = TextUtils.splitLines(content);
+			final String content = new String(readResource(resourceName));
+			final String[] lines = TextUtils.splitLines(content);
 			String testName = "START";
+			int testIndex = 0;
 			int testBegin = 0;
 			int responseBegin = -1;
 			int i = 0;
@@ -104,12 +110,11 @@ public abstract class AbstractFormatterTest extends TestCase {
 									"No response marker - next test started on line "
 											+ testEnd);
 						}
-						final String input = joinLines(lines, testBegin,
-								responseBegin - 1);
-						final String expected = joinLines(lines, responseBegin,
-								testEnd);
-						suite.addTest(new ScriptedTest(testName, input,
-								expected));
+						if (testIndex >= beginTestIndex) {
+							suite.addTest(createTest(testName, lines,
+									testBegin, responseBegin, testEnd));
+						}
+						++testIndex;
 					}
 					testBegin = i;
 					responseBegin = -1;
@@ -128,11 +133,10 @@ public abstract class AbstractFormatterTest extends TestCase {
 					throw new IllegalArgumentException(
 							"No response marker in last test");
 				}
-				final String input = joinLines(lines, testBegin,
-						responseBegin - 1);
-				final String expected = joinLines(lines, responseBegin,
-						lines.length);
-				suite.addTest(new ScriptedTest(testName, input, expected));
+				if (testIndex >= beginTestIndex) {
+					suite.addTest(createTest(testName, lines, testBegin,
+							responseBegin, lines.length));
+				}
 			}
 		} catch (final Exception e) {
 			suite.addTest(new TestCase(e.getClass().getName()) { //$NON-NLS-1$
@@ -142,6 +146,13 @@ public abstract class AbstractFormatterTest extends TestCase {
 					});
 		}
 		return suite;
+	}
+
+	private static ScriptedTest createTest(String testName, String[] lines,
+			int testBegin, int responseBegin, final int testEnd) {
+		final String input = joinLines(lines, testBegin, responseBegin - 1);
+		final String expected = joinLines(lines, responseBegin, testEnd);
+		return new ScriptedTest(testName, input, expected);
 	}
 
 }
