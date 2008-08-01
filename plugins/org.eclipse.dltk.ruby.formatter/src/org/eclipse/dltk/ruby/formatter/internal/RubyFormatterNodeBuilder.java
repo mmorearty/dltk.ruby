@@ -20,12 +20,14 @@ import org.eclipse.dltk.formatter.nodes.IFormatterContainerNode;
 import org.eclipse.dltk.formatter.nodes.IFormatterDocument;
 import org.eclipse.dltk.formatter.nodes.IFormatterTextNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterClassNode;
+import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterForNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterMethodNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterWhileNode;
 import org.jruby.ast.ArgumentNode;
 import org.jruby.ast.ClassNode;
 import org.jruby.ast.DefnNode;
 import org.jruby.ast.DefsNode;
+import org.jruby.ast.ForNode;
 import org.jruby.ast.MethodDefNode;
 import org.jruby.ast.ModuleNode;
 import org.jruby.ast.Node;
@@ -65,45 +67,39 @@ public class RubyFormatterNodeBuilder extends AbstractFormatterNodeBuilder {
 				return null;
 			}
 
-			/*
-			 * @see
-			 * org.jruby.ast.visitor.AbstractVisitor#visitModuleNode(org.jruby
-			 * .ast.ModuleNode)
-			 */
 			public Instruction visitModuleNode(ModuleNode visited) {
-				FormatterClassNode classNode = new FormatterClassNode(document);
-				classNode.setBegin(createTextNode(document, visited
+				FormatterClassNode moduleNode = new FormatterClassNode(document);
+				moduleNode.setBegin(createTextNode(document, visited
 						.getStartOffset(), visited.getBodyNode()
 						.getStartOffset()));
-				push(classNode);
+				push(moduleNode);
 				visitChildren(visited);
-				checkedPop(classNode, visited.getEnd().getPosition()
+				checkedPop(moduleNode, visited.getEnd().getPosition()
 						.getStartOffset());
-				classNode.setEnd(createTextNode(document, visited.getEnd()));
+				moduleNode.setEnd(createTextNode(document, visited.getEnd()));
 				return null;
 			}
 
 			public Instruction visitDefnNode(DefnNode visited) {
-				visitMethodDefNode(visited);
-				return null;
+				return visitMethodDefNode(visited);
 			}
 
 			public Instruction visitDefsNode(DefsNode visited) {
-				visitMethodDefNode(visited);
-				return null;
+				return visitMethodDefNode(visited);
 			}
 
-			private void visitMethodDefNode(MethodDefNode visited) {
-				FormatterMethodNode classNode = new FormatterMethodNode(
+			private Instruction visitMethodDefNode(MethodDefNode visited) {
+				FormatterMethodNode methodNode = new FormatterMethodNode(
 						document);
-				classNode.setBegin(createTextNode(document, visited
+				methodNode.setBegin(createTextNode(document, visited
 						.getStartOffset(), visited.getBodyNode()
 						.getStartOffset()));
-				push(classNode);
+				push(methodNode);
 				visitChildren(visited);
-				checkedPop(classNode, visited.getEnd().getPosition()
+				checkedPop(methodNode, visited.getEnd().getPosition()
 						.getStartOffset());
-				classNode.setEnd(createTextNode(document, visited.getEnd()));
+				methodNode.setEnd(createTextNode(document, visited.getEnd()));
+				return null;
 			}
 
 			public Instruction visitWhileNode(WhileNode visited) {
@@ -116,6 +112,19 @@ public class RubyFormatterNodeBuilder extends AbstractFormatterNodeBuilder {
 				checkedPop(whileNode, visited.getEnd().getPosition()
 						.getStartOffset());
 				whileNode.setEnd(createTextNode(document, visited.getEnd()));
+				return null;
+			}
+
+			public Instruction visitForNode(ForNode visited) {
+				FormatterForNode forNode = new FormatterForNode(document);
+				forNode.setBegin(createTextNode(document, visited
+						.getStartOffset(), visited.getBodyNode()
+						.getStartOffset()));
+				push(forNode);
+				visitChildren(visited);
+				checkedPop(forNode, visited.getEnd().getPosition()
+						.getStartOffset());
+				forNode.setEnd(createTextNode(document, visited.getEnd()));
 				return null;
 			}
 

@@ -1102,7 +1102,7 @@ primary       : literal
               } expr_value do {
                   lexer.getConditionState().end();
               } compstmt kEND {
-                  $$ = new ForNode(support.union($1, $9), $2, $8, $5);
+                  $$ = new ForNode(support.union($1, $9), $2, $8, $5, $9);
               }
               | kCLASS cpath superclass {
                   if (support.isInDef() || support.isInSingle()) {

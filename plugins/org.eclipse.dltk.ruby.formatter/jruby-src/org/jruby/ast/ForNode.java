@@ -33,36 +33,50 @@ package org.jruby.ast;
 import org.jruby.ast.visitor.NodeVisitor;
 import org.jruby.evaluator.Instruction;
 import org.jruby.lexer.yacc.ISourcePosition;
+import org.jruby.lexer.yacc.ISourcePositionHolder;
 
 /**
- * A 'for' statement.  This is implemented using iter and that is how MRI does things,
- * but 'for's do not have their own stack, so doing this way is mildly painful.
+ * A 'for' statement. This is implemented using iter and that is how MRI does
+ * things, but 'for's do not have their own stack, so doing this way is mildly
+ * painful.
  * 
  * @see IterNode
  */
 public class ForNode extends IterNode {
-    static final long serialVersionUID = -8319863477790150586L;
-    private Node iterNode;
+	static final long serialVersionUID = -8319863477790150586L;
+	private Node iterNode;
+	private final ISourcePositionHolder end;
 
-    public ForNode(ISourcePosition position, Node varNode, Node bodyNode, Node iterNode) {
-        // For nodes do not have their own scope so we pass null to indicate this.
-        // 'For's are implemented as blocks in evaluation, but they have no scope so we
-        // just deal with this lack of scope throughout its lifespan.  We should probably
-        // change the way this works to get rid of multiple null checks.
-        super(position, varNode, null, bodyNode, NodeTypes.FORNODE);
-        
-        this.iterNode = iterNode;
-    }
-    
-    public Node getIterNode() {
-        return iterNode;
-    }
+	public ForNode(ISourcePosition position, Node varNode, Node bodyNode,
+			Node iterNode, ISourcePositionHolder end) {
+		// For nodes do not have their own scope so we pass null to indicate
+		// this.
+		// 'For's are implemented as blocks in evaluation, but they have no
+		// scope so we
+		// just deal with this lack of scope throughout its lifespan. We should
+		// probably
+		// change the way this works to get rid of multiple null checks.
+		super(position, varNode, null, bodyNode, NodeTypes.FORNODE);
 
-    /**
-     * Accept for the visitor pattern.
-     * @param iVisitor the visitor
-     **/
-    public Instruction accept(NodeVisitor iVisitor) {
-        return iVisitor.visitForNode(this);
-    }
+		this.iterNode = iterNode;
+		this.end = end;
+	}
+
+	public Node getIterNode() {
+		return iterNode;
+	}
+
+	/**
+	 * Accept for the visitor pattern.
+	 * 
+	 * @param iVisitor
+	 *            the visitor
+	 **/
+	public Instruction accept(NodeVisitor iVisitor) {
+		return iVisitor.visitForNode(this);
+	}
+
+	public ISourcePositionHolder getEnd() {
+		return end;
+	}
 }
