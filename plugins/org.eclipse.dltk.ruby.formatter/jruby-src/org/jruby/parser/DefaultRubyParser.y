@@ -337,9 +337,9 @@ stmt          : kALIAS fitem {
               }
               | stmt kUNTIL_MOD expr_value {
                   if ($1 != null && $1 instanceof BeginNode) {
-                      $$ = new UntilNode(getPosition($1), support.getConditionNode($3), $<BeginNode>1.getBodyNode());
+                      $$ = new UntilNode.Inline(getPosition($1), support.getConditionNode($3), $<BeginNode>1.getBodyNode());
                   } else {
-                      $$ = new UntilNode(getPosition($1), support.getConditionNode($3), $1);
+                      $$ = new UntilNode.Inline(getPosition($1), support.getConditionNode($3), $1);
                   }
               }
               | stmt kRESCUE_MOD stmt {
@@ -1086,7 +1086,7 @@ primary       : literal
               } expr_value do {
                   lexer.getConditionState().end();
               } compstmt kEND {
-                  $$ = new UntilNode(getPosition($1), support.getConditionNode($3), $6);
+                  $$ = new UntilNode(getPosition($1), support.getConditionNode($3), $6, $7);
               }
               | kCASE expr_value opt_terms case_body kEND {
                   $$ = new CaseNode(support.union($1, $5), $2, $4);

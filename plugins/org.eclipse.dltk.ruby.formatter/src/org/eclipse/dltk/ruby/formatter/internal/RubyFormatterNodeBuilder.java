@@ -22,6 +22,7 @@ import org.eclipse.dltk.formatter.nodes.IFormatterTextNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterClassNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterForNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterMethodNode;
+import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterUntilNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterWhileNode;
 import org.jruby.ast.ArgumentNode;
 import org.jruby.ast.ClassNode;
@@ -31,6 +32,7 @@ import org.jruby.ast.ForNode;
 import org.jruby.ast.MethodDefNode;
 import org.jruby.ast.ModuleNode;
 import org.jruby.ast.Node;
+import org.jruby.ast.UntilNode;
 import org.jruby.ast.WhileNode;
 import org.jruby.ast.visitor.AbstractVisitor;
 import org.jruby.evaluator.Instruction;
@@ -103,6 +105,8 @@ public class RubyFormatterNodeBuilder extends AbstractFormatterNodeBuilder {
 			}
 
 			public Instruction visitWhileNode(WhileNode visited) {
+				if (!visited.isBlock())
+					return null;
 				FormatterWhileNode whileNode = new FormatterWhileNode(document);
 				whileNode.setBegin(createTextNode(document, visited
 						.getStartOffset(), visited.getBodyNode()
@@ -125,6 +129,21 @@ public class RubyFormatterNodeBuilder extends AbstractFormatterNodeBuilder {
 				checkedPop(forNode, visited.getEnd().getPosition()
 						.getStartOffset());
 				forNode.setEnd(createTextNode(document, visited.getEnd()));
+				return null;
+			}
+
+			public Instruction visitUntilNode(UntilNode visited) {
+				if (!visited.isBlock())
+					return null;
+				FormatterUntilNode untilNode = new FormatterUntilNode(document);
+				untilNode.setBegin(createTextNode(document, visited
+						.getStartOffset(), visited.getBodyNode()
+						.getStartOffset()));
+				push(untilNode);
+				visitChildren(visited);
+				checkedPop(untilNode, visited.getEnd().getPosition()
+						.getStartOffset());
+				untilNode.setEnd(createTextNode(document, visited.getEnd()));
 				return null;
 			}
 

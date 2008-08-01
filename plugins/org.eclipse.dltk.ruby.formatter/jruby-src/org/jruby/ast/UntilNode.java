@@ -35,49 +35,87 @@ import java.util.List;
 import org.jruby.ast.visitor.NodeVisitor;
 import org.jruby.evaluator.Instruction;
 import org.jruby.lexer.yacc.ISourcePosition;
+import org.jruby.lexer.yacc.ISourcePositionHolder;
 
-/** Represents an until statement.
- *
- * @author  jpetersen
+/**
+ * Represents an until statement.
+ * 
+ * @author jpetersen
  */
 public class UntilNode extends Node {
-    static final long serialVersionUID = -2929327250252365636L;
+	static final long serialVersionUID = -2929327250252365636L;
 
-    private final Node conditionNode;
-    private final Node bodyNode;
+	private final Node conditionNode;
+	private final Node bodyNode;
+	private final ISourcePositionHolder end;
 
-    public UntilNode(ISourcePosition position, Node conditionNode, Node bodyNode) {
-        super(position, NodeTypes.UNTILNODE);
-        this.conditionNode = conditionNode;
-        this.bodyNode = bodyNode;
-    }
+	public UntilNode(ISourcePosition position, Node conditionNode,
+			Node bodyNode, ISourcePositionHolder end) {
+		super(position, NodeTypes.UNTILNODE);
+		this.conditionNode = conditionNode;
+		this.bodyNode = bodyNode;
+		this.end = end;
+	}
 
-    /**
-     * Accept for the visitor pattern.
-     * @param iVisitor the visitor
-     **/
-    public Instruction accept(NodeVisitor iVisitor) {
-        return iVisitor.visitUntilNode(this);
-    }
+	/**
+	 * Accept for the visitor pattern.
+	 * 
+	 * @param iVisitor
+	 *            the visitor
+	 **/
+	public Instruction accept(NodeVisitor iVisitor) {
+		return iVisitor.visitUntilNode(this);
+	}
 
-    /**
-     * Gets the bodyNode.
-     * @return Returns a Node
-     */
-    public Node getBodyNode() {
-        return bodyNode;
-    }
+	/**
+	 * Gets the bodyNode.
+	 * 
+	 * @return Returns a Node
+	 */
+	public Node getBodyNode() {
+		return bodyNode;
+	}
 
-    /**
-     * Gets the conditionNode.
-     * @return Returns a Node
-     */
-    public Node getConditionNode() {
-        return conditionNode;
-    }
+	/**
+	 * Gets the conditionNode.
+	 * 
+	 * @return Returns a Node
+	 */
+	public Node getConditionNode() {
+		return conditionNode;
+	}
 
-    public List childNodes() {
-        return Node.createList(conditionNode, bodyNode);
-    }
+	public List childNodes() {
+		return Node.createList(conditionNode, bodyNode);
+	}
+
+	/**
+	 * @return the end
+	 */
+	public ISourcePositionHolder getEnd() {
+		return end;
+	}
+
+	public boolean isBlock() {
+		return true;
+	}
+
+	public static class Inline extends UntilNode {
+
+		/**
+		 * @param position
+		 * @param conditionNode
+		 * @param bodyNode
+		 */
+		public Inline(ISourcePosition position, Node conditionNode,
+				Node bodyNode) {
+			super(position, conditionNode, bodyNode, null);
+		}
+
+		public boolean isBlock() {
+			return false;
+		}
+
+	}
 
 }
