@@ -16,7 +16,7 @@ import junit.framework.TestSuite;
 public class BlocksTest extends AbstractFormatterTest {
 
 	public static TestSuite suite() {
-		return createScriptedSuite(ClassesAndMethodsTest.class.getName(),
+		return createScriptedSuite(BlocksTest.class.getName(),
 				"scripts/blocks.rb");
 	}
 
