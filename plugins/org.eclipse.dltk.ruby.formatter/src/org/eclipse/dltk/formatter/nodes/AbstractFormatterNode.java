@@ -39,6 +39,6 @@ public abstract class AbstractFormatterNode implements IFormatterNode {
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		return toString();
+		return getShortClassName();
 	}
 }
