@@ -47,8 +47,11 @@ public class RubyFormatterPlugin extends Plugin {
 	}
 
 	public static void warn(String message, Throwable throwable) {
-		DLTKUIPlugin.log(new Status(IStatus.WARNING, PLUGIN_ID, 0, message,
-				throwable));
+		log(new Status(IStatus.WARNING, PLUGIN_ID, 0, message, throwable));
+	}
+
+	public static void log(IStatus status) {
+		getDefault().getLog().log(status);
 	}
 
 }

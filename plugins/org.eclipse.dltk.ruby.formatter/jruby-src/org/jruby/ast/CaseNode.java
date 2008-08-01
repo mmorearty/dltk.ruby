@@ -35,61 +35,85 @@ import java.util.List;
 import org.jruby.ast.visitor.NodeVisitor;
 import org.jruby.evaluator.Instruction;
 import org.jruby.lexer.yacc.ISourcePosition;
+import org.jruby.lexer.yacc.ISourcePositionHolder;
 
 /**
  * A Case statement.
  * 
- * Represents a complete case statement, including the body with its
- * when statements.
+ * Represents a complete case statement, including the body with its when
+ * statements.
  * 
- * @author  jpetersen
+ * @author jpetersen
  */
 public class CaseNode extends Node {
-    static final long serialVersionUID = -2824917272720800901L;
+	static final long serialVersionUID = -2824917272720800901L;
 
 	/**
 	 * the case expression.
 	 **/
-    private final Node caseNode;
+	private final Node caseNode;
 	/**
 	 * the body of the case.
 	 */
-    private final Node caseBody;
-    
-    public CaseNode(ISourcePosition position, Node caseNode, Node caseBody) {
-        super(position, NodeTypes.CASENODE);
-        this.caseNode = caseNode;
-        this.caseBody = caseBody;
-    }
+	private final Node caseBody;
 
- 	/**
-     * Accept for the visitor pattern.
-     * @param iVisitor the visitor
-     **/
-    public Instruction accept(NodeVisitor iVisitor) {
-        return iVisitor.visitCaseNode(this);
-    }
+	private final ISourcePositionHolder caseKeyword;
+	private final ISourcePositionHolder end;
 
-    /**
-     * Gets the caseNode.
-	 * caseNode is the case expression 
-     * @return caseNode
-     */
-    public Node getCaseNode() {
-        return caseNode;
-    }
+	public CaseNode(ISourcePosition position, Node caseNode, Node caseBody,
+			ISourcePositionHolder caseKeyword, ISourcePositionHolder end) {
+		super(position, NodeTypes.CASENODE);
+		this.caseNode = caseNode;
+		this.caseBody = caseBody;
+		this.caseKeyword = caseKeyword;
+		this.end = end;
+	}
 
-    /**
-     * Gets the first whenNode.
-	 * the body of the case statement, the first of a list of WhenNodes
-     * @return whenNode
-     */
-    public Node getFirstWhenNode() {
-        return caseBody;
-    }
-    
-    public List childNodes() {
-        return Node.createList(caseNode, caseBody);
-    }
+	/**
+	 * Accept for the visitor pattern.
+	 * 
+	 * @param iVisitor
+	 *            the visitor
+	 **/
+	public Instruction accept(NodeVisitor iVisitor) {
+		return iVisitor.visitCaseNode(this);
+	}
+
+	/**
+	 * Gets the caseNode. caseNode is the case expression
+	 * 
+	 * @return caseNode
+	 */
+	public Node getCaseNode() {
+		return caseNode;
+	}
+
+	/**
+	 * Gets the first whenNode. the body of the case statement, the first of a
+	 * list of WhenNodes
+	 * 
+	 * @return whenNode
+	 */
+	public Node getFirstWhenNode() {
+		return caseBody;
+	}
+
+	public List childNodes() {
+		return Node.createList(caseNode, caseBody);
+	}
+
+	/**
+	 * @return the end
+	 */
+	public ISourcePositionHolder getEnd() {
+		return end;
+	}
+
+	/**
+	 * @return the caseKeyword
+	 */
+	public ISourcePositionHolder getCaseKeyword() {
+		return caseKeyword;
+	}
 
 }

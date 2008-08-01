@@ -134,5 +134,7 @@ public final class NodeTypes {
     public static final int ATTRASSIGNNODE = 102;
     public static final int ARGSPUSHNODE = 103;
     
+    public static final int EXT_ELSENODE = 200;
+    
     private NodeTypes() {}
 }

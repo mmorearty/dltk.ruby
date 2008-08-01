@@ -111,6 +111,7 @@ import org.jruby.ast.YieldNode;
 import org.jruby.ast.ZArrayNode;
 import org.jruby.ast.ZSuperNode;
 import org.jruby.ast.ZeroArgNode;
+import org.jruby.ast.ext.ElseNode;
 import org.jruby.ast.types.ILiteralNode;
 import org.jruby.ast.types.INameNode;
 import org.jruby.common.IRubyWarnings;
@@ -1089,10 +1090,10 @@ primary       : literal
                   $$ = new UntilNode(getPosition($1), support.getConditionNode($3), $6, $7);
               }
               | kCASE expr_value opt_terms case_body kEND {
-                  $$ = new CaseNode(support.union($1, $5), $2, $4);
+                  $$ = new CaseNode(support.union($1, $5), $2, $4, $1, $5);
               }
               | kCASE opt_terms case_body kEND {
-                  $$ = new CaseNode(support.union($1, $4), null, $3);
+                  $$ = new CaseNode(support.union($1, $4), null, $3, $1, $4);
               }
               | kCASE opt_terms kELSE compstmt kEND {
 		  $$ = $4;
@@ -1190,7 +1191,7 @@ if_tail       : opt_else
 
 opt_else      : none 
               | kELSE compstmt {
-                  $$ = $2;
+                  $$ = new ElseNode($2, $1);
               }
 
 block_var     : lhs

@@ -19,12 +19,17 @@ import org.eclipse.dltk.formatter.nodes.FormatterRootNode;
 import org.eclipse.dltk.formatter.nodes.IFormatterContainerNode;
 import org.eclipse.dltk.formatter.nodes.IFormatterDocument;
 import org.eclipse.dltk.formatter.nodes.IFormatterTextNode;
+import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterCaseNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterClassNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterForNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterMethodNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterUntilNode;
+import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterWhenElseNode;
+import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterWhenNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterWhileNode;
+import org.eclipse.osgi.util.NLS;
 import org.jruby.ast.ArgumentNode;
+import org.jruby.ast.CaseNode;
 import org.jruby.ast.ClassNode;
 import org.jruby.ast.DefnNode;
 import org.jruby.ast.DefsNode;
@@ -33,7 +38,9 @@ import org.jruby.ast.MethodDefNode;
 import org.jruby.ast.ModuleNode;
 import org.jruby.ast.Node;
 import org.jruby.ast.UntilNode;
+import org.jruby.ast.WhenNode;
 import org.jruby.ast.WhileNode;
+import org.jruby.ast.ext.ElseNode;
 import org.jruby.ast.visitor.AbstractVisitor;
 import org.jruby.evaluator.Instruction;
 import org.jruby.lexer.yacc.ISourcePosition;
@@ -144,6 +151,56 @@ public class RubyFormatterNodeBuilder extends AbstractFormatterNodeBuilder {
 				checkedPop(untilNode, visited.getEnd().getPosition()
 						.getStartOffset());
 				untilNode.setEnd(createTextNode(document, visited.getEnd()));
+				return null;
+			}
+
+			public Instruction visitCaseNode(CaseNode visited) {
+				FormatterCaseNode caseNode = new FormatterCaseNode(document);
+				final int caseEnd = visited.getCaseNode() != null ? visited
+						.getCaseNode().getEndOffset() : visited
+						.getCaseKeyword().getPosition().getEndOffset();
+				caseNode.setBegin(createTextNode(document, visited
+						.getStartOffset(), caseEnd));
+				push(caseNode);
+				Node branch = visited.getFirstWhenNode();
+				while (branch != null) {
+					if (branch instanceof WhenNode) {
+						WhenNode whenBranch = (WhenNode) branch;
+						FormatterWhenNode whenNode = new FormatterWhenNode(
+								document);
+						whenNode.setBegin(createTextNode(document, branch
+								.getStartOffset(), whenBranch
+								.getExpressionNodes().getEndOffset()));
+						push(whenNode);
+						whenBranch.getBodyNode().accept(this);
+						branch = ((WhenNode) branch).getNextCase();
+						checkedPop(whenNode, branch != null ? branch
+								.getStartOffset() : visited.getEnd()
+								.getPosition().getStartOffset());
+					} else if (branch instanceof ElseNode) {
+						ElseNode elseBranch = (ElseNode) branch;
+						FormatterWhenElseNode whenElseNode = new FormatterWhenElseNode(
+								document);
+						whenElseNode.setBegin(createTextNode(document,
+								elseBranch.getStartOffset(), elseBranch
+										.getElseKeyword().getPosition()
+										.getEndOffset()));
+						push(whenElseNode);
+						elseBranch.getStatement().accept(this);
+						checkedPop(whenElseNode, visited.getEnd().getPosition()
+								.getStartOffset());
+						branch = null;
+					} else {
+						RubyFormatterPlugin.warn(NLS.bind(
+								"Unexpected {0} class in case/when expression",
+								branch.getClass().getName()),
+								new DumpStackOnly());
+						break;
+					}
+				}
+				checkedPop(caseNode, visited.getEnd().getPosition()
+						.getStartOffset());
+				caseNode.setEnd(createTextNode(document, visited.getEnd()));
 				return null;
 			}
 

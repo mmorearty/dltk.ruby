@@ -40,7 +40,7 @@ public class AbstractFormatterNodeBuilder {
 		if (stack.pop() != expected) {
 			throw new IllegalStateException();
 		}
-		if (expected.getEndOffset() < bodyEnd) {
+		if (bodyEnd > 0 && expected.getEndOffset() < bodyEnd) {
 			expected.addChild(createTextNode(expected.getDocument(), expected
 					.getEndOffset(), bodyEnd));
 		}
