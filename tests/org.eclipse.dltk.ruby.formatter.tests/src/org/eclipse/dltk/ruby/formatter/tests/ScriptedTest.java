@@ -11,21 +11,24 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.formatter.tests;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+public class ScriptedTest extends AbstractFormatterTest {
 
-public class AllTests {
+	private final String input;
+	private final String expected;
 
-	static final String CHARSET = "ISO-8859-1";
+	/**
+	 * @param expected
+	 * @param input
+	 */
+	public ScriptedTest(String name, String input, String expected) {
+		setName(name);
+		this.expected = expected;
+		this.input = input;
+	}
 
-	public static Test suite() {
-		TestSuite suite = new TestSuite(
-				"Test for org.eclipse.dltk.ruby.formatter.tests");
-		// $JUnit-BEGIN$
-		suite.addTestSuite(SimpleTests.class);
-		suite.addTest(ClassesAndMethodsTest.suite());
-		// $JUnit-END$
-		return suite;
+	protected void runTest() throws Throwable {
+		final String output = format(input);
+		assertEquals(expected, output);
 	}
 
 }

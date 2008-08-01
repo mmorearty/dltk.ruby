@@ -11,9 +11,16 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.formatter.tests;
 
-import junit.framework.TestCase;
+import java.io.IOException;
+import java.net.URL;
 
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
+import org.eclipse.dltk.compiler.util.Util;
+import org.eclipse.dltk.internal.corext.util.Strings;
 import org.eclipse.dltk.ruby.formatter.RubyFormatter;
+import org.eclipse.dltk.utils.TextUtils;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
@@ -25,7 +32,7 @@ public abstract class AbstractFormatterTest extends TestCase {
 	 * @param input
 	 * @return
 	 */
-	protected String format(String input) {
+	protected static String format(String input) {
 		RubyFormatter f = new RubyFormatter();
 		final TextEdit edit = f.format(input, 0, input.length(), 0);
 		if (edit != null) {
@@ -38,6 +45,103 @@ public abstract class AbstractFormatterTest extends TestCase {
 			return document.get();
 		}
 		return input;
+	}
+
+	protected static String joinLines(String[] lines) {
+		return Strings.concatenate(lines, Util.LINE_SEPARATOR)
+				+ Util.LINE_SEPARATOR;
+	}
+
+	/**
+	 * @param lines
+	 * @param beginIndex
+	 * @param endIndex
+	 * @return
+	 */
+	protected static String joinLines(String[] lines, int beginIndex,
+			int endIndex) {
+		final StringBuffer sb = new StringBuffer();
+		for (int i = beginIndex; i < endIndex; ++i) {
+			sb.append(lines[i]);
+			sb.append(Util.LINE_SEPARATOR);
+		}
+		return sb.toString();
+	}
+
+	protected static char[] readResource(String resourceName)
+			throws IOException {
+		final URL resource = Activator.getDefault().getBundle().getEntry(
+				resourceName);
+		assertNotNull(resourceName + " is not found", resource); //$NON-NLS-1$
+		return Util.getInputStreamAsCharArray(resource.openStream(), -1,
+				AllTests.CHARSET);
+	}
+
+	private static final String TEST_MARKER = "====";
+	private static final String RESPONSE_MARKER = "==";
+
+	/**
+	 * @param resourceName
+	 * @return
+	 */
+	public static TestSuite createScriptedSuite(String suiteName,
+			String resourceName) {
+		final TestSuite suite = new TestSuite(suiteName);
+		try {
+			String content = new String(readResource(resourceName));
+			String[] lines = TextUtils.splitLines(content);
+			String testName = "START";
+			int testBegin = 0;
+			int responseBegin = -1;
+			int i = 0;
+			while (i < lines.length) {
+				final String line = lines[i++];
+				if (line.startsWith(TEST_MARKER)) {
+					final int testEnd = i - 1;
+					if (testEnd > testBegin) {
+						if (responseBegin < 0) {
+							throw new IllegalArgumentException(
+									"No response marker - next test started on line "
+											+ testEnd);
+						}
+						final String input = joinLines(lines, testBegin,
+								responseBegin - 1);
+						final String expected = joinLines(lines, responseBegin,
+								testEnd);
+						suite.addTest(new ScriptedTest(testName, input,
+								expected));
+					}
+					testBegin = i;
+					responseBegin = -1;
+					testName = line.substring(TEST_MARKER.length()).trim();
+				} else if (line.startsWith(RESPONSE_MARKER)) {
+					if (responseBegin >= 0) {
+						throw new IllegalArgumentException(
+								"Multiple response markers: line " + (i - 1)
+										+ ", previous on line " + responseBegin);
+					}
+					responseBegin = i;
+				}
+			}
+			if (lines.length > testBegin) {
+				if (responseBegin < 0) {
+					throw new IllegalArgumentException(
+							"No response marker in last test");
+				}
+				final String input = joinLines(lines, testBegin,
+						responseBegin - 1);
+				final String expected = joinLines(lines, responseBegin,
+						lines.length);
+				suite.addTest(new ScriptedTest(testName, input, expected));
+			}
+		} catch (final Exception e) {
+			suite.addTest(new TestCase(e.getClass().getName()) { //$NON-NLS-1$
+						protected void runTest() throws Throwable {
+							throw e;
+						}
+					});
+		}
+		return suite;
 	}
 
 }
