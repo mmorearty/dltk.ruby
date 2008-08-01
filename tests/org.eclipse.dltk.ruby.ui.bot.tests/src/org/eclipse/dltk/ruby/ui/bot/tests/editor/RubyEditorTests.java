@@ -6,6 +6,9 @@ import net.sf.swtbot.eclipse.finder.widgets.SWTBotEclipseEditor;
 import org.eclipse.dltk.ruby.internal.ui.RubyPerspective;
 import org.eclipse.dltk.ruby.ui.bot.tests.AllTests;
 import org.eclipse.dltk.uibot.tests.AbstractSWTBotTests;
+import org.eclipse.test.performance.Dimension;
+import org.eclipse.test.performance.Performance;
+import org.eclipse.test.performance.PerformanceMeter;
 import org.eclipse.ui.IEditorPart;
 
 public class RubyEditorTests extends AbstractSWTBotTests {
@@ -51,6 +54,14 @@ public class RubyEditorTests extends AbstractSWTBotTests {
 
 	public void testAutoEndKeyword() throws Exception {
 
+		Performance perf = Performance.getDefault();
+		String scenarioId = perf.getDefaultScenarioId(this);
+		PerformanceMeter performanceMeter = perf
+				.createPerformanceMeter(scenarioId);
+		perf.tagAsSummary(performanceMeter, "Auto end keyword",
+				Dimension.ELAPSED_PROCESS);
+		performanceMeter.start();
+
 		edpar = openRubyEditorScript("empty.rb");
 
 		SWTBotEclipseEditor ed = bot.activeEditor();
@@ -63,6 +74,8 @@ public class RubyEditorTests extends AbstractSWTBotTests {
 		assertEquals("end", ed.getTextOnLine(2));
 
 		closeEditorPart(edpar);
+		performanceMeter.stop();
+		performanceMeter.commit();
 	}
 
 }
