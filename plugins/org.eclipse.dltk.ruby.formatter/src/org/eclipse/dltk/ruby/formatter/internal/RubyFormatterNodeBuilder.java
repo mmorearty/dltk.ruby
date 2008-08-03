@@ -100,9 +100,10 @@ public class RubyFormatterNodeBuilder extends AbstractFormatterNodeBuilder {
 			private Instruction visitMethodDefNode(MethodDefNode visited) {
 				FormatterMethodNode methodNode = new FormatterMethodNode(
 						document);
-				methodNode.setBegin(createTextNode(document, visited
-						.getStartOffset(), visited.getBodyNode()
-						.getStartOffset()));
+				methodNode
+						.setBegin(createTextNode(document, visited
+								.getStartOffset(), visited.getNameNode()
+								.getEndOffset()));
 				push(methodNode);
 				visitChildren(visited);
 				checkedPop(methodNode, visited.getEnd().getPosition()
