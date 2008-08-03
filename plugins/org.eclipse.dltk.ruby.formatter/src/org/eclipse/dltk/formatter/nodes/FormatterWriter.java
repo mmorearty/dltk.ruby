@@ -58,7 +58,7 @@ public class FormatterWriter implements IFormatterVisitor {
 				emptyLines.append(ch);
 			}
 		} else if (!lineStarted) {
-			if (Character.isWhitespace(ch)) {
+			if (context.isIndenting() && Character.isWhitespace(ch)) {
 				indent.append(ch);
 			} else {
 				if (emptyLines.length() != 0) {

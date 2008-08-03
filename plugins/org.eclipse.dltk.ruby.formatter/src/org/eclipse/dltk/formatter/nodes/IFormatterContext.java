@@ -23,4 +23,8 @@ public interface IFormatterContext {
 
 	IFormatterContext copy();
 
+	boolean isIndenting();
+
+	void setIndenting(boolean valud);
+
 }

@@ -11,9 +11,10 @@
  *******************************************************************************/
 package org.eclipse.dltk.formatter.nodes;
 
-public class FormatterContext implements IFormatterContext {
+public class FormatterContext implements IFormatterContext, Cloneable {
 
 	private int indent;
+	private boolean indenting = true;
 
 	public FormatterContext() {
 		this(0);
@@ -27,7 +28,11 @@ public class FormatterContext implements IFormatterContext {
 	 * @see org.eclipse.dltk.ruby.formatter.node.IFormatterContext#copy()
 	 */
 	public IFormatterContext copy() {
-		return new FormatterContext(indent);
+		try {
+			return (FormatterContext) clone();
+		} catch (CloneNotSupportedException e) {
+			throw new IllegalStateException(e);
+		}
 	}
 
 	/*
@@ -57,6 +62,14 @@ public class FormatterContext implements IFormatterContext {
 	 */
 	public int getIndent() {
 		return indent;
+	}
+
+	public boolean isIndenting() {
+		return indenting;
+	}
+
+	public void setIndenting(boolean value) {
+		this.indenting = value;
 	}
 
 }

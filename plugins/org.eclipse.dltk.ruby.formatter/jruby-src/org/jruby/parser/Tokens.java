@@ -152,6 +152,8 @@ public interface Tokens {
     int tRCURLY     = DefaultRubyParser.tRCURLY;
     int tPIPE       = DefaultRubyParser.tPIPE;
 
+    int tRDOC       = DefaultRubyParser.tRDOC;
+
     String[] operators = {"+@", "-@", "**", "<=>", "==", "===", "!=", ">=", "<=", "&&",
                           "||", "=~", "!~", "..", "...", "[]", "[]=", "<<", ">>", "::"};
 }

@@ -53,6 +53,7 @@ import org.jruby.ast.ClassVarDeclNode;
 import org.jruby.ast.ClassVarNode;
 import org.jruby.ast.Colon2Node;
 import org.jruby.ast.Colon3Node;
+import org.jruby.ast.CommentNode;
 import org.jruby.ast.ConstDeclNode;
 import org.jruby.ast.ConstNode;
 import org.jruby.ast.DAsgnNode;
@@ -725,6 +726,11 @@ public class DefaultIteratorVisitor implements NodeVisitor {
 	 */
 	public Instruction visitSymbolNode(SymbolNode iVisited) {
 		iVisited.accept(_Payload);
+		return null;
+	}
+	
+	public Instruction visitCommentNode(CommentNode visited) {
+		visited.accept(_Payload);
 		return null;
 	}
 }

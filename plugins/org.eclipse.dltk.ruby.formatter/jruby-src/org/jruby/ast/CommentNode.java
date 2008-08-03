@@ -53,7 +53,7 @@ public class CommentNode extends Node {
     }
 
     public Instruction accept(NodeVisitor visitor) {
-        return null;
+        return visitor.visitCommentNode(this);
     }
     
     public String getContent() {

@@ -52,6 +52,7 @@ import org.jruby.ast.ClassVarDeclNode;
 import org.jruby.ast.ClassVarNode;
 import org.jruby.ast.Colon2Node;
 import org.jruby.ast.Colon3Node;
+import org.jruby.ast.CommentNode;
 import org.jruby.ast.ConstDeclNode;
 import org.jruby.ast.ConstNode;
 import org.jruby.ast.DAsgnNode;
@@ -524,5 +525,9 @@ public abstract class AbstractVisitor implements NodeVisitor {
 
     public Instruction visitAttrAssignNode(AttrAssignNode iVisited) {
         return visitNode(iVisited);
+    }
+    
+    public Instruction visitCommentNode(CommentNode visited) {
+    	return visitNode(visited);
     }
 }

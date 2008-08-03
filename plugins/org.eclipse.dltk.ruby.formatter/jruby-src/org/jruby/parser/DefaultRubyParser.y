@@ -225,6 +225,7 @@ public class DefaultRubyParser {
 %token <Token> tBACK_REF2     /* { is just '`' in ruby and not a token */
 %token <Token> tSYMBEG tSTRING_BEG tXSTRING_BEG tREGEXP_BEG tWORDS_BEG tQWORDS_BEG
 %token <Token> tSTRING_DBEG tSTRING_DVAR tSTRING_END
+%token <Token> tRDOC          /* =begin ... =end */
 
 
 /*
@@ -322,6 +323,9 @@ stmt          : kALIAS fitem {
               }
               | kUNDEF undef_list {
                   $$ = $2;
+              }
+              | tRDOC {
+                  $$ = lexer.comment();
               }
               | stmt kIF_MOD expr_value {
                   $$ = new IfNode.Inline(support.union($1, $3), support.getConditionNode($3), $1, null);

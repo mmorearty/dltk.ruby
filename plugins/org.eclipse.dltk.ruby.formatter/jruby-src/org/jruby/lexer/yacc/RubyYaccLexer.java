@@ -43,6 +43,7 @@ import org.jruby.ast.CommentNode;
 import org.jruby.ast.FixnumNode;
 import org.jruby.ast.FloatNode;
 import org.jruby.ast.NthRefNode;
+import org.jruby.ast.ext.RDocNode;
 import org.jruby.common.IRubyWarnings;
 import org.jruby.parser.BlockStaticScope;
 import org.jruby.parser.ParserSupport;
@@ -103,6 +104,16 @@ public class RubyYaccLexer {
     	reset();
     }
     
+    private final boolean isFormatting() {
+		return true;
+	}
+
+	private CommentNode comment;
+
+	public CommentNode comment() {
+		return comment;
+	}
+
     public void reset() {
     	token = 0;
     	yaccValue = null;
@@ -720,9 +731,14 @@ public class RubyYaccLexer {
                                     break;
                                 }
                             }
-                            
-                            parserSupport.getResult().addComment(new CommentNode(getPosition(), tokenBuffer.toString()));
-                            continue retry;
+                            comment = new RDocNode(getPosition(), tokenBuffer
+									.toString());
+							parserSupport.getResult().addComment(comment);
+							if (isFormatting()) {
+								lex_state = LexState.EXPR_END;
+								return Tokens.tRDOC;
+							}
+							continue retry;
                         }
 						src.unread(c);
                     }

@@ -23,6 +23,7 @@ import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterCaseNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterClassNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterForNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterMethodNode;
+import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterRDocNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterUntilNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterWhenElseNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterWhenNode;
@@ -31,9 +32,11 @@ import org.eclipse.osgi.util.NLS;
 import org.jruby.ast.ArgumentNode;
 import org.jruby.ast.CaseNode;
 import org.jruby.ast.ClassNode;
+import org.jruby.ast.CommentNode;
 import org.jruby.ast.DefnNode;
 import org.jruby.ast.DefsNode;
 import org.jruby.ast.ForNode;
+import org.jruby.ast.ListNode;
 import org.jruby.ast.MethodDefNode;
 import org.jruby.ast.ModuleNode;
 import org.jruby.ast.Node;
@@ -205,6 +208,13 @@ public class RubyFormatterNodeBuilder extends AbstractFormatterNodeBuilder {
 				return null;
 			}
 
+			public Instruction visitCommentNode(CommentNode visited) {
+				FormatterRDocNode commentNode = new FormatterRDocNode(document,
+						visited.getStartOffset(), visited.getEndOffset());
+				addChild(commentNode);
+				return null;
+			}
+
 			private void visitChildren(Node visited) {
 				if (DEBUG) {
 					for (int i = 0; i < level; ++i) {
@@ -224,7 +234,8 @@ public class RubyFormatterNodeBuilder extends AbstractFormatterNodeBuilder {
 			}
 
 			private boolean isVisitable(Node node) {
-				return !(node instanceof ArgumentNode);
+				return !(node instanceof ArgumentNode)
+						&& node.getClass() != ListNode.class;
 			}
 
 		});
