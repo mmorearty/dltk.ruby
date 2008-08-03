@@ -27,13 +27,17 @@ public class AbstractFormatterNodeBuilder {
 	}
 
 	protected void push(IFormatterContainerNode node) {
+		addChild(node);
+		stack.push(node);
+	}
+
+	protected void addChild(IFormatterNode node) {
 		IFormatterContainerNode parentNode = peek();
 		if (parentNode.getEndOffset() < node.getStartOffset()) {
 			parentNode.addChild(createTextNode(node.getDocument(), parentNode
 					.getEndOffset(), node.getStartOffset()));
 		}
 		parentNode.addChild(node);
-		stack.push(node);
 	}
 
 	protected void checkedPop(IFormatterContainerNode expected, int bodyEnd) {
