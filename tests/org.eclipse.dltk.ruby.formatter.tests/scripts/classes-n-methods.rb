@@ -48,3 +48,27 @@ class Hello
 	end
 
 end
+==== empty method
+class Hello
+
+def method1
+
+end
+
+def method2
+
+end
+
+end
+==
+class Hello
+
+	def method1
+
+	end
+
+	def method2
+
+	end
+
+end
