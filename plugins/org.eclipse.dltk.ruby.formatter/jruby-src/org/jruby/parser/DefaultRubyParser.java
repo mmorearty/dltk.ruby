@@ -2308,7 +2308,7 @@ case 301:
 case 302:
 					// line 1102 "DefaultRubyParser.y"
   {
-		  yyVal = ((Node)yyVals[-1+yyTop]);
+                  yyVal = new CaseNode(support.union(((Token)yyVals[-4+yyTop]), ((Token)yyVals[0+yyTop])), null, new ElseNode(((Node)yyVals[-1+yyTop]), ((Token)yyVals[-2+yyTop])), ((Token)yyVals[-4+yyTop]), ((Token)yyVals[0+yyTop]));
               }
   break;
 case 303:

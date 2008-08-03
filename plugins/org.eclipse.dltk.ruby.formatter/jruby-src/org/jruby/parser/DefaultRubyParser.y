@@ -1100,7 +1100,7 @@ primary       : literal
                   $$ = new CaseNode(support.union($1, $4), null, $3, $1, $4);
               }
               | kCASE opt_terms kELSE compstmt kEND {
-		  $$ = $4;
+                  $$ = new CaseNode(support.union($1, $5), null, new ElseNode($4, $3), $1, $5);
               }
               | kFOR block_var kIN {
                   lexer.getConditionState().begin();
