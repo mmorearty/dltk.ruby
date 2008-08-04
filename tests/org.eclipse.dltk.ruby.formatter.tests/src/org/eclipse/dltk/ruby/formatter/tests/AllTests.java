@@ -29,6 +29,7 @@ public class AllTests {
 		suite.addTest(RDocTest.suite());
 		suite.addTest(IfTest.suite());
 		suite.addTest(BeginTest.suite());
+		suite.addTest(DoTest.suite());
 		// $JUnit-END$
 		return suite;
 	}
