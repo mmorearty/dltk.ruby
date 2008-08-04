@@ -158,6 +158,20 @@ num = 1
 	print num
 	num += 1
 end
+==== simple-do-comments-braces
+num = 1
+7.times {
+#print
+print num
+num += 1
+}
+==
+num = 1
+7.times {
+	#print
+	print num
+	num += 1
+}
 ==== if-comments
 a = 1
 if a == 1
