@@ -1257,7 +1257,7 @@ case 51:
 case 52:
 					// line 479 "DefaultRubyParser.y"
   {
-                    yyVal = new IterNode(getPosition(((Token)yyVals[-4+yyTop])), ((Node)yyVals[-2+yyTop]), support.getCurrentScope(), ((Node)yyVals[-1+yyTop]));
+                    yyVal = new IterNode(getPosition(((Token)yyVals[-4+yyTop])), ((Node)yyVals[-2+yyTop]), support.getCurrentScope(), ((Node)yyVals[-1+yyTop]), ((Token)yyVals[-4+yyTop]), ((Token)yyVals[0+yyTop]));
                     support.popCurrentScope();
 		}
   break;
@@ -2327,7 +2327,7 @@ case 304:
 case 305:
 					// line 1113 "DefaultRubyParser.y"
   {
-                  yyVal = new ForNode(support.union(((Token)yyVals[-8+yyTop]), ((Token)yyVals[0+yyTop])), ((Node)yyVals[-7+yyTop]), ((Node)yyVals[-1+yyTop]), ((Node)yyVals[-4+yyTop]), ((Token)yyVals[0+yyTop]));
+                  yyVal = new ForNode(support.union(((Token)yyVals[-8+yyTop]), ((Token)yyVals[0+yyTop])), ((Node)yyVals[-7+yyTop]), ((Node)yyVals[-1+yyTop]), ((Node)yyVals[-4+yyTop]), ((Token)yyVals[-8+yyTop]), ((Token)yyVals[0+yyTop]));
               }
   break;
 case 306:
@@ -2522,7 +2522,7 @@ case 340:
 case 341:
 					// line 1232 "DefaultRubyParser.y"
   {
-                  yyVal = new IterNode(support.union(((Token)yyVals[-4+yyTop]), ((Token)yyVals[0+yyTop])), ((Node)yyVals[-2+yyTop]), support.getCurrentScope(), ((Node)yyVals[-1+yyTop]));
+                  yyVal = new IterNode(support.union(((Token)yyVals[-4+yyTop]), ((Token)yyVals[0+yyTop])), ((Node)yyVals[-2+yyTop]), support.getCurrentScope(), ((Node)yyVals[-1+yyTop]), ((Token)yyVals[-4+yyTop]), ((Token)yyVals[0+yyTop]));
                   support.popCurrentScope();
               }
   break;
@@ -2594,7 +2594,7 @@ case 351:
 case 352:
 					// line 1274 "DefaultRubyParser.y"
   {
-                  yyVal = new IterNode(support.union(((Token)yyVals[-4+yyTop]), ((Token)yyVals[0+yyTop])), ((Node)yyVals[-2+yyTop]), support.getCurrentScope(), ((Node)yyVals[-1+yyTop]));
+                  yyVal = new IterNode(support.union(((Token)yyVals[-4+yyTop]), ((Token)yyVals[0+yyTop])), ((Node)yyVals[-2+yyTop]), support.getCurrentScope(), ((Node)yyVals[-1+yyTop]), ((Token)yyVals[-4+yyTop]), ((Token)yyVals[0+yyTop]));
                   support.popCurrentScope();
               }
   break;
@@ -2607,7 +2607,7 @@ case 353:
 case 354:
 					// line 1280 "DefaultRubyParser.y"
   {
-                  yyVal = new IterNode(support.union(((Token)yyVals[-4+yyTop]), ((Token)yyVals[0+yyTop])), ((Node)yyVals[-2+yyTop]), support.getCurrentScope(), ((Node)yyVals[-1+yyTop]));
+                  yyVal = new IterNode(support.union(((Token)yyVals[-4+yyTop]), ((Token)yyVals[0+yyTop])), ((Node)yyVals[-2+yyTop]), support.getCurrentScope(), ((Node)yyVals[-1+yyTop]), ((Token)yyVals[-4+yyTop]), ((Token)yyVals[0+yyTop]));
                   ((ISourcePositionHolder)yyVals[-5+yyTop]).setPosition(support.union(((ISourcePositionHolder)yyVals[-5+yyTop]), ((ISourcePositionHolder)yyVal)));
                   support.popCurrentScope();
               }

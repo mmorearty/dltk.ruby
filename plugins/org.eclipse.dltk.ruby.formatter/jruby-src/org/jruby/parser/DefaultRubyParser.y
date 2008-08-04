@@ -477,7 +477,7 @@ block_command : block_call
 cmd_brace_block	: tLBRACE_ARG {
                     support.pushBlockScope();
 		} opt_block_var compstmt tRCURLY {
-                    $$ = new IterNode(getPosition($1), $3, support.getCurrentScope(), $4);
+                    $$ = new IterNode(getPosition($1), $3, support.getCurrentScope(), $4, $1, $5);
                     support.popCurrentScope();
 		}
 
@@ -1111,7 +1111,7 @@ primary       : literal
               } expr_value do {
                   lexer.getConditionState().end();
               } compstmt kEND {
-                  $$ = new ForNode(support.union($1, $9), $2, $8, $5, $9);
+                  $$ = new ForNode(support.union($1, $9), $2, $8, $5, $1, $9);
               }
               | kCLASS cpath superclass {
                   if (support.isInDef() || support.isInSingle()) {
@@ -1230,7 +1230,7 @@ opt_block_var : none
 do_block      : kDO_BLOCK {
                   support.pushBlockScope();
 	      } opt_block_var compstmt kEND {
-                  $$ = new IterNode(support.union($1, $5), $3, support.getCurrentScope(), $4);
+                  $$ = new IterNode(support.union($1, $5), $3, support.getCurrentScope(), $4, $1, $5);
                   support.popCurrentScope();
               }
 
@@ -1272,13 +1272,13 @@ method_call   : operation paren_args {
 brace_block   : tLCURLY {
                   support.pushBlockScope();
 	      } opt_block_var compstmt tRCURLY {
-                  $$ = new IterNode(support.union($1, $5), $3, support.getCurrentScope(), $4);
+                  $$ = new IterNode(support.union($1, $5), $3, support.getCurrentScope(), $4, $1, $5);
                   support.popCurrentScope();
               }
               | kDO {
                   support.pushBlockScope();
 	      } opt_block_var compstmt kEND {
-                  $$ = new IterNode(support.union($1, $5), $3, support.getCurrentScope(), $4);
+                  $$ = new IterNode(support.union($1, $5), $3, support.getCurrentScope(), $4, $1, $5);
                   $<ISourcePositionHolder>0.setPosition(support.union($<ISourcePositionHolder>0, $<ISourcePositionHolder>$));
                   support.popCurrentScope();
               }

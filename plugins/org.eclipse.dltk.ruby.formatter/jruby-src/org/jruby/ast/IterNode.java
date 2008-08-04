@@ -35,77 +35,97 @@ import java.util.List;
 import org.jruby.ast.visitor.NodeVisitor;
 import org.jruby.evaluator.Instruction;
 import org.jruby.lexer.yacc.ISourcePosition;
+import org.jruby.lexer.yacc.ISourcePositionHolder;
 import org.jruby.parser.StaticScope;
 
 /**
- * Represents a block.  
- *
+ * Represents a block.
+ * 
  */
 public class IterNode extends Node {
-    static final long serialVersionUID = -9181965000180892184L;
+	static final long serialVersionUID = -9181965000180892184L;
 
-    private final Node varNode;
-    private final Node bodyNode;
-    
-    // What static scoping relationship exists when it comes into being.
-    private StaticScope scope;
+	private final Node varNode;
+	private final Node bodyNode;
+	private final ISourcePositionHolder begin;
+	private final ISourcePositionHolder end;
+
+	// What static scoping relationship exists when it comes into being.
+	private StaticScope scope;
 
 	// private transient ICallable callable;
 
-    public IterNode(ISourcePosition position, Node varNode, StaticScope scope, Node bodyNode) {
-        this(position, varNode, scope, bodyNode, NodeTypes.ITERNODE);
-    }
-    
-    public IterNode(ISourcePosition position, Node varNode, StaticScope scope, Node bodyNode, 
-            int id) {
-        super(position, id);
-        this.varNode = varNode;
-        this.scope = scope;
-        this.bodyNode = bodyNode;
-        
-//        // if body and var are null, don't both with a heavyweight callable
-//        if (bodyNode == null && varNode == null) {
-//            callable = NilCallable.NIL_CALLABLE;
-//        }
-    }
+	public IterNode(ISourcePosition position, Node varNode, StaticScope scope,
+			Node bodyNode, ISourcePositionHolder begin,
+			ISourcePositionHolder end) {
+		this(position, varNode, scope, bodyNode, NodeTypes.ITERNODE, begin, end);
+	}
 
-    /**
-     * Accept for the visitor pattern.
-     * @param iVisitor the visitor
-     **/
-    public Instruction accept(NodeVisitor iVisitor) {
-        return iVisitor.visitIterNode(this);
-    }
-    
-    public StaticScope getScope() {
-        return scope;
-    }
+	protected IterNode(ISourcePosition position, Node varNode,
+			StaticScope scope, Node bodyNode, int id,
+			ISourcePositionHolder begin, ISourcePositionHolder end) {
+		super(position, id);
+		this.varNode = varNode;
+		this.scope = scope;
+		this.bodyNode = bodyNode;
+		this.begin = begin;
+		this.end = end;
 
-    /**
-     * Gets the bodyNode.
-     * @return Returns a Node
-     */
-    public Node getBodyNode() {
-        return bodyNode;
-    }
+		// // if body and var are null, don't both with a heavyweight callable
+		// if (bodyNode == null && varNode == null) {
+		// callable = NilCallable.NIL_CALLABLE;
+		// }
+	}
 
-    /**
-     * Gets the varNode.
-     * @return Returns a Node
-     */
-    public Node getVarNode() {
-        return varNode;
-    }
-    
-    public List childNodes() {
-        return Node.createList(varNode, bodyNode);
-    }
+	/**
+	 * Accept for the visitor pattern.
+	 * 
+	 * @param iVisitor
+	 *            the visitor
+	 **/
+	public Instruction accept(NodeVisitor iVisitor) {
+		return iVisitor.visitIterNode(this);
+	}
 
-//    public ICallable getCallable() {
-//        if (callable == null) {
-//            callable = new EvaluateCallable(bodyNode, varNode);
-//        }
-//        
-//        return callable;
-//    }
+	public StaticScope getScope() {
+		return scope;
+	}
+
+	/**
+	 * Gets the bodyNode.
+	 * 
+	 * @return Returns a Node
+	 */
+	public Node getBodyNode() {
+		return bodyNode;
+	}
+
+	/**
+	 * Gets the varNode.
+	 * 
+	 * @return Returns a Node
+	 */
+	public Node getVarNode() {
+		return varNode;
+	}
+
+	public List childNodes() {
+		return Node.createList(varNode, bodyNode);
+	}
+
+	public ISourcePositionHolder getBegin() {
+		return begin;
+	}
+
+	public ISourcePositionHolder getEnd() {
+		return end;
+	}
+
+	// public ICallable getCallable() {
+	// if (callable == null) {
+	// callable = new EvaluateCallable(bodyNode, varNode);
+	// }
+	//        
+	// return callable;
+	// }
 }
