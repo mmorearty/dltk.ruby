@@ -14,7 +14,19 @@ end
 begin
 	puts "Hello"
 end
-==== rescue
+==== begin-rescue-any
+begin
+doStuff
+rescue
+print "Error!"
+end
+==
+begin
+	doStuff
+rescue
+	print "Error!"
+end
+==== begin-rescue
 begin
 doStuff
 rescue SyntaxError
