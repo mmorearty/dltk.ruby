@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.dltk.formatter.nodes;
 
+import org.eclipse.dltk.ruby.formatter.internal.RubyFormatterPlugin;
+
 public class FormatterContext implements IFormatterContext, Cloneable {
 
 	private int indent;
@@ -31,7 +33,8 @@ public class FormatterContext implements IFormatterContext, Cloneable {
 		try {
 			return (FormatterContext) clone();
 		} catch (CloneNotSupportedException e) {
-			throw new IllegalStateException(e);
+			RubyFormatterPlugin.error("FormatterContext.copy() error", e);
+			throw new IllegalStateException();
 		}
 	}
 

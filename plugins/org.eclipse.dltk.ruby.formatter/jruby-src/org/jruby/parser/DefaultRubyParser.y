@@ -178,6 +178,8 @@ public class DefaultRubyParser {
 %type <Token> variable 
 %type <Token>  fitem sym symbol operation operation2 operation3 cname fname op
 %type <Token>  f_norm_arg f_rest_arg dot_or_colon restarg_mark blkarg_mark
+%type <Token>  then
+%type <Token>  term
 %token <Token> tUPLUS         /* unary+ */
 %token <Token> tUMINUS        /* unary- */
 %token <Token> tUMINUS_NUM    /* unary- */
@@ -331,7 +333,7 @@ stmt          : kALIAS fitem {
                   $$ = new IfNode.Inline(support.union($1, $3), support.getConditionNode($3), $1, null);
               }
               | stmt kUNLESS_MOD expr_value {
-                  $$ = new IfNode.Inline(support.union($1, $3), support.getConditionNode($3), null, $1);
+                  $$ = new IfNode.InlineUnless(support.union($1, $3), support.getConditionNode($3), null, $1);
               }
               | stmt kWHILE_MOD expr_value {
                   if ($1 != null && $1 instanceof BeginNode) {
@@ -1074,10 +1076,10 @@ primary       : literal
 		  $<Node>1.setPosition(support.union($1, $2));
               }
               | kIF expr_value then compstmt if_tail kEND {
-                  $$ = new IfNode(support.union($1, $6), support.getConditionNode($2), $4, $5);
+                  $$ = new IfNode(support.union($1, $6), support.getConditionNode($2), $4, $5, $3, $6);
               }
               | kUNLESS expr_value then compstmt opt_else kEND {
-                  $$ = new IfNode.Unless(support.union($1, $6), support.getConditionNode($2), $5, $4);
+                  $$ = new IfNode.Unless(support.union($1, $6), support.getConditionNode($2), $5, $4, $3, $6);
               }
               | kWHILE { 
                   lexer.getConditionState().begin();
@@ -1179,9 +1181,15 @@ primary_value : primary {
 	      }
  
 then          : term
-              | ":"
-              | kTHEN
-              | term kTHEN
+              | ":" {
+                $$ = new Token(":", lexer.getPosition());
+              }
+              | kTHEN {
+                $$ = $1;
+              }
+              | term kTHEN {
+                $$ = $1;
+              }
 
 do            : term
               | ":"
@@ -1190,7 +1198,7 @@ do            : term
 if_tail       : opt_else 
               | kELSIF expr_value then compstmt if_tail {
 //mirko: support.union($<ISourcePositionHolder>1.getPosition(), getPosition($<ISourcePositionHolder>1)) ?
-                  $$ = new IfNode(getPosition($1), support.getConditionNode($2), $4, $5);
+                  $$ = new IfNode.ElseIf(getPosition($1), support.getConditionNode($2), $4, $5, $3);
               }
 
 opt_else      : none 
@@ -1737,8 +1745,11 @@ trailer       : /* none */ | '\n' | ','
 
 term          : ';' {
                   yyerrok();
+                  $$ = new Token(";", lexer.getPosition());
               }
-              | '\n'
+              | '\n' {
+                  $$ = new Token(";", lexer.getPosition());
+              }
 
 terms         : term
               | terms ';' {

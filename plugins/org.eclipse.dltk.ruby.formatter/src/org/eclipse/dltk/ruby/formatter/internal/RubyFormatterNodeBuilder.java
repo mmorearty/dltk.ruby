@@ -21,7 +21,11 @@ import org.eclipse.dltk.formatter.nodes.IFormatterDocument;
 import org.eclipse.dltk.formatter.nodes.IFormatterTextNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterCaseNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterClassNode;
+import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterElseIfNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterForNode;
+import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterIfElseNode;
+import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterIfEndNode;
+import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterIfNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterMethodNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterRDocNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterUntilNode;
@@ -36,6 +40,7 @@ import org.jruby.ast.CommentNode;
 import org.jruby.ast.DefnNode;
 import org.jruby.ast.DefsNode;
 import org.jruby.ast.ForNode;
+import org.jruby.ast.IfNode;
 import org.jruby.ast.ListNode;
 import org.jruby.ast.MethodDefNode;
 import org.jruby.ast.ModuleNode;
@@ -176,7 +181,7 @@ public class RubyFormatterNodeBuilder extends AbstractFormatterNodeBuilder {
 								.getStartOffset(), whenBranch
 								.getExpressionNodes().getEndOffset()));
 						push(whenNode);
-						whenBranch.getBodyNode().accept(this);
+						visitChild(whenBranch.getBodyNode());
 						branch = ((WhenNode) branch).getNextCase();
 						checkedPop(whenNode, branch != null ? branch
 								.getStartOffset() : visited.getEnd()
@@ -190,7 +195,7 @@ public class RubyFormatterNodeBuilder extends AbstractFormatterNodeBuilder {
 										.getElseKeyword().getPosition()
 										.getEndOffset()));
 						push(whenElseNode);
-						elseBranch.getStatement().accept(this);
+						visitChild(elseBranch.getStatement());
 						checkedPop(whenElseNode, visited.getEnd().getPosition()
 								.getStartOffset());
 						branch = null;
@@ -215,6 +220,58 @@ public class RubyFormatterNodeBuilder extends AbstractFormatterNodeBuilder {
 				return null;
 			}
 
+			public Instruction visitIfNode(IfNode visited) {
+				if (visited.isInline()) {
+					return null;
+				}
+				FormatterIfNode ifNode = new FormatterIfNode(document);
+				ifNode.setBegin(createTextNode(document, visited
+						.getStartOffset(), visited.getCondition()
+						.getEndOffset()));
+				push(ifNode);
+				if (visited.getFirstBody() != null) {
+					visitChild(visited.getFirstBody());
+				}
+				checkedPop(ifNode, visited.getSecondBody() != null ? visited
+						.getSecondBody().getStartOffset() : visited
+						.getEndKeyword().getPosition().getStartOffset());
+				Node branch = visited.getSecondBody();
+				while (branch != null) {
+					if (branch instanceof IfNode.ElseIf) {
+						final IfNode.ElseIf elseIfBranch = (IfNode.ElseIf) branch;
+						FormatterElseIfNode elseIfNode = new FormatterElseIfNode(
+								document);
+						elseIfNode.setBegin(createTextNode(document,
+								elseIfBranch.getStartOffset(), elseIfBranch
+										.getCondition().getEndOffset()));
+						push(elseIfNode);
+						visitChild(elseIfBranch.getFirstBody());
+						branch = ((IfNode.ElseIf) branch).getSecondBody();
+						checkedPop(elseIfNode, branch != null ? branch
+								.getStartOffset() : visited.getEndKeyword()
+								.getPosition().getStartOffset());
+					} else if (branch instanceof ElseNode) {
+						final ElseNode elseBranch = (ElseNode) branch;
+						FormatterIfElseNode elseNode = new FormatterIfElseNode(
+								document);
+						push(elseNode);
+						visitChild(elseBranch.getStatement());
+						checkedPop(elseNode, visited.getEndKeyword()
+								.getPosition().getStartOffset());
+						branch = null;
+					} else {
+						RubyFormatterPlugin.warn(NLS.bind(
+								"Unexpected {0} class in if expression", branch
+										.getClass().getName()),
+								new DumpStackOnly());
+						break;
+					}
+				}
+				addChild(new FormatterIfEndNode(document, visited
+						.getEndKeyword().getPosition()));
+				return null;
+			}
+
 			private void visitChildren(Node visited) {
 				if (DEBUG) {
 					for (int i = 0; i < level; ++i) {
@@ -226,11 +283,15 @@ public class RubyFormatterNodeBuilder extends AbstractFormatterNodeBuilder {
 				List children = visited.childNodes();
 				for (Iterator i = children.iterator(); i.hasNext();) {
 					final Node child = (Node) i.next();
-					if (isVisitable(child)) {
-						child.accept(this);
-					}
+					visitChild(child);
 				}
 				--level;
+			}
+
+			private void visitChild(final Node child) {
+				if (isVisitable(child)) {
+					child.accept(this);
+				}
 			}
 
 			private boolean isVisitable(Node node) {

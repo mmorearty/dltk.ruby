@@ -36,6 +36,7 @@ import java.util.List;
 import org.jruby.ast.visitor.NodeVisitor;
 import org.jruby.evaluator.Instruction;
 import org.jruby.lexer.yacc.ISourcePosition;
+import org.jruby.lexer.yacc.ISourcePositionHolder;
 
 /**
  * an 'if' statement.
@@ -48,13 +49,18 @@ public class IfNode extends Node {
 	private final Node condition;
 	private final Node thenBody;
 	private final Node elseBody;
+	private final ISourcePositionHolder thenKeyword;
+	private final ISourcePositionHolder endKeyword;
 
 	public IfNode(ISourcePosition position, Node condition, Node thenBody,
-			Node elseBody) {
+			Node elseBody, ISourcePositionHolder thenKeyword,
+			ISourcePositionHolder endKeyword) {
 		super(position, NodeTypes.IFNODE);
 		this.condition = condition;
 		this.thenBody = thenBody;
 		this.elseBody = elseBody;
+		this.thenKeyword = thenKeyword;
+		this.endKeyword = endKeyword;
 	}
 
 	/**
@@ -98,7 +104,33 @@ public class IfNode extends Node {
 		return Node.createList(condition, thenBody, elseBody);
 	}
 
-	public static class Inline extends IfNode {
+	/**
+	 * @return the thenKeyword
+	 */
+	public ISourcePositionHolder getThenKeyword() {
+		return thenKeyword;
+	}
+
+	/**
+	 * @return the endKeyword
+	 */
+	public ISourcePositionHolder getEndKeyword() {
+		return endKeyword;
+	}
+
+	public Node getFirstBody() {
+		return getThenBody();
+	}
+
+	public Node getSecondBody() {
+		return getElseBody();
+	}
+
+	public boolean isInline() {
+		return false;
+	}
+
+	public static class ElseIf extends IfNode {
 
 		/**
 		 * @param position
@@ -106,9 +138,9 @@ public class IfNode extends Node {
 		 * @param thenBody
 		 * @param elseBody
 		 */
-		public Inline(ISourcePosition position, Node condition, Node thenBody,
-				Node elseBody) {
-			super(position, condition, thenBody, elseBody);
+		public ElseIf(ISourcePosition position, Node condition, Node thenBody,
+				Node elseBody, ISourcePositionHolder thenKeyword) {
+			super(position, condition, thenBody, elseBody, thenKeyword, null);
 		}
 
 	}
@@ -122,7 +154,50 @@ public class IfNode extends Node {
 		 * @param elseBody
 		 */
 		public Unless(ISourcePosition position, Node condition, Node thenBody,
+				Node elseBody, ISourcePositionHolder thenKeyword,
+				ISourcePositionHolder endKeyword) {
+			super(position, condition, thenBody, elseBody, thenKeyword,
+					endKeyword);
+		}
+
+		public Node getFirstBody() {
+			return getElseBody();
+		}
+
+		public Node getSecondBody() {
+			return getThenBody();
+		}
+	}
+
+	public static class Inline extends IfNode {
+
+		/**
+		 * @param position
+		 * @param condition
+		 * @param thenBody
+		 * @param elseBody
+		 */
+		public Inline(ISourcePosition position, Node condition, Node thenBody,
 				Node elseBody) {
+			super(position, condition, thenBody, elseBody, null, null);
+		}
+
+		public boolean isInline() {
+			return true;
+		}
+
+	}
+
+	public static class InlineUnless extends Inline {
+
+		/**
+		 * @param position
+		 * @param condition
+		 * @param thenBody
+		 * @param elseBody
+		 */
+		public InlineUnless(ISourcePosition position, Node condition,
+				Node thenBody, Node elseBody) {
 			super(position, condition, thenBody, elseBody);
 		}
 
