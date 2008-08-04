@@ -1198,7 +1198,7 @@ do            : term
 if_tail       : opt_else 
               | kELSIF expr_value then compstmt if_tail {
 //mirko: support.union($<ISourcePositionHolder>1.getPosition(), getPosition($<ISourcePositionHolder>1)) ?
-                  $$ = new IfNode.ElseIf(getPosition($1), support.getConditionNode($2), $4, $5, $3);
+                  $$ = new IfNode.ElseIf($1.getPosition(), support.getConditionNode($2), $4, $5, $3);
               }
 
 opt_else      : none 

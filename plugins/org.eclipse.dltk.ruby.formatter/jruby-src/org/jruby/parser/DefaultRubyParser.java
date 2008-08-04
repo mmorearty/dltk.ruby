@@ -2476,7 +2476,7 @@ case 331:
 					// line 1199 "DefaultRubyParser.y"
   {
 /*mirko: support.union($<ISourcePositionHolder>1.getPosition(), getPosition($<ISourcePositionHolder>1)) ?*/
-                  yyVal = new IfNode.ElseIf(getPosition(((Token)yyVals[-4+yyTop])), support.getConditionNode(((Node)yyVals[-3+yyTop])), ((Node)yyVals[-1+yyTop]), ((Node)yyVals[0+yyTop]), ((Token)yyVals[-2+yyTop]));
+                  yyVal = new IfNode.ElseIf(((Token)yyVals[-4+yyTop]).getPosition(), support.getConditionNode(((Node)yyVals[-3+yyTop])), ((Node)yyVals[-1+yyTop]), ((Node)yyVals[0+yyTop]), ((Token)yyVals[-2+yyTop]));
               }
   break;
 case 333:
