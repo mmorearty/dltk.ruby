@@ -29,7 +29,7 @@ class Z
 b"
 	def m
 		print "m
-m"    
+m"
 	end    
 end
 ==== multiline-string-if-block
@@ -78,7 +78,7 @@ end
 ==
 begin
 	doStuff
-	rescue SyntaxError
+rescue SyntaxError
 	print "Error!
 Error!"
 end
