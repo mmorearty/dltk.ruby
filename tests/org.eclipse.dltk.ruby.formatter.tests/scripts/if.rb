@@ -40,3 +40,27 @@ elsif a == 2
 else
 	puts "Other"	
 end
+==== unless
+a = 1
+unless a == 1
+puts "Other"
+end
+==
+a = 1
+unless a == 1
+	puts "Other"
+end
+==== unless+else
+a = 1
+unless a == 1
+puts "Other"
+else
+puts "One"
+end
+==
+a = 1
+unless a == 1
+	puts "Other"
+else
+	puts "One"
+end
