@@ -2136,7 +2136,7 @@ case 274:
 case 275:
 					// line 1014 "DefaultRubyParser.y"
   {
-                  yyVal = new BeginNode(support.union(((Token)yyVals[-2+yyTop]), ((Token)yyVals[0+yyTop])), ((Node)yyVals[-1+yyTop]));
+                  yyVal = new BeginNode(support.union(((Token)yyVals[-2+yyTop]), ((Token)yyVals[0+yyTop])), ((Node)yyVals[-1+yyTop]), ((Token)yyVals[-2+yyTop]), ((Token)yyVals[0+yyTop]));
 	      }
   break;
 case 276:

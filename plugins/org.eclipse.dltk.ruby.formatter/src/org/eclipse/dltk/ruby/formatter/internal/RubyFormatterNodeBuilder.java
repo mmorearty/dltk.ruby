@@ -19,6 +19,7 @@ import org.eclipse.dltk.formatter.nodes.FormatterRootNode;
 import org.eclipse.dltk.formatter.nodes.IFormatterContainerNode;
 import org.eclipse.dltk.formatter.nodes.IFormatterDocument;
 import org.eclipse.dltk.formatter.nodes.IFormatterTextNode;
+import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterBeginNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterCaseNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterClassNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterElseIfNode;
@@ -34,6 +35,7 @@ import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterWhenNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterWhileNode;
 import org.eclipse.osgi.util.NLS;
 import org.jruby.ast.ArgumentNode;
+import org.jruby.ast.BeginNode;
 import org.jruby.ast.CaseNode;
 import org.jruby.ast.ClassNode;
 import org.jruby.ast.CommentNode;
@@ -271,6 +273,26 @@ public class RubyFormatterNodeBuilder extends AbstractFormatterNodeBuilder {
 				}
 				addChild(new FormatterIfEndNode(document, visited
 						.getEndKeyword().getPosition()));
+				return null;
+			}
+
+			/*
+			 * @see
+			 * org.jruby.ast.visitor.AbstractVisitor#visitBeginNode(org.jruby
+			 * .ast.BeginNode)
+			 */
+			public Instruction visitBeginNode(BeginNode visited) {
+				FormatterBeginNode beginNode = new FormatterBeginNode(document);
+				beginNode.setBegin(createTextNode(document, visited
+						.getBeginKeyword()));
+				push(beginNode);
+				if (visited.getBodyNode() != null) {
+					visitChild(visited.getBodyNode());
+				}
+				checkedPop(beginNode, visited.getEndKeyword().getPosition()
+						.getStartOffset());
+				beginNode.setEnd(createTextNode(document, visited
+						.getEndKeyword()));
 				return null;
 			}
 

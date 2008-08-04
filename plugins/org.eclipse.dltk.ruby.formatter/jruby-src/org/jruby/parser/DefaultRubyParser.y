@@ -1012,7 +1012,7 @@ primary       : literal
                   $$ = new FCallNode($1.getPosition(), (String) $1.getValue(), null);
 	      }
               | kBEGIN bodystmt kEND {
-                  $$ = new BeginNode(support.union($1, $3), $2);
+                  $$ = new BeginNode(support.union($1, $3), $2, $1, $3);
 	      }
               | tLPAREN_ARG expr { 
                   lexer.setState(LexState.EXPR_ENDARG); 

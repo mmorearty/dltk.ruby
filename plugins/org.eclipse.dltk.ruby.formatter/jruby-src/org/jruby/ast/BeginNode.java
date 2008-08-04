@@ -35,40 +35,64 @@ import java.util.List;
 import org.jruby.ast.visitor.NodeVisitor;
 import org.jruby.evaluator.Instruction;
 import org.jruby.lexer.yacc.ISourcePosition;
+import org.jruby.lexer.yacc.ISourcePositionHolder;
 
-/** Begin/End block.
- *  A Begin ... End block without rescue.
- *
- * @author  jpetersen
+/**
+ * Begin/End block. A Begin ... End block without rescue.
+ * 
+ * @author jpetersen
  */
 public class BeginNode extends Node {
-    static final long serialVersionUID = 7295877486186461712L;
+	static final long serialVersionUID = 7295877486186461712L;
 
-    private final Node bodyNode;
+	private final Node bodyNode;
+	private final ISourcePositionHolder beginKeyword;
 
-    public BeginNode(ISourcePosition position, Node bodyNode) {
-        super(position, NodeTypes.BEGINNODE);
-        this.bodyNode = bodyNode;
-    }
+	private final ISourcePositionHolder endKeyword;
 
-    /**
-     * Accept for the visitor pattern.
-     * @param iVisitor the visitor
-     **/
-    public Instruction accept(NodeVisitor iVisitor) {
-        return iVisitor.visitBeginNode(this);
-    }
+	public BeginNode(ISourcePosition position, Node bodyNode,
+			ISourcePositionHolder beginKeyword, ISourcePositionHolder endKeyword) {
+		super(position, NodeTypes.BEGINNODE);
+		this.bodyNode = bodyNode;
+		this.beginKeyword = beginKeyword;
+		this.endKeyword = endKeyword;
+	}
 
-    /**
-     * Gets the bodyNode.
-     * @return Returns a INode
-     */
-    public Node getBodyNode() {
-        return bodyNode;
-    }
-    
-    public List childNodes() {
-        return createList(bodyNode);
-    }
+	/**
+	 * Accept for the visitor pattern.
+	 * 
+	 * @param iVisitor
+	 *            the visitor
+	 **/
+	public Instruction accept(NodeVisitor iVisitor) {
+		return iVisitor.visitBeginNode(this);
+	}
+
+	/**
+	 * Gets the bodyNode.
+	 * 
+	 * @return Returns a INode
+	 */
+	public Node getBodyNode() {
+		return bodyNode;
+	}
+
+	/**
+	 * @return the beginKeyword
+	 */
+	public ISourcePositionHolder getBeginKeyword() {
+		return beginKeyword;
+	}
+
+	/**
+	 * @return the endKeyword
+	 */
+	public ISourcePositionHolder getEndKeyword() {
+		return endKeyword;
+	}
+
+	public List childNodes() {
+		return createList(bodyNode);
+	}
 
 }
