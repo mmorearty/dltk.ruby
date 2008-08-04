@@ -112,3 +112,39 @@ case
 	else
 		puts "other"
 end
+==== BEGIN
+BEGIN {
+doStuff
+}
+==
+BEGIN {
+	doStuff
+}
+==== BEGIN-comments
+BEGIN {
+#begin
+doStuff
+}
+==
+BEGIN {
+	#begin
+	doStuff
+}
+==== END
+END {
+doStuff
+}
+==
+END {
+	doStuff
+}
+==== END-comments
+END {
+#end
+doStuff
+}
+==
+END {
+	#end
+	doStuff
+}
