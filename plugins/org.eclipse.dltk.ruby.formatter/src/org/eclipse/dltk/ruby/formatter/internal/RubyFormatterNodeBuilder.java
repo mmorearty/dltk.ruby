@@ -58,6 +58,7 @@ import org.jruby.ast.Node;
 import org.jruby.ast.PostExeNode;
 import org.jruby.ast.RescueBodyNode;
 import org.jruby.ast.RescueNode;
+import org.jruby.ast.SClassNode;
 import org.jruby.ast.UntilNode;
 import org.jruby.ast.WhenNode;
 import org.jruby.ast.WhileNode;
@@ -84,8 +85,20 @@ public class RubyFormatterNodeBuilder extends AbstractFormatterNodeBuilder {
 				visitChildren(visited);
 				return null;
 			}
-
+			
 			public Instruction visitClassNode(ClassNode visited) {
+				FormatterClassNode classNode = new FormatterClassNode(document);
+				classNode.setBegin(createTextNode(document, visited
+						.getClassKeyword()));
+				push(classNode);
+				visitChildren(visited);
+				checkedPop(classNode, visited.getEnd().getPosition()
+						.getStartOffset());
+				classNode.setEnd(createTextNode(document, visited.getEnd()));
+				return null;
+			}
+			
+			public Instruction visitSClassNode(SClassNode visited) {
 				FormatterClassNode classNode = new FormatterClassNode(document);
 				classNode.setBegin(createTextNode(document, visited
 						.getClassKeyword()));

@@ -35,67 +35,86 @@ import java.util.List;
 import org.jruby.ast.visitor.NodeVisitor;
 import org.jruby.evaluator.Instruction;
 import org.jruby.lexer.yacc.ISourcePosition;
+import org.jruby.lexer.yacc.ISourcePositionHolder;
 import org.jruby.parser.StaticScope;
 
-/** Singleton class definition.
+/**
+ * Singleton class definition.
  * 
  * <pre>
  * class &lt;&lt; anObject
  * 
  * end
  * </pre>
- *
- * @author  jpetersen
+ * 
+ * @author jpetersen
  */
 public class SClassNode extends Node {
-    static final long serialVersionUID = -3706492163082062224L;
+	static final long serialVersionUID = -3706492163082062224L;
 
-    private final Node receiverNode;
-    private final StaticScope scope;
-    private final Node bodyNode;
+	private final Node receiverNode;
+	private final StaticScope scope;
+	private final Node bodyNode;
+	private final ISourcePositionHolder classKeyword;
+	private final ISourcePositionHolder end;
 
-    public SClassNode(ISourcePosition position, Node recvNode, StaticScope scope, Node bodyNode) {
-        super(position, NodeTypes.SCLASSNODE);
-        this.receiverNode = recvNode;
-        this.scope = scope;
-        this.bodyNode = bodyNode;
-    }
+	public SClassNode(ISourcePosition position, Node recvNode,
+			StaticScope scope, Node bodyNode,
+			ISourcePositionHolder classKeyword, ISourcePositionHolder end) {
+		super(position, NodeTypes.SCLASSNODE);
+		this.receiverNode = recvNode;
+		this.scope = scope;
+		this.bodyNode = bodyNode;
+		this.classKeyword = classKeyword;
+		this.end = end;
+	}
 
-    /**
-     * Accept for the visitor pattern.
-     * @param iVisitor the visitor
-     **/
-    public Instruction accept(NodeVisitor iVisitor) {
-        return iVisitor.visitSClassNode(this);
-    }
+	/**
+	 * Accept for the visitor pattern.
+	 * 
+	 * @param iVisitor
+	 *            the visitor
+	 **/
+	public Instruction accept(NodeVisitor iVisitor) {
+		return iVisitor.visitSClassNode(this);
+	}
 
-    /**
-     * Gets the body of this class.
-     * 
-     * @return the contents
-     */
-    public Node getBodyNode() {
-        return bodyNode;
-    }
-    
-    /**
-     * Gets the scope of this class
-     * 
-     * @return the scope
-     */
-    public StaticScope getScope() {
-        return scope;
-    }
+	/**
+	 * Gets the body of this class.
+	 * 
+	 * @return the contents
+	 */
+	public Node getBodyNode() {
+		return bodyNode;
+	}
 
-    /**
-     * Gets the receiverNode.
-     * @return Returns a Node
-     */
-    public Node getReceiverNode() {
-        return receiverNode;
-    }
-    
-    public List childNodes() {
-        return Node.createList(receiverNode, bodyNode);
-    }
+	/**
+	 * Gets the scope of this class
+	 * 
+	 * @return the scope
+	 */
+	public StaticScope getScope() {
+		return scope;
+	}
+
+	/**
+	 * Gets the receiverNode.
+	 * 
+	 * @return Returns a Node
+	 */
+	public Node getReceiverNode() {
+		return receiverNode;
+	}
+
+	public ISourcePositionHolder getClassKeyword() {
+		return classKeyword;
+	}
+
+	public ISourcePositionHolder getEnd() {
+		return end;
+	}
+
+	public List childNodes() {
+		return Node.createList(receiverNode, bodyNode);
+	}
 }

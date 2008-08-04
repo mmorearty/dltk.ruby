@@ -1130,7 +1130,7 @@ primary       : literal
                   support.setInSingle(0);
 		  support.pushLocalScope();
               } bodystmt kEND {
-                  $$ = new SClassNode(support.union($1, $8), $3, support.getCurrentScope(), $7);
+                  $$ = new SClassNode(support.union($1, $8), $3, support.getCurrentScope(), $7, $1, $8);
                   support.popCurrentScope();
                   support.setInDef($<Boolean>4.booleanValue());
                   support.setInSingle($<Integer>6.intValue());

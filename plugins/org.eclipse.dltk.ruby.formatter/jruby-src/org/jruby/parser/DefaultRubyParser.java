@@ -2364,7 +2364,7 @@ case 309:
 case 310:
 					// line 1132 "DefaultRubyParser.y"
   {
-                  yyVal = new SClassNode(support.union(((Token)yyVals[-7+yyTop]), ((Token)yyVals[0+yyTop])), ((Node)yyVals[-5+yyTop]), support.getCurrentScope(), ((Node)yyVals[-1+yyTop]));
+                  yyVal = new SClassNode(support.union(((Token)yyVals[-7+yyTop]), ((Token)yyVals[0+yyTop])), ((Node)yyVals[-5+yyTop]), support.getCurrentScope(), ((Node)yyVals[-1+yyTop]), ((Token)yyVals[-7+yyTop]), ((Token)yyVals[0+yyTop]));
                   support.popCurrentScope();
                   support.setInDef(((Boolean)yyVals[-4+yyTop]).booleanValue());
                   support.setInSingle(((Integer)yyVals[-2+yyTop]).intValue());
