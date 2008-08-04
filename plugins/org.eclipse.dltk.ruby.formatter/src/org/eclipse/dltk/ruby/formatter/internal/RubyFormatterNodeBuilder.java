@@ -135,8 +135,10 @@ public class RubyFormatterNodeBuilder extends AbstractFormatterNodeBuilder {
 			}
 
 			public Instruction visitWhileNode(WhileNode visited) {
-				if (!visited.isBlock())
+				if (!visited.isBlock()) {
+					visitChildren(visited);
 					return null;
+				}
 				FormatterWhileNode whileNode = new FormatterWhileNode(document);
 				whileNode.setBegin(createTextNode(document, visited
 						.getStartOffset(), visited.getBodyNode()
@@ -172,8 +174,10 @@ public class RubyFormatterNodeBuilder extends AbstractFormatterNodeBuilder {
 			}
 
 			public Instruction visitUntilNode(UntilNode visited) {
-				if (!visited.isBlock())
+				if (!visited.isBlock()) {
+					visitChildren(visited);
 					return null;
+				}
 				FormatterUntilNode untilNode = new FormatterUntilNode(document);
 				untilNode.setBegin(createTextNode(document, visited
 						.getStartOffset(), visited.getBodyNode()
@@ -245,6 +249,7 @@ public class RubyFormatterNodeBuilder extends AbstractFormatterNodeBuilder {
 
 			public Instruction visitIfNode(IfNode visited) {
 				if (visited.isInline()) {
+					visitChildren(visited);
 					return null;
 				}
 				FormatterIfNode ifNode = new FormatterIfNode(document);
