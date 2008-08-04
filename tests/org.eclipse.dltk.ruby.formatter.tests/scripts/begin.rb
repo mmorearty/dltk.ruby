@@ -76,7 +76,7 @@ begin
 rescue SyntaxError
 	print "Error!"
 end
-==== rescue-multiple
+==== begin-rescue-multiple
 	begin
 doStuff
 	rescue SyntaxError
@@ -91,6 +91,22 @@ rescue SyntaxError
 	print "Syntax error!"
 rescue IOError
 	print "IO error!"
+end
+==== begin-rescue-else
+begin
+doStuff
+rescue SyntaxError
+print "SyntaxError"
+else
+print "Other error"
+end
+==
+begin
+	doStuff
+rescue SyntaxError
+	print "SyntaxError"
+else
+	print "Other error"
 end
 ==== rescue-ensure
 begin
