@@ -92,3 +92,17 @@ end
 	print "xxx
 xxx"
 end
+==== multiline-string-spaces
+def method
+print "Hello
+ "
+puts "world"
+end
+method
+==
+def method
+	print "Hello
+ "
+	puts "world"
+end
+method
