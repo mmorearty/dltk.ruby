@@ -30,6 +30,7 @@ public class AllTests {
 		suite.addTest(IfTest.suite());
 		suite.addTest(BeginTest.suite());
 		suite.addTest(DoTest.suite());
+		suite.addTest(CommentsTest.suite());		
 		// $JUnit-END$
 		return suite;
 	}
