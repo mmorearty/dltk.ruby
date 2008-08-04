@@ -106,3 +106,13 @@ def method
 	puts "world"
 end
 method
+==== dstring
+[1,2,3].each do |x|
+puts "Iteration
+#{x}"
+end
+==
+[1,2,3].each do |x|
+	puts "Iteration
+#{x}"
+end
