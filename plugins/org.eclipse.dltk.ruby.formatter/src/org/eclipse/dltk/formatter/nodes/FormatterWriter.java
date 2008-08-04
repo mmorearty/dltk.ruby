@@ -58,14 +58,18 @@ public class FormatterWriter implements IFormatterVisitor {
 				emptyLines.append(ch);
 			}
 		} else if (!lineStarted) {
-			if (context.isIndenting() && Character.isWhitespace(ch)) {
+			if (Character.isWhitespace(ch)) {
 				indent.append(ch);
 			} else {
 				if (emptyLines.length() != 0) {
 					writer.write(emptyLines.toString());
 					emptyLines.setLength(0);
 				}
-				writeIndent(context);
+				if (context.isIndenting()) {
+					writeIndent(context);
+				} else {
+					writer.write(indent.toString());
+				}
 				lineStarted = true;
 				indent.setLength(0);
 				writer.write(ch);

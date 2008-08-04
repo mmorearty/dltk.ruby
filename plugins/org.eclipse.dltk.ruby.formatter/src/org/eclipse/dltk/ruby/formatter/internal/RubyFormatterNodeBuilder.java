@@ -35,6 +35,7 @@ import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterMethodNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterRDocNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterRescueElseNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterRescueNode;
+import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterStringNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterUntilNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterWhenElseNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterWhenNode;
@@ -59,6 +60,7 @@ import org.jruby.ast.PostExeNode;
 import org.jruby.ast.RescueBodyNode;
 import org.jruby.ast.RescueNode;
 import org.jruby.ast.SClassNode;
+import org.jruby.ast.StrNode;
 import org.jruby.ast.UntilNode;
 import org.jruby.ast.WhenNode;
 import org.jruby.ast.WhileNode;
@@ -85,7 +87,7 @@ public class RubyFormatterNodeBuilder extends AbstractFormatterNodeBuilder {
 				visitChildren(visited);
 				return null;
 			}
-			
+
 			public Instruction visitClassNode(ClassNode visited) {
 				FormatterClassNode classNode = new FormatterClassNode(document);
 				classNode.setBegin(createTextNode(document, visited
@@ -97,7 +99,7 @@ public class RubyFormatterNodeBuilder extends AbstractFormatterNodeBuilder {
 				classNode.setEnd(createTextNode(document, visited.getEnd()));
 				return null;
 			}
-			
+
 			public Instruction visitSClassNode(SClassNode visited) {
 				FormatterClassNode classNode = new FormatterClassNode(document);
 				classNode.setBegin(createTextNode(document, visited
@@ -422,6 +424,13 @@ public class RubyFormatterNodeBuilder extends AbstractFormatterNodeBuilder {
 				endNode
 						.setEnd(createTextNode(document, visited
 								.getRightBrace()));
+				return null;
+			}
+
+			public Instruction visitStrNode(StrNode visited) {
+				FormatterStringNode strNode = new FormatterStringNode(document,
+						visited.getStartOffset(), visited.getEndOffset());
+				addChild(strNode);
 				return null;
 			}
 
