@@ -22,3 +22,21 @@ if a == 1
 else
 	puts "Other"	
 end
+==== if-elsif-else
+a = 1
+if a == 1  	
+puts "One"
+elsif a == 2 	
+puts "Two" 
+else
+puts "Other"	
+end
+==
+a = 1
+if a == 1  	
+	puts "One"
+elsif a == 2 	
+	puts "Two" 
+else
+	puts "Other"	
+end
