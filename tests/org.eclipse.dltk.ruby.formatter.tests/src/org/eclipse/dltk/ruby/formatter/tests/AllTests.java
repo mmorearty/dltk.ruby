@@ -30,7 +30,10 @@ public class AllTests {
 		suite.addTest(IfTest.suite());
 		suite.addTest(BeginTest.suite());
 		suite.addTest(DoTest.suite());
-		suite.addTest(CommentsTest.suite());		
+		suite.addTest(CommentsTest.suite());
+		suite.addTest(UnaryPlusTest.suite());
+		suite.addTest(HereDocumentTest.suite());
+		suite.addTest(StringsTest.suite());
 		// $JUnit-END$
 		return suite;
 	}
