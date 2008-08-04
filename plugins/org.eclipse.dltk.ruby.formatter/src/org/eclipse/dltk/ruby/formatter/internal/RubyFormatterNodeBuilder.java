@@ -24,6 +24,7 @@ import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterBeginNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterCaseNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterClassNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterElseIfNode;
+import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterEnsureNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterForNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterIfElseNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterIfEndNode;
@@ -44,6 +45,7 @@ import org.jruby.ast.ClassNode;
 import org.jruby.ast.CommentNode;
 import org.jruby.ast.DefnNode;
 import org.jruby.ast.DefsNode;
+import org.jruby.ast.EnsureNode;
 import org.jruby.ast.ForNode;
 import org.jruby.ast.IfNode;
 import org.jruby.ast.ListNode;
@@ -345,6 +347,20 @@ public class RubyFormatterNodeBuilder extends AbstractFormatterNodeBuilder {
 					visitChild(elseBranch.getStatement());
 					checkedPop(elseNode, -1);
 				}
+				return null;
+			}
+
+			public Instruction visitEnsureNode(EnsureNode visited) {
+				if (visited.getBodyNode() != null) {
+					visitChild(visited.getBodyNode());
+				}
+				FormatterEnsureNode ensureNode = new FormatterEnsureNode(
+						document);
+				ensureNode.setBegin(createTextNode(document, visited
+						.getEnsureNode().getKeyword()));
+				push(ensureNode);
+				visitChild(visited.getEnsureNode().getStatement());
+				checkedPop(ensureNode, -1);
 				return null;
 			}
 

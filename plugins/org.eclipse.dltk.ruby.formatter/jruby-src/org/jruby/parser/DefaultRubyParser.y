@@ -162,7 +162,8 @@ public class DefaultRubyParser {
 %type <Node>  words qwords word literal numeric dsym cpath command_call
 %type <Node>  compstmt bodystmt stmts stmt expr arg primary command 
 %type <Node>  expr_value primary_value opt_else cases if_tail exc_var 
-%type <Node>  call_args call_args2 open_args opt_ensure paren_args superclass
+%type <Node>  call_args call_args2 open_args paren_args superclass
+%type <EnsureNode.Keyword>  opt_ensure
 %type <Node>  command_args var_ref opt_paren_args block_call block_command
 %type <Node>  f_arglist f_args f_opt undef_list string_dvar backref 
 %type <Node>  mrhs mlhs_item mlhs_node arg_value case_body exc_list aref_args 
@@ -1324,12 +1325,14 @@ exc_var       : tASSOC lhs {
 
 opt_ensure    : kENSURE compstmt {
                   if ($2 != null) {
-                      $$ = $2;
+                      $$ = new EnsureNode.Keyword($1, $2);
                   } else {
-                      $$ = new NilNode(getPosition(null));
+                      $$ = new EnsureNode.Keyword($1, new NilNode(getPosition(null)));
                   }
               }
-              | none
+              | none {
+                  $$ = null;
+              }
 
 literal       : numeric
               | symbol {

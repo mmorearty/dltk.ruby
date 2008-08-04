@@ -35,48 +35,104 @@ import java.util.List;
 import org.jruby.ast.visitor.NodeVisitor;
 import org.jruby.evaluator.Instruction;
 import org.jruby.lexer.yacc.ISourcePosition;
+import org.jruby.lexer.yacc.ISourcePositionHolder;
+import org.jruby.lexer.yacc.SourcePosition;
 
 /**
- *	an ensure statement.
- * @author  jpetersen
+ * an ensure statement.
+ * 
+ * @author jpetersen
  */
 public class EnsureNode extends Node {
-    static final long serialVersionUID = -409805241533215981L;
+	static final long serialVersionUID = -409805241533215981L;
 
-    private final Node bodyNode;
-    private final Node ensureNode;
+	private final Node bodyNode;
+	private final EnsureNode.Keyword ensureNode;
 
-    public EnsureNode(ISourcePosition position, Node bodyNode, Node ensureNode) {
-        super(position, NodeTypes.ENSURENODE);
-        this.bodyNode = bodyNode;
-        this.ensureNode = ensureNode;
-    }
+	public EnsureNode(ISourcePosition position, Node bodyNode,
+			EnsureNode.Keyword ensureNode) {
+		super(position, NodeTypes.ENSURENODE);
+		this.bodyNode = bodyNode;
+		this.ensureNode = ensureNode;
+	}
 
-    /**
-     * Accept for the visitor pattern.
-     * @param iVisitor the visitor
-     **/
-    public Instruction accept(NodeVisitor iVisitor) {
-        return iVisitor.visitEnsureNode(this);
-    }
+	/**
+	 * Accept for the visitor pattern.
+	 * 
+	 * @param iVisitor
+	 *            the visitor
+	 **/
+	public Instruction accept(NodeVisitor iVisitor) {
+		return iVisitor.visitEnsureNode(this);
+	}
 
-    /**
-     * Gets the bodyNode.
-     * @return Returns a Node
-     */
-    public Node getBodyNode() {
-        return bodyNode;
-    }
+	/**
+	 * Gets the bodyNode.
+	 * 
+	 * @return Returns a Node
+	 */
+	public Node getBodyNode() {
+		return bodyNode;
+	}
 
-    /**
-     * Gets the ensureNode.
-     * @return Returns a Node
-     */
-    public Node getEnsureNode() {
-        return ensureNode;
-    }
-    
-    public List childNodes() {
-        return Node.createList(bodyNode, ensureNode);
-    }
+	/**
+	 * Gets the ensureNode.
+	 * 
+	 * @return Returns a Node
+	 */
+	public EnsureNode.Keyword getEnsureNode() {
+		return ensureNode;
+	}
+
+	public List childNodes() {
+		return Node.createList(bodyNode, ensureNode);
+	}
+
+	public static class Keyword extends Node {
+		private final ISourcePositionHolder keyword;
+
+		private final Node statement;
+
+		/**
+		 * @param position
+		 * @param id
+		 */
+		public Keyword(ISourcePositionHolder keyword, Node statement) {
+			super(SourcePosition.combinePosition(keyword.getPosition(),
+					statement.getPosition()), NodeTypes.EXT_ENSURE_KEYWORD);
+			this.keyword = keyword;
+			this.statement = statement;
+		}
+
+		/*
+		 * @see org.jruby.ast.Node#accept(org.jruby.ast.visitor.NodeVisitor)
+		 */
+		public Instruction accept(NodeVisitor visitor) {
+			throw new RuntimeException(getNodeName()
+					+ " should never be evaluated");
+		}
+
+		/*
+		 * @see org.jruby.ast.Node#childNodes()
+		 */
+		public List childNodes() {
+			return createList(statement);
+		}
+
+		/**
+		 * @return the keyword
+		 */
+		public ISourcePositionHolder getKeyword() {
+			return keyword;
+		}
+
+		/**
+		 * @return the statement
+		 */
+		public Node getStatement() {
+			return statement;
+		}
+
+	}
+
 }

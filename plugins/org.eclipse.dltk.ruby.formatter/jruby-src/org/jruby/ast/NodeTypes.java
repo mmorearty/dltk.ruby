@@ -135,6 +135,7 @@ public final class NodeTypes {
     public static final int ARGSPUSHNODE = 103;
     
     public static final int EXT_ELSENODE = 200;
+    public static final int EXT_ENSURE_KEYWORD = 201;
     
     private NodeTypes() {}
 }
