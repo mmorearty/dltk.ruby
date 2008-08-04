@@ -282,7 +282,8 @@ bodystmt      : compstmt opt_rescue opt_else opt_ensure {
 		      node = new RescueNode(getPosition($1, true), $1, $2, $3);
 		  } else if ($3 != null) {
 		      warnings.warn(getPosition($1), "else without rescue is useless");
-                      node = support.appendToBlock($1, $3);
+		      node = new RescueNode(getPosition($1, true), $1, null, $3);
+                      // node = support.appendToBlock($1, $3);
 		  }
 		  if ($4 != null) {
 		      node = new EnsureNode(getPosition($1), node, $4);
