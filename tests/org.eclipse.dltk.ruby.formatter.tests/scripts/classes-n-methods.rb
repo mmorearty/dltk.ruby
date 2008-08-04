@@ -80,3 +80,27 @@ class Hello
 	end
 
 end
+==== SClass
+class << self
+def execute
+puts "execute"		
+end
+end
+==
+class << self
+	def execute
+		puts "execute"		
+	end
+end
+==== empty-SClass
+class << self
+def execute
+puts "execute"		
+end
+end
+==
+class << self
+	def execute
+		puts "execute"		
+	end
+end
