@@ -254,6 +254,8 @@ public class RubyFormatterNodeBuilder extends AbstractFormatterNodeBuilder {
 						final ElseNode elseBranch = (ElseNode) branch;
 						FormatterIfElseNode elseNode = new FormatterIfElseNode(
 								document);
+						elseNode.setBegin(createTextNode(document, elseBranch
+								.getElseKeyword()));
 						push(elseNode);
 						visitChild(elseBranch.getStatement());
 						checkedPop(elseNode, visited.getEndKeyword()
