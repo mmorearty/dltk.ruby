@@ -126,6 +126,7 @@ import org.jruby.ast.XStrNode;
 import org.jruby.ast.YieldNode;
 import org.jruby.ast.ZArrayNode;
 import org.jruby.ast.ZSuperNode;
+import org.jruby.ast.ext.PreExeNode;
 import org.jruby.evaluator.Instruction;
 
 /**
@@ -232,4 +233,5 @@ public interface NodeVisitor {
     public Instruction visitZArrayNode(ZArrayNode iVisited);
     public Instruction visitZSuperNode(ZSuperNode iVisited);
     public Instruction visitCommentNode(CommentNode iVisited);
+	public Instruction visitPreExeNode(PreExeNode iVisited);
 }

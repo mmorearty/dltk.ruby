@@ -112,6 +112,7 @@ import org.jruby.ast.ZArrayNode;
 import org.jruby.ast.ZSuperNode;
 import org.jruby.ast.ZeroArgNode;
 import org.jruby.ast.ext.ElseNode;
+import org.jruby.ast.ext.PreExeNode;
 import org.jruby.ast.types.ILiteralNode;
 import org.jruby.ast.types.INameNode;
 import org.jruby.common.IRubyWarnings;
@@ -360,9 +361,8 @@ stmt          : kALIAS fitem {
                   }
 		  support.pushLocalScope();
               } tLCURLY compstmt tRCURLY {
-                  support.getResult().addBeginNode(support.getCurrentScope(), $4);
                   support.popCurrentScope();
-                  $$ = null; //XXX 0;
+                  $$ = new PreExeNode($1, $3, $4, $5);
               }
               | klEND tLCURLY compstmt tRCURLY {
                   if (support.isInDef() || support.isInSingle()) {

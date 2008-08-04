@@ -28,7 +28,6 @@ public class RubyParser {
 			parser.setWarnings(new NullWarnings());
 			final LexerSource source = LexerSource.getSource(FILENAME, content);
 			final RubyParserResult result = parser.parse(configuration, source);
-			result.addAppendBeginNodes();
 			return result;
 		} catch (SyntaxException e) {
 			return null;

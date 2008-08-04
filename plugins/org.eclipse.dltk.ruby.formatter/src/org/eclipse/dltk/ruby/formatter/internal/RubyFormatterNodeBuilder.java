@@ -19,6 +19,7 @@ import org.eclipse.dltk.formatter.nodes.FormatterRootNode;
 import org.eclipse.dltk.formatter.nodes.IFormatterContainerNode;
 import org.eclipse.dltk.formatter.nodes.IFormatterDocument;
 import org.eclipse.dltk.formatter.nodes.IFormatterTextNode;
+import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterAtBeginNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterAtEndNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterBeginNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterCaseNode;
@@ -59,6 +60,7 @@ import org.jruby.ast.UntilNode;
 import org.jruby.ast.WhenNode;
 import org.jruby.ast.WhileNode;
 import org.jruby.ast.ext.ElseNode;
+import org.jruby.ast.ext.PreExeNode;
 import org.jruby.ast.visitor.AbstractVisitor;
 import org.jruby.evaluator.Instruction;
 import org.jruby.lexer.yacc.ISourcePosition;
@@ -361,6 +363,22 @@ public class RubyFormatterNodeBuilder extends AbstractFormatterNodeBuilder {
 				push(ensureNode);
 				visitChild(visited.getEnsureNode().getStatement());
 				checkedPop(ensureNode, -1);
+				return null;
+			}
+
+			public Instruction visitPreExeNode(PreExeNode visited) {
+				FormatterAtBeginNode endNode = new FormatterAtBeginNode(
+						document);
+				endNode.setBegin(createTextNode(document, visited.getKeyword()
+						.getPosition().getStartOffset(), visited.getLeftBrace()
+						.getPosition().getEndOffset()));
+				push(endNode);
+				visitChildren(visited);
+				checkedPop(endNode, visited.getRightBrace().getPosition()
+						.getStartOffset());
+				endNode
+						.setEnd(createTextNode(document, visited
+								.getRightBrace()));
 				return null;
 			}
 
