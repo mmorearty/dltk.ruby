@@ -29,6 +29,7 @@ import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterIfEndNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterIfNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterMethodNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterRDocNode;
+import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterRescueElseNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterRescueNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterUntilNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterWhenElseNode;
@@ -330,6 +331,17 @@ public class RubyFormatterNodeBuilder extends AbstractFormatterNodeBuilder {
 						rescueEnd = -1;
 					}
 					checkedPop(rescueNode, rescueEnd);
+				}
+				if (visited.getElseNode() != null) {
+					final ElseNode elseBranch = (ElseNode) visited
+							.getElseNode();
+					FormatterRescueElseNode elseNode = new FormatterRescueElseNode(
+							document);
+					elseNode.setBegin(createTextNode(document, elseBranch
+							.getElseKeyword()));
+					push(elseNode);
+					visitChild(elseBranch.getStatement());
+					checkedPop(elseNode, -1);
 				}
 				return null;
 			}
