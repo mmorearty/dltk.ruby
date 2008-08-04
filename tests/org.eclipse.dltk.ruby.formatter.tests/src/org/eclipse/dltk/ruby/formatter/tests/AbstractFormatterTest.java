@@ -80,6 +80,11 @@ public abstract class AbstractFormatterTest extends TestCase {
 	private static final String TEST_MARKER = "====";
 	private static final String RESPONSE_MARKER = "==";
 
+	public static TestSuite createScriptedSuite(Class suiteClass,
+			String resourceName) {
+		return createScriptedSuite(suiteClass.getName(), resourceName);
+	}
+
 	public static TestSuite createScriptedSuite(String suiteName,
 			String resourceName) {
 		return createScriptedSuite(suiteName, resourceName, 0);

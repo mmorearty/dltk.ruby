@@ -16,7 +16,7 @@ import junit.framework.TestSuite;
 public class IfTest extends AbstractFormatterTest {
 
 	public static TestSuite suite() {
-		return createScriptedSuite(IfTest.class.getName(), "scripts/if.rb");
+		return createScriptedSuite(IfTest.class, "scripts/if.rb");
 	}
 
 }
