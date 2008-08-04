@@ -26,6 +26,12 @@ end
 for i in 1..10
 	puts i
 end
+==== for-empty
+for i in 1..10
+end
+==
+for i in 1..10
+end
 ==== until
 a = 1
 until a >= 10
