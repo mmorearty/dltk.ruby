@@ -108,6 +108,18 @@ rescue SyntaxError
 else
 	print "Other error"
 end
+==== begin-no-rescue-else
+begin
+doStuff
+else
+print "Other error"
+end
+==
+begin
+	doStuff
+else
+	print "Other error"
+end
 ==== rescue-ensure
 begin
 doStuff
