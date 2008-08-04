@@ -1,3 +1,11 @@
+==== empty class
+class Hello
+
+end
+==
+class Hello
+
+end
 ==== attribute only
 class Hello
 attr_accessor :var
