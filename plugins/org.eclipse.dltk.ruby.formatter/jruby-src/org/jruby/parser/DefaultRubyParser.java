@@ -1062,7 +1062,7 @@ case 19:
 case 20:
 					// line 352 "DefaultRubyParser.y"
   {
-	          yyVal = new RescueNode(getPosition(((Node)yyVals[-2+yyTop])), ((Node)yyVals[-2+yyTop]), new RescueBodyNode(getPosition(((Node)yyVals[-2+yyTop])), null,((Node)yyVals[0+yyTop]), null), null);
+	          yyVal = new RescueNode.Inline(getPosition(((Node)yyVals[-2+yyTop])), ((Node)yyVals[-2+yyTop]), new RescueBodyNode(getPosition(((Node)yyVals[-2+yyTop])), null,((Node)yyVals[0+yyTop]), null, null), null);
               }
   break;
 case 21:
@@ -1564,7 +1564,7 @@ case 174:
 					// line 682 "DefaultRubyParser.y"
   {
                   ISourcePosition position = support.union(((Token)yyVals[-1+yyTop]), ((Node)yyVals[0+yyTop]));
-                  yyVal = support.node_assign(((Node)yyVals[-4+yyTop]), new RescueNode(position, ((Node)yyVals[-2+yyTop]), new RescueBodyNode(position, null, ((Node)yyVals[0+yyTop]), null), null));
+                  yyVal = support.node_assign(((Node)yyVals[-4+yyTop]), new RescueNode.Inline(position, ((Node)yyVals[-2+yyTop]), new RescueBodyNode(position, null, ((Node)yyVals[0+yyTop]), null, null), null));
 	      }
   break;
 case 175:
@@ -2641,7 +2641,7 @@ case 361:
 		  } else {
 		     node = ((Node)yyVals[-1+yyTop]);
                   }
-                  yyVal = new RescueBodyNode(getPosition(((Token)yyVals[-5+yyTop]), true), ((Node)yyVals[-4+yyTop]), node, ((RescueBodyNode)yyVals[0+yyTop]));
+                  yyVal = new RescueBodyNode(getPosition(((Token)yyVals[-5+yyTop]), true), ((Node)yyVals[-4+yyTop]), node, ((RescueBodyNode)yyVals[0+yyTop]), ((Token)yyVals[-5+yyTop]));
 	      }
   break;
 case 362:

@@ -41,6 +41,11 @@ public class FormatterBlockNode extends AbstractFormatterNode implements
 
 	public void accept(IFormatterContext context, IFormatterVisitor visitor)
 			throws Exception {
+		acceptBody(context, visitor);
+	}
+
+	protected void acceptBody(IFormatterContext context,
+			IFormatterVisitor visitor) throws Exception {
 		acceptNodes(body, context, visitor);
 	}
 
@@ -71,7 +76,13 @@ public class FormatterBlockNode extends AbstractFormatterNode implements
 	 * org.eclipse.dltk.ruby.formatter.node.IFormatterContainerNode#isEmpty()
 	 */
 	public boolean isEmpty() {
-		return body.isEmpty();
+		for (Iterator i = body.iterator(); i.hasNext();) {
+			IFormatterNode node = (IFormatterNode) i.next();
+			if (!node.isEmpty()) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public String toString() {

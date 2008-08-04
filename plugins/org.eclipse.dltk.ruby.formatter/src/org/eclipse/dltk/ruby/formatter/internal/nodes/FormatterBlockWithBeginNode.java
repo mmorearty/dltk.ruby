@@ -39,6 +39,13 @@ public abstract class FormatterBlockWithBeginNode extends FormatterBlockNode {
 	}
 
 	/**
+	 * @return the begin
+	 */
+	public IFormatterTextNode getBegin() {
+		return begin;
+	}
+
+	/**
 	 * @param begin
 	 *            the begin to set
 	 */

@@ -38,57 +38,86 @@ import org.jruby.evaluator.Instruction;
 import org.jruby.lexer.yacc.ISourcePosition;
 
 /**
- *
- * @author  jpetersen
+ * 
+ * @author jpetersen
  */
 public class RescueNode extends Node {
-    static final long serialVersionUID = -4757038578511808125L;
+	static final long serialVersionUID = -4757038578511808125L;
 
-    private final Node bodyNode;
-    private final RescueBodyNode rescueNode;
-    private final Node elseNode;
-    
-    public RescueNode(ISourcePosition position, Node bodyNode, RescueBodyNode rescueNode, Node elseNode) {
-        super(position, NodeTypes.RESCUENODE);
-        this.bodyNode = bodyNode;
-        this.rescueNode = rescueNode;
-        this.elseNode = elseNode;
-    }
+	private final Node bodyNode;
+	private final RescueBodyNode rescueNode;
+	private final Node elseNode;
 
-    /**
-     * Accept for the visitor pattern.
-     * @param iVisitor the visitor
-     **/
-    public Instruction accept(NodeVisitor iVisitor) {
-        return iVisitor.visitRescueNode(this);
-    }
+	public RescueNode(ISourcePosition position, Node bodyNode,
+			RescueBodyNode rescueNode, Node elseNode) {
+		super(position, NodeTypes.RESCUENODE);
+		this.bodyNode = bodyNode;
+		this.rescueNode = rescueNode;
+		this.elseNode = elseNode;
+	}
 
-    /**
-     * Gets the bodyNode.
-     * @return Returns a Node
-     */
-    public Node getBodyNode() {
-        return bodyNode;
-    }
+	/**
+	 * Accept for the visitor pattern.
+	 * 
+	 * @param iVisitor
+	 *            the visitor
+	 **/
+	public Instruction accept(NodeVisitor iVisitor) {
+		return iVisitor.visitRescueNode(this);
+	}
 
-    /**
-     * Gets the elseNode.
-     * @return Returns a Node
-     */
-    public Node getElseNode() {
-        return elseNode;
-    }
+	/**
+	 * Gets the bodyNode.
+	 * 
+	 * @return Returns a Node
+	 */
+	public Node getBodyNode() {
+		return bodyNode;
+	}
 
-    /**
-     * Gets the first rescueNode.
-     * @return Returns a Node
-     */
-    public RescueBodyNode getRescueNode() {
-        return rescueNode;
-    }
-    
-    public List childNodes() {
-        return Node.createList(rescueNode, bodyNode, elseNode);
-    }
+	/**
+	 * Gets the elseNode.
+	 * 
+	 * @return Returns a Node
+	 */
+	public Node getElseNode() {
+		return elseNode;
+	}
+
+	/**
+	 * Gets the first rescueNode.
+	 * 
+	 * @return Returns a Node
+	 */
+	public RescueBodyNode getRescueNode() {
+		return rescueNode;
+	}
+
+	public List childNodes() {
+		return Node.createList(rescueNode, bodyNode, elseNode);
+	}
+
+	public boolean isInline() {
+		return false;
+	}
+
+	public static class Inline extends RescueNode {
+
+		/**
+		 * @param position
+		 * @param bodyNode
+		 * @param rescueNode
+		 * @param elseNode
+		 */
+		public Inline(ISourcePosition position, Node bodyNode,
+				RescueBodyNode rescueNode, Node elseNode) {
+			super(position, bodyNode, rescueNode, elseNode);
+		}
+
+		public boolean isInline() {
+			return true;
+		}
+
+	}
 
 }

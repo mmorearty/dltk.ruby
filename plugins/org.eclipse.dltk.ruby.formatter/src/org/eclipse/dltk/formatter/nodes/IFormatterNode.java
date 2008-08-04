@@ -18,6 +18,8 @@ public interface IFormatterNode {
 	void accept(IFormatterContext context, IFormatterVisitor visitor)
 			throws Exception;
 
+	boolean isEmpty();
+
 	int getStartOffset();
 
 	int getEndOffset();

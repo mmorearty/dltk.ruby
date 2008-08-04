@@ -350,7 +350,7 @@ stmt          : kALIAS fitem {
                   }
               }
               | stmt kRESCUE_MOD stmt {
-	          $$ = new RescueNode(getPosition($1), $1, new RescueBodyNode(getPosition($1), null,$3, null), null);
+	          $$ = new RescueNode.Inline(getPosition($1), $1, new RescueBodyNode(getPosition($1), null,$3, null, null), null);
               }
               | klBEGIN {
                   if (support.isInDef() || support.isInSingle()) {
@@ -681,7 +681,7 @@ arg           : lhs '=' arg {
               }
 	      | lhs '=' arg kRESCUE_MOD arg {
                   ISourcePosition position = support.union($4, $5);
-                  $$ = support.node_assign($1, new RescueNode(position, $3, new RescueBodyNode(position, null, $5, null), null));
+                  $$ = support.node_assign($1, new RescueNode.Inline(position, $3, new RescueBodyNode(position, null, $5, null, null), null));
 	      }
 	      | var_lhs tOP_ASGN arg {
 		  support.checkExpression($3);
@@ -1306,7 +1306,7 @@ opt_rescue    : kRESCUE exc_list exc_var then compstmt opt_rescue {
 		  } else {
 		     node = $5;
                   }
-                  $$ = new RescueBodyNode(getPosition($1, true), $2, node, $6);
+                  $$ = new RescueBodyNode(getPosition($1, true), $2, node, $6, $1);
 	      }
               | {$$ = null;}
 

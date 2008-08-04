@@ -38,6 +38,10 @@ public class FormatterTextNode extends AbstractFormatterNode implements
 		visitor.visit(context, this);
 	}
 
+	public boolean isEmpty() {
+		return false;
+	}
+
 	/*
 	 * @see org.eclipse.dltk.ruby.formatter.node.IFormatterNode#getEndOffset()
 	 */

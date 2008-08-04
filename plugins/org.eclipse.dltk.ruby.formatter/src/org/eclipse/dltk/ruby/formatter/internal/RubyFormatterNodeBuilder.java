@@ -29,6 +29,7 @@ import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterIfEndNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterIfNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterMethodNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterRDocNode;
+import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterRescueNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterUntilNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterWhenElseNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterWhenNode;
@@ -47,6 +48,8 @@ import org.jruby.ast.ListNode;
 import org.jruby.ast.MethodDefNode;
 import org.jruby.ast.ModuleNode;
 import org.jruby.ast.Node;
+import org.jruby.ast.RescueBodyNode;
+import org.jruby.ast.RescueNode;
 import org.jruby.ast.UntilNode;
 import org.jruby.ast.WhenNode;
 import org.jruby.ast.WhileNode;
@@ -293,6 +296,41 @@ public class RubyFormatterNodeBuilder extends AbstractFormatterNodeBuilder {
 						.getStartOffset());
 				beginNode.setEnd(createTextNode(document, visited
 						.getEndKeyword()));
+				return null;
+			}
+
+			public Instruction visitRescueNode(RescueNode visited) {
+				if (visited.isInline()) {
+					return null;
+				}
+				if (visited.getBodyNode() != null) {
+					visitChild(visited.getBodyNode());
+				}
+				RescueBodyNode node = visited.getRescueNode();
+				while (node != null) {
+					FormatterRescueNode rescueNode = new FormatterRescueNode(
+							document);
+					rescueNode.setBegin(createTextNode(document, node
+							.getRescueKeyword().getPosition().getStartOffset(),
+							node.getExceptionNodes() != null ? node
+									.getExceptionNodes().getEndOffset() : node
+									.getRescueKeyword().getPosition()
+									.getEndOffset()));
+					push(rescueNode);
+					if (node.getBodyNode() != null) {
+						visitChild(node.getBodyNode());
+					}
+					node = node.getOptRescueNode();
+					final int rescueEnd;
+					if (node != null) {
+						rescueEnd = node.getStartOffset();
+					} else if (visited.getElseNode() != null) {
+						rescueEnd = visited.getElseNode().getStartOffset();
+					} else {
+						rescueEnd = -1;
+					}
+					checkedPop(rescueNode, rescueEnd);
+				}
 				return null;
 			}
 
