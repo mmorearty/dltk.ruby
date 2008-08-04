@@ -52,16 +52,19 @@ public class ClassNode extends Node implements IScopingNode {
 	private final StaticScope scope;
 	private final Node bodyNode;
 	private final Node superNode;
+	private final ISourcePositionHolder classKeyword;
+
 	private final ISourcePositionHolder end;
 
 	public ClassNode(ISourcePosition position, Colon3Node cpath,
 			StaticScope scope, Node bodyNode, Node superNode,
-			ISourcePositionHolder endNode) {
+			ISourcePositionHolder classKeyword, ISourcePositionHolder endNode) {
 		super(position, NodeTypes.CLASSNODE);
 		this.cpath = cpath;
 		this.scope = scope;
 		this.bodyNode = bodyNode;
 		this.superNode = superNode;
+		this.classKeyword = classKeyword;
 		this.end = endNode;
 	}
 
@@ -109,6 +112,10 @@ public class ClassNode extends Node implements IScopingNode {
 	 */
 	public Node getSuperNode() {
 		return superNode;
+	}
+
+	public ISourcePositionHolder getClassKeyword() {
+		return classKeyword;
 	}
 
 	public ISourcePositionHolder getEnd() {

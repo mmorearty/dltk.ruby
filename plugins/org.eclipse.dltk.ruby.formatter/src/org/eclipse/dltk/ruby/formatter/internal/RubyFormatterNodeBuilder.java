@@ -88,8 +88,7 @@ public class RubyFormatterNodeBuilder extends AbstractFormatterNodeBuilder {
 			public Instruction visitClassNode(ClassNode visited) {
 				FormatterClassNode classNode = new FormatterClassNode(document);
 				classNode.setBegin(createTextNode(document, visited
-						.getStartOffset(), visited.getBodyNode()
-						.getStartOffset()));
+						.getClassKeyword()));
 				push(classNode);
 				visitChildren(visited);
 				checkedPop(classNode, visited.getEnd().getPosition()

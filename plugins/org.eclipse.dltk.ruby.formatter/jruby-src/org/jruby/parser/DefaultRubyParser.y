@@ -1119,7 +1119,7 @@ primary       : literal
                   }
 		  support.pushLocalScope();
               } bodystmt kEND {
-                  $$ = new ClassNode(support.union($1, $6), $<Colon3Node>2, support.getCurrentScope(), $5, $3, $6);
+                  $$ = new ClassNode(support.union($1, $6), $<Colon3Node>2, support.getCurrentScope(), $5, $3, $1, $6);
                   support.popCurrentScope();
               }
               | kCLASS tLSHFT expr {
