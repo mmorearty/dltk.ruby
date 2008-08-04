@@ -40,7 +40,6 @@ import java.util.List;
 
 import org.jruby.ast.visitor.NodeVisitor;
 import org.jruby.evaluator.Instruction;
-import org.jruby.evaluator.InstructionBundle;
 import org.jruby.evaluator.InstructionContext;
 import org.jruby.lexer.yacc.ISourcePosition;
 import org.jruby.lexer.yacc.ISourcePositionHolder;
@@ -57,7 +56,7 @@ public abstract class Node implements ISourcePositionHolder, InstructionContext,
     
     public final int nodeId;
     
-    public InstructionBundle instruction;
+    // public InstructionBundle instruction;
 
     private ISourcePosition position;
     private ArrayList comments;
