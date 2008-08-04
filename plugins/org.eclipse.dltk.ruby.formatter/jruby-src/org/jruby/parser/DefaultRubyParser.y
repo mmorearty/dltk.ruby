@@ -368,7 +368,7 @@ stmt          : kALIAS fitem {
                       yyerror("END in method; use at_exit");
                   }
 
-                  $$ = new PostExeNode(getPosition($1), $3);
+                  $$ = new PostExeNode(getPosition($1), $3, $1, $2, $4);
               }
               | lhs '=' command_call {
                   support.checkExpression($3);

@@ -1090,7 +1090,7 @@ case 23:
                       yyerror("END in method; use at_exit");
                   }
 
-                  yyVal = new PostExeNode(getPosition(((Token)yyVals[-3+yyTop])), ((Node)yyVals[-1+yyTop]));
+                  yyVal = new PostExeNode(getPosition(((Token)yyVals[-3+yyTop])), ((Node)yyVals[-1+yyTop]), ((Token)yyVals[-3+yyTop]), ((Token)yyVals[-2+yyTop]), ((Token)yyVals[0+yyTop]));
               }
   break;
 case 24:

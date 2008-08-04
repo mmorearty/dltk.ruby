@@ -35,34 +35,66 @@ import java.util.List;
 import org.jruby.ast.visitor.NodeVisitor;
 import org.jruby.evaluator.Instruction;
 import org.jruby.lexer.yacc.ISourcePosition;
+import org.jruby.lexer.yacc.ISourcePositionHolder;
 
 /**
- *
- * @author  jpetersen
+ * 
+ * @author jpetersen
  */
 public class PostExeNode extends Node {
-    static final long serialVersionUID = -2851659895226590014L;
-    private Node body;
+	static final long serialVersionUID = -2851659895226590014L;
+	private final Node body;
+	private final ISourcePositionHolder endKeyword;
+	private final ISourcePositionHolder leftBrace;
+	private final ISourcePositionHolder rightBrace;
 
-    public PostExeNode(ISourcePosition position, Node body) {
-        super(position, NodeTypes.POSTEXENODE);
-        
-        this.body = body;
-    }
-    
-    public Node getBodyNode() {
-        return body;
-    }
+	public PostExeNode(ISourcePosition position, Node body,
+			ISourcePositionHolder endKeyword, ISourcePositionHolder leftBrace,
+			ISourcePositionHolder rightBrace) {
+		super(position, NodeTypes.POSTEXENODE);
+		this.body = body;
+		this.endKeyword = endKeyword;
+		this.leftBrace = leftBrace;
+		this.rightBrace = rightBrace;
+	}
 
-    /**
-     * Accept for the visitor pattern.
-     * @param iVisitor the visitor
-     **/
-    public Instruction accept(NodeVisitor iVisitor) {
-        return iVisitor.visitPostExeNode(this);
-    }
-    
-    public List childNodes() {
-        return Node.createList(body);
-    }
+	public Node getBodyNode() {
+		return body;
+	}
+
+	/**
+	 * Accept for the visitor pattern.
+	 * 
+	 * @param iVisitor
+	 *            the visitor
+	 **/
+	public Instruction accept(NodeVisitor iVisitor) {
+		return iVisitor.visitPostExeNode(this);
+	}
+
+	public List childNodes() {
+		return Node.createList(body);
+	}
+
+	/**
+	 * @return the endKeyword
+	 */
+	public ISourcePositionHolder getEndKeyword() {
+		return endKeyword;
+	}
+
+	/**
+	 * @return the leftBrace
+	 */
+	public ISourcePositionHolder getLeftBrace() {
+		return leftBrace;
+	}
+
+	/**
+	 * @return the rightBrace
+	 */
+	public ISourcePositionHolder getRightBrace() {
+		return rightBrace;
+	}
+
 }
