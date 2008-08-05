@@ -33,11 +33,15 @@ public class AbstractFormatterNodeBuilder {
 
 	protected void addChild(IFormatterNode node) {
 		IFormatterContainerNode parentNode = peek();
-		if (parentNode.getEndOffset() < node.getStartOffset()) {
-			parentNode.addChild(createTextNode(node.getDocument(), parentNode
-					.getEndOffset(), node.getStartOffset()));
-		}
+		advanceParent(parentNode, node.getStartOffset());
 		parentNode.addChild(node);
+	}
+
+	private void advanceParent(IFormatterContainerNode parentNode, final int pos) {
+		if (parentNode.getEndOffset() < pos) {
+			parentNode.addChild(createTextNode(parentNode.getDocument(),
+					parentNode.getEndOffset(), pos));
+		}
 	}
 
 	protected void checkedPop(IFormatterContainerNode expected, int bodyEnd) {

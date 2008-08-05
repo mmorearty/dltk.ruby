@@ -13,6 +13,9 @@ package org.eclipse.dltk.formatter.nodes;
 
 public interface IFormatterVisitor {
 
+	void preVisit(IFormatterContext context, IFormatterTextNode node)
+			throws Exception;
+
 	void visit(IFormatterContext context, IFormatterTextNode node)
 			throws Exception;
 

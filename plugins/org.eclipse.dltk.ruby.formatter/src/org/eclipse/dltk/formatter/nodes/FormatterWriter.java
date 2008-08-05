@@ -25,6 +25,13 @@ public class FormatterWriter implements IFormatterVisitor {
 	private char lastChar = 0;
 	private final StringBuffer emptyLines = new StringBuffer();
 
+	public void preVisit(IFormatterContext context, IFormatterTextNode node)
+			throws Exception {
+		if (!lineStarted) {
+			startLine(context);
+		}
+	}
+
 	public void visit(IFormatterContext context, IFormatterTextNode node)
 			throws Exception {
 		write(context, node.getText());
@@ -61,23 +68,27 @@ public class FormatterWriter implements IFormatterVisitor {
 			if (Character.isWhitespace(ch)) {
 				indent.append(ch);
 			} else {
-				if (emptyLines.length() != 0) {
-					writer.write(emptyLines.toString());
-					emptyLines.setLength(0);
-				}
-				if (context.isIndenting()) {
-					writeIndent(context);
-				} else {
-					writer.write(indent.toString());
-				}
-				lineStarted = true;
-				indent.setLength(0);
+				startLine(context);
 				writer.write(ch);
 			}
 		} else {
 			writer.write(ch);
 		}
 		lastChar = ch;
+	}
+
+	private void startLine(IFormatterContext context) throws IOException {
+		if (emptyLines.length() != 0) {
+			writer.write(emptyLines.toString());
+			emptyLines.setLength(0);
+		}
+		if (context.isIndenting()) {
+			writeIndent(context);
+		} else {
+			writer.write(indent.toString());
+		}
+		indent.setLength(0);
+		lineStarted = true;
 	}
 
 	/**

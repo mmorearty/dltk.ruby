@@ -30,6 +30,7 @@ public class FormatterStringNode extends FormatterTextNode {
 
 	public void accept(IFormatterContext context, IFormatterVisitor visitor)
 			throws Exception {
+		visitor.preVisit(context, this);
 		IFormatterContext strContext = context.copy();
 		strContext.setIndenting(false);
 		visitor.visit(strContext, this);
