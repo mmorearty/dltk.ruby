@@ -67,6 +67,7 @@ import org.jruby.ast.StrNode;
 import org.jruby.ast.UntilNode;
 import org.jruby.ast.WhenNode;
 import org.jruby.ast.WhileNode;
+import org.jruby.ast.XStrNode;
 import org.jruby.ast.ext.ElseNode;
 import org.jruby.ast.ext.PreExeNode;
 import org.jruby.ast.visitor.AbstractVisitor;
@@ -439,6 +440,13 @@ public class RubyFormatterNodeBuilder extends AbstractFormatterNodeBuilder {
 			}
 
 			public Instruction visitRegexpNode(RegexpNode visited) {
+				FormatterStringNode strNode = new FormatterStringNode(document,
+						visited.getStartOffset(), visited.getEndOffset());
+				addChild(strNode);
+				return null;
+			}
+
+			public Instruction visitXStrNode(XStrNode visited) {
 				FormatterStringNode strNode = new FormatterStringNode(document,
 						visited.getStartOffset(), visited.getEndOffset());
 				addChild(strNode);
