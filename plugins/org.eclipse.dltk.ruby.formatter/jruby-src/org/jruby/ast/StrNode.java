@@ -39,45 +39,48 @@ import org.jruby.evaluator.Instruction;
 import org.jruby.lexer.yacc.ISourcePosition;
 import org.jruby.util.ByteList;
 
-/** Representing a simple String literal.
- *
- * @author  jpetersen
+/**
+ * Representing a simple String literal.
+ * 
+ * @author jpetersen
  */
 public class StrNode extends Node implements ILiteralNode {
-    static final long serialVersionUID = 4544779503072130759L;
+	static final long serialVersionUID = 4544779503072130759L;
 
-    private final ByteList value;
+	private final ByteList value;
 
-    public StrNode(ISourcePosition position, ByteList value) {
-        super(position, NodeTypes.STRNODE);
-        this.value = value;
-    }
+	public StrNode(ISourcePosition position, ByteList value) {
+		super(position, NodeTypes.STRNODE);
+		this.value = value;
+	}
 
-    public StrNode(ISourcePosition position, StrNode head, StrNode tail) {
-        super(position, NodeTypes.STRNODE);
-        
-        this.value = head.getValue();
-        
-        value.append(tail.getValue());
-    }
-    /**
-     * Accept for the visitor pattern.
-     * @param iVisitor the visitor
-     **/
-    public Instruction accept(NodeVisitor iVisitor) {
-        return iVisitor.visitStrNode(this);
-    }
+	public StrNode(ISourcePosition position, StrNode head, StrNode tail) {
+		super(position, NodeTypes.STRNODE);
+		this.value = head.getValue();
+		value.append(tail.getValue());
+	}
 
-    /**
-     * Gets the value.
-     * @return Returns a String
-     */
-    public ByteList getValue() {
-        return value;
-    }
-    
-    public List childNodes() {
-        return EMPTY_LIST;
-    }
+	/**
+	 * Accept for the visitor pattern.
+	 * 
+	 * @param iVisitor
+	 *            the visitor
+	 **/
+	public Instruction accept(NodeVisitor iVisitor) {
+		return iVisitor.visitStrNode(this);
+	}
+
+	/**
+	 * Gets the value.
+	 * 
+	 * @return Returns a String
+	 */
+	public ByteList getValue() {
+		return value;
+	}
+
+	public List childNodes() {
+		return EMPTY_LIST;
+	}
 
 }
