@@ -49,14 +49,17 @@ public class ModuleNode extends Node implements IScopingNode {
 	private final Colon3Node cpath;
 	private final StaticScope scope;
 	private final Node bodyNode;
+	private final ISourcePositionHolder keyword;
 	private final ISourcePositionHolder end;
 
 	public ModuleNode(ISourcePosition position, Colon3Node cpath,
-			StaticScope scope, Node bodyNode, ISourcePositionHolder end) {
+			StaticScope scope, Node bodyNode, ISourcePositionHolder keyword,
+			ISourcePositionHolder end) {
 		super(position, NodeTypes.MODULENODE);
 		this.cpath = cpath;
 		this.scope = scope;
 		this.bodyNode = bodyNode;
+		this.keyword = keyword;
 		this.end = end;
 	}
 
@@ -99,6 +102,10 @@ public class ModuleNode extends Node implements IScopingNode {
 
 	public List childNodes() {
 		return Node.createList(cpath, bodyNode);
+	}
+
+	public ISourcePositionHolder getKeyword() {
+		return keyword;
 	}
 
 	public ISourcePositionHolder getEnd() {

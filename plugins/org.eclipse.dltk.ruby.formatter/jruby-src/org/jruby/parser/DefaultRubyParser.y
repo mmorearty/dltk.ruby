@@ -1141,7 +1141,7 @@ primary       : literal
                   }
 		  support.pushLocalScope();
               } bodystmt kEND {
-                  $$ = new ModuleNode(support.union($1, $5), $<Colon3Node>2, support.getCurrentScope(), $4, $5);
+                  $$ = new ModuleNode(support.union($1, $5), $<Colon3Node>2, support.getCurrentScope(), $4, $1, $5);
                   support.popCurrentScope();
               }
 	      | kDEF fname {

@@ -2382,7 +2382,7 @@ case 311:
 case 312:
 					// line 1143 "DefaultRubyParser.y"
   {
-                  yyVal = new ModuleNode(support.union(((Token)yyVals[-4+yyTop]), ((Token)yyVals[0+yyTop])), ((Colon3Node)yyVals[-3+yyTop]), support.getCurrentScope(), ((Node)yyVals[-1+yyTop]), ((Token)yyVals[0+yyTop]));
+                  yyVal = new ModuleNode(support.union(((Token)yyVals[-4+yyTop]), ((Token)yyVals[0+yyTop])), ((Colon3Node)yyVals[-3+yyTop]), support.getCurrentScope(), ((Node)yyVals[-1+yyTop]), ((Token)yyVals[-4+yyTop]), ((Token)yyVals[0+yyTop]));
                   support.popCurrentScope();
               }
   break;
