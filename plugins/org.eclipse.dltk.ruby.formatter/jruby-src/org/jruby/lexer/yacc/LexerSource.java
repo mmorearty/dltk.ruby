@@ -116,7 +116,7 @@ public class LexerSource {
     		c = wrappedRead();
             
             // EOF...Do not advance column...Go straight to jail
-            if (c == 0) {
+            if (c == RubyYaccLexer.EOF) {
                 //offset++;
                 return c;
             }
@@ -160,7 +160,7 @@ public class LexerSource {
      * @param c to be put back onto the source
      */
     public void unread(char c) {
-        if (c != (char) 0) {
+        if (c != RubyYaccLexer.EOF) {
             offset--;
     	
             if (c == '\n') {

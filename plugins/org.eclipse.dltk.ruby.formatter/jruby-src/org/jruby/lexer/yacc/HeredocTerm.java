@@ -80,7 +80,7 @@ public class HeredocTerm extends StrTerm {
                 str.append(src.readLineBytes());
                 str.append('\n');
 
-                if (src.peek('\0')) {
+                if (src.peek((char) RubyYaccLexer.EOF)) {
                     throw new SyntaxException(src.getPosition(), "can't find string \"" + eos + "\" anywhere before EOF");
                 }
             } while (!src.matchString(eos + '\n', indent));
