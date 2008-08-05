@@ -349,6 +349,9 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 		completeSimpleRef(moduleDeclaration, "", position); //$NON-NLS-1$
 		IClassType self = RubyTypeInferencingUtils.determineSelfClass(
 				currentModule, moduleDeclaration, position);
+		if (self == null) {
+			return;
+		}
 		completeClassMethods(moduleDeclaration, self, ""); //$NON-NLS-1$
 		if ("Object".equals(self.getTypeName())) { //$NON-NLS-1$
 			try {
