@@ -57,4 +57,14 @@ public class RubyFormatter extends AbstractScriptFormatter {
 		}
 	}
 
+	public IFormatterContainerNode buildFormattingTree(String input) {
+		final RubyParserResult result = RubyParser.parse(input);
+		if (result == null) {
+			return null;
+		}
+		final RubyFormatterNodeBuilder builder = new RubyFormatterNodeBuilder();
+		final IFormatterDocument document = new FormatterDocument(input);
+		return builder.build(result, document);
+	}
+
 }
