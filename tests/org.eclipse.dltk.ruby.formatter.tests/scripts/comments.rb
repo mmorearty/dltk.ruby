@@ -7,7 +7,9 @@ def a
 	#comment
 end
 ==== class-comments
+#before class
 class Hello
+#after class
 
 #method 1
 def method1
@@ -23,7 +25,9 @@ end
 
 end
 ==
+#before class
 class Hello
+	#after class
 
 	#method 1
 	def method1
