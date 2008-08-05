@@ -48,7 +48,7 @@ public class RubyPartitionScanner extends RuleBasedPartitionScanner {
 
 		List rules = new ArrayList();
 
-		rules.add(new MultiLineRule("=begin", "=end", rubyDoc)); //$NON-NLS-1$ //$NON-NLS-2$
+		rules.add(new RDocRule(rubyDoc));
 
 		rules.add(new EndOfLineRule("#", comment)); //$NON-NLS-1$
 
