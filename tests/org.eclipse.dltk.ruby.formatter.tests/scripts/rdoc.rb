@@ -21,3 +21,41 @@ class ABC
 	end
 end
 ====
+==== nested rdocs
+=begin
+outside
+	class
+=end
+class C
+=begin
+inside
+	class
+=end
+def a
+=begin
+inside
+	method
+=end
+end     
+def b        
+end  
+end
+==
+=begin
+outside
+	class
+=end
+class C
+=begin
+inside
+	class
+=end
+	def a
+=begin
+inside
+	method
+=end
+	end     
+	def b        
+	end  
+end

@@ -54,6 +54,16 @@ while a>0
 	puts "string
 printed"
 end
+==== multiline-string-while-block-condition
+while x != "A
+BBB"
+puts x
+end
+==
+while x != "A
+BBB"
+	puts x
+end
 ==== multiline-string-while-modifier
 i = 0 
 begin
@@ -115,4 +125,30 @@ end
 [1,2,3].each do |x|
 	puts "Iteration
 #{x}"
+end
+==== multiline-string-until-modifier
+i = "a"
+begin
+print i
+i += "z"
+end until i == "a\
+zz"
+==
+i = "a"
+begin
+	print i
+	i += "z"
+end until i == "a\
+zz"
+==== multiline=string-percent
+def z
+a = %!ola\
+lala!
+print a
+end
+==
+def z
+	a = %!ola\
+lala!
+	print a
 end
