@@ -54,6 +54,7 @@ public class WhileNode extends Node {
 	private final Node conditionNode;
 	private final Node bodyNode;
 	private final boolean evaluateAtStart;
+	private final ISourcePositionHolder keyword;
 	private final ISourcePositionHolder end;
 
 	/**
@@ -63,17 +64,27 @@ public class WhileNode extends Node {
 		return end;
 	}
 
-	public WhileNode(ISourcePosition position, Node conditionNode,
-			Node bodyNode, ISourcePositionHolder end) {
-		this(position, conditionNode, bodyNode, true, end);
+	/**
+	 * @return the keyword
+	 */
+	public ISourcePositionHolder getKeyword() {
+		return keyword;
 	}
 
 	public WhileNode(ISourcePosition position, Node conditionNode,
-			Node bodyNode, boolean evalAtStart, ISourcePositionHolder end) {
+			Node bodyNode, ISourcePositionHolder keyword,
+			ISourcePositionHolder end) {
+		this(position, conditionNode, bodyNode, true, keyword, end);
+	}
+
+	protected WhileNode(ISourcePosition position, Node conditionNode,
+			Node bodyNode, boolean evalAtStart, ISourcePositionHolder keyword,
+			ISourcePositionHolder end) {
 		super(position, NodeTypes.WHILENODE);
 		this.conditionNode = conditionNode;
 		this.bodyNode = bodyNode;
 		this.evaluateAtStart = evalAtStart;
+		this.keyword = keyword;
 		this.end = end;
 	}
 
@@ -133,7 +144,7 @@ public class WhileNode extends Node {
 		 */
 		public Inline(ISourcePosition position, Node conditionNode,
 				Node bodyNode, boolean evalAtStart) {
-			super(position, conditionNode, bodyNode, evalAtStart, null);
+			super(position, conditionNode, bodyNode, evalAtStart, null, null);
 		}
 
 		public boolean isBlock() {

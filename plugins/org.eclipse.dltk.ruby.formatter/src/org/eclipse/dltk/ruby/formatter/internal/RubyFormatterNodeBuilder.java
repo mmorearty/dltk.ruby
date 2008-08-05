@@ -157,8 +157,7 @@ public class RubyFormatterNodeBuilder extends AbstractFormatterNodeBuilder {
 				}
 				FormatterWhileNode whileNode = new FormatterWhileNode(document);
 				whileNode.setBegin(createTextNode(document, visited
-						.getStartOffset(), visited.getBodyNode()
-						.getStartOffset()));
+						.getKeyword()));
 				push(whileNode);
 				visitChildren(visited);
 				checkedPop(whileNode, visited.getEnd().getPosition()

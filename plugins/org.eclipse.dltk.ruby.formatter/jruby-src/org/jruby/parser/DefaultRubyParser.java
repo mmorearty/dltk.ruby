@@ -2273,7 +2273,7 @@ case 295:
 case 296:
 					// line 1090 "DefaultRubyParser.y"
   {
-                  yyVal = new WhileNode(support.union(((Token)yyVals[-6+yyTop]), ((Token)yyVals[0+yyTop])), support.getConditionNode(((Node)yyVals[-4+yyTop])), ((Node)yyVals[-1+yyTop]), ((Token)yyVals[0+yyTop]));
+                  yyVal = new WhileNode(support.union(((Token)yyVals[-6+yyTop]), ((Token)yyVals[0+yyTop])), support.getConditionNode(((Node)yyVals[-4+yyTop])), ((Node)yyVals[-1+yyTop]), ((Token)yyVals[-6+yyTop]), ((Token)yyVals[0+yyTop]));
               }
   break;
 case 297:
