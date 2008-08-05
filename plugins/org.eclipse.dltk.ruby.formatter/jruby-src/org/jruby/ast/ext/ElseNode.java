@@ -17,14 +17,13 @@ import org.jruby.ast.Node;
 import org.jruby.ast.NodeTypes;
 import org.jruby.ast.visitor.NodeVisitor;
 import org.jruby.evaluator.Instruction;
+import org.jruby.lexer.yacc.ISourcePosition;
 import org.jruby.lexer.yacc.ISourcePositionHolder;
-import org.jruby.lexer.yacc.SourcePosition;
 
 public class ElseNode extends Node {
 
-	private final Node statement;
-
 	private final ISourcePositionHolder elseKeyword;
+	private final Node statement;
 
 	/**
 	 * @return the elseKeyword
@@ -33,11 +32,11 @@ public class ElseNode extends Node {
 		return elseKeyword;
 	}
 
-	public ElseNode(Node statement, ISourcePositionHolder elseKeyword) {
-		super(SourcePosition.combinePosition(statement.getPosition(),
-				elseKeyword.getPosition()), NodeTypes.EXT_ELSENODE);
-		this.statement = statement;
+	public ElseNode(ISourcePosition position,
+			ISourcePositionHolder elseKeyword, Node statement) {
+		super(position, NodeTypes.EXT_ELSENODE);
 		this.elseKeyword = elseKeyword;
+		this.statement = statement;
 	}
 
 	/*

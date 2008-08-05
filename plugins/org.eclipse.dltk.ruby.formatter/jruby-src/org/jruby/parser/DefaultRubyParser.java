@@ -2309,7 +2309,7 @@ case 301:
 case 302:
 					// line 1106 "DefaultRubyParser.y"
   {
-                  yyVal = new CaseNode(support.union(((Token)yyVals[-4+yyTop]), ((Token)yyVals[0+yyTop])), null, new ElseNode(((Node)yyVals[-1+yyTop]), ((Token)yyVals[-2+yyTop])), ((Token)yyVals[-4+yyTop]), ((Token)yyVals[0+yyTop]));
+                  yyVal = new CaseNode(support.union(((Token)yyVals[-4+yyTop]), ((Token)yyVals[0+yyTop])), null, new ElseNode(support.union(((Token)yyVals[-2+yyTop]),((Node)yyVals[-1+yyTop])), ((Token)yyVals[-2+yyTop]), ((Node)yyVals[-1+yyTop])), ((Token)yyVals[-4+yyTop]), ((Token)yyVals[0+yyTop]));
               }
   break;
 case 303:
@@ -2483,7 +2483,7 @@ case 331:
 case 333:
 					// line 1207 "DefaultRubyParser.y"
   {
-                  yyVal = new ElseNode(((Node)yyVals[0+yyTop]), ((Token)yyVals[-1+yyTop]));
+                  yyVal = new ElseNode(support.union(((Token)yyVals[-1+yyTop]),((Node)yyVals[0+yyTop])), ((Token)yyVals[-1+yyTop]), ((Node)yyVals[0+yyTop]));
               }
   break;
 case 335:

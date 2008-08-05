@@ -1104,7 +1104,7 @@ primary       : literal
                   $$ = new CaseNode(support.union($1, $4), null, $3, $1, $4);
               }
               | kCASE opt_terms kELSE compstmt kEND {
-                  $$ = new CaseNode(support.union($1, $5), null, new ElseNode($4, $3), $1, $5);
+                  $$ = new CaseNode(support.union($1, $5), null, new ElseNode(support.union($3,$4), $3, $4), $1, $5);
               }
               | kFOR block_var kIN {
                   lexer.getConditionState().begin();
@@ -1205,7 +1205,7 @@ if_tail       : opt_else
 
 opt_else      : none 
               | kELSE compstmt {
-                  $$ = new ElseNode($2, $1);
+                  $$ = new ElseNode(support.union($1,$2), $1, $2);
               }
 
 block_var     : lhs
