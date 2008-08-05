@@ -110,3 +110,61 @@ aaa
 bbb
 	EOS8
 end
+==== here-document-multi
+a = 0
+def myfunc 
+print <<"THIS", <<"THAT"
+#{a}
+Here's a line
+or two.
+THIS
+and here's another.
+THAT
+end
+==
+a = 0
+def myfunc 
+	print <<"THIS", <<"THAT"
+#{a}
+Here's a line
+or two.
+THIS
+and here's another.
+THAT
+end
+==== here-document-quoted
+def myfunc 
+print <<`THIS`, <<`THAT`
+Here's a line
+or two.
+THIS
+and here's another.
+THAT
+end
+==
+def myfunc 
+	print <<`THIS`, <<`THAT`
+Here's a line
+or two.
+THIS
+and here's another.
+THAT
+end
+==== here-document-quoted-2
+def myfunc 
+print <<'THIS', <<'THAT'
+Here's a line
+or two.
+THIS
+and here's another.
+THAT
+end
+==
+def myfunc 
+	print <<'THIS', <<'THAT'
+Here's a line
+or two.
+THIS
+and here's another.
+THAT
+end
