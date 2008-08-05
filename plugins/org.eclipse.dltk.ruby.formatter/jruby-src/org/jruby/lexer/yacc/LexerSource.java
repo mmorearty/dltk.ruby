@@ -269,8 +269,8 @@ public class LexerSource {
                 column++;
             }
         }
-                   
-        return c != -1 ? (char) c : '\0';
+
+        return c != -1 ? (char) c : RubyYaccLexer.EOF;
     }
     
     /**
