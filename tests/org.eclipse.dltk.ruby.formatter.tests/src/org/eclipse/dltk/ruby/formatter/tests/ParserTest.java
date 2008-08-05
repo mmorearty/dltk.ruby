@@ -35,6 +35,7 @@ public class ParserTest extends TestCase {
 				.get(0);
 		IFormatterNode endNode = classNode.getEnd();
 		assertEquals(3, endNode.getEndOffset() - endNode.getStartOffset());
+		assertEquals(input.indexOf("end"), endNode.getStartOffset());
 	}
 
 }
