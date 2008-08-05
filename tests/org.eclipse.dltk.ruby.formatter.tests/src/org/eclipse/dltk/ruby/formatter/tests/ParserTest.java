@@ -15,6 +15,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
+import org.eclipse.dltk.compiler.util.Util;
 import org.eclipse.dltk.formatter.nodes.IFormatterContainerNode;
 import org.eclipse.dltk.formatter.nodes.IFormatterNode;
 import org.eclipse.dltk.ruby.formatter.RubyFormatter;
@@ -23,7 +24,8 @@ import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterBlockWithBeginEnd
 public class ParserTest extends TestCase {
 
 	public void testEndKeyword() {
-		final String input = "class Test" + "\r\n" + "end" + "\r\n";
+		final String input = "class Test" + Util.LINE_SEPARATOR + "end"
+				+ Util.LINE_SEPARATOR;
 		IFormatterContainerNode root = new RubyFormatter()
 				.buildFormattingTree(input);
 		assertNotNull(root);
