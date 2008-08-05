@@ -65,6 +65,21 @@ public class LexerSource {
     // past a read() line and still know what column we are at.
     private int lineWidths[] = new int[INITIAL_LINEWIDTH_SIZE];
 
+	/**
+	 * Marks the lines which were terminated with windows EOL char.
+	 * 
+	 * All magic with this variable is required to provide correct offsets for
+	 * the files with windows line delimiters.
+	 * 
+	 * When the file is read the windows line delimiter sequence '\r' + '\n' is
+	 * treated as single '\n' for the lexer.
+	 * 
+	 * When characters are unread we decrement the offset by one. But to be
+	 * correct - we should decrement it by 2 in this case. And after the unread
+	 * '\n' is read back - we should restore the offset by incrementing by 2.
+	 */
+	private boolean[] windowsEndOfLines = null;
+
     // index of last line width in line widths list
     private int lineWidthsLength = -1;
     
@@ -145,7 +160,13 @@ public class LexerSource {
                         
                     lineWidths = newLineWidths;
                 }                
-    		}
+    		} else {
+				if (windowsEndOfLines != null
+						&& line <= windowsEndOfLines.length
+						&& windowsEndOfLines[line - 1]) {
+					++offset;
+				}
+			}
     		
     		nextCharIsOnANewLine = true;
         } 
@@ -165,6 +186,11 @@ public class LexerSource {
     	
             if (c == '\n') {
                 line--;
+                if (windowsEndOfLines != null
+						&& line < windowsEndOfLines.length
+						&& windowsEndOfLines[line]) {
+					--offset;
+				}
                 column = lineWidths[line];
                 nextCharIsOnANewLine = true;
             } else {
@@ -267,6 +293,17 @@ public class LexerSource {
                 // ), we should update position info.
                 offset++;
                 column++;
+                if (windowsEndOfLines == null) {
+					windowsEndOfLines = new boolean[Math.max(
+							INITIAL_LINEWIDTH_SIZE, line + 1)];
+				} else if (line >= windowsEndOfLines.length) {
+					boolean[] newArray = new boolean[INITIAL_LINEWIDTH_SIZE
+							+ windowsEndOfLines.length];
+					System.arraycopy(windowsEndOfLines, 0, newArray, 0,
+							windowsEndOfLines.length);
+					windowsEndOfLines = newArray;
+				}
+				windowsEndOfLines[line] = true;
             }
         }
 
