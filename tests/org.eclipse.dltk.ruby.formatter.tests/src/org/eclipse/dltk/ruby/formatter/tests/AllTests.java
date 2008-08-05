@@ -34,6 +34,7 @@ public class AllTests {
 		suite.addTest(UnaryPlusTest.suite());
 		suite.addTest(HereDocumentTest.suite());
 		suite.addTest(StringsTest.suite());
+		suite.addTest(RegexpTest.suite());
 		// $JUnit-END$
 		return suite;
 	}
