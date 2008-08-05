@@ -195,8 +195,7 @@ public class RubyFormatterNodeBuilder extends AbstractFormatterNodeBuilder {
 				}
 				FormatterUntilNode untilNode = new FormatterUntilNode(document);
 				untilNode.setBegin(createTextNode(document, visited
-						.getStartOffset(), visited.getBodyNode()
-						.getStartOffset()));
+						.getKeyword()));
 				push(untilNode);
 				visitChildren(visited);
 				checkedPop(untilNode, visited.getEnd().getPosition()

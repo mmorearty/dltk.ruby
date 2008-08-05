@@ -1088,14 +1088,14 @@ primary       : literal
 	      } expr_value do {
 		  lexer.getConditionState().end();
 	      } compstmt kEND {
-                  $$ = new WhileNode(support.union($1, $7), support.getConditionNode($3), $6, $7);
+                  $$ = new WhileNode(support.union($1, $7), support.getConditionNode($3), $6, $1, $7);
               }
               | kUNTIL {
                   lexer.getConditionState().begin();
               } expr_value do {
                   lexer.getConditionState().end();
               } compstmt kEND {
-                  $$ = new UntilNode(getPosition($1), support.getConditionNode($3), $6, $7);
+                  $$ = new UntilNode(getPosition($1), support.getConditionNode($3), $6, $1, $7);
               }
               | kCASE expr_value opt_terms case_body kEND {
                   $$ = new CaseNode(support.union($1, $5), $2, $4, $1, $5);

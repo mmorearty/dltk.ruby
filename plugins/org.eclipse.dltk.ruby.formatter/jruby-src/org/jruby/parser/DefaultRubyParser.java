@@ -2291,7 +2291,7 @@ case 298:
 case 299:
 					// line 1097 "DefaultRubyParser.y"
   {
-                  yyVal = new UntilNode(getPosition(((Token)yyVals[-6+yyTop])), support.getConditionNode(((Node)yyVals[-4+yyTop])), ((Node)yyVals[-1+yyTop]), ((Token)yyVals[0+yyTop]));
+                  yyVal = new UntilNode(getPosition(((Token)yyVals[-6+yyTop])), support.getConditionNode(((Node)yyVals[-4+yyTop])), ((Node)yyVals[-1+yyTop]), ((Token)yyVals[-6+yyTop]), ((Token)yyVals[0+yyTop]));
               }
   break;
 case 300:

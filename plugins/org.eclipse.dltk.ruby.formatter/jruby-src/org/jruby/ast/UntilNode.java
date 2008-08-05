@@ -47,13 +47,16 @@ public class UntilNode extends Node {
 
 	private final Node conditionNode;
 	private final Node bodyNode;
+	private final ISourcePositionHolder keyword;
 	private final ISourcePositionHolder end;
 
 	public UntilNode(ISourcePosition position, Node conditionNode,
-			Node bodyNode, ISourcePositionHolder end) {
+			Node bodyNode, ISourcePositionHolder keyword,
+			ISourcePositionHolder end) {
 		super(position, NodeTypes.UNTILNODE);
 		this.conditionNode = conditionNode;
 		this.bodyNode = bodyNode;
+		this.keyword = keyword;
 		this.end = end;
 	}
 
@@ -86,7 +89,14 @@ public class UntilNode extends Node {
 	}
 
 	public List childNodes() {
-		return Node.createList(conditionNode, bodyNode);
+		return Node.createList(bodyNode, conditionNode);
+	}
+
+	/**
+	 * @return the keyword
+	 */
+	public ISourcePositionHolder getKeyword() {
+		return keyword;
 	}
 
 	/**
@@ -109,7 +119,7 @@ public class UntilNode extends Node {
 		 */
 		public Inline(ISourcePosition position, Node conditionNode,
 				Node bodyNode) {
-			super(position, conditionNode, bodyNode, null);
+			super(position, conditionNode, bodyNode, null, null);
 		}
 
 		public boolean isBlock() {
