@@ -211,9 +211,9 @@ public class ParserSupport {
         } else if (id.equals("false")) {
         	return new FalseNode(position);
         } else if (id.equals("__FILE__")) {
-            return new StrNode(position, ByteList.create(position.getFile()));
+            return new ConstNode(position, id);
         } else if (id.equals("__LINE__")) {
-            return new FixnumNode(position, position.getEndLine()+1);
+            return new ConstNode(position, id);
         } 
           
         return gettable2(id, position);
