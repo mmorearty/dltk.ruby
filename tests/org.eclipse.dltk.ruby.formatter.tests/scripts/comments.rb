@@ -14,7 +14,7 @@ def method1
 			#inside method 1
 return 1
 end
-	
+
 #method 2
 def method2
 #inside method 2
@@ -30,7 +30,7 @@ class Hello
 		#inside method 1
 		return 1
 	end
-	
+
 	#method 2
 	def method2
 		#inside method 2
