@@ -162,3 +162,13 @@ def z
 lala!
 	print a
 end
+==== string-as-return
+def xName
+"AAAA"
+end
+puts xName
+==
+def xName
+	"AAAA"
+end
+puts xName
