@@ -11,10 +11,14 @@
  *******************************************************************************/
 package org.eclipse.dltk.formatter.nodes;
 
+import java.util.List;
+
 public interface IFormatterContainerNode extends IFormatterNode {
 
 	void addChild(IFormatterNode child);
-	
+
 	boolean isEmpty();
+
+	List getChildren();
 
 }

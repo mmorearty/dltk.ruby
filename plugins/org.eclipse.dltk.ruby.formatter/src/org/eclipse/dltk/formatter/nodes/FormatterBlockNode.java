@@ -12,6 +12,7 @@
 package org.eclipse.dltk.formatter.nodes;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -83,6 +84,10 @@ public class FormatterBlockNode extends AbstractFormatterNode implements
 			}
 		}
 		return true;
+	}
+
+	public List getChildren() {
+		return Collections.unmodifiableList(body);
 	}
 
 	public String toString() {

@@ -11,6 +11,9 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.formatter.internal.nodes;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.dltk.formatter.nodes.FormatterBlockNode;
 import org.eclipse.dltk.formatter.nodes.IFormatterContext;
 import org.eclipse.dltk.formatter.nodes.IFormatterDocument;
@@ -83,6 +86,22 @@ public abstract class FormatterBlockWithBeginNode extends FormatterBlockNode {
 	 */
 	public boolean isEmpty() {
 		return begin == null && super.isEmpty();
+	}
+
+	/*
+	 * @see org.eclipse.dltk.formatter.nodes.FormatterBlockNode#getChildren()
+	 */
+	public List getChildren() {
+		if (begin == null) {
+			return super.getChildren();
+		} else {
+			List result = new ArrayList();
+			if (begin != null) {
+				result.add(begin);
+			}
+			result.addAll(super.getChildren());
+			return result;
+		}
 	}
 
 	/*
