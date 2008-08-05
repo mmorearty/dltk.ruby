@@ -22,6 +22,7 @@ public class AllTests {
 		TestSuite suite = new TestSuite(
 				"Test for org.eclipse.dltk.ruby.formatter.tests");
 		// $JUnit-BEGIN$
+		suite.addTestSuite(ParserTest.class);
 		suite.addTestSuite(SimpleTests.class);
 		suite.addTest(ClassesAndMethodsTest.suite());
 		suite.addTest(ModulesTest.suite());
