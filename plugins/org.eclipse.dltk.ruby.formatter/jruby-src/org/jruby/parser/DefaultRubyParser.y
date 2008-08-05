@@ -1390,7 +1390,7 @@ regexp	      : tREGEXP_BEG xstring_contents tREGEXP_END {
 		  Node node = $2;
 
 		  if (node == null) {
-                      $$ = new RegexpNode(getPosition($1), ByteList.create(""), options & ~ReOptions.RE_OPTION_ONCE);
+                      $$ = new RegexpNode(getPosition($1), ByteList.createEmpty(), options & ~ReOptions.RE_OPTION_ONCE);
 		  } else if (node instanceof StrNode) {
                       $$ = new RegexpNode($2.getPosition(), (ByteList) ((StrNode) node).getValue().clone(), options & ~ReOptions.RE_OPTION_ONCE);
 		  } else if (node instanceof DStrNode) {
@@ -1436,7 +1436,7 @@ qword_list     : /* none */ {
 	       }
 
 string_contents: /* none */ {
-                   $$ = new StrNode($<Token>0.getPosition(), ByteList.create(""));
+                   $$ = new StrNode($<Token>0.getPosition(), ByteList.createEmpty());
 	       }
 	       | string_contents string_content {
                    $$ = support.literal_concat(getPosition($1), $1, $2);

@@ -2742,7 +2742,7 @@ case 378:
 		  Node node = ((Node)yyVals[-1+yyTop]);
 
 		  if (node == null) {
-                      yyVal = new RegexpNode(getPosition(((Token)yyVals[-2+yyTop])), ByteList.create(""), options & ~ReOptions.RE_OPTION_ONCE);
+                      yyVal = new RegexpNode(getPosition(((Token)yyVals[-2+yyTop])), ByteList.createEmpty(), options & ~ReOptions.RE_OPTION_ONCE);
 		  } else if (node instanceof StrNode) {
                       yyVal = new RegexpNode(((Node)yyVals[-1+yyTop]).getPosition(), (ByteList) ((StrNode) node).getValue().clone(), options & ~ReOptions.RE_OPTION_ONCE);
 		  } else if (node instanceof DStrNode) {
@@ -2811,7 +2811,7 @@ case 388:
 case 389:
 					// line 1438 "DefaultRubyParser.y"
   {
-                   yyVal = new StrNode(((Token)yyVals[0+yyTop]).getPosition(), ByteList.create(""));
+                   yyVal = new StrNode(((Token)yyVals[0+yyTop]).getPosition(), ByteList.createEmpty());
 	       }
   break;
 case 390:

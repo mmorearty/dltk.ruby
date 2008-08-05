@@ -491,6 +491,10 @@ public final class ByteList implements Comparable, CharSequence, Serializable {
         return new ByteList(plain(s),false);
     }
 
+    public static ByteList createEmpty() {
+		return new ByteList(NULL_ARRAY, false);
+	}
+
     public static byte[] plain(CharSequence s) {
         if(s instanceof String) {
             try {
