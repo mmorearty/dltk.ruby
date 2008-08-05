@@ -76,3 +76,15 @@ puts( if objects.length == 1
 	else
 		YAML::dump_stream( *objects )
 	end )
+==== empty-if-else
+if true
+
+else
+
+end
+==
+if true
+
+else
+
+end
