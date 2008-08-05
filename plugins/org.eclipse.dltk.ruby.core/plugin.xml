@@ -98,7 +98,7 @@
            base-type="org.eclipse.core.runtime.text"
            default-charset="UTF-8"
            describer="org.eclipse.dltk.ruby.core.RubyContentDescriber"
-           file-extensions="rb"
+           file-extensions="rb,rbw"
            id="org.eclipse.dltk.rubyContentType"
            name="%rubyContentType"
            priority="high">       

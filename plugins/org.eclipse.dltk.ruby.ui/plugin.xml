@@ -5,7 +5,7 @@
 	  id="org.eclipse.dltk.ruby.ui.editor.DocumentSetupParticipant"
 	  name="%documentSetupParticipantName"
 	  point="org.eclipse.core.filebuffers.documentSetup">
-		<participant extensions="rb" 
+		<participant extensions="rb,rbw" 
 			class="org.eclipse.dltk.ruby.internal.ui.editor.RubyDocumentSetupParticipant">
 	   		</participant>
 	</extension>
@@ -15,7 +15,7 @@
             canSearchEnclosingProjects="true"
             class="org.eclipse.dltk.ruby.internal.ui.search.RubySearchPage"
             enabled="true"
-            extensions="rb:90"
+            extensions="rb:90,rbw:90"
             icon="$nl$/icons/obj16/search_obj.gif"
             id="org.eclipse.dltk.ui.RubySearchPage"
             label="%RubySearchPage.label"
@@ -68,7 +68,7 @@
          class="org.eclipse.dltk.ruby.internal.ui.editor.RubyEditor"
          contributorClass="org.eclipse.dltk.internal.ui.editor.SourceModuleEditorActionContributor"
          default="true"
-         extensions="rb"
+         extensions="rb,rbw"
          icon="$nl$/icons/obj16/ruby_obj.gif"
          id="org.eclipse.dltk.ruby.ui.editor.RubyEditor"
          name="%RubyEditor.name">
@@ -86,7 +86,7 @@
     </contextType>
     <include
           file="templates/templates.xml"
-          translations="templates/templates.properties">
+          translations="$nl$/templates/templates.properties">
     </include>
  </extension>
 	
@@ -476,7 +476,7 @@
 
    <extension point="org.eclipse.compare.contentMergeViewers">
       <viewer
-            extensions="rb"
+            extensions="rb,rbw"
             class="org.eclipse.dltk.ruby.internal.ui.compare.RubyMergeViewerCreator"
             id="org.eclipse.dltk.ruby.internal.ui.compare.RubyMergeViewer">
       </viewer>
