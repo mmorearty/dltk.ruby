@@ -1,9 +1,11 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Formatter Plug-in
+Bundle-Name: %pluginName
 Bundle-SymbolicName: org.eclipse.dltk.ruby.formatter;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Activator: org.eclipse.dltk.ruby.formatter.internal.RubyFormatterPlugin
+Bundle-Vendor: %pluginProvider
+Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.dltk.ui,
  org.eclipse.dltk.core,

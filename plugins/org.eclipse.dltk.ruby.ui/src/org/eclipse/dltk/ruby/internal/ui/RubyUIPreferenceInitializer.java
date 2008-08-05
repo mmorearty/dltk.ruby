@@ -24,5 +24,8 @@ public class RubyUIPreferenceInitializer extends AbstractPreferenceInitializer {
 		RubyPreferenceConstants.initializeDefaultValues(store);
 		SemanticHighlightingUtils.initializeDefaultValues(store, RubyUI.getDefault()
 				.getTextTools().getSemanticHighlightings());
+
+		store.setDefault(RubyPreferenceConstants.FORMATTER_ID,
+		"org.eclipse.dltk.ruby.formatter.RubyFormatterFactory"); //$NON-NLS-1$
 	}
 }
