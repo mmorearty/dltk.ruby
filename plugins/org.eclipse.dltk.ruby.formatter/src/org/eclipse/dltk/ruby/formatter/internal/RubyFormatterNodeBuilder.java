@@ -47,6 +47,7 @@ import org.jruby.ast.BeginNode;
 import org.jruby.ast.CaseNode;
 import org.jruby.ast.ClassNode;
 import org.jruby.ast.CommentNode;
+import org.jruby.ast.DRegexpNode;
 import org.jruby.ast.DStrNode;
 import org.jruby.ast.DefnNode;
 import org.jruby.ast.DefsNode;
@@ -440,6 +441,13 @@ public class RubyFormatterNodeBuilder extends AbstractFormatterNodeBuilder {
 			}
 
 			public Instruction visitRegexpNode(RegexpNode visited) {
+				FormatterStringNode strNode = new FormatterStringNode(document,
+						visited.getStartOffset(), visited.getEndOffset());
+				addChild(strNode);
+				return null;
+			}
+
+			public Instruction visitDRegxNode(DRegexpNode visited) {
 				FormatterStringNode strNode = new FormatterStringNode(document,
 						visited.getStartOffset(), visited.getEndOffset());
 				addChild(strNode);
