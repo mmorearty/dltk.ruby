@@ -285,19 +285,19 @@ public class LexerSource {
     }
 
     public String readLine() throws IOException {
-        StringBuffer sb = new StringBuffer(80);
-        for (char c = read(); c != '\n' && c != '\0'; c = read()) {
-            sb.append(c);
-        }
-        return sb.toString();
-    }
+		StringBuffer sb = new StringBuffer(80);
+		for (char c = read(); c != '\n' && c != RubyYaccLexer.EOF; c = read()) {
+			sb.append(c);
+		}
+		return sb.toString();
+	}
     
     public ByteList readLineBytes() throws IOException {
         ByteList bytelist = new ByteList(80);
 
-        for (char c = read(); c != '\n' && c != '\0'; c = read()) {
-            bytelist.append(c);
-        }
+        for (char c = read(); c != '\n' && c != RubyYaccLexer.EOF; c = read()) {
+			bytelist.append(c);
+		}
         return bytelist;
     }
 
@@ -314,7 +314,7 @@ public class LexerSource {
         
         if (indent) {
         	char c;
-        	while ((c = read()) != '\0') {
+        	while ((c = read()) != RubyYaccLexer.EOF) {
         		if (!Character.isWhitespace(c)) {
         			unread(c);
         			break;
@@ -393,7 +393,7 @@ public class LexerSource {
                     c = readEscape();
                 } else if (c == '?') {
                     return '\u0177';
-                } else if (c == '\0') {
+                } else if (c == RubyYaccLexer.EOF) {
                     throw new SyntaxException(getPosition(), "Invalid escape character syntax");
                 }
                 return (char) (c & 0x9f);
