@@ -143,8 +143,9 @@ public class WhileNode extends Node {
 		 * @param end
 		 */
 		public Inline(ISourcePosition position, Node conditionNode,
-				Node bodyNode, boolean evalAtStart) {
-			super(position, conditionNode, bodyNode, evalAtStart, null, null);
+				Node bodyNode, boolean evalAtStart,
+				ISourcePositionHolder keyword) {
+			super(position, conditionNode, bodyNode, evalAtStart, keyword, null);
 		}
 
 		public boolean isBlock() {

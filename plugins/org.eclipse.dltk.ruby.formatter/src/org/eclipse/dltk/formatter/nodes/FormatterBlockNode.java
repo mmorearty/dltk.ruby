@@ -86,7 +86,7 @@ public class FormatterBlockNode extends AbstractFormatterNode implements
 	}
 
 	public String toString() {
-		return super.toString() + body;
+		return body.toString();
 	}
 
 }

@@ -1045,9 +1045,9 @@ case 18:
 					// line 341 "DefaultRubyParser.y"
   {
                   if (((Node)yyVals[-2+yyTop]) != null && ((Node)yyVals[-2+yyTop]) instanceof BeginNode) {
-                      yyVal = new WhileNode.Inline(getPosition(((Node)yyVals[-2+yyTop])), support.getConditionNode(((Node)yyVals[0+yyTop])), ((Node)yyVals[-2+yyTop]), false);
+                      yyVal = new WhileNode.Inline(getPosition(((Node)yyVals[-2+yyTop])), support.getConditionNode(((Node)yyVals[0+yyTop])), ((Node)yyVals[-2+yyTop]), false, ((Token)yyVals[-1+yyTop]));
                   } else {
-                      yyVal = new WhileNode.Inline(getPosition(((Node)yyVals[-2+yyTop])), support.getConditionNode(((Node)yyVals[0+yyTop])), ((Node)yyVals[-2+yyTop]), true);
+                      yyVal = new WhileNode.Inline(getPosition(((Node)yyVals[-2+yyTop])), support.getConditionNode(((Node)yyVals[0+yyTop])), ((Node)yyVals[-2+yyTop]), true, ((Token)yyVals[-1+yyTop]));
                   }
               }
   break;
@@ -1055,9 +1055,9 @@ case 19:
 					// line 348 "DefaultRubyParser.y"
   {
                   if (((Node)yyVals[-2+yyTop]) != null && ((Node)yyVals[-2+yyTop]) instanceof BeginNode) {
-                      yyVal = new UntilNode.Inline(getPosition(((Node)yyVals[-2+yyTop])), support.getConditionNode(((Node)yyVals[0+yyTop])), ((Node)yyVals[-2+yyTop]));
+                      yyVal = new UntilNode.Inline(getPosition(((Node)yyVals[-2+yyTop])), support.getConditionNode(((Node)yyVals[0+yyTop])), ((Node)yyVals[-2+yyTop]), ((Token)yyVals[-1+yyTop]));
                   } else {
-                      yyVal = new UntilNode.Inline(getPosition(((Node)yyVals[-2+yyTop])), support.getConditionNode(((Node)yyVals[0+yyTop])), ((Node)yyVals[-2+yyTop]));
+                      yyVal = new UntilNode.Inline(getPosition(((Node)yyVals[-2+yyTop])), support.getConditionNode(((Node)yyVals[0+yyTop])), ((Node)yyVals[-2+yyTop]), ((Token)yyVals[-1+yyTop]));
                   }
               }
   break;

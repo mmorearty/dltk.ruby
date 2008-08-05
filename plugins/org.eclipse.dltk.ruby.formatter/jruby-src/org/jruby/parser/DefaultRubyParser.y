@@ -340,16 +340,16 @@ stmt          : kALIAS fitem {
               }
               | stmt kWHILE_MOD expr_value {
                   if ($1 != null && $1 instanceof BeginNode) {
-                      $$ = new WhileNode.Inline(getPosition($1), support.getConditionNode($3), $1, false);
+                      $$ = new WhileNode.Inline(getPosition($1), support.getConditionNode($3), $1, false, $2);
                   } else {
-                      $$ = new WhileNode.Inline(getPosition($1), support.getConditionNode($3), $1, true);
+                      $$ = new WhileNode.Inline(getPosition($1), support.getConditionNode($3), $1, true, $2);
                   }
               }
               | stmt kUNTIL_MOD expr_value {
                   if ($1 != null && $1 instanceof BeginNode) {
-                      $$ = new UntilNode.Inline(getPosition($1), support.getConditionNode($3), $1);
+                      $$ = new UntilNode.Inline(getPosition($1), support.getConditionNode($3), $1, $2);
                   } else {
-                      $$ = new UntilNode.Inline(getPosition($1), support.getConditionNode($3), $1);
+                      $$ = new UntilNode.Inline(getPosition($1), support.getConditionNode($3), $1, $2);
                   }
               }
               | stmt kRESCUE_MOD stmt {

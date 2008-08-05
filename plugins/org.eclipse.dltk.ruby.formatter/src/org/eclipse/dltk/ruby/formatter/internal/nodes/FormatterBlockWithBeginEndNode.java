@@ -96,7 +96,7 @@ public abstract class FormatterBlockWithBeginEndNode extends FormatterBlockNode 
 	 * @see org.eclipse.dltk.ruby.formatter.node.FormatterBlockNode#toString()
 	 */
 	public String toString() {
-		return begin + super.toString();
+		return begin + "\n" + super.toString() + "\n" + end;
 	}
 
 }

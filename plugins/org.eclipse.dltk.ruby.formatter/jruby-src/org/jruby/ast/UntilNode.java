@@ -118,8 +118,8 @@ public class UntilNode extends Node {
 		 * @param bodyNode
 		 */
 		public Inline(ISourcePosition position, Node conditionNode,
-				Node bodyNode) {
-			super(position, conditionNode, bodyNode, null, null);
+				Node bodyNode, ISourcePositionHolder keyword) {
+			super(position, conditionNode, bodyNode, keyword, null);
 		}
 
 		public boolean isBlock() {

@@ -32,6 +32,7 @@ import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterIfElseNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterIfEndNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterIfNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterMethodNode;
+import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterModifierNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterRDocNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterRescueElseNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterRescueNode;
@@ -190,7 +191,14 @@ public class RubyFormatterNodeBuilder extends AbstractFormatterNodeBuilder {
 
 			public Instruction visitUntilNode(UntilNode visited) {
 				if (!visited.isBlock()) {
-					visitChildren(visited);
+					visitChild(visited.getBodyNode());
+					FormatterModifierNode block = new FormatterModifierNode(
+							document);
+					block.addChild(createTextNode(document, visited
+							.getKeyword()));
+					push(block);
+					visitChild(visited.getConditionNode());
+					checkedPop(block, visited.getConditionNode().getEndOffset());
 					return null;
 				}
 				FormatterUntilNode untilNode = new FormatterUntilNode(document);
@@ -271,9 +279,7 @@ public class RubyFormatterNodeBuilder extends AbstractFormatterNodeBuilder {
 						.getStartOffset(), visited.getCondition()
 						.getEndOffset()));
 				push(ifNode);
-				if (visited.getFirstBody() != null) {
-					visitChild(visited.getFirstBody());
-				}
+				visitChild(visited.getFirstBody());
 				checkedPop(ifNode, visited.getSecondBody() != null ? visited
 						.getSecondBody().getStartOffset() : visited
 						.getEndKeyword().getPosition().getStartOffset());
@@ -326,9 +332,7 @@ public class RubyFormatterNodeBuilder extends AbstractFormatterNodeBuilder {
 				beginNode.setBegin(createTextNode(document, visited
 						.getBeginKeyword()));
 				push(beginNode);
-				if (visited.getBodyNode() != null) {
-					visitChild(visited.getBodyNode());
-				}
+				visitChild(visited.getBodyNode());
 				checkedPop(beginNode, visited.getEndKeyword().getPosition()
 						.getStartOffset());
 				beginNode.setEnd(createTextNode(document, visited
@@ -340,9 +344,7 @@ public class RubyFormatterNodeBuilder extends AbstractFormatterNodeBuilder {
 				if (visited.isInline()) {
 					return null;
 				}
-				if (visited.getBodyNode() != null) {
-					visitChild(visited.getBodyNode());
-				}
+				visitChild(visited.getBodyNode());
 				RescueBodyNode node = visited.getRescueNode();
 				while (node != null) {
 					FormatterRescueNode rescueNode = new FormatterRescueNode(
@@ -354,9 +356,7 @@ public class RubyFormatterNodeBuilder extends AbstractFormatterNodeBuilder {
 									.getRescueKeyword().getPosition()
 									.getEndOffset()));
 					push(rescueNode);
-					if (node.getBodyNode() != null) {
-						visitChild(node.getBodyNode());
-					}
+					visitChild(node.getBodyNode());
 					node = node.getOptRescueNode();
 					final int rescueEnd;
 					if (node != null) {
@@ -383,9 +383,7 @@ public class RubyFormatterNodeBuilder extends AbstractFormatterNodeBuilder {
 			}
 
 			public Instruction visitEnsureNode(EnsureNode visited) {
-				if (visited.getBodyNode() != null) {
-					visitChild(visited.getBodyNode());
-				}
+				visitChild(visited.getBodyNode());
 				FormatterEnsureNode ensureNode = new FormatterEnsureNode(
 						document);
 				ensureNode.setBegin(createTextNode(document, visited
@@ -465,7 +463,7 @@ public class RubyFormatterNodeBuilder extends AbstractFormatterNodeBuilder {
 			}
 
 			private void visitChild(final Node child) {
-				if (isVisitable(child)) {
+				if (child != null && isVisitable(child)) {
 					child.accept(this);
 				}
 			}
