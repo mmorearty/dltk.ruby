@@ -154,3 +154,25 @@ END {
 	#end
 	doStuff
 }
+==== lambda-declarations
+def func()
+foo()
+a = lambda {
+print "a"
+}
+a.call
+foo()
+print "zzzzzzzzzz"
+#comment
+end
+==
+def func()
+	foo()
+	a = lambda {
+		print "a"
+	}
+	a.call
+	foo()
+	print "zzzzzzzzzz"
+	#comment
+end

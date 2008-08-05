@@ -32,6 +32,16 @@ class Hello
 		return 2
 	end
 end
+==== method-incorrectly-indented
+	def func()
+foo()
+#comment
+end
+==
+def func()
+	foo()
+	#comment
+end
 ==== 2 methods-empty lines
 class Hello
 

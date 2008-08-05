@@ -64,3 +64,15 @@ unless a == 1
 else
 	puts "One"
 end
+==== if-clause-as-argument
+puts( if objects.length == 1
+YAML::dump( *objects )
+else
+YAML::dump_stream( *objects )
+end )
+==
+puts( if objects.length == 1
+		YAML::dump( *objects )
+	else
+		YAML::dump_stream( *objects )
+	end )
