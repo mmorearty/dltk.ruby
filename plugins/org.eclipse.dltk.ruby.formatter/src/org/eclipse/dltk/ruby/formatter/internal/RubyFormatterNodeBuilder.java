@@ -58,6 +58,7 @@ import org.jruby.ast.MethodDefNode;
 import org.jruby.ast.ModuleNode;
 import org.jruby.ast.Node;
 import org.jruby.ast.PostExeNode;
+import org.jruby.ast.RegexpNode;
 import org.jruby.ast.RescueBodyNode;
 import org.jruby.ast.RescueNode;
 import org.jruby.ast.SClassNode;
@@ -436,6 +437,13 @@ public class RubyFormatterNodeBuilder extends AbstractFormatterNodeBuilder {
 			}
 
 			public Instruction visitDStrNode(DStrNode visited) {
+				FormatterStringNode strNode = new FormatterStringNode(document,
+						visited.getStartOffset(), visited.getEndOffset());
+				addChild(strNode);
+				return null;
+			}
+
+			public Instruction visitRegexpNode(RegexpNode visited) {
 				FormatterStringNode strNode = new FormatterStringNode(document,
 						visited.getStartOffset(), visited.getEndOffset());
 				addChild(strNode);
