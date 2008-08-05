@@ -56,7 +56,7 @@ public class StrNode extends Node implements ILiteralNode {
     public StrNode(ISourcePosition position, StrNode head, StrNode tail) {
         super(position, NodeTypes.STRNODE);
         
-        this.value = (ByteList) head.getValue();
+        this.value = head.getValue();
         
         value.append(tail.getValue());
     }
