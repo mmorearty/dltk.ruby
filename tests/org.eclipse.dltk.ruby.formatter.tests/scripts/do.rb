@@ -38,3 +38,19 @@ print x
 [ 1, 2, 3 ].each { |x|
 	print x
 }
+==== simple-do-braces-empty
+[ 1, 2, 3 ].each { |x|
+
+}
+==
+[ 1, 2, 3 ].each { |x|
+
+}
+==== simple-do-empty
+[ 1, 2, 3 ].each do |x|
+
+end
+==
+[ 1, 2, 3 ].each do |x|
+
+end

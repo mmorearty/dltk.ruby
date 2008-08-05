@@ -76,7 +76,7 @@ puts( if objects.length == 1
 	else
 		YAML::dump_stream( *objects )
 	end )
-==== empty-if-else
+==== empty-if-empty-else
 if true
 
 else
@@ -87,4 +87,28 @@ if true
 
 else
 
+end
+==== if-else-empty
+if z ==1
+print z    
+else
+
+end
+==
+if z ==1
+	print z    
+else
+
+end
+==== if-empty-else
+if z ==1
+
+else
+print z
+end
+==
+if z ==1
+
+else
+	print z
 end

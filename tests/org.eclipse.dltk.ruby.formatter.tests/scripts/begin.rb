@@ -156,3 +156,31 @@ else
 ensure
 	tidyUp
 end
+==== rescue-empty
+begin
+
+rescue
+
+ensure
+
+end
+==
+begin
+
+rescue
+
+ensure
+
+end
+==== begin-no-rescue-empty-else
+	begin
+
+		else
+
+	end
+==
+begin
+
+else
+
+end

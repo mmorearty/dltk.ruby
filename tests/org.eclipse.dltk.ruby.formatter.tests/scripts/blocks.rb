@@ -18,6 +18,14 @@ puts a
 a = 1
 a += 1 while a < 10
 puts a
+==== while-empty
+while a < 10
+
+end
+==
+while a < 10
+
+end
 ==== for
 for i in 1..10
 puts i
@@ -84,6 +92,16 @@ puts a
 a = 1
 a += 1 until a >= 10
 puts a
+==== until-empty
+z = 1
+begin
+
+end until z == 1
+==
+z = 1
+begin
+
+end until z == 1
 ==== case
 digit = 0
 case age
@@ -118,6 +136,40 @@ case
 	else
 		puts "other"
 end
+==== case-empty
+case z
+when 1
+
+when 2
+
+end
+==
+case z
+	when 1
+
+	when 2
+
+end
+====case-else-empty
+case z
+
+when 1
+
+when 2
+
+else
+
+end
+==
+case z
+
+	when 1
+
+	when 2
+
+	else
+
+end
 ==== BEGIN
 BEGIN {
 doStuff
@@ -135,6 +187,12 @@ doStuff
 BEGIN {
 	#begin
 	doStuff
+}
+==== BEGIN-empty
+BEGIN {
+}
+==
+BEGIN {
 }
 ==== END
 END {
