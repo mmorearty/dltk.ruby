@@ -126,6 +126,16 @@ end
 	puts "Iteration
 #{x}"
 end
+==== xstring
+[1,2,3].each do |x|
+puts `ls
+date`
+end
+==
+[1,2,3].each do |x|
+	puts `ls
+date`
+end
 ==== multiline-string-until-modifier
 i = "a"
 begin
