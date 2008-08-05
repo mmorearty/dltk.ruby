@@ -6,6 +6,14 @@ end
 class Hello
 
 end
+==== empty module
+module Hello
+
+end
+==
+module Hello
+
+end
 ==== attribute only
 class Hello
 attr_accessor :var
