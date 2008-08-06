@@ -53,6 +53,7 @@ import org.eclipse.dltk.core.search.TypeNameMatchRequestor;
 import org.eclipse.dltk.internal.core.ModelElement;
 import org.eclipse.dltk.ruby.ast.RubyAssignment;
 import org.eclipse.dltk.ruby.ast.RubyColonExpression;
+import org.eclipse.dltk.ruby.ast.RubyForStatement2;
 import org.eclipse.dltk.ruby.ast.RubyMethodArgument;
 import org.eclipse.dltk.ruby.ast.RubySuperExpression;
 import org.eclipse.dltk.ruby.core.RubyPlugin;
@@ -389,7 +390,8 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 				final ASTNode node = wayToNode[i];
 				if (node instanceof MethodDeclaration
 						|| node instanceof TypeDeclaration
-						|| node instanceof ModuleDeclaration) {
+						|| node instanceof ModuleDeclaration
+						|| node instanceof RubyForStatement2) {
 					parentScope = node;
 					break;
 				}
@@ -469,8 +471,18 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 		final List availableMethods = new ArrayList();
 
 		if (receiver == null) {
-			RubyClassType type = RubyTypeInferencingUtils.determineSelfClass(
+			IEvaluatedType type = RubyTypeInferencingUtils.determineSelfClass(
 					sourceModule, parsedUnit, parentCall.sourceStart());
+			if ((type != null)
+					&& "Object".equals(type.getTypeName())) { //$NON-NLS-1$
+				ExpressionTypeGoal goal = new ExpressionTypeGoal(
+						new BasicContext(sourceModule,parsedUnit), parsedUnit);
+				IEvaluatedType type2 = inferencer.evaluateType(
+						goal, 2000);
+				if (type2 != null) {
+					type = type2;
+				}
+			}
 			IMethod[] m = RubyModelUtils.searchClassMethodsExact(sourceModule,
 					parsedUnit, type, methodName);
 			addArrayToCollection(m, availableMethods);
