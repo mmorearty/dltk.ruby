@@ -1,4 +1,4 @@
-==== empty module
+==== rdoc-simple
 =begin
 Some
 	Documentation
