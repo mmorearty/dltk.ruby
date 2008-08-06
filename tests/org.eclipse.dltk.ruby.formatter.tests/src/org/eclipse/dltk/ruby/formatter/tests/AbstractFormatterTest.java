@@ -13,6 +13,7 @@ package org.eclipse.dltk.ruby.formatter.tests;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Collection;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -47,6 +48,10 @@ public abstract class AbstractFormatterTest extends TestCase {
 			return document.get();
 		}
 		return input;
+	}
+
+	protected static String joinLines(Collection lines) {
+		return joinLines((String[]) lines.toArray(new String[lines.size()]));
 	}
 
 	protected static String joinLines(String[] lines) {
