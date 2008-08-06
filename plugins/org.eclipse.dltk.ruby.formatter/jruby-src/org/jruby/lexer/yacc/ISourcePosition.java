@@ -45,19 +45,6 @@ public interface ISourcePosition {
 	public String getFile();
     
     /**
-     * Which is the first(start) line that this source position occurs on (zero-based)
-     * @return
-     */
-	public int getStartLine();
-    
-    /**
-     * Which is the last(end) line that this source position occurs on (zero-based)
-     * 
-     * @return the line
-     */
-	public int getEndLine();
-    
-    /**
      * Modify startOffset by a relativeValue.  At times our grammar and lexer do not give us
      * the exact positions we need so we need to manually tweak position.  The bummer of this
      * is this requires ISourcePosition implementations are mutable.  

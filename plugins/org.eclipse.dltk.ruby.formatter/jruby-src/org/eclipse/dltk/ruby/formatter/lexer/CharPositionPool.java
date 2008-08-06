@@ -18,14 +18,13 @@ public class CharPositionPool {
 
 	private final List unused = new ArrayList();
 
-	public CharRecord create(int ch, int line, int column, int offset) {
+	public CharRecord create(int ch, int column, int offset) {
 		if (unused.isEmpty()) {
-			return new CharRecord(ch, line, column, offset);
+			return new CharRecord(ch, column, offset);
 		} else {
-			final CharRecord result = (CharRecord) unused.remove(unused
-					.size() - 1);
+			final CharRecord result = (CharRecord) unused
+					.remove(unused.size() - 1);
 			result.ch = ch;
-			result.line = line;
 			result.column = column;
 			result.offset = offset;
 			return result;
@@ -34,7 +33,6 @@ public class CharPositionPool {
 
 	public void release(CharRecord position) {
 		position.ch = -1;
-		position.line = -1;
 		position.column = -1;
 		position.offset = -1;
 		unused.add(position);

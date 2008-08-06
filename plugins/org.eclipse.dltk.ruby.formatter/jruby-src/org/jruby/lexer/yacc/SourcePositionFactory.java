@@ -39,20 +39,20 @@ public class SourcePositionFactory implements ISourcePositionFactory {
     public ISourcePosition getPosition(ISourcePosition startPosition, boolean inclusive) {
 
         if (startPosition == null) {
-            lastPosition = new SourcePosition(source.getFilename(), lastPosition.getEndLine(), 
-                    source.getLine(), lastPosition.getEndOffset(), source.getOffset());
-        } else if (inclusive) {
-            lastPosition = new SourcePosition(source.getFilename(), startPosition.getStartLine(), 
-                    source.getLine(), startPosition.getStartOffset(), source.getOffset());
-        } else {
-            lastPosition = new SourcePosition(source.getFilename(), startPosition.getEndLine(), 
-                    source.getLine(), startPosition.getEndOffset(), source.getOffset());
-        }
+			lastPosition = new SourcePosition(source.getFilename(),
+					lastPosition.getEndOffset(), source.getOffset());
+		} else if (inclusive) {
+			lastPosition = new SourcePosition(source.getFilename(),
+					startPosition.getStartOffset(), source.getOffset());
+		} else {
+			lastPosition = new SourcePosition(source.getFilename(),
+					startPosition.getEndOffset(), source.getOffset());
+		}
 
         return lastPosition;
 	}
     
     public ISourcePosition getDummyPosition() {
-        return new SourcePosition("", -1, -1, 0, 0);
-    }
+		return new SourcePosition("", 0, 0);
+	}
 }

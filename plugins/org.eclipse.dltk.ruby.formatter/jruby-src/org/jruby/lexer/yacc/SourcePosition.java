@@ -46,10 +46,6 @@ public class SourcePosition implements ISourcePosition, Serializable {
 	// The file of the source
 	private final String file;
 
-	// The state/end rows of the source
-	private final int startLine;
-	private final int endLine;
-
 	// The start/end offsets of the source
 	private int startOffset;
 	private final int endOffset;
@@ -58,26 +54,7 @@ public class SourcePosition implements ISourcePosition, Serializable {
 	 * Creates a default source position - required for serialization.
 	 */
 	public SourcePosition() {
-		this("", 0);
-	}
-
-	/**
-	 * Creates a new source position.
-	 * 
-	 * @param file
-	 *            location of the source (must not be null)
-	 * @param endLine
-	 *            what line within the source
-	 */
-	public SourcePosition(String file, int endLine) {
-		if (file == null) { // otherwise equals() and getInstance() will fail
-			throw new NullPointerException();
-		}
-		this.file = file;
-		this.startLine = 0;
-		this.endLine = endLine;
-		this.startOffset = 0;
-		this.endOffset = 0;
+		this("", 0, 0);
 	}
 
 	/**
@@ -88,14 +65,11 @@ public class SourcePosition implements ISourcePosition, Serializable {
 	 * @param line
 	 *            what line within the source
 	 */
-	public SourcePosition(String file, int startLine, int endLine,
-			int startOffset, int endOffset) {
+	public SourcePosition(String file, int startOffset, int endOffset) {
 		if (file == null) { // otherwise equals() and getInstance() will fail
 			throw new NullPointerException();
 		}
 		this.file = file;
-		this.startLine = startLine;
-		this.endLine = endLine;
 		this.startOffset = startOffset;
 		this.endOffset = endOffset;
 	}
@@ -105,22 +79,6 @@ public class SourcePosition implements ISourcePosition, Serializable {
 	 */
 	public String getFile() {
 		return file;
-	}
-
-	/**
-	 * Not used in interpreter
-	 * 
-	 * @see org.jruby.lexer.yacc.ISourcePosition#getStartLine()
-	 */
-	public int getStartLine() {
-		return startLine;
-	}
-
-	/**
-	 * @see org.jruby.lexer.yacc.ISourcePosition#getEndLine()
-	 */
-	public int getEndLine() {
-		return endLine;
 	}
 
 	/**
@@ -138,7 +96,7 @@ public class SourcePosition implements ISourcePosition, Serializable {
 
 		SourcePosition other = (SourcePosition) object;
 
-		return file.equals(other.file) && endLine == other.endLine;
+		return file.equals(other.file) && endOffset == other.endOffset;
 	}
 
 	/**
@@ -147,7 +105,7 @@ public class SourcePosition implements ISourcePosition, Serializable {
 	 * @see java.lang.Object#hashCode()
 	 */
 	public int hashCode() {
-		return file.hashCode() ^ endLine;
+		return file.hashCode() ^ endOffset;
 	}
 
 	/**
@@ -158,8 +116,7 @@ public class SourcePosition implements ISourcePosition, Serializable {
 		if (file.length() != 0) {
 			sb.append(file).append(':');
 		}
-		sb.append('[').append(startLine).append(',').append(endLine);
-		sb.append("]:[");
+		sb.append("[");
 		sb.append(startOffset).append("...").append(endOffset).append(']');
 		return sb.toString();
 	}
@@ -198,8 +155,7 @@ public class SourcePosition implements ISourcePosition, Serializable {
 		// Enebo: All AST nodes but IterNode are in ascending order
 		// position-wise. We should not
 		// need to safe-guard that other is a smaller source position
-		return new SourcePosition(file, startLine, other.getEndLine(),
-				startOffset, other.getEndOffset());
+		return new SourcePosition(file, startOffset, other.getEndOffset());
 	}
 
 	/**
@@ -214,21 +170,17 @@ public class SourcePosition implements ISourcePosition, Serializable {
 		String fileName = firstPos.getFile();
 		int startOffset = firstPos.getStartOffset();
 		int endOffset = firstPos.getEndOffset();
-		int startLine = firstPos.getStartLine();
-		int endLine = firstPos.getEndLine();
 
 		if (startOffset > secondPos.getStartOffset()) {
 			startOffset = secondPos.getStartOffset();
-			startLine = secondPos.getStartLine();
 		}
 
 		if (endOffset < secondPos.getEndOffset()) {
 			endOffset = secondPos.getEndOffset();
-			endLine = secondPos.getEndLine();
 		}
 
 		SourcePosition combinedPosition = new SourcePosition(fileName,
-				startLine, endLine, startOffset, endOffset);
+				startOffset, endOffset);
 
 		return combinedPosition;
 	}

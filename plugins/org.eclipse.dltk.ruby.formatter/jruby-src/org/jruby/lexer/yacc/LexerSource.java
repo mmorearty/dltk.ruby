@@ -58,9 +58,6 @@ public class LexerSource {
     // The name of this source (e.g. a filename: foo.rb)
     private final String sourceName;
     
-    // Number of newlines read from the reader
-    private int line = 0;
-    
     // Column of source.  
     private int column = 0;
     
@@ -99,7 +96,6 @@ public class LexerSource {
     	if (!unreadBuffer.isEmpty()) {
     		CharRecord rec = unreadBuffer.getTail(); 
     		c = (char) rec.getCh();
-    		line = rec.getLine();
     		column = rec.getColumn();
     		offset = rec.getOffset();
     		unreadBuffer.removeTail();
@@ -110,11 +106,10 @@ public class LexerSource {
             if (c == RubyYaccLexer.EOF) {
                 return c;
             }
-			line = reader.getLine();
 			column = reader.getColumn();
 			offset = reader.getOffset();
     	}
-    	readHistory.addTail(c, line, column, offset);
+    	readHistory.addTail(c, column, offset);
     	return c; 
     }
 
@@ -127,16 +122,14 @@ public class LexerSource {
     public void unread(char c) {
         if (c != RubyYaccLexer.EOF) {
         	CharRecord rec  = readHistory.getTail();
-        	unreadBuffer.addTail(c, rec.getLine(), rec.getColumn(), rec.getOffset());
+        	unreadBuffer.addTail(c, rec.getColumn(), rec.getOffset());
         	readHistory.removeTail();
         	if (readHistory.isEmpty()) {
-				line = 0;
 				column = 0;
         		offset = 0;
         	}
         	else {
             	CharRecord prev = readHistory.getTail();
-				line = prev.getLine();
 				column = prev.getColumn();
 				offset = prev.getOffset();        		
         	}
@@ -155,14 +148,6 @@ public class LexerSource {
      */
     public String getFilename() {
     	return sourceName;
-    }
-    
-    /**
-     * What line are we at?
-     * @return the line number 0...line_size-1
-     */
-    public int getLine() {
-    	return line;
     }
     
     /**

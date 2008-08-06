@@ -14,7 +14,6 @@ package org.eclipse.dltk.ruby.formatter.lexer;
 public class CharRecord {
 
 	int ch;
-	int line;
 	int column;
 	int offset;
 
@@ -24,10 +23,9 @@ public class CharRecord {
 	 * @param line
 	 * @param offset
 	 */
-	public CharRecord(int ch, int column, int line, int offset) {
+	public CharRecord(int ch, int column, int offset) {
 		this.ch = ch;
 		this.column = column;
-		this.line = line;
 		this.offset = offset;
 	}
 
@@ -36,13 +34,6 @@ public class CharRecord {
 	 */
 	public int getCh() {
 		return ch;
-	}
-
-	/**
-	 * @return the line
-	 */
-	public int getLine() {
-		return line;
 	}
 
 	/**

@@ -30,8 +30,8 @@ public class CharHistory {
 		return history.isEmpty();
 	}
 
-	public void addHead(int ch, int line, int column, int offset) {
-		history.add(0, pool.create(ch, line, column, offset));
+	public void addHead(int ch, int column, int offset) {
+		history.add(0, pool.create(ch, column, offset));
 	}
 
 	public CharRecord getHead() {
@@ -43,8 +43,8 @@ public class CharHistory {
 		pool.release(position);
 	}
 
-	public void addTail(int ch, int line, int column, int offset) {
-		history.add(pool.create(ch, line, column, offset));
+	public void addTail(int ch, int column, int offset) {
+		history.add(pool.create(ch, column, offset));
 	}
 
 	public CharRecord getTail() {

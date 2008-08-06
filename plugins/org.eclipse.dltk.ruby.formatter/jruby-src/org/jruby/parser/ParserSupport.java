@@ -296,11 +296,11 @@ public class ParserSupport {
 //		assert first.getFile().equals(second.getFile());
 
 		if (first.getStartOffset() < second.getStartOffset()) {
-			return new SourcePosition(first.getFile(), first.getStartLine(),
-					second.getEndLine(), first.getStartOffset(), second.getEndOffset());
+			return new SourcePosition(first.getFile(), first.getStartOffset(),
+					second.getEndOffset());
 		} else {
-			return new SourcePosition(first.getFile(), second.getStartLine(),
-					first.getEndLine(), second.getStartOffset(), first.getEndOffset());
+			return new SourcePosition(first.getFile(), second.getStartOffset(),
+					first.getEndOffset());
 		}
 	}
     
@@ -886,7 +886,7 @@ public class ParserSupport {
     }
     
     public ISourcePosition createEmptyArgsNodePosition(ISourcePosition pos) {
-        return new SourcePosition(pos.getFile(), pos.getStartLine(), pos.getEndLine(), pos.getEndOffset() - 1, pos.getEndOffset() - 1);
+        return new SourcePosition(pos.getFile(), pos.getEndOffset() - 1, pos.getEndOffset() - 1);
     }
     
     public Node unwrapNewlineNode(Node node) {

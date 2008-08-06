@@ -162,10 +162,8 @@ public abstract class Node implements ISourcePositionHolder, InstructionContext,
         String fileName = position.getFile();
         int startOffset = position.getStartOffset();
         int endOffset = position.getEndOffset();
-        int startLine = position.getStartLine();
-        int endLine = position.getEndLine();
         
-        ISourcePosition commentIncludingPos = new SourcePosition(fileName, startLine, endLine, startOffset, endOffset);
+        ISourcePosition commentIncludingPos = new SourcePosition(fileName, startOffset, endOffset);
         
         Iterator commentItr = comments.iterator();
         while(commentItr.hasNext()) {
