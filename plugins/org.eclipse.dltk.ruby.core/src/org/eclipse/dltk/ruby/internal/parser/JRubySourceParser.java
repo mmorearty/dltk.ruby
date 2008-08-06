@@ -13,8 +13,10 @@ import java.io.CharArrayReader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -31,7 +33,6 @@ import org.eclipse.dltk.ast.statements.Block;
 import org.eclipse.dltk.compiler.problem.AbstractProblemReporter;
 import org.eclipse.dltk.compiler.problem.IProblem;
 import org.eclipse.dltk.compiler.problem.IProblemReporter;
-import org.eclipse.dltk.compiler.problem.ProblemReporterProxy;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.ruby.ast.RubyClassDeclaration;
 import org.eclipse.dltk.ruby.ast.RubyModuleDeclaration;
@@ -128,7 +129,7 @@ public class JRubySourceParser extends AbstractSourceParser {
 	private static final Pattern COLON_FIXER3 = Pattern.compile(
 			":(?=[\\s]*(?=[,}\\)]))", Pattern.MULTILINE); //$NON-NLS-1$
 	private static final Pattern COLON_FIXER_UNSAFE1 = Pattern.compile(
-			"(?:=>.*,[\\s]*)(:)(?=[\\s]*$)", Pattern.MULTILINE); //$NON-NLS-1$
+			"(?:=>.*,[\\s\\\\]*)(:)(?=[\\s]*$)", Pattern.MULTILINE); //$NON-NLS-1$
 	private static final Pattern COLON_FIXER_UNSAFE2 = Pattern.compile(
 			":(?=[\\s]*$)", Pattern.MULTILINE); //$NON-NLS-1$
 	private static final Pattern INST_BRACK_FIXER = Pattern.compile("@(])"); //$NON-NLS-1$
@@ -168,13 +169,18 @@ public class JRubySourceParser extends AbstractSourceParser {
 	private static final String missingName2 = "NoConstant___________"; //$NON-NLS-1$
 	private static final String missingName3 = "_missing_param_name__"; //$NON-NLS-1$
 	private static final String missingName4 = "_m_key_ => _m_value__"; //$NON-NLS-1$
-	private static final int magicLength = missingName.length(); // missingName.
-	// len
-	// should ==
-	// missingName2
-	// .len
+	private static final int magicLength = missingName.length(); // missingName.len
+																	// should ==
+																	// missingName2.len
 
 	private final List fixPositions = new ArrayList();
+	public static Set FIXUP_NAMES = new HashSet();
+	{
+		FIXUP_NAMES.add(missingName);
+		FIXUP_NAMES.add(missingName2);
+		FIXUP_NAMES.add(missingName3);
+		FIXUP_NAMES.add(missingName4);
+	}
 
 	private String fixBrokenThings(Pattern pattern, String content,
 			String replacement, int delta) {
@@ -234,17 +240,19 @@ public class JRubySourceParser extends AbstractSourceParser {
 		return fixBrokenThings(GLOB_BRACK_FIXER, content, "$" + missingName, 1); //$NON-NLS-1$
 	}
 
-	private String fixBrokenParens(String content) {
+	private String fixBrokenUnmatched(String content) {
 		char[] contents = content.toCharArray();
 		StringBuffer buffer = new StringBuffer(contents.length);
-		int depth = 0;
+		int parenDepth = 0;
+		int bracketDepth = 0;
+		int braceDepth = 0;
 		int start = contents.length;
 
 		for (int cnt = (start - 1); cnt >= 0; cnt--) {
 			if (contents[cnt] == '(') {
-				depth--;
+				parenDepth--;
 
-				if (depth < 0) {
+				if (parenDepth < 0) {
 					int eol = cnt;
 					for (int cnt2 = cnt; cnt2 < start; cnt2++) {
 						if ((contents[cnt2] == '\r')
@@ -256,13 +264,57 @@ public class JRubySourceParser extends AbstractSourceParser {
 					}
 
 					buffer.insert(0, contents, eol, (start - eol));
-					buffer.insert(0, ')');
+					buffer.append(')');
 					buffer.insert(0, contents, cnt, (eol - cnt));
 					start = cnt;
-					depth = 0;
+					parenDepth = 0;
+				}
+			} else if (contents[cnt] == '[') {
+				bracketDepth--;
+
+				if (bracketDepth < 0) {
+					int eol = cnt;
+					for (int cnt2 = cnt; cnt2 < start; cnt2++) {
+						if ((contents[cnt2] == '\r')
+								|| (contents[cnt2] == '\n')) {
+							eol = cnt2;
+
+							break;
+						}
+					}
+
+					buffer.insert(0, contents, eol, (start - eol));
+					buffer.append(']');
+					buffer.insert(0, contents, cnt, (eol - cnt));
+					start = cnt;
+					bracketDepth = 0;
+				}
+			} else if (contents[cnt] == '{') {
+				braceDepth--;
+
+				if (braceDepth < 0) {
+					int eol = cnt;
+					for (int cnt2 = cnt; cnt2 < start; cnt2++) {
+						if ((contents[cnt2] == '\r')
+								|| (contents[cnt2] == '\n')) {
+							eol = cnt2;
+
+							break;
+						}
+					}
+
+					buffer.insert(0, contents, eol, (start - eol));
+					buffer.append('}');
+					buffer.insert(0, contents, cnt, (eol - cnt));
+					start = cnt;
+					braceDepth = 0;
 				}
 			} else if (contents[cnt] == ')') {
-				depth++;
+				parenDepth++;
+			} else if (contents[cnt] == ']') {
+				bracketDepth++;
+			} else if (contents[cnt] == '}') {
+				braceDepth++;
 			}
 		}
 
@@ -313,25 +365,29 @@ public class JRubySourceParser extends AbstractSourceParser {
 				" " + missingName + " ", 1); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
+	private final boolean[] errorState = new boolean[1];
+
 	private RubyParserResult parserResult;
 
 	public RubyParserResult getParserResult() {
 		return parserResult;
 	}
 
-	private static class ProxyProblemReporter extends ProblemReporterProxy {
+	private class ProxyProblemReporter extends AbstractProblemReporter {
 
-		boolean errorState = false;
+		private final IProblemReporter original;
 
 		public ProxyProblemReporter(IProblemReporter original) {
-			super(original);
+			super();
+			this.original = original;
 		}
 
 		public void reportProblem(IProblem problem) {
+			if (original != null)
+				original.reportProblem(problem);
 			if (problem.isError()) {
-				errorState = true;
+				errorState[0] = true;
 			}
-			super.reportProblem(problem);
 		}
 
 	}
@@ -512,6 +568,7 @@ public class JRubySourceParser extends AbstractSourceParser {
 			DLTKRubyParser parser = new DLTKRubyParser();
 			ProxyProblemReporter proxyProblemReporter = new ProxyProblemReporter(
 					problemReporter);
+			errorState[0] = false;
 
 			final long sTime = TRACE_AST_DLTK ? System.currentTimeMillis() : 0;
 			final String strFileName = fileName != null ? String
@@ -533,7 +590,7 @@ public class JRubySourceParser extends AbstractSourceParser {
 						proxyProblemReporter);
 			}
 			fixPositions.clear();
-			if (!parser.isSuccess() || proxyProblemReporter.errorState) {
+			if (!parser.isSuccess() || errorState[0]) {
 				String content2 = fixBrokenDots(String.valueOf(fixedContent));
 				content2 = fixBrokenColons(content2);
 				content2 = fixBrokenDollars(content2);
@@ -541,7 +598,7 @@ public class JRubySourceParser extends AbstractSourceParser {
 				content2 = fixBrokenInstbracks(content2);
 				content2 = fixBrokenGlobbracks(content2);
 
-				content2 = fixBrokenParens(content2);
+				content2 = fixBrokenUnmatched(content2);
 				content2 = fixBrokenCommas(content2);
 				content2 = fixBrokenHashes(content2);
 
@@ -553,24 +610,32 @@ public class JRubySourceParser extends AbstractSourceParser {
 					fixPositions.clear();
 
 					content2 = fixBrokenColonsUnsafe(content2);
-					content2 = fixBrokenCommasUnsafe(content2);
-					content2 = fixBrokenHashesUnsafe(content2);
 
-					node2 = parser.parse(strFileName,
-							new StringReader(content2),
-							new AbstractProblemReporter() {
+					node2 = parser.parse(strFileName, new StringReader(content2), null);
+					if (node2 != null)
+						node = node2;
+					else {
+						fixPositions.clear();
 
-								public void reportProblem(IProblem problem) {
-									if (DLTKCore.DEBUG) {
-										System.out
-												.println("JRubySourceParser.parse(): Fallback Parse Problem - fileName=" + strFileName + //$NON-NLS-1$
-														", message=" //$NON-NLS-1$
-														+ problem.getMessage()
-														+ ", line=" + problem.getSourceLineNumber()); //$NON-NLS-1$
-									}
+						content2 = fixBrokenCommasUnsafe(content2);
+						content2 = fixBrokenHashesUnsafe(content2);
+
+						node2 = parser.parse(strFileName,
+								new StringReader(content2),
+								new AbstractProblemReporter() {
+
+							public void reportProblem(IProblem problem) {
+								if (DLTKCore.DEBUG) {
+									System.out
+									.println("JRubySourceParser.parse(): Fallback Parse Problem - fileName=" + strFileName + //$NON-NLS-1$
+											", message=" //$NON-NLS-1$
+											+ problem.getMessage()
+											+ ", line=" + problem.getSourceLineNumber()); //$NON-NLS-1$
 								}
-
-							});
+							}
+							
+						});
+					}
 					if (node2 != null)
 						node = node2;
 					else
