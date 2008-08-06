@@ -51,10 +51,11 @@ public class HeredocTerm extends StrTerm {
         if ((c = src.read()) == RubyYaccLexer.EOF) {
             throw new SyntaxException(src.getPosition(), "can't find string \"" + eos + "\" anywhere before EOF");
         }
-        if (src.wasBeginOfLine() && src.matchString(eos + '\n', indent)) {
-            src.unreadMany(lastLine);
-            return Tokens.tSTRING_END;
-        }
+        if (src.wasBeginOfLine() && c == eos.charAt(0)
+				&& src.matchString(eos.substring(1) + '\n', indent)) {
+			src.unreadMany(lastLine);
+			return Tokens.tSTRING_END;
+		}
 
         if ((func & RubyYaccLexer.STR_FUNC_EXPAND) == 0) {
             /*
