@@ -27,49 +27,51 @@
  * the provisions above, a recipient may use your version of this file under
  * the terms of any one of the CPL, the GPL or the LGPL.
  ***** END LICENSE BLOCK *****/
- package org.jruby.lexer.yacc;
+package org.jruby.lexer.yacc;
 
 import java.io.Serializable;
 
 /**
  * 
- * Position within a source.  This could have column as well, but it currently
- * does not.  A normal ruby intrepretter does not use this information in 
- * error/warning information.  An IDE using this may need it though.  This is
+ * Position within a source. This could have column as well, but it currently
+ * does not. A normal ruby intrepretter does not use this information in
+ * error/warning information. An IDE using this may need it though. This is
  * trivially added if need be.
  * 
  * @see org.jruby.lexer.yacc.ISourcePosition
  */
 public class SourcePosition implements ISourcePosition, Serializable {
-    private static final long serialVersionUID = 3762529027281400377L;
-    
-    // The file of the source
-    private final String file;
-    
-    // The state/end rows of the source
-    private final int startLine;
-    private final int endLine;
-    
-    // The start/end offsets of the source
-    private int startOffset;
-    private final int endOffset;
+	private static final long serialVersionUID = 3762529027281400377L;
 
-    /**
-     * Creates a default source position - required for serialization.
-     */
-    public SourcePosition() {
-    	this("", 0);
-    }
-    
-    /**
-     * Creates a new source position.
-     * 
-     * @param file location of the source (must not be null)
-     * @param endLine what line within the source
-     */
+	// The file of the source
+	private final String file;
+
+	// The state/end rows of the source
+	private final int startLine;
+	private final int endLine;
+
+	// The start/end offsets of the source
+	private int startOffset;
+	private final int endOffset;
+
+	/**
+	 * Creates a default source position - required for serialization.
+	 */
+	public SourcePosition() {
+		this("", 0);
+	}
+
+	/**
+	 * Creates a new source position.
+	 * 
+	 * @param file
+	 *            location of the source (must not be null)
+	 * @param endLine
+	 *            what line within the source
+	 */
 	public SourcePosition(String file, int endLine) {
-		if (file == null) { //otherwise equals() and getInstance() will fail
-			throw new NullPointerException();  
+		if (file == null) { // otherwise equals() and getInstance() will fail
+			throw new NullPointerException();
 		}
 		this.file = file;
 		this.startLine = 0;
@@ -78,15 +80,18 @@ public class SourcePosition implements ISourcePosition, Serializable {
 		this.endOffset = 0;
 	}
 
-    /**
-     * Creates a new source position.
-     * 
-     * @param file location of the source (must not be null)
-     * @param line what line within the source
-     */
-	public SourcePosition(String file, int startLine, int endLine, int startOffset, int endOffset) {
-		if (file == null) { //otherwise equals() and getInstance() will fail
-			throw new NullPointerException();  
+	/**
+	 * Creates a new source position.
+	 * 
+	 * @param file
+	 *            location of the source (must not be null)
+	 * @param line
+	 *            what line within the source
+	 */
+	public SourcePosition(String file, int startLine, int endLine,
+			int startOffset, int endOffset) {
+		if (file == null) { // otherwise equals() and getInstance() will fail
+			throw new NullPointerException();
 		}
 		this.file = file;
 		this.startLine = startLine;
@@ -98,120 +103,133 @@ public class SourcePosition implements ISourcePosition, Serializable {
 	/**
 	 * @see org.jruby.lexer.yacc.ISourcePosition#getFile()
 	 */
-    public String getFile() {
-        return file;
-    }
-    
-    /**
-     * Not used in interpreter
-     * 
-     * @see org.jruby.lexer.yacc.ISourcePosition#getStartLine()
-     */
-    public int getStartLine() {
-    	return startLine;
-    }
+	public String getFile() {
+		return file;
+	}
 
-    /**
-     * @see org.jruby.lexer.yacc.ISourcePosition#getEndLine()
-     */
-    public int getEndLine() {
-        return endLine;
-    }
+	/**
+	 * Not used in interpreter
+	 * 
+	 * @see org.jruby.lexer.yacc.ISourcePosition#getStartLine()
+	 */
+	public int getStartLine() {
+		return startLine;
+	}
 
-    /**
-     * @param object the object which should be compared
-     * @return simple Object.equals() implementation
-     */
-    public boolean equals(Object object) {
-    	if (object == this) {
-    		return true;
-    	}
-        if (!(object instanceof SourcePosition)) {
-        	return false;
-        }
-        
-        SourcePosition other = (SourcePosition) object;
+	/**
+	 * @see org.jruby.lexer.yacc.ISourcePosition#getEndLine()
+	 */
+	public int getEndLine() {
+		return endLine;
+	}
 
-        return file.equals(other.file) && endLine == other.endLine;
-    }
+	/**
+	 * @param object
+	 *            the object which should be compared
+	 * @return simple Object.equals() implementation
+	 */
+	public boolean equals(Object object) {
+		if (object == this) {
+			return true;
+		}
+		if (!(object instanceof SourcePosition)) {
+			return false;
+		}
 
-    /**
-     * Something we can use for identity in hashing, etc...
-     * 
-     * @see java.lang.Object#hashCode()
-     */
-    public int hashCode() {
-        return file.hashCode() ^ endLine;
-    }
+		SourcePosition other = (SourcePosition) object;
 
-    /**
-     * @see java.lang.Object#toString()
-     */
-    public String toString() {
-        return file + ":[" + startLine + "," + endLine + "]:[" + 
-            getStartOffset() + "," + getEndOffset() + "]";
-    }
-    
-    /**
-     * @see org.jruby.lexer.yacc.ISourcePosition#adjustStartOffset(int)
-     */
-    public void adjustStartOffset(int relativeValue) {
-        startOffset += relativeValue;
-        if(startOffset < 0) startOffset = 0;
-    }
-    
-    /**
-     * Not used in interpreter
-     * 
-     * @see org.jruby.lexer.yacc.ISourcePosition#getStartOffset()
-     */
-    public int getStartOffset() {
-    	return startOffset;
-    }
-    
-    /**
-     * Not used in interpreter 
-     * 
-     * @see org.jruby.lexer.yacc.ISourcePosition#getEndOffset()
-     */
-    public int getEndOffset() {
-    	return endOffset;
-    }
-    
-    /**
-     * @see org.jruby.lexer.yacc.ISourcePosition#union(ISourcePosition)
-     */
-    public ISourcePosition union(ISourcePosition other) {
-        // Enebo: All AST nodes but IterNode are in ascending order position-wise.  We should not 
-        // need to safe-guard that other is a smaller source position
-        return new SourcePosition(file, startLine, other.getEndLine(), startOffset, other.getEndOffset());
-    }
-    
-    /**
-     * Not used in interpreter 
-     * Creates a new position the encloses both parameter positions.
-     * 
-     * @param the positions providing the boundaries for the new position.
-     */
-    public static SourcePosition combinePosition(ISourcePosition firstPos, ISourcePosition secondPos){
-        String fileName = firstPos.getFile();
-        int startOffset = firstPos.getStartOffset();
-        int endOffset = firstPos.getEndOffset();
-        int startLine = firstPos.getStartLine();
-        int endLine = firstPos.getEndLine();
-        
-        if(startOffset > secondPos.getStartOffset()){
-            startOffset = secondPos.getStartOffset();
-            startLine = secondPos.getStartLine();
-        }
-        
-        if(endOffset < secondPos.getEndOffset()){
-            endOffset = secondPos.getEndOffset();
-            endLine = secondPos.getEndLine();
-        }
-        
-        SourcePosition combinedPosition = new SourcePosition(fileName, startLine, endLine, startOffset, endOffset);
-        
-        return combinedPosition;             
-    }
+		return file.equals(other.file) && endLine == other.endLine;
+	}
+
+	/**
+	 * Something we can use for identity in hashing, etc...
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	public int hashCode() {
+		return file.hashCode() ^ endLine;
+	}
+
+	/**
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() {
+		final StringBuffer sb = new StringBuffer();
+		if (file.length() != 0) {
+			sb.append(file).append(':');
+		}
+		sb.append('[').append(startLine).append(',').append(endLine);
+		sb.append("]:[");
+		sb.append(startOffset).append("...").append(endOffset).append(']');
+		return sb.toString();
+	}
+
+	/**
+	 * @see org.jruby.lexer.yacc.ISourcePosition#adjustStartOffset(int)
+	 */
+	public void adjustStartOffset(int relativeValue) {
+		startOffset += relativeValue;
+		if (startOffset < 0)
+			startOffset = 0;
+	}
+
+	/**
+	 * Not used in interpreter
+	 * 
+	 * @see org.jruby.lexer.yacc.ISourcePosition#getStartOffset()
+	 */
+	public int getStartOffset() {
+		return startOffset;
+	}
+
+	/**
+	 * Not used in interpreter
+	 * 
+	 * @see org.jruby.lexer.yacc.ISourcePosition#getEndOffset()
+	 */
+	public int getEndOffset() {
+		return endOffset;
+	}
+
+	/**
+	 * @see org.jruby.lexer.yacc.ISourcePosition#union(ISourcePosition)
+	 */
+	public ISourcePosition union(ISourcePosition other) {
+		// Enebo: All AST nodes but IterNode are in ascending order
+		// position-wise. We should not
+		// need to safe-guard that other is a smaller source position
+		return new SourcePosition(file, startLine, other.getEndLine(),
+				startOffset, other.getEndOffset());
+	}
+
+	/**
+	 * Not used in interpreter Creates a new position the encloses both
+	 * parameter positions.
+	 * 
+	 * @param the
+	 *            positions providing the boundaries for the new position.
+	 */
+	public static SourcePosition combinePosition(ISourcePosition firstPos,
+			ISourcePosition secondPos) {
+		String fileName = firstPos.getFile();
+		int startOffset = firstPos.getStartOffset();
+		int endOffset = firstPos.getEndOffset();
+		int startLine = firstPos.getStartLine();
+		int endLine = firstPos.getEndLine();
+
+		if (startOffset > secondPos.getStartOffset()) {
+			startOffset = secondPos.getStartOffset();
+			startLine = secondPos.getStartLine();
+		}
+
+		if (endOffset < secondPos.getEndOffset()) {
+			endOffset = secondPos.getEndOffset();
+			endLine = secondPos.getEndLine();
+		}
+
+		SourcePosition combinedPosition = new SourcePosition(fileName,
+				startLine, endLine, startOffset, endOffset);
+
+		return combinedPosition;
+	}
 }

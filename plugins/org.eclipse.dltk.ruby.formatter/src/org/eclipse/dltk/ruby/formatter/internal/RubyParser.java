@@ -36,6 +36,6 @@ public class RubyParser {
 		}
 	}
 
-	private static final String FILENAME = "filename.rb";
+	private static final String FILENAME = "";
 
 }
