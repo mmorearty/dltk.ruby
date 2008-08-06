@@ -48,7 +48,7 @@ public final class ByteList implements Comparable, CharSequence, Serializable {
 
     int hash;
     boolean validHash = false;
-    String stringValue;
+	// String stringValue;
 
     private static final int DEFAULT_SIZE = 4;
     private static final double FACTOR = 1.5;
@@ -132,7 +132,7 @@ public final class ByteList implements Comparable, CharSequence, Serializable {
 
         dup.validHash = validHash;
         dup.hash = hash;
-        dup.stringValue = stringValue;
+		// dup.stringValue = stringValue;
 
         return dup;        
     }
@@ -158,9 +158,9 @@ public final class ByteList implements Comparable, CharSequence, Serializable {
     }
 
     public void invalidate() {
-        validHash = false;
-        stringValue = null;
-    }
+		validHash = false;
+		// stringValue = null;
+	}
 
     public void prepend(byte b) {
         grow(1);
@@ -479,12 +479,8 @@ public final class ByteList implements Comparable, CharSequence, Serializable {
         return hash = key;
     }
 
-    /**
-     * Remembers toString value, which is expensive for StringBuffer.
-     */    
     public String toString() {
-        if (stringValue == null) stringValue = new String(plain(bytes, begin, realSize));
-        return stringValue;
+        return new String(plain(bytes, begin, realSize));
     }
 
     public static ByteList create(CharSequence s) {
