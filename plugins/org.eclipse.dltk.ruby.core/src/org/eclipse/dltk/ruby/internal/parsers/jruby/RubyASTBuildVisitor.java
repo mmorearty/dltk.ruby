@@ -398,8 +398,8 @@ public class RubyASTBuildVisitor implements NodeVisitor {
 	 * Tries to convert single JRuby's node to single DLTK AST node. If
 	 * convertion fails, and for ex., more than one or zero nodes were fetched
 	 * as result, then RuntimeException will be thrown. Optoin
-	 * <code>allowZero</code> allows to fetch no dltk nodes and just return null
-	 * without throwing an exception.
+	 * <code>allowZero</code> allows to fetch no dltk nodes and just return
+	 * null without throwing an exception.
 	 * 
 	 * @param node
 	 * @param allowZero
@@ -612,8 +612,12 @@ public class RubyASTBuildVisitor implements NodeVisitor {
 			int possibleDotPosition, int firstArgStart, int lastArgEnd) {
 		int dotPosition = RubySyntaxUtils.skipWhitespaceForward(content,
 				possibleDotPosition);
+		if (dotPosition >= 0 && dotPosition < content.length && content[dotPosition] == ']')
+		  dotPosition++;
 		if (dotPosition >= 0 && dotPosition < content.length
-				&& content[dotPosition] == '.') {
+				&& (content[dotPosition] == '.' || content[dotPosition] == ':')) {
+			if (content[dotPosition] == ':')
+				dotPosition++;
 			fixFunctionCallOffsets(callNode, nameNode, dotPosition + 1,
 					firstArgStart, lastArgEnd);
 			return;
@@ -648,8 +652,8 @@ public class RubyASTBuildVisitor implements NodeVisitor {
 		int nameEnd = nameStart + methodName.length();
 
 		// Assert.isLegal(nameSequence.toString().equals(methodName)); //XXX
-		// nameNode.setStart(nameStart);
-		// nameNode.setEnd(nameEnd);
+		callNode.getCallName().setStart(nameStart);
+		callNode.getCallName().setEnd(nameEnd);
 
 		if (firstArgStart < 0) {
 			int lParenOffset = RubySyntaxUtils.skipWhitespaceForward(content,
@@ -1376,6 +1380,7 @@ public class RubyASTBuildVisitor implements NodeVisitor {
 
 		int funcNameStart = iVisited.getPosition().getStartOffset();
 		c.setStart(funcNameStart);
+		c.setEnd(funcNameStart + methodName.length());
 		fixFunctionCallOffsets(c, methodName, funcNameStart, argList
 				.sourceStart(), argList.sourceEnd());
 
@@ -2085,6 +2090,8 @@ public class RubyASTBuildVisitor implements NodeVisitor {
 				CallArgumentsList.EMPTY);
 		c.setStart(funcNameStart);
 		c.setEnd(funcNameStart + methodName.length());
+		c.getCallName().setStart(funcNameStart);
+		c.getCallName().setEnd(funcNameStart + methodName.length());
 		this.states.peek().add(c);
 
 		return null;
@@ -2253,6 +2260,11 @@ public class RubyASTBuildVisitor implements NodeVisitor {
 		CallArgumentsList list = processCallArguments(arg0.getArgsNode());
 		CallExpression expr = new CallExpression(receiver, arg0.getName(), list);
 		copyOffsets(expr, arg0);
+		int possNameStart = arg0.getPosition().getStartOffset();
+		if (receiver != null)
+		  possNameStart = receiver.sourceEnd() + 1;
+		fixFunctionCallOffsets(expr, arg0.getName(), possNameStart, list
+		                       .sourceStart(), list.sourceEnd());
 		states.peek().add(expr);
 		return null;
 	}

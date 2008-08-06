@@ -1,8 +1,10 @@
 package org.eclipse.dltk.ruby.internal.parser.visitors;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.expressions.BooleanLiteral;
@@ -14,16 +16,82 @@ import org.eclipse.dltk.ruby.ast.RubySymbolReference;
 
 public class RubyAttributeHandler {
 	private static final String ATTR = "attr"; //$NON-NLS-1$
+	private static final String ATTR_ACCESSIBLE = "attr_accessible"; //$NON-NLS-1$
 	private static final String ATTR_ACCESSOR = "attr_accessor"; //$NON-NLS-1$
-	private static final String ATTR_WRITER = "attr_writer"; //$NON-NLS-1$
+	private static final String ATTR_INTERNAL = "attr_internal"; //$NON-NLS-1$
+	private static final String ATTR_INTERNAL_ACCESSOR = "attr_internal_accessor"; //$NON-NLS-1$
+	private static final String ATTR_INTERNAL_READER = "attr_internal_reader"; //$NON-NLS-1$
+	private static final String ATTR_INTERNAL_WRITER = "attr_internal_writer"; //$NON-NLS-1$
+	private static final String ATTR_PROTECTED = "attr_protected";
 	private static final String ATTR_READER = "attr_reader"; //$NON-NLS-1$
-    private static final String ATTR_INTERNAL = "attr_internal"; //$NON-NLS-1$
-    private static final String ATTR_INTERNAL_ACCESSOR = "attr_internal_accessor"; //$NON-NLS-1$
-    private static final String ATTR_INTERNAL_READER = "attr_internal_reader"; //$NON-NLS-1$
-    private static final String ATTR_INTERNAL_WRITER = "attr_internal_writer"; //$NON-NLS-1$
-    private static final String CATTR_ACCESSOR = "cattr_accessor"; //$NON-NLS-1$
-    private static final String CATTR_WRITER = "cattr_writer"; //$NON-NLS-1$
-    private static final String CATTR_READER = "cattr_reader"; //$NON-NLS-1$
+	private static final String ATTR_READONLY = "attr_readonly"; //$NON-NLS-1$
+	private static final String ATTR_WRITER = "attr_writer"; //$NON-NLS-1$
+	private static final String CATTR_ACCESSOR = "cattr_accessor"; //$NON-NLS-1$
+	private static final String CATTR_READER = "cattr_reader"; //$NON-NLS-1$
+	private static final String CATTR_WRITER = "cattr_writer"; //$NON-NLS-1$
+	private static final String CLASS_INHERITABLE_ACCESSOR = "class_inheritable_accessor"; //$NON-NLS-1$
+	private static final String CLASS_INHERITABLE_ARRAY = "class_inheritable_array"; //$NON-NLS-1$
+	private static final String CLASS_INHERITABLE_ARRAY_WRITER = "class_inheritable_array_writer"; //$NON-NLS-1$
+	private static final String CLASS_INHERITABLE_HASH = "class_inheritable_hash"; //$NON-NLS-1$
+	private static final String CLASS_INHERITABLE_HASH_WRITER = "class_inheritable_hash_writer"; //$NON-NLS-1$
+	private static final String CLASS_INHERITABLE_READER = "class_inheritable_reader"; //$NON-NLS-1$
+	private static final String CLASS_INHERITABLE_WRITER = "class_inheritable_writer"; //$NON-NLS-1$
+
+	private static final Set/*<String>*/ ATTRIBUTE_CREATION_NAMES = new HashSet();
+	private static final Set/*<String>*/ ATTRIBUTE_ACCESSOR_NAMES = new HashSet();
+	private static final Set/*<String>*/ ATTRIBUTE_READER_NAMES = new HashSet();
+	private static final Set/*<String>*/ ATTRIBUTE_WRITER_NAMES = new HashSet();
+	private static final Set/*<String>*/ META_ATTRIBUTE_CREATION_NAMES = new HashSet();
+	static {
+		ATTRIBUTE_CREATION_NAMES.add(ATTR);
+		ATTRIBUTE_CREATION_NAMES.add(ATTR_ACCESSOR);
+		ATTRIBUTE_CREATION_NAMES.add(ATTR_ACCESSIBLE);
+		ATTRIBUTE_CREATION_NAMES.add(ATTR_INTERNAL);
+		ATTRIBUTE_CREATION_NAMES.add(ATTR_INTERNAL_ACCESSOR);
+		ATTRIBUTE_CREATION_NAMES.add(ATTR_INTERNAL_READER);
+		ATTRIBUTE_CREATION_NAMES.add(ATTR_INTERNAL_WRITER);
+		ATTRIBUTE_CREATION_NAMES.add(ATTR_PROTECTED);
+		ATTRIBUTE_CREATION_NAMES.add(ATTR_READER);
+		ATTRIBUTE_CREATION_NAMES.add(ATTR_READONLY);
+		ATTRIBUTE_CREATION_NAMES.add(ATTR_WRITER);
+		ATTRIBUTE_CREATION_NAMES.add(CATTR_ACCESSOR);
+		ATTRIBUTE_CREATION_NAMES.add(CATTR_READER);
+		ATTRIBUTE_CREATION_NAMES.add(CATTR_WRITER);
+		ATTRIBUTE_CREATION_NAMES.add(CLASS_INHERITABLE_ACCESSOR);
+		ATTRIBUTE_CREATION_NAMES.add(CLASS_INHERITABLE_ARRAY);
+		ATTRIBUTE_CREATION_NAMES.add(CLASS_INHERITABLE_ARRAY_WRITER);
+		ATTRIBUTE_CREATION_NAMES.add(CLASS_INHERITABLE_HASH);
+		ATTRIBUTE_CREATION_NAMES.add(CLASS_INHERITABLE_HASH_WRITER);
+		ATTRIBUTE_CREATION_NAMES.add(CLASS_INHERITABLE_READER);
+		ATTRIBUTE_CREATION_NAMES.add(CLASS_INHERITABLE_WRITER);
+
+		ATTRIBUTE_ACCESSOR_NAMES.add(ATTR_ACCESSOR);
+		ATTRIBUTE_ACCESSOR_NAMES.add(ATTR_ACCESSIBLE);
+		ATTRIBUTE_ACCESSOR_NAMES.add(ATTR_INTERNAL);
+		ATTRIBUTE_ACCESSOR_NAMES.add(ATTR_INTERNAL_ACCESSOR);
+		ATTRIBUTE_ACCESSOR_NAMES.add(CATTR_ACCESSOR);
+		ATTRIBUTE_ACCESSOR_NAMES.add(CLASS_INHERITABLE_ACCESSOR);
+		ATTRIBUTE_ACCESSOR_NAMES.add(CLASS_INHERITABLE_ARRAY);
+		ATTRIBUTE_ACCESSOR_NAMES.add(CLASS_INHERITABLE_HASH);
+
+		ATTRIBUTE_READER_NAMES.add(ATTR_INTERNAL_READER);
+		ATTRIBUTE_READER_NAMES.add(ATTR_PROTECTED);
+		ATTRIBUTE_READER_NAMES.add(ATTR_READER);
+		ATTRIBUTE_READER_NAMES.add(ATTR_READONLY);
+		ATTRIBUTE_READER_NAMES.add(CATTR_READER);
+		ATTRIBUTE_READER_NAMES.add(CLASS_INHERITABLE_READER);
+
+		ATTRIBUTE_WRITER_NAMES.add(ATTR_INTERNAL_WRITER);
+		ATTRIBUTE_WRITER_NAMES.add(ATTR_WRITER);
+		ATTRIBUTE_WRITER_NAMES.add(CATTR_WRITER);
+		ATTRIBUTE_WRITER_NAMES.add(CLASS_INHERITABLE_ARRAY_WRITER);
+		ATTRIBUTE_WRITER_NAMES.add(CLASS_INHERITABLE_HASH_WRITER);
+		ATTRIBUTE_WRITER_NAMES.add(CLASS_INHERITABLE_WRITER);
+
+		META_ATTRIBUTE_CREATION_NAMES.add(CATTR_ACCESSOR);
+		META_ATTRIBUTE_CREATION_NAMES.add(CATTR_READER);
+		META_ATTRIBUTE_CREATION_NAMES.add(CATTR_WRITER);
+	}
 
 	private final CallExpression call;
 	private List readers;
@@ -47,11 +115,11 @@ public class RubyAttributeHandler {
 		Iterator it = expr.iterator();
 		boolean create_reader = false;
 		boolean create_writer = false;
-		if (name.equals(ATTR_READER) || name.equals(ATTR_INTERNAL_READER) || name.equals(CATTR_READER)) {
+		if (ATTRIBUTE_READER_NAMES.contains(name)) {
 			create_reader = true;
-		} else if (name.equals(ATTR_WRITER) || name.equals(ATTR_INTERNAL_WRITER) || name.equals(CATTR_WRITER)) {
+		} else if (ATTRIBUTE_WRITER_NAMES.contains(name)) {
 			create_writer = true;
-		} else if (name.equals(ATTR_ACCESSOR) || name.equals(ATTR_INTERNAL) || name.equals(ATTR_INTERNAL_ACCESSOR) || name.equals(CATTR_ACCESSOR)) {
+		} else if (ATTRIBUTE_ACCESSOR_NAMES.contains(name)) {
 			create_reader = true;
 			create_writer = true;
 		} else if (name.equals(ATTR)) {
@@ -99,11 +167,14 @@ public class RubyAttributeHandler {
 		if (c.getReceiver() != null)
 			return false;
 		String name = c.getName();
-		return name.equals(ATTR_READER) || name.equals(ATTR_WRITER)
-				|| name.equals(ATTR_ACCESSOR) || name.equals(ATTR) ||
-				name.equals(ATTR_INTERNAL) || name.equals(ATTR_INTERNAL_ACCESSOR) ||
-				name.equals(ATTR_INTERNAL_READER) || name.equals(ATTR_INTERNAL_WRITER) ||
-				name.equals(CATTR_ACCESSOR) || name.equals(CATTR_READER) || name.equals(CATTR_WRITER);
+		return ATTRIBUTE_CREATION_NAMES.contains(name);
+	}
+
+	public static boolean isMetaAttributeCreationCall(CallExpression c) {
+		if (c.getReceiver() != null)
+			return false;
+		String name = c.getName();
+		return META_ATTRIBUTE_CREATION_NAMES.contains(name);
 	}
 
 	public static String getText(ASTNode sr) {

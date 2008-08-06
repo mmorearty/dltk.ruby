@@ -489,6 +489,10 @@ public class RubyMixinBuildVisitor extends ASTVisitor {
 		} else if (RubyAttributeHandler.isAttributeCreationCall(call)
 				&& sourceModule != null) {
 			Scope scope = peekScope();
+			boolean isAlsoMeta = RubyAttributeHandler.isMetaAttributeCreationCall(call);
+			Scope metaScope = null;
+			if (isAlsoMeta)
+				metaScope = new MetaClassScope(call, scope.getClassKey());
 			RubyAttributeHandler info = new RubyAttributeHandler(call);
 			List readers = info.getReaders();
 			for (Iterator iterator = readers.iterator(); iterator.hasNext();) {
@@ -501,6 +505,11 @@ public class RubyMixinBuildVisitor extends ASTVisitor {
 						attr.length(), n.sourceStart(), attr.length());
 				fakeMethod.setFlags(Modifiers.AccPublic);
 				scope.reportMethod(attr, fakeMethod);
+				if (isAlsoMeta) {
+					scopes.push(metaScope);
+					metaScope.reportMethod(attr, fakeMethod);
+					scopes.pop();
+				}
 			}
 			List writers = info.getWriters();
 			for (Iterator iterator = writers.iterator(); iterator.hasNext();) {
@@ -515,6 +524,11 @@ public class RubyMixinBuildVisitor extends ASTVisitor {
 				fakeMethod.setFlags(Modifiers.AccPublic);
 				fakeMethod.setParameters(new String[] { attr });
 				scope.reportMethod(attr + "=", fakeMethod); //$NON-NLS-1$
+				if (isAlsoMeta) {
+					scopes.push(metaScope);
+					metaScope.reportMethod(attr + "=", fakeMethod); //$NON-NLS-1$
+					scopes.pop();
+				}
 			}
 			return false;
 		}
@@ -528,6 +542,10 @@ public class RubyMixinBuildVisitor extends ASTVisitor {
 			if (!(elementFor instanceof IType)) {
 				elementFor = findModelElementFor(decl);
 			}
+  	        //mhowe - sometimes this the model element is a SourceMethod, so get it's declaring type
+		    if (elementFor instanceof IMethod) {
+		      elementFor = ((IMethod)elementFor).getDeclaringType();
+		    }
 			obj = (IType) elementFor;
 		}
 		boolean module = (decl.getModifiers() & Modifiers.AccModule) != 0;
