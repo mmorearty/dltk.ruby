@@ -136,6 +136,20 @@ end
 	puts `ls
 date`
 end
+==== multiline-string-until
+i = "a"
+until i == "a\
+zz"
+print i
+i += "z"
+end
+==
+i = "a"
+until i == "a\
+zz"
+	print i
+	i += "z"
+end
 ==== multiline-string-until-modifier
 i = "a"
 begin
