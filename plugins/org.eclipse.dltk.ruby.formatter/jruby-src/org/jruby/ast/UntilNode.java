@@ -89,7 +89,7 @@ public class UntilNode extends Node {
 	}
 
 	public List childNodes() {
-		return Node.createList(bodyNode, conditionNode);
+		return Node.createList(conditionNode, bodyNode);
 	}
 
 	/**
