@@ -20,11 +20,13 @@ import junit.framework.TestSuite;
 import org.eclipse.dltk.compiler.util.Util;
 import org.eclipse.dltk.internal.corext.util.Strings;
 import org.eclipse.dltk.ruby.formatter.RubyFormatter;
+import org.eclipse.dltk.ruby.formatter.internal.RubyFormatterPlugin;
 import org.eclipse.dltk.utils.TextUtils;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.text.edits.TextEdit;
+import org.osgi.framework.Bundle;
 
 public abstract class AbstractFormatterTest extends TestCase {
 
@@ -68,10 +70,13 @@ public abstract class AbstractFormatterTest extends TestCase {
 		return sb.toString();
 	}
 
+	private static Bundle getResourceBundle() {
+		return RubyFormatterPlugin.getDefault().getBundle();
+	}
+
 	protected static char[] readResource(String resourceName)
 			throws IOException {
-		final URL resource = Activator.getDefault().getBundle().getEntry(
-				resourceName);
+		final URL resource = getResourceBundle().getResource(resourceName);
 		assertNotNull(resourceName + " is not found", resource); //$NON-NLS-1$
 		return Util.getInputStreamAsCharArray(resource.openStream(), -1,
 				AllTests.CHARSET);
@@ -143,7 +148,7 @@ public abstract class AbstractFormatterTest extends TestCase {
 							responseBegin, lines.length));
 				}
 			}
-		} catch (final Exception e) {
+		} catch (final Throwable e) {
 			suite.addTest(new TestCase(e.getClass().getName()) { //$NON-NLS-1$
 						protected void runTest() throws Throwable {
 							throw e;
