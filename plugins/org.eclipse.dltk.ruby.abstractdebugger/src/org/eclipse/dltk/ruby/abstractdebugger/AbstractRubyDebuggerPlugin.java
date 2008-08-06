@@ -3,7 +3,6 @@ package org.eclipse.dltk.ruby.abstractdebugger;
 import java.io.IOException;
 
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.dltk.core.environment.IDeployment;
 import org.osgi.framework.BundleContext;
