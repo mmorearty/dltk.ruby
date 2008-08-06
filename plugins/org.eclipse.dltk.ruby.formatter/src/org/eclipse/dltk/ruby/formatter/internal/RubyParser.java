@@ -1,8 +1,7 @@
 package org.eclipse.dltk.ruby.formatter.internal;
 
-import java.io.Reader;
-import java.io.StringReader;
-
+import org.eclipse.dltk.ruby.formatter.lexer.ILexerReader;
+import org.eclipse.dltk.ruby.formatter.lexer.StringLexerReader;
 import org.jruby.common.NullWarnings;
 import org.jruby.lexer.yacc.LexerSource;
 import org.jruby.lexer.yacc.SyntaxException;
@@ -17,10 +16,10 @@ import org.jruby.parser.RubyParserResult;
 public class RubyParser {
 
 	public static RubyParserResult parse(String content) {
-		return parse(new StringReader(content));
+		return parse(new StringLexerReader(content));
 	}
 
-	public static RubyParserResult parse(Reader content) {
+	public static RubyParserResult parse(ILexerReader content) {
 		final RubyParserConfiguration configuration = new RubyParserConfiguration();
 		final RubyParserPool parserPool = RubyParserPool.getInstance();
 		final DefaultRubyParser parser = parserPool.borrowParser();

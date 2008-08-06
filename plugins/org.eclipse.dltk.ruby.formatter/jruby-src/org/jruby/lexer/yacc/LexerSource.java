@@ -31,8 +31,11 @@
 package org.jruby.lexer.yacc;
 
 import java.io.IOException;
-import java.io.Reader;
 
+import org.eclipse.dltk.ruby.formatter.lexer.CharHistory;
+import org.eclipse.dltk.ruby.formatter.lexer.CharRecord;
+import org.eclipse.dltk.ruby.formatter.lexer.CharPositionPool;
+import org.eclipse.dltk.ruby.formatter.lexer.ILexerReader;
 import org.jruby.util.ByteList;
 
 /**
@@ -46,42 +49,11 @@ import org.jruby.util.ByteList;
  * @author enebo
  */
 public class LexerSource {
-    private static final int INITIAL_PUSHBACK_SIZE = 100;
-    private static final int INITIAL_LINEWIDTH_SIZE = 2048;
-    
 	// Where we get new positions from.
 	private ISourcePositionFactory positionFactory;
 	
 	// Where we get our newest char's
-    private final Reader reader;
-    
-    // Our readback/pushback buffer.
-    private char buf[] = new char[INITIAL_PUSHBACK_SIZE];
-    
-    // index of last character in pushback buffer
-    private int bufLength = -1;
-    
-    // How long is every line we have run across.  This makes it possible for us to unread() 
-    // past a read() line and still know what column we are at.
-    private int lineWidths[] = new int[INITIAL_LINEWIDTH_SIZE];
-
-	/**
-	 * Marks the lines which were terminated with windows EOL char.
-	 * 
-	 * All magic with this variable is required to provide correct offsets for
-	 * the files with windows line delimiters.
-	 * 
-	 * When the file is read the windows line delimiter sequence '\r' + '\n' is
-	 * treated as single '\n' for the lexer.
-	 * 
-	 * When characters are unread we decrement the offset by one. But to be
-	 * correct - we should decrement it by 2 in this case. And after the unread
-	 * '\n' is read back - we should restore the offset by incrementing by 2.
-	 */
-	private boolean[] windowsEndOfLines = null;
-
-    // index of last line width in line widths list
-    private int lineWidthsLength = -1;
+    private final ILexerReader reader;
     
     // The name of this source (e.g. a filename: foo.rb)
     private final String sourceName;
@@ -95,8 +67,9 @@ public class LexerSource {
     // How many bytes into the source are we?
     private int offset = 0;
 
-    // Flag to let us now in next read after a newline that we should reset column
-    private boolean nextCharIsOnANewLine = true;
+    private final CharPositionPool positionPool = new CharPositionPool();
+    private final CharHistory readHistory = new CharHistory(positionPool);
+    private final CharHistory unreadBuffer = new CharHistory(positionPool);
 	
     /**
      * Create our food-source for the lexer
@@ -104,13 +77,13 @@ public class LexerSource {
      * @param sourceName is the file we are reading
      * @param reader is what represents the contents of file sourceName
      */
-    public LexerSource(String sourceName, Reader reader) {
+    public LexerSource(String sourceName, ILexerReader reader) {
         this.sourceName = sourceName;
         this.reader = reader;
         this.positionFactory = new SourcePositionFactory(this);
     }
     
-    public LexerSource(String sourceName, Reader reader, ISourcePositionFactory factory) {
+    public LexerSource(String sourceName, ILexerReader reader, ISourcePositionFactory factory) {
         this.sourceName = sourceName;
         this.reader = reader;
         this.positionFactory = factory;
@@ -122,55 +95,26 @@ public class LexerSource {
      * @return next character to viewed by the source
      */
     public char read() throws IOException {
-        int length = bufLength;
         char c;
-    	
-    	if (length >= 0) {
-    		c = buf[bufLength--];
+    	if (!unreadBuffer.isEmpty()) {
+    		CharRecord rec = unreadBuffer.getTail(); 
+    		c = (char) rec.getCh();
+    		line = rec.getLine();
+    		column = rec.getColumn();
+    		offset = rec.getOffset();
+    		unreadBuffer.removeTail();
     	} else {
     		c = wrappedRead();
             
             // EOF...Do not advance column...Go straight to jail
             if (c == RubyYaccLexer.EOF) {
-                //offset++;
                 return c;
             }
+			line = reader.getLine();
+			column = reader.getColumn();
+			offset = reader.getOffset();
     	}
-
-    	// Reset column back to zero on first read of a line (note it will be-
-    	// come '1' by the time it leaves read().
-    	if (nextCharIsOnANewLine) {
-    		nextCharIsOnANewLine = false;
-    		column = 0;
-    	}
-    	
-    	offset++;
-    	column++;
-    	if (c == '\n') {
-    		line++;
-    		// Since we are not reading off of unread buffer we must at the
-    		// end of a new line for the first time.  Add it.
-    		if (length < 0) {
-                lineWidths[++lineWidthsLength] = column;
-                // If we outgrow our lineLength list then grow it
-                if (lineWidthsLength + 1 == lineWidths.length) {
-                    int[] newLineWidths = new int[lineWidths.length + INITIAL_LINEWIDTH_SIZE];
-                        
-                    System.arraycopy(lineWidths, 0, newLineWidths, 0, lineWidths.length);
-                        
-                    lineWidths = newLineWidths;
-                }                
-    		} else {
-				if (windowsEndOfLines != null
-						&& line <= windowsEndOfLines.length
-						&& windowsEndOfLines[line - 1]) {
-					++offset;
-				}
-			}
-    		
-    		nextCharIsOnANewLine = true;
-        } 
-            
+    	readHistory.addTail(c, line, column, offset);
     	return c; 
     }
 
@@ -182,31 +126,20 @@ public class LexerSource {
      */
     public void unread(char c) {
         if (c != RubyYaccLexer.EOF) {
-            offset--;
-    	
-            if (c == '\n') {
-                line--;
-                if (windowsEndOfLines != null
-						&& line < windowsEndOfLines.length
-						&& windowsEndOfLines[line]) {
-					--offset;
-				}
-                column = lineWidths[line];
-                nextCharIsOnANewLine = true;
-            } else {
-                column--;
-            }
-
-            buf[++bufLength] = c;
-            // If we outgrow our pushback stack then grow it (this should only happen in
-            // pretty pathological cases).
-            if (bufLength + 1 == buf.length) {
-                char[] newBuf = new char[buf.length + INITIAL_PUSHBACK_SIZE];
-                
-                System.arraycopy(buf, 0, newBuf, 0, buf.length);
-                
-                buf = newBuf;                
-            }
+        	CharRecord rec  = readHistory.getTail();
+        	unreadBuffer.addTail(c, rec.getLine(), rec.getColumn(), rec.getOffset());
+        	readHistory.removeTail();
+        	if (readHistory.isEmpty()) {
+				line = 0;
+				column = 0;
+        		offset = 0;
+        	}
+        	else {
+            	CharRecord prev = readHistory.getTail();
+				line = prev.getLine();
+				column = prev.getColumn();
+				offset = prev.getOffset();        		
+        	}
         }
     }
     
@@ -284,30 +217,16 @@ public class LexerSource {
         // If \r\n then just pass along \n (windows)
         // If \r[^\n] then pass along \n (MAC)
         if (c == '\r') {
-            if ((c = reader.read()) != '\n') {
-                unread((char)c);
-                c = '\n';
-            } else {
-                // Position within source must reflect the actual offset and column.  Since
-                // we ate an extra character here (this accounting is normally done in read
-                // ), we should update position info.
-                offset++;
-                column++;
-                if (windowsEndOfLines == null) {
-					windowsEndOfLines = new boolean[Math.max(
-							INITIAL_LINEWIDTH_SIZE, line + 1)];
-				} else if (line >= windowsEndOfLines.length) {
-					boolean[] newArray = new boolean[INITIAL_LINEWIDTH_SIZE
-							+ windowsEndOfLines.length];
-					System.arraycopy(windowsEndOfLines, 0, newArray, 0,
-							windowsEndOfLines.length);
-					windowsEndOfLines = newArray;
-				}
-				windowsEndOfLines[line] = true;
+            if (reader.peek() == '\n') {
+            	reader.read();
             }
-        }
+            c = '\n';
+            reader.newLine();
+		} else if (c == '\n') {
+			reader.newLine();
+		}
 
-        return c != -1 ? (char) c : RubyYaccLexer.EOF;
+        return c != ILexerReader.EOF ? (char) c : RubyYaccLexer.EOF;
     }
     
     /**
@@ -317,7 +236,7 @@ public class LexerSource {
      * @param content the data of the source
      * @return the new source
      */
-    public static LexerSource getSource(String name, Reader content) {
+    public static LexerSource getSource(String name, ILexerReader content) {
         return new LexerSource(name, content);
     }
 
