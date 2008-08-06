@@ -54,7 +54,13 @@ public class StartWithRule implements IRule
 		if( scanner.getColumn() > 0 ) {
 			scanner.unread();
 			int cc = scanner.read();
-			if( !Character.isWhitespace((char)cc) && (char)cc!='(' && (char)cc!='{' ) {
+			if (!Character.isWhitespace((char) cc) && (char) cc != '('
+					&& (char) cc != '{' && (char) cc != '/' && (char) cc != '!'
+					&& (char) cc != '%' && (char) cc != '^' && (char) cc != '&'
+					&& (char) cc != '*' && (char) cc != '-' && (char) cc != '+'
+					&& (char) cc != '=' && (char) cc != '[' && (char) cc != '|'
+					&& (char) cc != '?' && (char) cc != ':' && (char) cc != '<'
+					&& (char) cc != '>' && (char) cc != ',') {
 				return Token.UNDEFINED;
 			}
 		}
