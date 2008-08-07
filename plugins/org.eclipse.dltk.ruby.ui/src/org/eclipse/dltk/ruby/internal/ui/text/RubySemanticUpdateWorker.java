@@ -25,9 +25,10 @@ import org.eclipse.dltk.ast.references.SimpleReference;
 import org.eclipse.dltk.ast.references.VariableReference;
 import org.eclipse.dltk.compiler.env.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
-import org.eclipse.dltk.ui.editor.highlighting.SemanticHighlighting;
 import org.eclipse.dltk.ruby.ast.RubyConstantDeclaration;
+import org.eclipse.dltk.ruby.ast.RubyDAssgnExpression;
 import org.eclipse.dltk.ruby.ast.RubyDRegexpExpression;
+import org.eclipse.dltk.ruby.ast.RubyDVarExpression;
 import org.eclipse.dltk.ruby.ast.RubyDynamicStringExpression;
 import org.eclipse.dltk.ruby.ast.RubyEvaluatableStringExpression;
 import org.eclipse.dltk.ruby.ast.RubyRegexpExpression;
@@ -36,6 +37,7 @@ import org.eclipse.dltk.ruby.core.utils.RubySyntaxUtils;
 import org.eclipse.dltk.ruby.internal.ui.RubyPreferenceConstants;
 import org.eclipse.dltk.ruby.ui.preferences.RubyPreferencesMessages;
 import org.eclipse.dltk.ui.editor.highlighting.ISemanticHighlightingRequestor;
+import org.eclipse.dltk.ui.editor.highlighting.SemanticHighlighting;
 import org.eclipse.dltk.ui.preferences.PreferencesMessages;
 
 public class RubySemanticUpdateWorker extends ASTVisitor {
@@ -112,6 +114,13 @@ public class RubySemanticUpdateWorker extends ASTVisitor {
 					HL_SYMBOL);
 		} else if (node instanceof VariableReference) {
 			handleVariableReference((VariableReference) node);
+		} else if (node instanceof RubyDVarExpression) {
+			requestor.addPosition(node.sourceStart(), node.sourceEnd(),
+					HL_LOCAL_VARIABLE);
+		} else if (node instanceof RubyDAssgnExpression) {
+			ASTNode var = ((RubyDAssgnExpression) node).getLeft();
+			requestor.addPosition(var.sourceStart(), var.sourceEnd(),
+					HL_LOCAL_VARIABLE);
 		} else if (node instanceof StringLiteral) {
 			if (isStringLiteralNeeded(node)) {
 				requestor.addPosition(node.sourceStart(), node.sourceEnd(),
@@ -130,8 +139,8 @@ public class RubySemanticUpdateWorker extends ASTVisitor {
 				final SimpleReference callName = call.getCallName();
 				if (callName.sourceStart() >= 0
 						&& callName.sourceEnd() > callName.sourceStart()) {
-					requestor.addPosition(call.sourceStart(), call.sourceEnd(),
-							HL_DEFAULT);
+					requestor.addPosition(callName.sourceStart(), callName
+							.sourceEnd(), HL_DEFAULT);
 				}
 			}
 		} else if (node instanceof Declaration) {
