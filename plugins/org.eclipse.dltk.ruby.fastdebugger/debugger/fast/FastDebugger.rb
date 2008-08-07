@@ -112,5 +112,10 @@ module XoredDebugger
             handler.at_line(current_context, file, line) unless handler.nil? || current_context.skip_line
             current_context.skip_line = false
         end
+
+        def at_return(context, file, line)
+            handler.at_return(current_context, file, line) unless handler.nil? || current_context.skip_line
+            current_context.skip_line = false
+        end
     end #  class FastRubyDebugger
 end # module
