@@ -12,9 +12,13 @@ package org.eclipse.dltk.ruby.typeinference.evaluators;
 import java.util.List;
 
 import org.eclipse.dltk.ast.ASTNode;
+import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
+import org.eclipse.dltk.ast.declarations.TypeDeclaration;
 import org.eclipse.dltk.ast.expressions.CallExpression;
 import org.eclipse.dltk.evaluation.types.UnknownType;
 import org.eclipse.dltk.ruby.ast.RubySelfReference;
+import org.eclipse.dltk.ruby.internal.parsers.jruby.ASTUtils;
+import org.eclipse.dltk.ruby.typeinference.RubyClassType;
 import org.eclipse.dltk.ruby.typeinference.RubyTypeInferencingUtils;
 import org.eclipse.dltk.ti.GoalState;
 import org.eclipse.dltk.ti.ISourceModuleContext;
@@ -65,9 +69,37 @@ public class MethodCallTypeEvaluator extends GoalEvaluator {
 			if (receiver == null || receiver instanceof RubySelfReference) {
 				// handling SelfReference here just for simplicity, could be
 				// left to the TI engine as well
-				receiverType = RubyTypeInferencingUtils.determineSelfClass(goal.getContext(),
-						expression.sourceStart());
-				state = STATE_GOT_RECEIVER;
+				IEvaluatedType scopeType = RubyTypeInferencingUtils
+						.determineSelfClass(goal.getContext(), expression
+								.sourceStart());
+				if ((scopeType != null)
+						&& (!(scopeType instanceof RubyClassType) || !("Object" //$NON-NLS-1$
+						.equals(((RubyClassType) scopeType).getTypeName())))) {
+					receiverType = scopeType;
+					state = STATE_GOT_RECEIVER;
+				} else { // ssanders: Allow other evaluators to narrow type
+					ASTNode scopeNode = receiver;
+					if (scopeNode == null) {
+						scopeNode = ASTUtils.findMinimalNode(
+								((ISourceModuleContext) goal.getContext())
+										.getRootNode(), expression
+										.sourceStart(), expression
+										.sourceStart());
+						ASTNode[] wayToNode = ASTUtils.restoreWayToNode(
+								((ISourceModuleContext) goal.getContext())
+										.getRootNode(), scopeNode);
+						for (int cnt = (wayToNode.length - 2); cnt >= 0; cnt--) {
+							if ((wayToNode[cnt] instanceof TypeDeclaration)
+									|| (wayToNode[cnt] instanceof ModuleDeclaration)) {
+								scopeNode = wayToNode[cnt];
+
+								break;
+							}
+						}
+					}
+					state = STATE_WAITING_RECEIVER;
+					return new ExpressionTypeGoal(goal.getContext(), scopeNode);
+				}
 			} else {
 				state = STATE_WAITING_RECEIVER;
 				return new ExpressionTypeGoal(goal.getContext(), receiver);
