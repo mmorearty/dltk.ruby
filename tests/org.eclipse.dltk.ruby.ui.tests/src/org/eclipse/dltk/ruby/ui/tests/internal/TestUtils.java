@@ -42,7 +42,7 @@ public class TestUtils {
 	 *            the document
 	 */
 	public static void installStuff(Document document) {
-		String[] types = new String[] { IRubyPartitions.RUBY_STRING,
+		String[] types = new String[] { IRubyPartitions.RUBY_STRING, IRubyPartitions.RUBY_PERCENT_STRING,
 				IRubyPartitions.RUBY_COMMENT, IDocument.DEFAULT_CONTENT_TYPE };
 		FastPartitioner partitioner = new FastPartitioner(
 				new RubyPartitionScanner(), types);

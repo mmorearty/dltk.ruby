@@ -31,6 +31,7 @@ public class RubyTextTools extends ScriptTextTools {
 	private final static String[] LEGAL_CONTENT_TYPES = new String[] {
 			IRubyPartitions.RUBY_STRING,
 			IRubyPartitions.RUBY_SINGLE_QUOTE_STRING,
+			IRubyPartitions.RUBY_PERCENT_STRING,
 			IRubyPartitions.RUBY_COMMENT, IRubyPartitions.RUBY_DOC };
 
 	public RubyTextTools(boolean autoDisposeOnDisplayDispose) {

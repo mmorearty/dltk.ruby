@@ -60,6 +60,7 @@ public class RubyDocumentationProvider implements IScriptDocumentationProvider {
 	private static void installStuff(Document document) {
 		String[] types = new String[] { IRubyPartitions.RUBY_STRING,
 				IRubyPartitions.RUBY_SINGLE_QUOTE_STRING,
+				IRubyPartitions.RUBY_PERCENT_STRING,
 				IRubyPartitions.RUBY_COMMENT, IRubyPartitions.RUBY_DOC,
 				IDocument.DEFAULT_CONTENT_TYPE };
 		FastPartitioner partitioner = new FastPartitioner(
@@ -136,7 +137,10 @@ public class RubyDocumentationProvider implements IScriptDocumentationProvider {
 				if (region.getType().equals(IDocument.DEFAULT_CONTENT_TYPE)) {
 					String content = doc.get(region.getOffset(),
 							region.getLength()).trim();
-					if (content.length() > 0)
+					if (content.length() > 0
+							&& !content.startsWith("public") //$NON-NLS-1$
+							&& !content.startsWith("protected") //$NON-NLS-1$
+							&& !content.startsWith("private")) //$NON-NLS-1$
 						break;
 				}
 				pos = region.getOffset() - 1;
@@ -155,7 +159,10 @@ public class RubyDocumentationProvider implements IScriptDocumentationProvider {
 				if (region.getType().equals(IDocument.DEFAULT_CONTENT_TYPE)) {
 					String content = doc.get(region.getOffset(),
 							region.getLength()).trim();
-					if (content.length() > 0)
+					if (content.length() > 0
+							&& !content.startsWith("public") //$NON-NLS-1$
+							&& !content.startsWith("protected") //$NON-NLS-1$
+							&& !content.startsWith("private")) //$NON-NLS-1$
 						break;
 				}
 				pos = region.getOffset() + region.getLength() + 1;

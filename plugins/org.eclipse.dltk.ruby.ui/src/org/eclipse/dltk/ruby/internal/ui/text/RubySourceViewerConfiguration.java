@@ -172,6 +172,10 @@ public class RubySourceViewerConfiguration extends
 		reconciler.setDamager(dr, IRubyPartitions.RUBY_STRING);
 		reconciler.setRepairer(dr, IRubyPartitions.RUBY_STRING);
 
+		dr = new DefaultDamagerRepairer(getStringScanner());
+		reconciler.setDamager(dr, IRubyPartitions.RUBY_PERCENT_STRING);
+		reconciler.setRepairer(dr, IRubyPartitions.RUBY_PERCENT_STRING);
+
 		dr = new DefaultDamagerRepairer(getSingleQuoteStringScanner());
 		reconciler.setDamager(dr, IRubyPartitions.RUBY_SINGLE_QUOTE_STRING);
 		reconciler.setRepairer(dr, IRubyPartitions.RUBY_SINGLE_QUOTE_STRING);
@@ -308,6 +312,10 @@ public class RubySourceViewerConfiguration extends
 				getEditor(), assistant, IDocument.DEFAULT_CONTENT_TYPE);
 		assistant.setContentAssistProcessor(scriptProcessor,
 				IDocument.DEFAULT_CONTENT_TYPE);
+		assistant.setContentAssistProcessor(scriptProcessor,
+				IRubyPartitions.RUBY_SINGLE_QUOTE_STRING);
+		assistant.setContentAssistProcessor(scriptProcessor,
+				IRubyPartitions.RUBY_STRING);
 	}
 
 	protected ContentAssistPreference getContentAssistPreference() {
@@ -330,6 +338,7 @@ public class RubySourceViewerConfiguration extends
 				.setInformationProvider(provider, IRubyPartitions.RUBY_COMMENT);
 		presenter.setInformationProvider(provider, IRubyPartitions.RUBY_DOC);
 		presenter.setInformationProvider(provider, IRubyPartitions.RUBY_STRING);
+		presenter.setInformationProvider(provider, IRubyPartitions.RUBY_PERCENT_STRING);
 		presenter.setInformationProvider(provider,
 				IRubyPartitions.RUBY_SINGLE_QUOTE_STRING);
 	}

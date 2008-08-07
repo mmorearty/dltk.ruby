@@ -65,31 +65,31 @@ public class PartitioningTest extends SuiteOfTestCases {
 	}
 
 	public void testPercentStringAfterPuts() throws Exception {
-		doTest("puts #$#%s/foo bar boz/#$# / 2", IRubyPartitions.RUBY_STRING);
+		doTest("puts #$#%s/foo bar boz/#$# / 2", IRubyPartitions.RUBY_PERCENT_STRING);
 	}
 
 	public void testPercentStringAfterMethodCall() throws Exception {
 		doTest(
 				"def foo(*args); puts(*args); end\nfoo #$#%s/foo bar boz/#$# / 2",
-				IRubyPartitions.RUBY_STRING);
+				IRubyPartitions.RUBY_PERCENT_STRING);
 	}
 
 	public void testPercentOperatorAfterVariable() throws Exception {
 		// XXX: this does not start a string in Ruby, but will be treated as a
 		// string in IDE
 		doTest("foo = 20\nfoo #$#%s/foo bar boz/#$# 2",
-				IRubyPartitions.RUBY_STRING);
+				IRubyPartitions.RUBY_PERCENT_STRING);
 	}
 
 	public void testPercentDoesStartString() throws Exception {
 		doTest("if a == #$#%s/2/#$# then puts 1 else puts 2 end",
-				IRubyPartitions.RUBY_STRING);
+				IRubyPartitions.RUBY_PERCENT_STRING);
 	}
 
 	public void testPercentDoesNotStartString() throws Exception {
 		// XXX: this does not start a string in Ruby, but will be treated as a
 		// string in IDE
-		doTest("puts bar #$#%s/2/#$#\n3", IRubyPartitions.RUBY_STRING);
+		doTest("puts bar #$#%s/2/#$#\n3", IRubyPartitions.RUBY_PERCENT_STRING);
 	}
 
 	private void doHereDocTest(String data) throws Exception {
@@ -185,7 +185,7 @@ public class PartitioningTest extends SuiteOfTestCases {
 						+ "def #{item}_dir_path\n" + "resolve_path(:#{item})\n"
 						+ "end\n" + "EO_METH\n"
 						+ "class_eval(method_to_eval)\n" + "end",
-				IRubyPartitions.RUBY_STRING);
+				IRubyPartitions.RUBY_PERCENT_STRING);
 		doTest(
 				"# Some metaprogramming to make it rock\n"
 						+ "%w{app controllers models helpers views\n"
