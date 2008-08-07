@@ -252,8 +252,9 @@ public class RubyModelUtils {
 	private static List handleSpecialMethod(RubyMixinMethod method,
 			RubyMixinClass selfKlass) {
 		if (method.getKey().equals("Class%{new")) { //$NON-NLS-1$
-			RubyMixinMethod init = selfKlass.getInstanceClass().getMethod(
-					"initialize"); //$NON-NLS-1$
+			RubyMixinMethod init = selfKlass.getInstanceClass() != null ? selfKlass
+					.getInstanceClass().getMethod("initialize") //$NON-NLS-1$
+					: null;
 			if (init != null) {
 				IMethod[] initMethods = init.getSourceMethods();
 				List result = new ArrayList();
@@ -619,8 +620,8 @@ public class RubyModelUtils {
 			public void acceptSearchMatch(SearchMatch match)
 					throws CoreException {
 				Object element = match.getElement();
-				if (element instanceof SourceMethod) {
-					SourceMethod meth = (SourceMethod) element;
+				if (element instanceof IMethod) {
+					IMethod meth = (IMethod) element;
 					if (meth.getParent() instanceof ISourceModule) {
 						result.add(meth);
 					}
