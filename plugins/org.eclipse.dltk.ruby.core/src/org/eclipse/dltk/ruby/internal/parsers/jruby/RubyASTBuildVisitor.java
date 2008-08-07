@@ -1105,16 +1105,20 @@ public class RubyASTBuildVisitor implements NodeVisitor {
 						a.getValueNode().accept(this);
 						states.pop();
 						ASTNode defaultVal = null;
+						int nameStart = argPos.getStartOffset();
+						int nameEnd = argPos.getEndOffset();
 
 						if (coll.list.size() == 1) {
 							Object object = coll.list.get(0);
 							defaultVal = (ASTNode) object;
+							if (defaultVal.sourceStart() > nameStart
+									&& defaultVal.sourceStart() < nameEnd) {
+								nameEnd = defaultVal.sourceStart();
+							}
 						}
 
 						aa
-								.set(new SimpleReference(argPos
-										.getStartOffset(), argPos
-										.getEndOffset(), a.getName()),
+								.set(new SimpleReference(nameStart, nameEnd, a.getName()),
 										defaultVal);
 						aa.setModifier(RubyMethodArgument.SIMPLE);
 						arguments.add(aa);
