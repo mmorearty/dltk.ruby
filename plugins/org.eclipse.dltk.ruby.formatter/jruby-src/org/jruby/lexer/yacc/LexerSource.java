@@ -121,8 +121,7 @@ public class LexerSource {
      */
     public void unread(char c) {
         if (c != RubyYaccLexer.EOF) {
-        	CharRecord rec  = readHistory.getTail();
-        	unreadBuffer.addTail(c, rec.getColumn(), rec.getOffset());
+        	unreadBuffer.addTail(c, column, offset);
         	readHistory.removeTail();
         	if (readHistory.isEmpty()) {
 				column = 0;
@@ -248,6 +247,25 @@ public class LexerSource {
             unread(buffer.charAt(i));
         }
     }
+    
+	/**
+	 * @param lastLine
+	 * @param savedColumn
+	 * @param savedOffset
+	 */
+	public void unreadMany(CharSequence buffer, int savedColumn, int savedOffset) {
+		int length = buffer.length();
+		for (int i = length - 1; i >= 0; i--) {
+			if (i == length - 1) {
+				unreadBuffer.addTail(buffer.charAt(i), column, offset);
+			} else {
+				unreadBuffer.addTail(buffer.charAt(i), savedColumn + i + 1,
+						savedOffset + i + 1);
+			}
+		}
+		column = savedColumn;
+		offset = savedOffset;
+	}
 
     public boolean matchString(String match, boolean indent) throws IOException {
         int length = match.length();
@@ -425,4 +443,5 @@ public class LexerSource {
             return null;
         }
     }
+
 }

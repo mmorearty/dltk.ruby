@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.dltk.formatter.nodes;
 
+import org.eclipse.jface.text.IRegion;
+
 public class FormatterDocument implements IFormatterDocument {
 
 	private final String text;
@@ -36,12 +38,12 @@ public class FormatterDocument implements IFormatterDocument {
 		return text.length();
 	}
 
-	/*
-	 * @see org.eclipse.dltk.ruby.formatter.node.IFormatterDocument#get(int,
-	 * int)
-	 */
 	public String get(int startOffset, int endOffset) {
 		return text.substring(startOffset, endOffset);
+	}
+
+	public String get(IRegion region) {
+		return get(region.getOffset(), region.getOffset() + region.getLength());
 	}
 
 }

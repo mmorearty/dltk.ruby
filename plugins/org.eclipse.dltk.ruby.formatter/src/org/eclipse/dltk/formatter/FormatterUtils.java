@@ -9,20 +9,12 @@
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Alex Panchenko)
  *******************************************************************************/
-package org.eclipse.dltk.formatter.nodes;
+package org.eclipse.dltk.formatter;
 
-import org.eclipse.jface.text.IRegion;
+public class FormatterUtils {
 
-public interface IFormatterVisitor {
-
-	void preVisit(IFormatterContext context, IFormatterTextNode node)
-			throws Exception;
-
-	void visit(IFormatterContext context, IFormatterTextNode node)
-			throws Exception;
-
-	void excludeRegion(IRegion region);
-
-	void addNewLineCallback(IFormatterCallback callback);
+	public static boolean isSpace(char c) {
+		return c == '\t' || c == ' ';
+	}
 
 }

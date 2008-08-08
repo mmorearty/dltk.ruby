@@ -41,6 +41,7 @@ public interface ISourcePosition {
      * Which file does this source position live in?
      * 
      * @return name of the source file.
+     * @deprecated
      */
 	public String getFile();
     

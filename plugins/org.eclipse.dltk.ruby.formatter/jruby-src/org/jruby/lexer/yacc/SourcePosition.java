@@ -43,9 +43,6 @@ import java.io.Serializable;
 public class SourcePosition implements ISourcePosition, Serializable {
 	private static final long serialVersionUID = 3762529027281400377L;
 
-	// The file of the source
-	private final String file;
-
 	// The start/end offsets of the source
 	private int startOffset;
 	private final int endOffset;
@@ -54,7 +51,7 @@ public class SourcePosition implements ISourcePosition, Serializable {
 	 * Creates a default source position - required for serialization.
 	 */
 	public SourcePosition() {
-		this("", 0, 0);
+		this(0, 0);
 	}
 
 	/**
@@ -64,21 +61,23 @@ public class SourcePosition implements ISourcePosition, Serializable {
 	 *            location of the source (must not be null)
 	 * @param line
 	 *            what line within the source
+	 * @deprecated
 	 */
 	public SourcePosition(String file, int startOffset, int endOffset) {
-		if (file == null) { // otherwise equals() and getInstance() will fail
-			throw new NullPointerException();
-		}
-		this.file = file;
+		this(startOffset, endOffset);
+	}
+
+	public SourcePosition(int startOffset, int endOffset) {
 		this.startOffset = startOffset;
 		this.endOffset = endOffset;
 	}
 
 	/**
 	 * @see org.jruby.lexer.yacc.ISourcePosition#getFile()
+	 * @deprecated
 	 */
 	public String getFile() {
-		return file;
+		return "";
 	}
 
 	/**
@@ -93,10 +92,8 @@ public class SourcePosition implements ISourcePosition, Serializable {
 		if (!(object instanceof SourcePosition)) {
 			return false;
 		}
-
-		SourcePosition other = (SourcePosition) object;
-
-		return file.equals(other.file) && endOffset == other.endOffset;
+		final SourcePosition other = (SourcePosition) object;
+		return startOffset == other.startOffset && endOffset == other.endOffset;
 	}
 
 	/**
@@ -105,20 +102,14 @@ public class SourcePosition implements ISourcePosition, Serializable {
 	 * @see java.lang.Object#hashCode()
 	 */
 	public int hashCode() {
-		return file.hashCode() ^ endOffset;
+		return startOffset ^ endOffset;
 	}
 
 	/**
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		final StringBuffer sb = new StringBuffer();
-		if (file.length() != 0) {
-			sb.append(file).append(':');
-		}
-		sb.append("[");
-		sb.append(startOffset).append("...").append(endOffset).append(']');
-		return sb.toString();
+		return "[" + startOffset + "..." + endOffset + ']';
 	}
 
 	/**
@@ -155,7 +146,7 @@ public class SourcePosition implements ISourcePosition, Serializable {
 		// Enebo: All AST nodes but IterNode are in ascending order
 		// position-wise. We should not
 		// need to safe-guard that other is a smaller source position
-		return new SourcePosition(file, startOffset, other.getEndOffset());
+		return new SourcePosition(startOffset, other.getEndOffset());
 	}
 
 	/**
@@ -167,7 +158,6 @@ public class SourcePosition implements ISourcePosition, Serializable {
 	 */
 	public static SourcePosition combinePosition(ISourcePosition firstPos,
 			ISourcePosition secondPos) {
-		String fileName = firstPos.getFile();
 		int startOffset = firstPos.getStartOffset();
 		int endOffset = firstPos.getEndOffset();
 
@@ -179,8 +169,8 @@ public class SourcePosition implements ISourcePosition, Serializable {
 			endOffset = secondPos.getEndOffset();
 		}
 
-		SourcePosition combinedPosition = new SourcePosition(fileName,
-				startOffset, endOffset);
+		SourcePosition combinedPosition = new SourcePosition(startOffset,
+				endOffset);
 
 		return combinedPosition;
 	}

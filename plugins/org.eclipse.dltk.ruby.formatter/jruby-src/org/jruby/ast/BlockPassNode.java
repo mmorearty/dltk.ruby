@@ -90,7 +90,7 @@ public class BlockPassNode extends Node {
     }
     
     public List childNodes() {
-        return Node.createList(argsNode, bodyNode);
+        return Node.createList(bodyNode);
     }
 
 }

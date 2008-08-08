@@ -9,20 +9,27 @@
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Alex Panchenko)
  *******************************************************************************/
-package org.eclipse.dltk.formatter.nodes;
+package org.jruby.lexer.yacc;
 
-import org.eclipse.jface.text.IRegion;
+import java.io.IOException;
 
-public interface IFormatterVisitor {
+import org.jruby.parser.Tokens;
 
-	void preVisit(IFormatterContext context, IFormatterTextNode node)
-			throws Exception;
+public class HeredocEndTerm extends StrTerm {
 
-	void visit(IFormatterContext context, IFormatterTextNode node)
-			throws Exception;
+	private final ISourcePosition position;
 
-	void excludeRegion(IRegion region);
+	/**
+	 * @param position
+	 */
+	public HeredocEndTerm(ISourcePosition position) {
+		this.position = position;
+	}
 
-	void addNewLineCallback(IFormatterCallback callback);
+	public int parseString(RubyYaccLexer lexer, LexerSource src)
+			throws IOException {
+		lexer.setValue(new Token("\"", position));
+		return Tokens.tSTRING_END;
+	}
 
 }

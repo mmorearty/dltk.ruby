@@ -126,6 +126,7 @@ import org.jruby.ast.XStrNode;
 import org.jruby.ast.YieldNode;
 import org.jruby.ast.ZArrayNode;
 import org.jruby.ast.ZSuperNode;
+import org.jruby.ast.ext.HeredocNode;
 import org.jruby.ast.ext.PreExeNode;
 import org.jruby.evaluator.Instruction;
 
@@ -537,4 +538,9 @@ public abstract class AbstractVisitor implements NodeVisitor {
 	public Instruction visitPreExeNode(PreExeNode visited) {
 		return visitNode(visited);
 	}
+	
+	public Instruction visitHeredocNode(HeredocNode iVisited) {
+		return visitNode(iVisited);
+	}
+
 }

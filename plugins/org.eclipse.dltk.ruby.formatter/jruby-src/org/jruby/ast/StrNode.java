@@ -84,7 +84,7 @@ public class StrNode extends Node implements ILiteralNode {
 	}
 
 	public String toString() {
-		return getNodeName() + "[" + value + "]";
+		return getNodeName() + "[" + value + "]" + getPosition();
 	}
 
 }

@@ -37,6 +37,7 @@ package org.jruby.lexer.yacc;
 import java.io.IOException;
 import java.math.BigInteger;
 
+import org.eclipse.dltk.ruby.formatter.lexer.HeredocToken;
 import org.jruby.ast.BackRefNode;
 import org.jruby.ast.BignumNode;
 import org.jruby.ast.CommentNode;
@@ -91,7 +92,7 @@ public class RubyYaccLexer {
     static final int STR_FUNC_REGEXP=0x04;
     static final int STR_FUNC_QWORDS=0x08;
     static final int STR_FUNC_SYMBOL=0x10;
-    static final int STR_FUNC_INDENT=0x20;
+    public static final int STR_FUNC_INDENT=0x20;
 
     private final int str_squote = 0;
     private final int str_dquote = STR_FUNC_EXPAND;
@@ -101,8 +102,8 @@ public class RubyYaccLexer {
     private final int str_dsym   = STR_FUNC_SYMBOL | STR_FUNC_EXPAND;
     
     public RubyYaccLexer() {
-    	reset();
-    }
+		reset();
+	}
     
     private final boolean isFormatting() {
 		return true;
@@ -417,20 +418,23 @@ public class RubyYaccLexer {
             } while ((c = src.read()) != EOF && isIdentifierChar(c));
             src.unread(c);
         }
-
+		final int savedColumn = src.getColumn();
+		final int savedOffset = src.getOffset();
+        if (term == '`') {
+			yaccValue = new HeredocToken("`", getPosition(), func);
+		} else {
+			yaccValue = new HeredocToken("\"", getPosition(), func);
+		}
+		
         String line = src.readLine() + '\n';
         String tok = tokenBuffer.toString();
-        lex_strterm = new HeredocTerm(tok, func, line);
-
-        if (term == '`') {
-            yaccValue = new Token("`", getPosition());
-            return Tokens.tXSTRING_BEG;
-        }
-        
-        yaccValue = new Token("\"", getPosition());
-        // Hacky: Advance position to eat newline here....
+        lex_strterm = new HeredocTerm(tok, func, line, savedColumn, savedOffset);
         getPosition();
-        return Tokens.tSTRING_BEG;
+        if (term == '`') {
+			return Tokens.tXSTRING_BEG;
+		} else {
+			return Tokens.tSTRING_BEG;
+		}
     }
     
     private void arg_ambiguous() {

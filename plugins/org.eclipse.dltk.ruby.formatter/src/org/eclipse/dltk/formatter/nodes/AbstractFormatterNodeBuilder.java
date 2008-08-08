@@ -33,7 +33,9 @@ public class AbstractFormatterNodeBuilder {
 
 	protected void addChild(IFormatterNode node) {
 		IFormatterContainerNode parentNode = peek();
-		advanceParent(parentNode, node.getStartOffset());
+		if (!node.isEmpty()) {
+			advanceParent(parentNode, node.getStartOffset());
+		}
 		parentNode.addChild(node);
 	}
 

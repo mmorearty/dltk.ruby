@@ -34,6 +34,10 @@
  ***** END LICENSE BLOCK *****/
 package org.jruby.parser;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.dltk.ruby.formatter.lexer.StringType;
 import org.jruby.ast.AndNode;
 import org.jruby.ast.ArgsCatNode;
 import org.jruby.ast.ArgsPushNode;
@@ -293,14 +297,12 @@ public class ParserSupport {
     }
     
     public ISourcePosition union(ISourcePosition first, ISourcePosition second) {
-//		assert first.getFile().equals(second.getFile());
-
 		if (first.getStartOffset() < second.getStartOffset()) {
-			return new SourcePosition(first.getFile(), first.getStartOffset(),
-					second.getEndOffset());
+			return new SourcePosition(first.getStartOffset(), second
+					.getEndOffset());
 		} else {
-			return new SourcePosition(first.getFile(), second.getStartOffset(),
-					first.getEndOffset());
+			return new SourcePosition(second.getStartOffset(), first
+					.getEndOffset());
 		}
 	}
     
@@ -788,10 +790,13 @@ public class ParserSupport {
     public Node literal_concat(ISourcePosition position, Node head, Node tail) { 
         if (head == null) return tail;
         if (tail == null) return head;
-        
+
         if (head instanceof EvStrNode) {
-            head = new DStrNode(union(head.getPosition(), position)).add(head);
-        } 
+			head = new DStrNode(union(head.getPosition(), position)).add(head);
+		} else if (head instanceof StrNode
+				&& ((StrNode) head).getValue().length() == 0) {
+			return tail;
+		}
 
         if (tail instanceof StrNode) {
             if (head instanceof StrNode) {
@@ -816,10 +821,12 @@ public class ParserSupport {
             if(((StrNode) head).getValue().length() == 0) {
                 head = new DStrNode(head.getPosition());
             } else {
-                // All first element StrNode's do not include syntacical sugar.
-                head.getPosition().adjustStartOffset(-1);
-                head = new DStrNode(head.getPosition()).add(head);
-            }
+				// All first element StrNode's do not include syntactical sugar.
+				if (!peekStringType().isHeredoc()) {
+					head.getPosition().adjustStartOffset(-1);
+				}
+				head = new DStrNode(head.getPosition()).add(head);
+			}
         }
         return ((DStrNode) head).add(tail);
     }
@@ -886,7 +893,7 @@ public class ParserSupport {
     }
     
     public ISourcePosition createEmptyArgsNodePosition(ISourcePosition pos) {
-        return new SourcePosition(pos.getFile(), pos.getEndOffset() - 1, pos.getEndOffset() - 1);
+        return new SourcePosition(pos.getEndOffset() - 1, pos.getEndOffset() - 1);
     }
     
     public Node unwrapNewlineNode(Node node) {
@@ -899,4 +906,18 @@ public class ParserSupport {
     private Node checkForNilNode(Node node, ISourcePosition defaultPosition) {
         return (node == null) ? new NilNode(defaultPosition) : node; 
     }
+    
+    private final List stringTypes = new ArrayList();
+
+	public void pushStringType(StringType stringType) {
+		stringTypes.add(stringType);
+	}
+
+	public StringType popStringType() {
+		return (StringType) stringTypes.remove(stringTypes.size() - 1);
+	}
+
+	public StringType peekStringType() {
+		return (StringType) stringTypes.get(stringTypes.size() - 1);
+	}
 }

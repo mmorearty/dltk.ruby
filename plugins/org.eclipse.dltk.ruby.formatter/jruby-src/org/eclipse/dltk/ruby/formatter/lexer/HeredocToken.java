@@ -9,20 +9,28 @@
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Alex Panchenko)
  *******************************************************************************/
-package org.eclipse.dltk.formatter.nodes;
+package org.eclipse.dltk.ruby.formatter.lexer;
 
-import org.eclipse.jface.text.IRegion;
+import org.jruby.lexer.yacc.ISourcePosition;
+import org.jruby.lexer.yacc.RubyYaccLexer;
+import org.jruby.lexer.yacc.Token;
 
-public interface IFormatterVisitor {
+public class HeredocToken extends Token {
 
-	void preVisit(IFormatterContext context, IFormatterTextNode node)
-			throws Exception;
+	private final int func;
 
-	void visit(IFormatterContext context, IFormatterTextNode node)
-			throws Exception;
+	/**
+	 * @param value
+	 * @param position
+	 * @param func
+	 */
+	public HeredocToken(Object value, ISourcePosition position, int func) {
+		super(value, position);
+		this.func = func;
+	}
 
-	void excludeRegion(IRegion region);
-
-	void addNewLineCallback(IFormatterCallback callback);
+	public boolean isIndent() {
+		return (func & RubyYaccLexer.STR_FUNC_INDENT) != 0;
+	}
 
 }

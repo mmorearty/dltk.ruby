@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.dltk.formatter.nodes;
 
+import org.eclipse.jface.text.IRegion;
+
 public interface IFormatterDocument {
 
 	String getText();
@@ -23,5 +25,11 @@ public interface IFormatterDocument {
 	 * @return
 	 */
 	String get(int startOffset, int endOffset);
+
+	/**
+	 * @param region
+	 * @return
+	 */
+	String get(IRegion region);
 
 }

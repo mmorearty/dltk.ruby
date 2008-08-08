@@ -50,21 +50,12 @@ public class RubyFormatter extends AbstractScriptFormatter {
 		FormatterWriter writer = new FormatterWriter();
 		try {
 			root.accept(context, writer);
+			writer.flush(context);
 			return writer.getOutput();
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
 		}
-	}
-
-	public IFormatterContainerNode buildFormattingTree(String input) {
-		final RubyParserResult result = RubyParser.parse(input);
-		if (result == null) {
-			return null;
-		}
-		final RubyFormatterNodeBuilder builder = new RubyFormatterNodeBuilder();
-		final IFormatterDocument document = new FormatterDocument(input);
-		return builder.build(result, document);
 	}
 
 }

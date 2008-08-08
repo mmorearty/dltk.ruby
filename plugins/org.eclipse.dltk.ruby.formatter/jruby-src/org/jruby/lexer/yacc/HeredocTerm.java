@@ -36,11 +36,15 @@ public class HeredocTerm extends StrTerm {
 	private final String eos;
 	private final int func;
 	private final String lastLine;
+	private final int savedColumn;
+	private final int savedOffset;
     
-    public HeredocTerm(String eos, int func, String lastLine) {
+    public HeredocTerm(String eos, int func, String lastLine,int savedColumn,int savedOffset) {
         this.eos = eos;
         this.func = func;
         this.lastLine = lastLine;
+        this.savedColumn = savedColumn;
+		this.savedOffset = savedOffset;
     }
     
     public int parseString(RubyYaccLexer lexer, LexerSource src) throws java.io.IOException {
@@ -53,10 +57,11 @@ public class HeredocTerm extends StrTerm {
         }
         if (src.wasBeginOfLine() && c == eos.charAt(0)
 				&& src.matchString(eos.substring(1) + '\n', indent)) {
-			src.unreadMany(lastLine);
+            lexer.yaccValue = new Token("\"", lexer.getPosition());
+			src.unreadMany(lastLine, savedColumn, savedOffset);
 			return Tokens.tSTRING_END;
 		}
-
+        int endMarker;
         if ((func & RubyYaccLexer.STR_FUNC_EXPAND) == 0) {
             /*
              * if (c == '\n') { support.unread(c); }
@@ -84,6 +89,7 @@ public class HeredocTerm extends StrTerm {
                 if (src.peek((char) RubyYaccLexer.EOF)) {
                     throw new SyntaxException(src.getPosition(), "can't find string \"" + eos + "\" anywhere before EOF");
                 }
+                endMarker = src.getOffset();
             } while (!src.matchString(eos + '\n', indent));
         } else {
             ByteList buffer = new ByteList();
@@ -118,13 +124,17 @@ public class HeredocTerm extends StrTerm {
                 // We need to pushback so when whole match looks it did not
                 // lose a char during last EOF
                 src.unread(c);
+                endMarker = src.getOffset();
             } while (!src.matchString(eos + '\n', indent));
             str = buffer;
         }
 
-        src.unreadMany(lastLine);
-        lexer.setStrTerm(new StringTerm(-1, '\0', '\0'));
-        lexer.yaccValue = new StrNode(lexer.getPosition(), str);
-        return Tokens.tSTRING_CONTENT;
+        lexer.setStrTerm(new HeredocEndTerm(new SourcePosition(endMarker, src
+				.getOffset())));
+		final ISourcePosition pos = lexer.getPosition();
+		lexer.yaccValue = new StrNode(new SourcePosition(pos.getStartOffset(),
+				endMarker), str);
+		src.unreadMany(lastLine, savedColumn, savedOffset);
+		return Tokens.tSTRING_CONTENT;
     }
 }

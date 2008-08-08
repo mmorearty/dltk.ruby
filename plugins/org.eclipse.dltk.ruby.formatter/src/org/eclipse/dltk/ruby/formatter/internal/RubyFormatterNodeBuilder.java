@@ -11,6 +11,9 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.formatter.internal;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -28,6 +31,7 @@ import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterDoNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterElseIfNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterEnsureNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterForNode;
+import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterHereDocNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterIfElseNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterIfEndNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterIfNode;
@@ -41,6 +45,8 @@ import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterUntilNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterWhenElseNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterWhenNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterWhileNode;
+import org.eclipse.jface.text.IRegion;
+import org.eclipse.jface.text.Region;
 import org.eclipse.osgi.util.NLS;
 import org.jruby.ast.ArgumentNode;
 import org.jruby.ast.BeginNode;
@@ -70,6 +76,7 @@ import org.jruby.ast.WhenNode;
 import org.jruby.ast.WhileNode;
 import org.jruby.ast.XStrNode;
 import org.jruby.ast.ext.ElseNode;
+import org.jruby.ast.ext.HeredocNode;
 import org.jruby.ast.ext.PreExeNode;
 import org.jruby.ast.visitor.AbstractVisitor;
 import org.jruby.evaluator.Instruction;
@@ -78,9 +85,6 @@ import org.jruby.lexer.yacc.ISourcePositionHolder;
 import org.jruby.parser.RubyParserResult;
 
 public class RubyFormatterNodeBuilder extends AbstractFormatterNodeBuilder {
-
-	private final static boolean DEBUG = false;
-	private int level;
 
 	public IFormatterContainerNode build(RubyParserResult result,
 			final IFormatterDocument document) {
@@ -272,7 +276,20 @@ public class RubyFormatterNodeBuilder extends AbstractFormatterNodeBuilder {
 
 			public Instruction visitIfNode(IfNode visited) {
 				if (visited.isInline()) {
-					visitChildren(visited);
+					List children = new ArrayList(3);
+					if (visited.getThenBody() != null) {
+						children.add(visited.getThenBody());
+					}
+					if (visited.getElseBody() != null) {
+						children.add(visited.getElseBody());
+					}
+					if (visited.getCondition() != null) {
+						children.add(visited.getCondition());
+					}
+					if (!children.isEmpty()) {
+						Collections.sort(children, POSITION_COMPARATOR);
+						visitChildren(children);
+					}
 					return null;
 				}
 				FormatterIfNode ifNode = new FormatterIfNode(document);
@@ -461,20 +478,27 @@ public class RubyFormatterNodeBuilder extends AbstractFormatterNodeBuilder {
 				return null;
 			}
 
+			public Instruction visitHeredocNode(HeredocNode visited) {
+				FormatterHereDocNode heredocNode = new FormatterHereDocNode(
+						document, visited.getStartOffset(), visited
+								.getEndOffset(), visited.isIndent());
+				addChild(heredocNode);
+				heredocNode.setContentRegion(createRegion(visited.getContent()
+						.getPosition()));
+				heredocNode.setEndMarkerRegion(createRegion(visited
+						.getEndMarker().getPosition()));
+				return null;
+			}
+
 			private void visitChildren(Node visited) {
-				if (DEBUG) {
-					for (int i = 0; i < level; ++i) {
-						System.out.print(' ');
-					}
-					System.out.println(visited.getClass().getName());
-				}
-				++level;
-				List children = visited.childNodes();
+				visitChildren(visited.childNodes());
+			}
+
+			private void visitChildren(List children) {
 				for (Iterator i = children.iterator(); i.hasNext();) {
 					final Node child = (Node) i.next();
 					visitChild(child);
 				}
-				--level;
 			}
 
 			private void visitChild(final Node child) {
@@ -511,5 +535,20 @@ public class RubyFormatterNodeBuilder extends AbstractFormatterNodeBuilder {
 		return createTextNode(document, position.getStartOffset(), position
 				.getEndOffset());
 	}
+
+	private static IRegion createRegion(ISourcePosition position) {
+		return new Region(position.getStartOffset(), position.getEndOffset()
+				- position.getStartOffset());
+	}
+
+	protected static final Comparator POSITION_COMPARATOR = new Comparator() {
+
+		public int compare(Object o1, Object o2) {
+			final Node node1 = (Node) o1;
+			final Node node2 = (Node) o2;
+			return node1.getStartOffset() - node2.getStartOffset();
+		}
+
+	};
 
 }

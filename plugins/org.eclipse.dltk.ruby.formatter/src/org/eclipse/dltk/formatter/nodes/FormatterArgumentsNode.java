@@ -11,18 +11,13 @@
  *******************************************************************************/
 package org.eclipse.dltk.formatter.nodes;
 
-import org.eclipse.jface.text.IRegion;
+public class FormatterArgumentsNode extends FormatterBlockNode {
 
-public interface IFormatterVisitor {
-
-	void preVisit(IFormatterContext context, IFormatterTextNode node)
-			throws Exception;
-
-	void visit(IFormatterContext context, IFormatterTextNode node)
-			throws Exception;
-
-	void excludeRegion(IRegion region);
-
-	void addNewLineCallback(IFormatterCallback callback);
+	/**
+	 * @param document
+	 */
+	public FormatterArgumentsNode(IFormatterDocument document) {
+		super(document);
+	}
 
 }

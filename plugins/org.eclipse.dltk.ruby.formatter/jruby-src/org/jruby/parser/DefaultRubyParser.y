@@ -37,6 +37,8 @@ package org.jruby.parser;
 
 import java.io.IOException;
 
+import org.eclipse.dltk.ruby.formatter.lexer.HeredocToken;
+import org.eclipse.dltk.ruby.formatter.lexer.StringType;
 import org.jruby.ast.AliasNode;
 import org.jruby.ast.ArgsNode;
 import org.jruby.ast.ArgumentNode;
@@ -112,6 +114,7 @@ import org.jruby.ast.ZArrayNode;
 import org.jruby.ast.ZSuperNode;
 import org.jruby.ast.ZeroArgNode;
 import org.jruby.ast.ext.ElseNode;
+import org.jruby.ast.ext.HeredocNode;
 import org.jruby.ast.ext.PreExeNode;
 import org.jruby.ast.types.ILiteralNode;
 import org.jruby.ast.types.INameNode;
@@ -1353,59 +1356,79 @@ string        : string1
                   $$ = support.literal_concat(getPosition($1), $1, $2);
               }
 
-string1       : tSTRING_BEG string_contents tSTRING_END {
-                  $$ = $2;
-                  $<ISourcePositionHolder>$.setPosition(support.union($1, $3));
-		  int extraLength = ((String) $1.getValue()).length() - 1;
+string1       : tSTRING_BEG {
+                support.pushStringType($1 instanceof HeredocToken ? StringType.HEREDOC_STRING : StringType.STRING);
+              } string_contents tSTRING_END {
+                  if (support.popStringType().isHeredoc()) {
+                    $$ = new HeredocNode($1.getPosition(), $3, $4, $<HeredocToken>1.isIndent());
+                  }
+                  else {
+                    $$ = $3;
+                    $<ISourcePositionHolder>$.setPosition(support.union($1, $4));
+                    int extraLength = ((String) $1.getValue()).length() - 1;
 
-                  // We may need to subtract addition offset off of first 
-		  // string fragment (we optimistically take one off in
-		  // ParserSupport.literal_concat).  Check token length
-		  // and subtract as neeeded.
-		  if (($2 instanceof DStrNode) && extraLength > 0) {
-		     Node strNode = ((DStrNode)$2).get(0);
-		     assert strNode != null;
-		     strNode.getPosition().adjustStartOffset(-extraLength);
-		  }
+                    // We may need to subtract addition offset off of first 
+                    // string fragment (we optimistically take one off in
+                    // ParserSupport.literal_concat).  Check token length
+                    // and subtract as neeeded.
+                    if (($3 instanceof DStrNode) && extraLength > 0) {
+                       Node strNode = ((DStrNode)$3).get(0);
+                       assert strNode != null;
+                       strNode.getPosition().adjustStartOffset(-extraLength);
+                    }
+                  }
               }
 
-xstring	      : tXSTRING_BEG xstring_contents tSTRING_END {
-                  ISourcePosition position = support.union($1, $3);
+xstring	      : tXSTRING_BEG {
+                support.pushStringType($1 instanceof HeredocToken ? StringType.HEREDOC_XSTRING : StringType.XSTRING);
+              } xstring_contents tSTRING_END {
+                  if (support.popStringType().isHeredoc()) {
+                    $$ = new HeredocNode($1.getPosition(), $3, $4, $<HeredocToken>1.isIndent());
+                  }
+                  else {
+                    ISourcePosition position = support.union($1, $4);
 
-		  if ($2 == null) {
-		      $$ = new XStrNode(position, null);
-		  } else if ($2 instanceof StrNode) {
-                      $$ = new XStrNode(position, (ByteList) $<StrNode>2.getValue().clone());
-		  } else if ($2 instanceof DStrNode) {
-                      $$ = new DXStrNode(position, $<DStrNode>2);
+                    if ($3 == null) {
+                        $$ = new XStrNode(position, null);
+                    } else if ($3 instanceof StrNode) {
+                        $$ = new XStrNode(position, (ByteList) $<StrNode>3.getValue().clone());
+                    } else if ($3 instanceof DStrNode) {
+                        $$ = new DXStrNode(position, $<DStrNode>3);
 
-                      $<Node>$.setPosition(position);
-                  } else {
-                      $$ = new DXStrNode(position).add($2);
-		  }
+                        $<Node>$.setPosition(position);
+                    } else {
+                        $$ = new DXStrNode(position).add($3);
+                    }
+                  }
               }
 
-regexp	      : tREGEXP_BEG xstring_contents tREGEXP_END {
-		  int options = $3.getOptions();
-		  Node node = $2;
+regexp	      : tREGEXP_BEG {
+                 support.pushStringType(StringType.REGEXP);
+              } xstring_contents tREGEXP_END {
+		  int options = $4.getOptions();
+		  Node node = $3;
 
 		  if (node == null) {
                       $$ = new RegexpNode(getPosition($1), ByteList.createEmpty(), options & ~ReOptions.RE_OPTION_ONCE);
 		  } else if (node instanceof StrNode) {
-                      $$ = new RegexpNode($2.getPosition(), (ByteList) ((StrNode) node).getValue().clone(), options & ~ReOptions.RE_OPTION_ONCE);
+                      $$ = new RegexpNode($3.getPosition(), (ByteList) ((StrNode) node).getValue().clone(), options & ~ReOptions.RE_OPTION_ONCE);
 		  } else if (node instanceof DStrNode) {
                       $$ = new DRegexpNode(getPosition($1), (DStrNode) node, options, (options & ReOptions.RE_OPTION_ONCE) != 0);
 		  } else {
 		      $$ = new DRegexpNode(getPosition($1), options, (options & ReOptions.RE_OPTION_ONCE) != 0).add(node);
                   }
+                  support.popStringType();
 	       }
 
 words	       : tWORDS_BEG ' ' tSTRING_END {
                    $$ = new ZArrayNode(support.union($1, $3));
 	       }
-	       | tWORDS_BEG word_list tSTRING_END {
-		   $$ = $2;
-                   $<ISourcePositionHolder>$.setPosition(support.union($1, $3));
+	       | tWORDS_BEG {
+	         support.pushStringType(StringType.STRING);
+	       } word_list tSTRING_END {
+		   $$ = $3;
+                   $<ISourcePositionHolder>$.setPosition(support.union($1, $4));
+                   support.popStringType();
 	       }
 
 word_list      : /* none */ {
@@ -1436,7 +1459,7 @@ qword_list     : /* none */ {
 	       }
 
 string_contents: /* none */ {
-                   $$ = new StrNode($<Token>0.getPosition(), ByteList.createEmpty());
+                   $$ = new StrNode(lexer.getPositionFactory().getDummyPosition(), ByteList.createEmpty());
 	       }
 	       | string_contents string_content {
                    $$ = support.literal_concat(getPosition($1), $1, $2);

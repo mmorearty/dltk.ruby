@@ -36,23 +36,24 @@ public class SourcePositionFactory implements ISourcePositionFactory {
         this.source = source;
     }
 
-    public ISourcePosition getPosition(ISourcePosition startPosition, boolean inclusive) {
+    public ISourcePosition getPosition(ISourcePosition startPosition,
+			boolean inclusive) {
 
-        if (startPosition == null) {
-			lastPosition = new SourcePosition(source.getFilename(),
-					lastPosition.getEndOffset(), source.getOffset());
+		if (startPosition == null) {
+			lastPosition = new SourcePosition(lastPosition.getEndOffset(),
+					source.getOffset());
 		} else if (inclusive) {
-			lastPosition = new SourcePosition(source.getFilename(),
-					startPosition.getStartOffset(), source.getOffset());
+			lastPosition = new SourcePosition(startPosition.getStartOffset(),
+					source.getOffset());
 		} else {
-			lastPosition = new SourcePosition(source.getFilename(),
-					startPosition.getEndOffset(), source.getOffset());
+			lastPosition = new SourcePosition(startPosition.getEndOffset(),
+					source.getOffset());
 		}
 
         return lastPosition;
 	}
     
     public ISourcePosition getDummyPosition() {
-		return new SourcePosition("", 0, 0);
+		return new SourcePosition(-1, -1);
 	}
 }
