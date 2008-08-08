@@ -18,6 +18,14 @@ puts a
 a = 1
 a += 1 while a < 10
 puts a
+==== while-modifier-complex
+		begin
+i += 1
+		end while i < str_len and @str[i].chr == "\0"
+==
+begin
+	i += 1
+end while i < str_len and @str[i].chr == "\0"
 ==== while-empty
 while a < 10
 
@@ -169,6 +177,14 @@ case z
 
 	else
 
+end
+==== case-compact
+		case opts[1] when 'utf-8'
+	puts "YES"
+end
+==
+case opts[1] when 'utf-8'
+		puts "YES"
 end
 ==== BEGIN
 BEGIN {

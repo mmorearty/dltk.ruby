@@ -5,8 +5,8 @@ import junit.framework.TestSuite;
 public class HereDocumentTest extends AbstractFormatterTest {
 
 	public static TestSuite suite() {
-		return createScriptedSuite(HereDocumentTest.class, "scripts/heredocument.rb");
+		return createScriptedSuite(HereDocumentTest.class,
+				"scripts/heredocument.rb", 0);
 	}
-
 
 }

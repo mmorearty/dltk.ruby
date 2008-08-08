@@ -12,9 +12,12 @@
 package org.eclipse.dltk.ruby.formatter.tests;
 
 import java.io.IOException;
+import java.io.LineNumberReader;
+import java.io.Reader;
 import java.net.URL;
 import java.util.Collection;
 
+import junit.framework.ComparisonFailure;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
@@ -75,7 +78,7 @@ public abstract class AbstractFormatterTest extends TestCase {
 		return sb.toString();
 	}
 
-	private static Bundle getResourceBundle() {
+	protected static Bundle getResourceBundle() {
 		return RubyFormatterPlugin.getDefault().getBundle();
 	}
 
@@ -92,7 +95,13 @@ public abstract class AbstractFormatterTest extends TestCase {
 
 	public static TestSuite createScriptedSuite(Class suiteClass,
 			String resourceName) {
-		return createScriptedSuite(suiteClass.getName(), resourceName);
+		return createScriptedSuite(suiteClass.getName(), resourceName, 0);
+	}
+
+	public static TestSuite createScriptedSuite(Class suiteClass,
+			String resourceName, int beginTestIndex) {
+		return createScriptedSuite(suiteClass.getName(), resourceName,
+				beginTestIndex);
 	}
 
 	public static TestSuite createScriptedSuite(String suiteName,
@@ -168,6 +177,44 @@ public abstract class AbstractFormatterTest extends TestCase {
 		final String input = joinLines(lines, testBegin, responseBegin - 1);
 		final String expected = joinLines(lines, responseBegin, testEnd);
 		return new ScriptedTest(testName, input, expected);
+	}
+
+	protected boolean compareIgnoreBlanks(Reader inputReader,
+			Reader outputReader) throws IOException {
+		LineNumberReader input = new LineNumberReader(inputReader);
+		LineNumberReader output = new LineNumberReader(outputReader);
+		for (;;) {
+			String inputLine;
+			do {
+				inputLine = input.readLine();
+				if (inputLine != null) {
+					inputLine = inputLine.trim();
+				}
+			} while (inputLine != null && inputLine.length() == 0);
+			String outputLine;
+			do {
+				outputLine = output.readLine();
+				if (outputLine != null) {
+					outputLine = outputLine.trim();
+				}
+			} while (outputLine != null && outputLine.length() == 0);
+			if (inputLine == null) {
+				if (outputLine == null) {
+					return true;
+				} else {
+					fail("Extra output " + output.getLineNumber() + ":"
+							+ outputLine);
+				}
+			} else if (outputLine == null) {
+				fail("Missing output " + input.getLineNumber() + ":"
+						+ inputLine);
+			} else if (!inputLine.equals(outputLine)) {
+				throw new ComparisonFailure("Comparison failed", input
+						.getLineNumber()
+						+ ":" + inputLine, output.getLineNumber() + ":"
+						+ outputLine);
+			}
+		}
 	}
 
 }

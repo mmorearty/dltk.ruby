@@ -24,6 +24,7 @@ public class AllTests {
 		// $JUnit-BEGIN$
 		suite.addTestSuite(ParserTest.class);
 		suite.addTestSuite(SimpleTests.class);
+		suite.addTestSuite(ExcludeRegionListTest.class);
 		suite.addTest(ClassesAndMethodsTest.suite());
 		suite.addTest(ModulesTest.suite());
 		suite.addTest(BlocksTest.suite());
@@ -36,6 +37,7 @@ public class AllTests {
 		suite.addTest(HereDocumentTest.suite());
 		suite.addTest(StringsTest.suite());
 		suite.addTest(RegexpTest.suite());
+		suite.addTest(FormatRubyLibTest.suite());
 		// $JUnit-END$
 		return suite;
 	}

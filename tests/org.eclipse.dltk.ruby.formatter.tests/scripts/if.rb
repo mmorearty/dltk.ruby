@@ -64,7 +64,7 @@ unless a == 1
 else
 	puts "One"
 end
-==== if-clause-as-argument
+==== if-clause-as-argument-not-shifted
 puts( if objects.length == 1
 YAML::dump( *objects )
 else
@@ -72,10 +72,10 @@ YAML::dump_stream( *objects )
 end )
 ==
 puts( if objects.length == 1
-		YAML::dump( *objects )
-	else
-		YAML::dump_stream( *objects )
-	end )
+	YAML::dump( *objects )
+else
+	YAML::dump_stream( *objects )
+end )
 ==== empty-if-empty-else
 if true
 
@@ -112,3 +112,7 @@ if z ==1
 else
 	print z
 end
+==== if-modifier
+raise "Please, use ruby 1.5.4 or later." if RUBY_VERSION < "1.5.4"
+==
+raise "Please, use ruby 1.5.4 or later." if RUBY_VERSION < "1.5.4"

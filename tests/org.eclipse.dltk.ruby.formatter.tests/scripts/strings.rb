@@ -186,3 +186,7 @@ def xName
 	"AAAA"
 end
 puts xName
+==== string-as-args
+dump(['all'], *index, &block)
+==
+dump(['all'], *index, &block)

@@ -1,3 +1,23 @@
+==== here-document-empty
+def z
+print <<EOS1
+EOS1
+end
+==
+def z
+	print <<EOS1
+EOS1
+end
+==== here-document-empty-minus
+def z
+print <<-EOS1
+EOS1
+end
+==
+def z
+	print <<-EOS1
+	EOS1
+end
 ==== here-document-method
 def z
 print <<EOS1

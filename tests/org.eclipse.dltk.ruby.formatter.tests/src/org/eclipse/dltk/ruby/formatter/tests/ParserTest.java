@@ -17,17 +17,20 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.dltk.compiler.util.Util;
+import org.eclipse.dltk.formatter.nodes.FormatterDocument;
 import org.eclipse.dltk.formatter.nodes.IFormatterContainerNode;
+import org.eclipse.dltk.formatter.nodes.IFormatterDocument;
 import org.eclipse.dltk.formatter.nodes.IFormatterNode;
-import org.eclipse.dltk.ruby.formatter.RubyFormatter;
+import org.eclipse.dltk.ruby.formatter.internal.RubyFormatterNodeBuilder;
 import org.eclipse.dltk.ruby.formatter.internal.RubyParser;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterBlockWithBeginEndNode;
 import org.jruby.ast.ArgumentNode;
 import org.jruby.ast.ListNode;
 import org.jruby.ast.Node;
-import org.jruby.ast.StrNode;
+import org.jruby.ast.ext.HeredocNode;
 import org.jruby.ast.visitor.AbstractVisitor;
 import org.jruby.evaluator.Instruction;
+import org.jruby.lexer.yacc.ISourcePosition;
 import org.jruby.parser.RubyParserResult;
 
 public class ParserTest extends AbstractFormatterTest {
@@ -35,8 +38,11 @@ public class ParserTest extends AbstractFormatterTest {
 	public void testEndKeyword() {
 		final String input = "class Test" + Util.LINE_SEPARATOR + "end"
 				+ Util.LINE_SEPARATOR;
-		IFormatterContainerNode root = new RubyFormatter()
-				.buildFormattingTree(input);
+		final RubyParserResult result = RubyParser.parse(input);
+		assertNotNull(result);
+		final RubyFormatterNodeBuilder builder = new RubyFormatterNodeBuilder();
+		final IFormatterDocument document = new FormatterDocument(input);
+		final IFormatterContainerNode root = builder.build(result, document);
 		assertNotNull(root);
 		List children = root.getChildren();
 		assertEquals(2, children.size());
@@ -54,11 +60,41 @@ public class ParserTest extends AbstractFormatterTest {
 		assertNotNull(result);
 	}
 
-	public void _testHereDocParser() {
+	public void testHereDocParser() {
 		final String id1 = "THIS";
-		final String[] hereDoc1 = new String[] { "Line 1=#$a", "Line 2" };
+		final String[] hereDoc1 = new String[] { "Line 1=a", "Line 2" };
 		final String id2 = "THAT";
-		final String[] hereDoc2 = new String[] { "Line 3=#$b", "Line 4" };
+		final String[] hereDoc2 = new String[] { "Line 3=b", "Line 4" };
+		String input = createInput(id1, hereDoc1, id2, hereDoc2);
+		RubyParserResult result = RubyParser.parse(input);
+		assertNotNull(result);
+		final List heredocNodes = selectHeredocNodes(result);
+		assertEquals(2, heredocNodes.size());
+		final HeredocNode doc1 = (HeredocNode) heredocNodes.get(0);
+		assertTrue(substring(input, doc1.getEndMarkerPosition()).indexOf(id1) >= 0);
+		final String content1 = substring(input, doc1.getContentPosition());
+		assertTrue(content1.indexOf(id1) < 0);
+		assertTrue(content1.indexOf(hereDoc1[0]) >= 0);
+		assertTrue(content1.indexOf(hereDoc1[1]) >= 0);
+		final HeredocNode doc2 = (HeredocNode) heredocNodes.get(1);
+		assertTrue(substring(input, doc2.getEndMarkerPosition()).indexOf(id2) >= 0);
+		final String content2 = substring(input, doc2.getContentPosition());
+		assertTrue(content2.indexOf(id2) < 0);
+		assertTrue(content2.indexOf(hereDoc2[0]) >= 0);
+		assertTrue(content2.indexOf(hereDoc2[1]) >= 0);
+	}
+
+	/**
+	 * @param input
+	 * @param position
+	 */
+	private String substring(String input, ISourcePosition position) {
+		return input.substring(position.getStartOffset(), position
+				.getEndOffset());
+	}
+
+	private String createInput(final String id1, final String[] hereDoc1,
+			final String id2, final String[] hereDoc2) {
 		List lines = new ArrayList();
 		lines.add("def myfunc");
 		lines.add("print <<\"" + id1 + "\", <<\"" + id2
@@ -69,14 +105,16 @@ public class ParserTest extends AbstractFormatterTest {
 		lines.add(id2);
 		lines.add("end");
 		String input = joinLines(lines);
-		RubyParserResult result = RubyParser.parse(input);
-		assertNotNull(result);
-		final List stringNodes = new ArrayList();
+		return input;
+	}
+
+	private List selectHeredocNodes(RubyParserResult result) {
+		final List heredocNodes = new ArrayList();
 		result.getAST().accept(new AbstractVisitor() {
 
 			protected Instruction visitNode(Node visited) {
-				if (visited instanceof StrNode) {
-					stringNodes.add(visited);
+				if (visited instanceof HeredocNode) {
+					heredocNodes.add(visited);
 				}
 				visitChildren(visited);
 				return null;
@@ -102,25 +140,7 @@ public class ParserTest extends AbstractFormatterTest {
 			}
 
 		});
-		assertEquals(2, stringNodes.size());
-		final StrNode str1 = (StrNode) stringNodes.get(0);
-		System.out.println(str1);
-		System.out.println(str1.getPosition());
-		System.out.println(input.indexOf(id1));
-		System.out.println(input.indexOf("<<"));
-		System.out.println(input.indexOf(hereDoc1[0]));
-		final String str1value = str1.getValue().toString();
-		assertTrue(str1value.indexOf(hereDoc1[0]) >= 0);
-		assertTrue(str1value.indexOf(hereDoc1[1]) >= 0);
-		final StrNode str2 = (StrNode) stringNodes.get(1);
-		System.out.println(str2);
-		System.out.println(str2.getPosition());
-		System.out.println(input.indexOf(id2));
-		System.out.println(input.lastIndexOf("<<"));
-		System.out.println(input.indexOf(hereDoc2[0]));
-		final String str2value = str2.getValue().toString();
-		assertTrue(str2value.indexOf(hereDoc2[0]) >= 0);
-		assertTrue(str2value.indexOf(hereDoc2[1]) >= 0);
+		return heredocNodes;
 	}
 
 }
