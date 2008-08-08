@@ -43,16 +43,17 @@ import org.eclipse.dltk.ti.ITypeInferencer;
 import org.eclipse.dltk.ti.goals.ExpressionTypeGoal;
 import org.eclipse.dltk.ti.types.IEvaluatedType;
 import org.eclipse.dltk.ti.types.RecursionTypeCall;
+import org.osgi.framework.Bundle;
 
 public class TypeInferenceSuite extends TestSuite {
 
 	public TypeInferenceSuite(String testsDirectory) {
 		super(testsDirectory);
-		Enumeration entryPaths = Activator.getDefault().getBundle()
-				.getEntryPaths(testsDirectory);
+		final Bundle bundle = Activator.getDefault().getBundle();
+		Enumeration entryPaths = bundle.getEntryPaths(testsDirectory);
 		while (entryPaths.hasMoreElements()) {
 			final String path = (String) entryPaths.nextElement();
-			URL entry = Activator.getDefault().getBundle().getEntry(path);
+			URL entry = bundle.getEntry(path);
 			try {
 				entry.openStream().close();
 			} catch (Exception e) {
@@ -104,7 +105,7 @@ public class TypeInferenceSuite extends TestSuite {
 								assertions.add(new ExpressionTypeAssertion(
 										expr, namePos, correctClassRef));
 							} else {
-// Assert.isLegal(false);
+								// Assert.isLegal(false);
 							}
 						}
 						lineOffset += lines[i].length() + 1;
@@ -129,13 +130,13 @@ public class TypeInferenceSuite extends TestSuite {
 
 					private final String correctClassRef;
 
-// private final String varName;
+					// private final String varName;
 
 					private final int namePos;
 
 					public VariableReturnTypeAssertion(String varName,
 							int namePos, String correctClassRef) {
-// this.varName = varName;
+						// this.varName = varName;
 						this.namePos = namePos;
 						this.correctClassRef = correctClassRef;
 					}
@@ -174,13 +175,13 @@ public class TypeInferenceSuite extends TestSuite {
 
 					private final String correctClassRef;
 
-// private final String expression;
+					// private final String expression;
 
 					private final int namePos;
 
 					public ExpressionTypeAssertion(String expression,
 							int namePos, String correctClassRef) {
-// this.expression = expression;
+						// this.expression = expression;
 						this.namePos = namePos;
 						this.correctClassRef = correctClassRef;
 					}
@@ -275,10 +276,10 @@ public class TypeInferenceSuite extends TestSuite {
 			correctType = RecursionTypeCall.INSTANCE;
 		else if ("any".equals(correctClassRef))
 			correctType = UnknownType.INSTANCE;
-// else if ("Fixnum".equals(correctClassRef))
-// correctType = new SimpleType(SimpleType.TYPE_NUMBER);
-// else if ("Str".equals(correctClassRef))
-// correctType = new SimpleType(SimpleType.TYPE_STRING);
+		// else if ("Fixnum".equals(correctClassRef))
+		// correctType = new SimpleType(SimpleType.TYPE_NUMBER);
+		// else if ("Str".equals(correctClassRef))
+		// correctType = new SimpleType(SimpleType.TYPE_STRING);
 		else
 			correctType = null;
 		return correctType;
