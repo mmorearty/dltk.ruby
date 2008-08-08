@@ -27,4 +27,12 @@ public class RubyFormatterPreferencePage extends
 		return FORMATTER;
 	}
 
+	protected String getPreferencePageId() {
+		return "org.eclipse.dltk.ruby.preferences.formatter"; //$NON-NLS-1$
+	}
+
+	protected String getPropertyPageId() {
+		return "org.eclipse.dltk.ruby.propertyPage.formatter"; //$NON-NLS-1$
+	}
+
 }
