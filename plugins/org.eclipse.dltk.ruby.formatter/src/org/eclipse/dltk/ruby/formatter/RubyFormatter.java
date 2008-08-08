@@ -11,12 +11,22 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.formatter;
 
+import java.io.IOException;
+import java.io.LineNumberReader;
+import java.io.Reader;
+import java.io.StringReader;
+
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.dltk.formatter.nodes.FormatterContext;
 import org.eclipse.dltk.formatter.nodes.FormatterDocument;
 import org.eclipse.dltk.formatter.nodes.FormatterWriter;
 import org.eclipse.dltk.formatter.nodes.IFormatterContainerNode;
 import org.eclipse.dltk.formatter.nodes.IFormatterDocument;
+import org.eclipse.dltk.ruby.formatter.internal.DumpContentException;
+import org.eclipse.dltk.ruby.formatter.internal.Messages;
 import org.eclipse.dltk.ruby.formatter.internal.RubyFormatterNodeBuilder;
+import org.eclipse.dltk.ruby.formatter.internal.RubyFormatterPlugin;
 import org.eclipse.dltk.ruby.formatter.internal.RubyParser;
 import org.eclipse.dltk.ui.formatter.AbstractScriptFormatter;
 import org.eclipse.text.edits.ReplaceEdit;
@@ -31,7 +41,15 @@ public class RubyFormatter extends AbstractScriptFormatter {
 		if (result != null) {
 			final String output = format(input, result);
 			if (output != null && !input.equals(output)) {
-				return new ReplaceEdit(offset, length, output);
+				if (equalsIgnoreBlanks(new StringReader(input),
+						new StringReader(output))) {
+					return new ReplaceEdit(offset, length, output);
+				} else {
+					RubyFormatterPlugin.log(new Status(IStatus.ERROR,
+							RubyFormatterPlugin.PLUGIN_ID, IStatus.OK,
+							Messages.RubyFormatter_contentCorrupted,
+							new DumpContentException(input)));
+				}
 			}
 		}
 		return null;
@@ -56,6 +74,43 @@ public class RubyFormatter extends AbstractScriptFormatter {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	private boolean equalsIgnoreBlanks(Reader inputReader, Reader outputReader) {
+		LineNumberReader input = new LineNumberReader(inputReader);
+		LineNumberReader output = new LineNumberReader(outputReader);
+		for (;;) {
+			final String inputLine = readLine(input);
+			final String outputLine = readLine(output);
+			if (inputLine == null) {
+				if (outputLine == null) {
+					return true;
+				} else {
+					return false;
+				}
+			} else if (outputLine == null) {
+				return false;
+			} else if (!inputLine.equals(outputLine)) {
+				return false;
+			}
+		}
+	}
+
+	private String readLine(LineNumberReader reader) {
+		String line;
+		do {
+			try {
+				line = reader.readLine();
+			} catch (IOException e) {
+				// should not happen
+				return null;
+			}
+			if (line == null) {
+				return line;
+			}
+			line = line.trim();
+		} while (line.length() == 0);
+		return line;
 	}
 
 }
