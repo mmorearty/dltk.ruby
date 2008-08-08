@@ -28,7 +28,7 @@ public class FormatRubyLibTest extends AbstractFormatterTest {
 	private static final String SCRIPTS_ZIP = "zip/ruby-lib.zip"; //$NON-NLS-1$
 
 	public static TestSuite suite() {
-		final TestSuite suite = new TestSuite();
+		final TestSuite suite = new TestSuite(FormatRubyLibTest.class.getName());
 		final URL scripts = getResourceBundle().getResource(SCRIPTS_ZIP);
 		if (scripts == null) {
 			suite.addTest(new TestCase("error") { //$NON-NLS-1$
