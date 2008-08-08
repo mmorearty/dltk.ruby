@@ -147,19 +147,23 @@ public class ListNode extends Node {
     }
     
     public String toString() {
-        String string = super.toString();
-    	if (list == null) {
-    		return string + ": {}";
-    	}
-    	StringBuffer b = new StringBuffer();
-    	for (int i = 0; i < list.length; i++) {
-    		b.append(list[i]);
-            if (i + 1 < list.length) {
-                b.append(", ");
-            }
-    	}
-    	return string + ": {" + b.toString() + "}";
-    }
+		StringBuffer b = new StringBuffer();
+		b.append(getNodeName());
+		if (list == null) {
+			b.append("(null)");
+		} else {
+			b.append("[");
+
+			for (int i = 0; i < list.length; i++) {
+				b.append(list[i]);
+				if (i + 1 < list.length) {
+					b.append(", ");
+				}
+			}
+			b.append("]");
+		}
+		return b.toString();
+	}
     
     public List childNodes() {
     	return list == null ? EMPTY_LIST : Arrays.asList(list);
