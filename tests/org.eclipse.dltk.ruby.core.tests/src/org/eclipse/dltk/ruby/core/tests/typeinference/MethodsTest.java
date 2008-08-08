@@ -14,7 +14,8 @@ import junit.framework.Test;
 public class MethodsTest {
 
 	public static Test suite() {
-		return new TypeInferenceSuite("/workspace/typeinference/methods");
+		return new TypeInferenceSuite(MethodsTest.class,
+				"/workspace/typeinference/methods");
 	}
 
 }

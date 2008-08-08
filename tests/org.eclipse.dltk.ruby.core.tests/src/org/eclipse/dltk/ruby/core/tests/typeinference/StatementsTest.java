@@ -11,11 +11,11 @@ package org.eclipse.dltk.ruby.core.tests.typeinference;
 
 import junit.framework.Test;
 
-
 public class StatementsTest {
 
 	public static Test suite() {
-		return new TypeInferenceSuite("/workspace/typeinference/statements");
+		return new TypeInferenceSuite(StatementsTest.class,
+				"/workspace/typeinference/statements");
 	}
 
 }

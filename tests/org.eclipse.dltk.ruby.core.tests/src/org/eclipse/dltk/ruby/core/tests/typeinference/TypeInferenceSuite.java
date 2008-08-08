@@ -23,6 +23,7 @@ import java.util.StringTokenizer;
 
 import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
+import junit.framework.TestResult;
 import junit.framework.TestSuite;
 
 import org.eclipse.core.runtime.Assert;
@@ -47,8 +48,27 @@ import org.osgi.framework.Bundle;
 
 public class TypeInferenceSuite extends TestSuite {
 
-	public TypeInferenceSuite(String testsDirectory) {
-		super(testsDirectory);
+	public void run(TestResult result) {
+		TypeInferenceTest tests = new TypeInferenceTest("ruby selection tests");
+		try {
+			tests.setUpSuite();
+		} catch (Throwable t) {
+			result.addError(this, t);
+			return;
+		}
+		try {
+			super.run(result);
+		} finally {
+			try {
+				tests.tearDownSuite();
+			} catch (Throwable t) {
+				t.printStackTrace();
+			}
+		}
+	}
+
+	public TypeInferenceSuite(Class clazz, String testsDirectory) {
+		super(clazz.getName());
 		final Bundle bundle = Activator.getDefault().getBundle();
 		Enumeration entryPaths = bundle.getEntryPaths(testsDirectory);
 		while (entryPaths.hasMoreElements()) {
@@ -118,12 +138,7 @@ public class TypeInferenceSuite extends TestSuite {
 
 					TypeInferenceTest tests = new TypeInferenceTest(
 							"ruby selection tests");
-					tests.setUpSuite();
-					try {
-						tests.executeTest(folder, name, inferencer, assertions);
-					} finally {
-						tests.tearDownSuite();
-					}
+					tests.executeTest(folder, name, inferencer, assertions);
 				}
 
 				class VariableReturnTypeAssertion implements IAssertion {
