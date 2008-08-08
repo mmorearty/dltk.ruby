@@ -78,7 +78,7 @@ public class Match3Node extends Node {
     }
     
     public List childNodes() {
-        return Node.createList(receiverNode, valueNode);
-    }
+		return Node.createList(valueNode, receiverNode);
+	}
 
 }

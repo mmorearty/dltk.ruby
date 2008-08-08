@@ -867,7 +867,9 @@ paren_args    : tLPAREN2 none tRPAREN {
               }
               | tLPAREN2 call_args opt_nl tRPAREN {
                   $$ = $2;
-		  $<Node>$.setPosition(support.union($1, $4));
+                  if (!($$ instanceof BlockPassNode)) {
+                      $<Node>$.setPosition(support.union($1, $4));
+                  }
               }
               | tLPAREN2 block_call opt_nl tRPAREN {
                   warnings.warn(getPosition($1), "parenthesize argument(s) for future version");

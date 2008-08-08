@@ -51,8 +51,8 @@ import org.jruby.lexer.yacc.ISourcePositionHolder;
 public class WhileNode extends Node {
 	static final long serialVersionUID = -5355364190446060873L;
 
-	private final Node conditionNode;
-	private final Node bodyNode;
+	protected final Node conditionNode;
+	protected final Node bodyNode;
 	private final boolean evaluateAtStart;
 	private final ISourcePositionHolder keyword;
 	private final ISourcePositionHolder end;
@@ -152,6 +152,9 @@ public class WhileNode extends Node {
 			return false;
 		}
 
+		public List childNodes() {
+			return Node.createList(bodyNode, conditionNode);
+		}
 	}
 
 }
