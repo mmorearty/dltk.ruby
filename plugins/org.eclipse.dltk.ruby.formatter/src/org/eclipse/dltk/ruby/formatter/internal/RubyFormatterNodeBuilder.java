@@ -219,9 +219,8 @@ public class RubyFormatterNodeBuilder extends AbstractFormatterNodeBuilder {
 
 			public Instruction visitCaseNode(CaseNode visited) {
 				FormatterCaseNode caseNode = new FormatterCaseNode(document);
-				final int caseEnd = visited.getCaseNode() != null ? visited
-						.getCaseNode().getEndOffset() : visited
-						.getCaseKeyword().getPosition().getEndOffset();
+				final int caseEnd = visited.getCaseKeyword().getPosition()
+						.getEndOffset();
 				caseNode.setBegin(createTextNode(document, visited
 						.getStartOffset(), caseEnd));
 				push(caseNode);
@@ -491,7 +490,10 @@ public class RubyFormatterNodeBuilder extends AbstractFormatterNodeBuilder {
 			}
 
 			private void visitChildren(Node visited) {
-				visitChildren(visited.childNodes());
+				final List children = visited.childNodes();
+				if (!children.isEmpty()) {
+					visitChildren(children);
+				}
 			}
 
 			private void visitChildren(List children) {
