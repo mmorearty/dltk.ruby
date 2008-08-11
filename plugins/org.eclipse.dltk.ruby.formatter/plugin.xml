@@ -13,5 +13,11 @@
 			</formatterFactory>
 		</engineContribution>
 	</extension>
+	
+	<extension point="org.eclipse.core.runtime.preferences">
+		<initializer
+			class="org.eclipse.dltk.ruby.formatter.internal.RubyFormatterPreferenceInitializer">
+		</initializer>
+	</extension>
 
 </plugin>

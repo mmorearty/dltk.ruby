@@ -32,4 +32,10 @@ public interface IFormatterDocument {
 	 */
 	String get(IRegion region);
 
+	/**
+	 * @param indentClass
+	 * @return
+	 */
+	boolean getBoolean(String indentClass);
+
 }

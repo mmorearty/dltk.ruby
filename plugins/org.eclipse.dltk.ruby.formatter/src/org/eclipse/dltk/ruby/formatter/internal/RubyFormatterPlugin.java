@@ -1,14 +1,14 @@
 package org.eclipse.dltk.ruby.formatter.internal;
 
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle
  */
-public class RubyFormatterPlugin extends Plugin {
+public class RubyFormatterPlugin extends AbstractUIPlugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.eclipse.dltk.ruby.formatter"; //$NON-NLS-1$

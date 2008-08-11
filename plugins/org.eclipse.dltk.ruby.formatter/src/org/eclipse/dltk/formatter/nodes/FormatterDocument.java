@@ -11,11 +11,15 @@
  *******************************************************************************/
 package org.eclipse.dltk.formatter.nodes;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.jface.text.IRegion;
 
 public class FormatterDocument implements IFormatterDocument {
 
 	private final String text;
+	private final Map booleans = new HashMap();
 
 	/**
 	 * @param text
@@ -44,6 +48,15 @@ public class FormatterDocument implements IFormatterDocument {
 
 	public String get(IRegion region) {
 		return get(region.getOffset(), region.getOffset() + region.getLength());
+	}
+
+	public void setBoolean(String key, boolean value) {
+		booleans.put(key, Boolean.valueOf(value));
+	}
+
+	public boolean getBoolean(String key) {
+		final Boolean value = (Boolean) booleans.get(key);
+		return value != null && value.booleanValue();
 	}
 
 }

@@ -37,6 +37,7 @@ import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterIfEndNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterIfNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterMethodNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterModifierNode;
+import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterModuleNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterRDocNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterRescueElseNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterRescueNode;
@@ -122,7 +123,7 @@ public class RubyFormatterNodeBuilder extends AbstractFormatterNodeBuilder {
 			}
 
 			public Instruction visitModuleNode(ModuleNode visited) {
-				FormatterClassNode moduleNode = new FormatterClassNode(document);
+				FormatterModuleNode moduleNode = new FormatterModuleNode(document);
 				moduleNode.setBegin(createTextNode(document, visited
 						.getKeyword()));
 				push(moduleNode);

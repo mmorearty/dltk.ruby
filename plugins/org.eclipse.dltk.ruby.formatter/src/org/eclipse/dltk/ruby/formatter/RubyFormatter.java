@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -22,7 +24,6 @@ import org.eclipse.dltk.formatter.nodes.FormatterContext;
 import org.eclipse.dltk.formatter.nodes.FormatterDocument;
 import org.eclipse.dltk.formatter.nodes.FormatterWriter;
 import org.eclipse.dltk.formatter.nodes.IFormatterContainerNode;
-import org.eclipse.dltk.formatter.nodes.IFormatterDocument;
 import org.eclipse.dltk.ruby.formatter.internal.DumpContentException;
 import org.eclipse.dltk.ruby.formatter.internal.Messages;
 import org.eclipse.dltk.ruby.formatter.internal.RubyFormatterNodeBuilder;
@@ -34,6 +35,27 @@ import org.eclipse.text.edits.TextEdit;
 import org.jruby.parser.RubyParserResult;
 
 public class RubyFormatter extends AbstractScriptFormatter {
+
+	private static final String[] INDENTING = {
+			RubyFormatterConstants.INDENT_CLASS,
+			RubyFormatterConstants.INDENT_MODULE,
+			RubyFormatterConstants.INDENT_METHOD,
+			RubyFormatterConstants.INDENT_BLOCKS,
+			RubyFormatterConstants.INDENT_IF,
+			RubyFormatterConstants.INDENT_CASE,
+			RubyFormatterConstants.INDENT_WHEN };
+
+	public static Map createTestingPreferences() {
+		final Map result = new HashMap();
+		for (int i = 0; i < INDENTING.length; ++i) {
+			result.put(INDENTING[i], Boolean.TRUE);
+		}
+		return result;
+	}
+
+	public RubyFormatter(Map preferences) {
+		super(preferences);
+	}
 
 	public TextEdit format(String source, int offset, int length, int indent) {
 		final String input = source.substring(offset, offset + length);
@@ -62,7 +84,10 @@ public class RubyFormatter extends AbstractScriptFormatter {
 	 */
 	private String format(String input, RubyParserResult result) {
 		final RubyFormatterNodeBuilder builder = new RubyFormatterNodeBuilder();
-		IFormatterDocument document = new FormatterDocument(input);
+		FormatterDocument document = new FormatterDocument(input);
+		for (int i = 0; i < INDENTING.length; ++i) {
+			document.setBoolean(INDENTING[i], getBoolean(INDENTING[i]));
+		}
 		IFormatterContainerNode root = builder.build(result, document);
 		FormatterContext context = new FormatterContext();
 		FormatterWriter writer = new FormatterWriter();

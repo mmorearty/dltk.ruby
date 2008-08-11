@@ -12,6 +12,7 @@
 package org.eclipse.dltk.ruby.formatter.internal.nodes;
 
 import org.eclipse.dltk.formatter.nodes.IFormatterDocument;
+import org.eclipse.dltk.ruby.formatter.RubyFormatterConstants;
 
 public class FormatterWhenElseNode extends FormatterBlockWithBeginNode {
 
@@ -20,6 +21,10 @@ public class FormatterWhenElseNode extends FormatterBlockWithBeginNode {
 	 */
 	public FormatterWhenElseNode(IFormatterDocument document) {
 		super(document);
+	}
+
+	protected boolean isIndenting() {
+		return getDocument().getBoolean(RubyFormatterConstants.INDENT_WHEN);
 	}
 
 }

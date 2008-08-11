@@ -94,4 +94,8 @@ public class FormatterBlockNode extends AbstractFormatterNode implements
 		return body.toString();
 	}
 
+	protected boolean isIndenting() {
+		return true;
+	}
+
 }

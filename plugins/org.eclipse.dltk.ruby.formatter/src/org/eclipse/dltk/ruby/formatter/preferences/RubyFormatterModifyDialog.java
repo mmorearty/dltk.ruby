@@ -9,22 +9,24 @@
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Alex Panchenko)
  *******************************************************************************/
-package org.eclipse.dltk.ruby.formatter.internal.nodes;
+package org.eclipse.dltk.ruby.formatter.preferences;
 
-import org.eclipse.dltk.formatter.nodes.IFormatterDocument;
-import org.eclipse.dltk.ruby.formatter.RubyFormatterConstants;
+import org.eclipse.dltk.ui.formatter.FormatterModifyDialog;
+import org.eclipse.dltk.ui.formatter.IFormatterDialogOwner;
 
-public class FormatterIfElseNode extends FormatterBlockWithBeginNode {
+public class RubyFormatterModifyDialog extends FormatterModifyDialog {
 
 	/**
-	 * @param document
+	 * @param parent
 	 */
-	public FormatterIfElseNode(IFormatterDocument document) {
-		super(document);
+	public RubyFormatterModifyDialog(IFormatterDialogOwner dialogOwner) {
+		super(dialogOwner);
+		setTitle("Ruby Formatter");
 	}
 
-	protected boolean isIndenting() {
-		return getDocument().getBoolean(RubyFormatterConstants.INDENT_IF);
+	protected void addPages() {
+		addTabPage("Indentation", new RubyFormatterIndentationTabPage(this));
+		addTabPage("Blank Lines", new RubyFormatterBlankLinesPage(this));
 	}
 
 }

@@ -14,6 +14,7 @@ package org.eclipse.dltk.ruby.formatter.internal.nodes;
 import org.eclipse.dltk.formatter.nodes.IFormatterContext;
 import org.eclipse.dltk.formatter.nodes.IFormatterDocument;
 import org.eclipse.dltk.formatter.nodes.IFormatterVisitor;
+import org.eclipse.dltk.ruby.formatter.RubyFormatterConstants;
 
 public class FormatterEnsureNode extends FormatterBlockWithBeginNode {
 
@@ -27,11 +28,20 @@ public class FormatterEnsureNode extends FormatterBlockWithBeginNode {
 	public void accept(IFormatterContext context, IFormatterVisitor visitor)
 			throws Exception {
 		if (getBegin() != null) {
-			context.decIndent();
+			final boolean indenting = isIndenting();
+			if (indenting) {
+				context.decIndent();
+			}
 			visitor.visit(context, getBegin());
-			context.incIndent();
+			if (indenting) {
+				context.incIndent();
+			}
 		}
 		acceptBody(context, visitor);
+	}
+
+	protected boolean isIndenting() {
+		return getDocument().getBoolean(RubyFormatterConstants.INDENT_BLOCKS);
 	}
 
 }

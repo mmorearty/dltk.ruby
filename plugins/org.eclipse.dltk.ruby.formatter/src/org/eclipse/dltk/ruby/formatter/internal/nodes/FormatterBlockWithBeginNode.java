@@ -36,9 +36,14 @@ public abstract class FormatterBlockWithBeginNode extends FormatterBlockNode {
 		if (begin != null) {
 			visitor.visit(context, begin);
 		}
-		context.incIndent();
+		final boolean indenting = isIndenting();
+		if (indenting) {
+			context.incIndent();
+		}
 		super.accept(context, visitor);
-		context.decIndent();
+		if (indenting) {
+			context.decIndent();
+		}
 	}
 
 	/**
