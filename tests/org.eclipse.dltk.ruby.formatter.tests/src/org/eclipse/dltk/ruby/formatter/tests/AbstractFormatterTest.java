@@ -39,7 +39,8 @@ public abstract class AbstractFormatterTest extends TestCase {
 	 * @return
 	 */
 	protected static String format(String input) {
-		RubyFormatter f = new RubyFormatter();
+		RubyFormatter f = new RubyFormatter(RubyFormatter
+				.createTestingPreferences());
 		final TextEdit edit = f.format(input, 0, input.length(), 0);
 		if (edit != null) {
 			final IDocument document = new Document(input);
