@@ -27,4 +27,8 @@ public class FormatterClassNode extends FormatterBlockWithBeginEndNode {
 		return getDocument().getBoolean(RubyFormatterConstants.INDENT_CLASS);
 	}
 
+	protected int getBlankLinesBefore() {
+		return getDocument().getInt(RubyFormatterConstants.LINES_BEFORE_CLASS);
+	}
+
 }

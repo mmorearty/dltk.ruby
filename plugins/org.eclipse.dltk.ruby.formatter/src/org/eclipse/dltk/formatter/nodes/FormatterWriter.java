@@ -122,10 +122,17 @@ public class FormatterWriter implements IFormatterVisitor {
 			writer.append(callbackBuffer);
 			callbackBuffer.setLength(0);
 		}
-		if (emptyLines.length() != 0) {
+		if (context.getBlankLines() > 0) {
+			if (writer.length() != 0) {
+				for (int i = 0; i < context.getBlankLines(); ++i) {
+					writer.append(lineDelimiter);
+				}
+			}
+			context.resetBlankLines();
+		} else if (emptyLines.length() != 0) {
 			writer.append(emptyLines);
-			emptyLines.setLength(0);
 		}
+		emptyLines.setLength(0);
 		if (context.isIndenting()) {
 			writeIndent(context);
 		} else {

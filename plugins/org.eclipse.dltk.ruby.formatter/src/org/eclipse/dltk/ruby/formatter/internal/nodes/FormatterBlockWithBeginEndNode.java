@@ -34,9 +34,11 @@ public abstract class FormatterBlockWithBeginEndNode extends FormatterBlockNode 
 
 	public void accept(IFormatterContext context, IFormatterVisitor visitor)
 			throws Exception {
+		context.setBlankLines(getBlankLinesBefore());
 		if (begin != null) {
 			visitor.visit(context, begin);
 		}
+		context.resetBlankLines();
 		final boolean indenting = isIndenting();
 		if (indenting) {
 			context.incIndent();
@@ -48,6 +50,10 @@ public abstract class FormatterBlockWithBeginEndNode extends FormatterBlockNode 
 		if (end != null) {
 			visitor.visit(context, end);
 		}
+	}
+
+	protected int getBlankLinesBefore() {
+		return 0;
 	}
 
 	/**

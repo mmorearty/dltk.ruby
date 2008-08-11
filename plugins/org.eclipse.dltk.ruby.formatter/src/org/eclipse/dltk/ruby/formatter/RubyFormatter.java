@@ -45,6 +45,10 @@ public class RubyFormatter extends AbstractScriptFormatter {
 			RubyFormatterConstants.INDENT_CASE,
 			RubyFormatterConstants.INDENT_WHEN };
 
+	private static final String[] BLANK_LINES = {
+			RubyFormatterConstants.LINES_BEFORE_CLASS,
+			RubyFormatterConstants.LINES_BEFORE_METHOD };
+
 	public static Map createTestingPreferences() {
 		final Map result = new HashMap();
 		for (int i = 0; i < INDENTING.length; ++i) {
@@ -87,6 +91,9 @@ public class RubyFormatter extends AbstractScriptFormatter {
 		FormatterDocument document = new FormatterDocument(input);
 		for (int i = 0; i < INDENTING.length; ++i) {
 			document.setBoolean(INDENTING[i], getBoolean(INDENTING[i]));
+		}
+		for (int i = 0; i < BLANK_LINES.length; ++i) {
+			document.setInt(BLANK_LINES[i], getInt(BLANK_LINES[i]));
 		}
 		IFormatterContainerNode root = builder.build(result, document);
 		FormatterContext context = new FormatterContext();

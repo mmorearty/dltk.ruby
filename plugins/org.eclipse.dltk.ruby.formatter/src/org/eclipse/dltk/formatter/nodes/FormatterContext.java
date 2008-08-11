@@ -17,6 +17,7 @@ public class FormatterContext implements IFormatterContext, Cloneable {
 
 	private int indent;
 	private boolean indenting = true;
+	private int blankLines = 0;
 
 	public FormatterContext() {
 		this(0);
@@ -73,6 +74,20 @@ public class FormatterContext implements IFormatterContext, Cloneable {
 
 	public void setIndenting(boolean value) {
 		this.indenting = value;
+	}
+
+	public int getBlankLines() {
+		return blankLines;
+	}
+
+	public void resetBlankLines() {
+		blankLines = 0;
+	}
+
+	public void setBlankLines(int value) {
+		if (value > blankLines) {
+			blankLines = value;
+		}
 	}
 
 }

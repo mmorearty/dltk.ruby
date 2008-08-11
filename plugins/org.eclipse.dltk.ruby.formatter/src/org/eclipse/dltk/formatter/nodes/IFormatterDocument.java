@@ -33,9 +33,11 @@ public interface IFormatterDocument {
 	String get(IRegion region);
 
 	/**
-	 * @param indentClass
+	 * @param key
 	 * @return
 	 */
-	boolean getBoolean(String indentClass);
+	boolean getBoolean(String key);
+
+	int getInt(String key);
 
 }

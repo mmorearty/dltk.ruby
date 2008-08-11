@@ -27,4 +27,10 @@ public interface IFormatterContext {
 
 	void setIndenting(boolean valud);
 
+	int getBlankLines();
+
+	void setBlankLines(int value);
+
+	void resetBlankLines();
+
 }
