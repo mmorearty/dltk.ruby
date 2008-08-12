@@ -39,7 +39,7 @@ public abstract class AbstractFormatterTest extends TestCase {
 	 * @return
 	 */
 	protected static String format(String input) {
-		RubyFormatter f = new RubyFormatter(RubyFormatter
+		RubyFormatter f = new RubyFormatter(Util.LINE_SEPARATOR, RubyFormatter
 				.createTestingPreferences());
 		final TextEdit edit = f.format(input, 0, input.length(), 0);
 		if (edit != null) {
