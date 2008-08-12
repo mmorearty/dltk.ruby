@@ -14,7 +14,4 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui
 Eclipse-LazyStart: true
 Bundle-RequiredExecutionEnvironment: J2SE-1.4
-Export-Package: org.eclipse.dltk.ruby.formatter,
- org.eclipse.dltk.formatter.nodes;x-internal:=true,
- org.eclipse.dltk.ruby.formatter.internal;x-internal:=true,
- org.eclipse.dltk.ruby.formatter.internal.nodes;x-internal:=true
+Export-Package: org.eclipse.dltk.ruby.formatter
