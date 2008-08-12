@@ -142,14 +142,12 @@ public class FormatterWriter implements IFormatterVisitor {
 			}
 			context.resetBlankLines();
 		} else if (emptyLines.length() != 0) {
-			if (linesPreserve >= 0 && linesPreserve < Integer.MAX_VALUE) {
-				int actualLines = TextUtils.countLines(writer);
-				if (actualLines > linesPreserve) {
-					writer.append(TextUtils.selectHeadLines(emptyLines,
-							linesPreserve));
-				} else {
-					writer.append(emptyLines);
-				}
+			if (linesPreserve >= 0 && linesPreserve < Integer.MAX_VALUE
+					&& TextUtils.countLines(writer) > linesPreserve) {
+				writer.append(TextUtils.selectHeadLines(emptyLines,
+						linesPreserve));
+			} else {
+				writer.append(emptyLines);
 			}
 		}
 		emptyLines.setLength(0);
