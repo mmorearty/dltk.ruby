@@ -10,6 +10,7 @@
 package org.eclipse.dltk.ruby.internal.ui.text;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.dltk.ruby.internal.ui.text.rules.RubyFloatNumberRule;
@@ -26,10 +27,22 @@ public class RubyCodeScanner extends AbstractScriptScanner {
 	private static final String[] fgKeywords = {
 			"alias", "alias_method", "and", "BEGIN", "begin", "break", "case", "class", "def", "defined", "do", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$ //$NON-NLS-10$ //$NON-NLS-11$
 			"else", "elsif", "END", "end", "ensure", "for", "if", "in", "module", "next", "not", "or", "redo", "rescue", "retry", "return", "super", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$ //$NON-NLS-10$ //$NON-NLS-11$ //$NON-NLS-12$ //$NON-NLS-13$ //$NON-NLS-14$ //$NON-NLS-15$ //$NON-NLS-16$ //$NON-NLS-17$
-			"then", "undef", "unless", "until", "when", "while", "yield", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
-			// pseudo-keywords (standard methods used as keywords)
+			"then", "undef", "unless", "until", "when", "while", "yield" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
+	};
+
+	// pseudo-keywords (standard methods used as keywords)
+	private static final String[] pseudoKeywords = {
 			"private", "protected", "public", "attr", "attr_accessor", "attr_reader", "attr_writer", "include", "require", "extend", "lambda", //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$ //$NON-NLS-10$ //$NON-NLS-11$
-			"proc", "block_given?", "at_exit", "try", "catch", "raise", "throw", "=begin", "=end", "module_function" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$ //$NON-NLS-10$
+			"proc", "block_given?", "at_exit", "try", "catch", "raise", "throw", "=begin", "=end", "module_function" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$ //$NON-NLS-8$ //$NON-NLS-9$ //$NON-NLS-10$
+	};
+
+	static {
+		Arrays.sort(pseudoKeywords);
+	}
+
+	public static boolean isPseudoKeyword(String keyword) {
+		return Arrays.binarySearch(pseudoKeywords, keyword) >= 0;
+	}
 
 	// TODO: use
 	private static final String[] additionalKeywords = {
@@ -99,6 +112,9 @@ public class RubyCodeScanner extends AbstractScriptScanner {
 		WordRule wordRule = new WordRule(new RubyWordDetector(), other);
 		for (int i = 0; i < fgKeywords.length; i++) {
 			wordRule.addWord(fgKeywords[i], keyword);
+		}
+		for (int i = 0; i < pseudoKeywords.length; i++) {
+			wordRule.addWord(pseudoKeywords[i], keyword);
 		}
 		for (int i = 0; i < fgPseudoVariables.length; i++) {
 			wordRule.addWord(fgPseudoVariables[i], pseudoVariable);

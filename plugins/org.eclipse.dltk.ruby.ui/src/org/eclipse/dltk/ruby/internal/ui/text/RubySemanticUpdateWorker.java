@@ -135,7 +135,9 @@ public class RubySemanticUpdateWorker extends ASTVisitor {
 			handleEvaluatableExpression(node);
 		} else if (node instanceof CallExpression) {
 			final CallExpression call = (CallExpression) node;
-			if (!RubySyntaxUtils.isRubyOperator(call.getName())) {
+			if (!(RubySyntaxUtils.isRubyOperator(call.getName()) || call
+					.getReceiver() == null
+					&& RubyCodeScanner.isPseudoKeyword(call.getName()))) {
 				final SimpleReference callName = call.getCallName();
 				if (callName.sourceStart() >= 0
 						&& callName.sourceEnd() > callName.sourceStart()) {
