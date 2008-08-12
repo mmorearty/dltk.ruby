@@ -9,6 +9,7 @@ import org.eclipse.dltk.ui.formatter.AbstractFormatterPreferencePage;
 import org.eclipse.dltk.ui.preferences.PreferenceKey;
 import org.eclipse.dltk.ui.text.IColorManager;
 import org.eclipse.dltk.ui.text.ScriptSourceViewerConfiguration;
+import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.texteditor.ITextEditor;
 
@@ -27,6 +28,10 @@ public class RubyFormatterPreferencePage extends
 
 	protected PreferenceKey getFormatterPreferenceKey() {
 		return FORMATTER;
+	}
+
+	protected IDialogSettings getDialogSettings() {
+		return RubyUI.getDefault().getDialogSettings();
 	}
 
 	protected String getPreferencePageId() {

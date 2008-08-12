@@ -48,4 +48,12 @@ public class OldRubyFormatterFactory extends AbstractScriptFormatterFactory {
 		return OldCodeFormatter.DEBUG;
 	}
 
+	public String getPreferenceQualifier() {
+		return null;
+	}
+
+	public String[] getPreferenceKeys() {
+		return null;
+	}
+
 }
