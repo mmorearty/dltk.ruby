@@ -45,8 +45,8 @@ public class RubyFormatterIndentationTabPage extends FormatterModifyTabPage {
 				RubyFormatterConstants.FORMATTER_INDENTATION_SIZE,
 				"Indentation size");
 		//
-		Group indentGroup = SWTFactory.createGroup(parent, "Indent", 1, 1,
-				GridData.FILL_HORIZONTAL);
+		Group indentGroup = SWTFactory.createGroup(parent,
+				"Indent within definitions", 1, 1, GridData.FILL_HORIZONTAL);
 		manager.createCheckbox(indentGroup,
 				RubyFormatterConstants.INDENT_CLASS,
 				"Declarations within class body");
@@ -56,14 +56,18 @@ public class RubyFormatterIndentationTabPage extends FormatterModifyTabPage {
 		manager.createCheckbox(indentGroup,
 				RubyFormatterConstants.INDENT_METHOD,
 				"Statements within method body");
-		manager.createCheckbox(indentGroup,
+		Group indentBlocks = SWTFactory.createGroup(parent,
+				"Indent within blocks", 1, 1, GridData.FILL_HORIZONTAL);
+		manager.createCheckbox(indentBlocks,
 				RubyFormatterConstants.INDENT_BLOCKS,
 				"Statements within blocks body");
-		manager.createCheckbox(indentGroup, RubyFormatterConstants.INDENT_IF,
+		manager.createCheckbox(indentBlocks, RubyFormatterConstants.INDENT_IF,
 				"Statements within 'if' body");
-		manager.createCheckbox(indentGroup, RubyFormatterConstants.INDENT_CASE,
+		manager.createCheckbox(indentBlocks,
+				RubyFormatterConstants.INDENT_CASE,
 				"Statements within 'case' body");
-		manager.createCheckbox(indentGroup, RubyFormatterConstants.INDENT_WHEN,
+		manager.createCheckbox(indentBlocks,
+				RubyFormatterConstants.INDENT_WHEN,
 				"Statements within 'when' body");
 	}
 
