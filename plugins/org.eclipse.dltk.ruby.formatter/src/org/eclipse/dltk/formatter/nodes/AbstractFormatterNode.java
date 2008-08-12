@@ -41,4 +41,8 @@ public abstract class AbstractFormatterNode implements IFormatterNode {
 	public String toString() {
 		return getShortClassName();
 	}
+
+	protected int getInt(String key) {
+		return document.getInt(key);
+	}
 }

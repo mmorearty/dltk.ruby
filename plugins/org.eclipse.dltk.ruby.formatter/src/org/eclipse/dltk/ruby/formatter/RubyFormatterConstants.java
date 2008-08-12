@@ -27,11 +27,14 @@ public class RubyFormatterConstants {
 	public static final String INDENT_CASE = "indent.case";
 	public static final String INDENT_WHEN = "indent.when";
 
-	public static final String LINES_BEFORE_CLASS = "line.class.before";
-	public static final String LINES_AFTER_CLASS = "line.class.after";
+	public static final String LINES_FILE_BETWEEN_MODULE = "line.file.module.between";
+	public static final String LINES_FILE_BETWEEN_CLASS = "line.file.class.between";
+	public static final String LINES_FILE_BETWEEN_METHOD = "line.file.method.between";
 
+	public static final String LINES_BEFORE_FIRST = "line.first.before";
+	public static final String LINES_BEFORE_MODULE = "line.module.before";
+	public static final String LINES_BEFORE_CLASS = "line.class.before";
 	public static final String LINES_BEFORE_METHOD = "line.method.before";
-	public static final String LINES_AFTER_METHOD = "line.method.after";
 
 	public static final String LINES_PRESERVE = "lines.preserve";
 

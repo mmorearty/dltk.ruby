@@ -33,4 +33,18 @@ public interface IFormatterContext {
 
 	void resetBlankLines();
 
+	/**
+	 * @param node
+	 */
+	void enter(IFormatterNode node);
+
+	/**
+	 * @param node
+	 */
+	void leave(IFormatterNode node);
+
+	IFormatterNode getParent();
+
+	int getChildIndex();
+
 }

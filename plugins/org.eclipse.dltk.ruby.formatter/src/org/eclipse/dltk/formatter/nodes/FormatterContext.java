@@ -11,13 +11,30 @@
  *******************************************************************************/
 package org.eclipse.dltk.formatter.nodes;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.dltk.ruby.formatter.internal.RubyFormatterPlugin;
 
 public class FormatterContext implements IFormatterContext, Cloneable {
 
+	private static class PathEntry {
+		final IFormatterNode node;
+		int childIndex = 0;
+
+		/**
+		 * @param node
+		 */
+		public PathEntry(IFormatterNode node) {
+			this.node = node;
+		}
+
+	}
+
 	private int indent;
 	private boolean indenting = true;
 	private int blankLines = 0;
+	private final List path = new ArrayList();
 
 	public FormatterContext() {
 		this(0);
@@ -81,12 +98,45 @@ public class FormatterContext implements IFormatterContext, Cloneable {
 	}
 
 	public void resetBlankLines() {
-		blankLines = 0;
+		blankLines = -1;
 	}
 
 	public void setBlankLines(int value) {
-		if (value > blankLines) {
+		if (value >= 0 && value > blankLines) {
 			blankLines = value;
+		}
+	}
+
+	public void enter(IFormatterNode node) {
+		path.add(new PathEntry(node));
+	}
+
+	public void leave(IFormatterNode node) {
+		final PathEntry entry = (PathEntry) path.remove(path.size() - 1);
+		if (entry.node != node) {
+			throw new IllegalStateException("leave() - node mismatch");
+		}
+		if (!path.isEmpty() && node instanceof IFormatterContainerNode) {
+			final PathEntry parent = (PathEntry) path.get(path.size() - 1);
+			++parent.childIndex;
+		}
+	}
+
+	public IFormatterNode getParent() {
+		if (path.size() > 1) {
+			final PathEntry entry = (PathEntry) path.get(path.size() - 2);
+			return entry.node;
+		} else {
+			return null;
+		}
+	}
+
+	public int getChildIndex() {
+		if (path.size() > 1) {
+			final PathEntry entry = (PathEntry) path.get(path.size() - 2);
+			return entry.childIndex;
+		} else {
+			return -1;
 		}
 	}
 

@@ -32,10 +32,15 @@ public class RubyFormatterPreferenceInitializer extends
 		store.setDefault(RubyFormatterConstants.INDENT_WHEN, true);
 		store.setDefault(RubyFormatterConstants.INDENT_IF, true);
 		//
+		store.setDefault(RubyFormatterConstants.LINES_FILE_BETWEEN_MODULE, 1);
+		store.setDefault(RubyFormatterConstants.LINES_FILE_BETWEEN_CLASS, 1);
+		store.setDefault(RubyFormatterConstants.LINES_FILE_BETWEEN_METHOD, 1);
+		//
+		store.setDefault(RubyFormatterConstants.LINES_BEFORE_FIRST, 0);
+		store.setDefault(RubyFormatterConstants.LINES_BEFORE_MODULE, 1);
 		store.setDefault(RubyFormatterConstants.LINES_BEFORE_CLASS, 1);
-		store.setDefault(RubyFormatterConstants.LINES_AFTER_CLASS, 1);
 		store.setDefault(RubyFormatterConstants.LINES_BEFORE_METHOD, 1);
-		store.setDefault(RubyFormatterConstants.LINES_AFTER_METHOD, 1);
+		//
 		store.setDefault(RubyFormatterConstants.LINES_PRESERVE, 1);
 	}
 }

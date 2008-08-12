@@ -33,17 +33,31 @@ public class RubyFormatterBlankLinesPage extends FormatterModifyTabPage {
 
 	protected void createOptions(IFormatterControlManager manager,
 			Composite parent) {
-		Group emptyLinesGroup = SWTFactory.createGroup(parent, "Blank Lines",
-				2, 1, GridData.FILL_HORIZONTAL);
+		Group emptyLinesGroup = SWTFactory.createGroup(parent,
+				"Blank lines in source file", 2, 1, GridData.FILL_HORIZONTAL);
 		manager.createNumber(emptyLinesGroup,
-				RubyFormatterConstants.LINES_BEFORE_CLASS,
-				"Before class/module");
+				RubyFormatterConstants.LINES_BEFORE_MODULE, "Before module");
 		manager.createNumber(emptyLinesGroup,
-				RubyFormatterConstants.LINES_AFTER_CLASS, "After class/module");
+				RubyFormatterConstants.LINES_BEFORE_CLASS, "Before class");
 		manager.createNumber(emptyLinesGroup,
 				RubyFormatterConstants.LINES_BEFORE_METHOD, "Before method");
-		manager.createNumber(emptyLinesGroup,
-				RubyFormatterConstants.LINES_AFTER_METHOD, "After method");
+		//
+		Group emptyLinesInternalGroup = SWTFactory.createGroup(parent,
+				"Blank lines within class/module declarations", 2, 1,
+				GridData.FILL_HORIZONTAL);
+		manager.createNumber(emptyLinesInternalGroup,
+				RubyFormatterConstants.LINES_BEFORE_FIRST,
+				"Before first declaration");
+		manager.createNumber(emptyLinesInternalGroup,
+				RubyFormatterConstants.LINES_BEFORE_MODULE,
+				"Before nested module declarations");
+		manager.createNumber(emptyLinesInternalGroup,
+				RubyFormatterConstants.LINES_BEFORE_CLASS,
+				"Before nested class declarations");
+		manager.createNumber(emptyLinesInternalGroup,
+				RubyFormatterConstants.LINES_BEFORE_METHOD,
+				"Before method declarations");
+		//
 		Group preserveGroup = SWTFactory.createGroup(parent,
 				"Existing blank lines", 2, 1, GridData.FILL_HORIZONTAL);
 		manager.createNumber(preserveGroup,

@@ -34,7 +34,7 @@ public abstract class FormatterBlockWithBeginEndNode extends FormatterBlockNode 
 
 	public void accept(IFormatterContext context, IFormatterVisitor visitor)
 			throws Exception {
-		context.setBlankLines(getBlankLinesBefore());
+		context.setBlankLines(getBlankLinesBefore(context));
 		if (begin != null) {
 			visitor.visit(context, begin);
 		}
@@ -50,10 +50,15 @@ public abstract class FormatterBlockWithBeginEndNode extends FormatterBlockNode 
 		if (end != null) {
 			visitor.visit(context, end);
 		}
+		context.setBlankLines(getBlankLinesAfter(context));
 	}
 
-	protected int getBlankLinesBefore() {
-		return 0;
+	protected int getBlankLinesBefore(IFormatterContext context) {
+		return -1;
+	}
+
+	protected int getBlankLinesAfter(IFormatterContext context) {
+		return -1;
 	}
 
 	/**

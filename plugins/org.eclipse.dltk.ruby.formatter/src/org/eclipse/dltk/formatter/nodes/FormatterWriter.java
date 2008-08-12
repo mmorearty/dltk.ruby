@@ -134,7 +134,7 @@ public class FormatterWriter implements IFormatterVisitor {
 			writer.append(callbackBuffer);
 			callbackBuffer.setLength(0);
 		}
-		if (context.getBlankLines() > 0) {
+		if (context.getBlankLines() >= 0) {
 			if (writer.length() != 0) {
 				for (int i = 0; i < context.getBlankLines(); ++i) {
 					writer.append(lineDelimiter);
@@ -143,7 +143,7 @@ public class FormatterWriter implements IFormatterVisitor {
 			context.resetBlankLines();
 		} else if (emptyLines.length() != 0) {
 			if (linesPreserve >= 0 && linesPreserve < Integer.MAX_VALUE
-					&& TextUtils.countLines(writer) > linesPreserve) {
+					&& TextUtils.countLines(emptyLines) > linesPreserve) {
 				writer.append(TextUtils.selectHeadLines(emptyLines,
 						linesPreserve));
 			} else {

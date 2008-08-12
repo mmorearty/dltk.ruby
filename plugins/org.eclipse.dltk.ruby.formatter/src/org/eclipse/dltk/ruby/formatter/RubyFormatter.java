@@ -47,6 +47,11 @@ public class RubyFormatter extends AbstractScriptFormatter {
 			RubyFormatterConstants.INDENT_WHEN };
 
 	private static final String[] BLANK_LINES = {
+			RubyFormatterConstants.LINES_FILE_BETWEEN_MODULE,
+			RubyFormatterConstants.LINES_FILE_BETWEEN_CLASS,
+			RubyFormatterConstants.LINES_FILE_BETWEEN_METHOD,
+			RubyFormatterConstants.LINES_BEFORE_FIRST,
+			RubyFormatterConstants.LINES_BEFORE_MODULE,
 			RubyFormatterConstants.LINES_BEFORE_CLASS,
 			RubyFormatterConstants.LINES_BEFORE_METHOD };
 
@@ -54,6 +59,9 @@ public class RubyFormatter extends AbstractScriptFormatter {
 		final Map result = new HashMap();
 		for (int i = 0; i < INDENTING.length; ++i) {
 			result.put(INDENTING[i], Boolean.TRUE);
+		}
+		for (int i = 0; i < BLANK_LINES.length; ++i) {
+			result.put(BLANK_LINES[i], new Integer(-1));
 		}
 		result.put(RubyFormatterConstants.FORMATTER_TAB_CHAR,
 				CodeFormatterConstants.TAB);

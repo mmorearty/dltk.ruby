@@ -33,10 +33,13 @@ public class RubyFormatterFactory extends AbstractScriptFormatterFactory {
 			RubyFormatterConstants.INDENT_IF,
 			RubyFormatterConstants.INDENT_CASE,
 			RubyFormatterConstants.INDENT_WHEN,
+			RubyFormatterConstants.LINES_FILE_BETWEEN_MODULE,
+			RubyFormatterConstants.LINES_FILE_BETWEEN_CLASS,
+			RubyFormatterConstants.LINES_FILE_BETWEEN_METHOD,
+			RubyFormatterConstants.LINES_BEFORE_FIRST,
+			RubyFormatterConstants.LINES_BEFORE_MODULE,
 			RubyFormatterConstants.LINES_BEFORE_CLASS,
-			RubyFormatterConstants.LINES_AFTER_CLASS,
 			RubyFormatterConstants.LINES_BEFORE_METHOD,
-			RubyFormatterConstants.LINES_AFTER_METHOD,
 			RubyFormatterConstants.LINES_PRESERVE };
 
 	public String getPreferenceQualifier() {

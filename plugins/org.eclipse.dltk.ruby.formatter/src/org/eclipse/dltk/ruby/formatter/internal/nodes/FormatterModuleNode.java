@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.formatter.internal.nodes;
 
+import org.eclipse.dltk.formatter.nodes.IFormatterContext;
 import org.eclipse.dltk.formatter.nodes.IFormatterDocument;
 import org.eclipse.dltk.ruby.formatter.RubyFormatterConstants;
 
@@ -27,8 +28,22 @@ public class FormatterModuleNode extends FormatterBlockWithBeginEndNode {
 		return getDocument().getBoolean(RubyFormatterConstants.INDENT_MODULE);
 	}
 
-	protected int getBlankLinesBefore() {
-		return getDocument().getInt(RubyFormatterConstants.LINES_BEFORE_CLASS);
+	protected int getBlankLinesBefore(IFormatterContext context) {
+		if (context.getParent() == null) {
+			return getInt(RubyFormatterConstants.LINES_FILE_BETWEEN_MODULE);
+		} else if (context.getChildIndex() == 0) {
+			return getInt(RubyFormatterConstants.LINES_BEFORE_FIRST);
+		} else {
+			return getInt(RubyFormatterConstants.LINES_BEFORE_MODULE);
+		}
+	}
+
+	protected int getBlankLinesAfter(IFormatterContext context) {
+		if (context.getParent() == null) {
+			return getInt(RubyFormatterConstants.LINES_FILE_BETWEEN_MODULE);
+		} else {
+			return super.getBlankLinesAfter(context);
+		}
 	}
 
 }

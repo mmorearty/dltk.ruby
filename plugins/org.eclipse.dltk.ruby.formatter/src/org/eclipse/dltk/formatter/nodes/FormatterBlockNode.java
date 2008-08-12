@@ -32,7 +32,9 @@ public class FormatterBlockNode extends AbstractFormatterNode implements
 			IFormatterVisitor visitor) throws Exception {
 		for (Iterator i = nodes.iterator(); i.hasNext();) {
 			IFormatterNode node = (IFormatterNode) i.next();
+			context.enter(node);
 			node.accept(context, visitor);
+			context.leave(node);
 		}
 	}
 
