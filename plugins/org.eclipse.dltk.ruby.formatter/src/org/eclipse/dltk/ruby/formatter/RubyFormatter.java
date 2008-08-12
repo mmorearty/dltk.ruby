@@ -102,6 +102,7 @@ public class RubyFormatter extends AbstractScriptFormatter {
 		FormatterContext context = new FormatterContext();
 		FormatterWriter writer = new FormatterWriter(lineDelimiter,
 				createIndentGenerator());
+		writer.setLinesPreserve(getInt(RubyFormatterConstants.LINES_PRESERVE));
 		try {
 			root.accept(context, writer);
 			writer.flush(context);

@@ -17,6 +17,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.dltk.ui.formatter.IFormatterIndentGenerator;
+import org.eclipse.dltk.utils.TextUtils;
 import org.eclipse.jface.text.IRegion;
 
 public class FormatterWriter implements IFormatterVisitor {
@@ -32,6 +33,7 @@ public class FormatterWriter implements IFormatterVisitor {
 
 	private final String lineDelimiter;
 	private final IFormatterIndentGenerator indentGenerator;
+	private int linesPreserve = -1;
 
 	/**
 	 * @param lineDelimiter
@@ -140,7 +142,15 @@ public class FormatterWriter implements IFormatterVisitor {
 			}
 			context.resetBlankLines();
 		} else if (emptyLines.length() != 0) {
-			writer.append(emptyLines);
+			if (linesPreserve >= 0 && linesPreserve < Integer.MAX_VALUE) {
+				int actualLines = TextUtils.countLines(writer);
+				if (actualLines > linesPreserve) {
+					writer.append(TextUtils.selectHeadLines(emptyLines,
+							linesPreserve));
+				} else {
+					writer.append(emptyLines);
+				}
+			}
 		}
 		emptyLines.setLength(0);
 		if (context.isIndenting()) {
@@ -154,7 +164,6 @@ public class FormatterWriter implements IFormatterVisitor {
 
 	/**
 	 * @param context
-	 * @throws IOException
 	 */
 	protected void writeIndent(IFormatterContext context) {
 		writeIndent(context, writer);
@@ -195,5 +204,12 @@ public class FormatterWriter implements IFormatterVisitor {
 			writer.append(emptyLines);
 			emptyLines.setLength(0);
 		}
+	}
+
+	/**
+	 * @param value
+	 */
+	public void setLinesPreserve(int value) {
+		this.linesPreserve = value;
 	}
 }
