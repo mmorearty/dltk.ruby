@@ -57,8 +57,11 @@ public class RubyFormatter extends AbstractScriptFormatter {
 		return result;
 	}
 
-	public RubyFormatter(Map preferences) {
+	private final String lineDelimiter;
+
+	public RubyFormatter(String lineDelimiter, Map preferences) {
 		super(preferences);
+		this.lineDelimiter = lineDelimiter;
 	}
 
 	public TextEdit format(String source, int offset, int length, int indent) {
@@ -97,7 +100,7 @@ public class RubyFormatter extends AbstractScriptFormatter {
 		}
 		IFormatterContainerNode root = builder.build(result, document);
 		FormatterContext context = new FormatterContext();
-		FormatterWriter writer = new FormatterWriter();
+		FormatterWriter writer = new FormatterWriter(lineDelimiter);
 		try {
 			root.accept(context, writer);
 			writer.flush(context);

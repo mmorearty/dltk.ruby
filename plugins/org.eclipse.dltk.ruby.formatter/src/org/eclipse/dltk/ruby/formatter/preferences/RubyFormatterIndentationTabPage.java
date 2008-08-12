@@ -11,9 +11,12 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.formatter.preferences;
 
+import java.net.URL;
+
 import org.eclipse.dltk.ruby.formatter.RubyFormatterConstants;
 import org.eclipse.dltk.ui.CodeFormatterConstants;
 import org.eclipse.dltk.ui.formatter.FormatterModifyTabPage;
+import org.eclipse.dltk.ui.formatter.IFormatterControlManager;
 import org.eclipse.dltk.ui.formatter.IFormatterModifyDialog;
 import org.eclipse.dltk.ui.util.SWTFactory;
 import org.eclipse.swt.layout.GridData;
@@ -23,38 +26,48 @@ import org.eclipse.swt.widgets.Group;
 public class RubyFormatterIndentationTabPage extends FormatterModifyTabPage {
 
 	/**
-	 * @param dialogOwner
+	 * @param dialog
 	 */
 	public RubyFormatterIndentationTabPage(IFormatterModifyDialog dialog) {
 		super(dialog);
 	}
 
-	protected void createOptions(Composite parent) {
+	protected void createOptions(IFormatterControlManager manager,
+			Composite parent) {
 		Group tabPolicyGroup = SWTFactory.createGroup(parent,
 				"General Settings", 2, 1, GridData.FILL_HORIZONTAL);
-		createCombo(tabPolicyGroup, RubyFormatterConstants.FORMATTER_TAB_CHAR,
+		manager.createCombo(tabPolicyGroup,
+				RubyFormatterConstants.FORMATTER_TAB_CHAR,
 				"Indentation character", new String[] {
 						CodeFormatterConstants.TAB,
 						CodeFormatterConstants.SPACE });
-		createNumber(tabPolicyGroup,
+		manager.createNumber(tabPolicyGroup,
 				RubyFormatterConstants.FORMATTER_INDENTATION_SIZE,
 				"Indentation size");
 		//
 		Group indentGroup = SWTFactory.createGroup(parent, "Indent", 1, 1,
 				GridData.FILL_HORIZONTAL);
-		createCheckbox(indentGroup, RubyFormatterConstants.INDENT_CLASS,
+		manager.createCheckbox(indentGroup,
+				RubyFormatterConstants.INDENT_CLASS,
 				"Declarations within class body");
-		createCheckbox(indentGroup, RubyFormatterConstants.INDENT_MODULE,
+		manager.createCheckbox(indentGroup,
+				RubyFormatterConstants.INDENT_MODULE,
 				"Declarations within module body");
-		createCheckbox(indentGroup, RubyFormatterConstants.INDENT_METHOD,
+		manager.createCheckbox(indentGroup,
+				RubyFormatterConstants.INDENT_METHOD,
 				"Statements within method body");
-		createCheckbox(indentGroup, RubyFormatterConstants.INDENT_BLOCKS,
+		manager.createCheckbox(indentGroup,
+				RubyFormatterConstants.INDENT_BLOCKS,
 				"Statements within blocks body");
-		createCheckbox(indentGroup, RubyFormatterConstants.INDENT_IF,
+		manager.createCheckbox(indentGroup, RubyFormatterConstants.INDENT_IF,
 				"Statements within 'if' body");
-		createCheckbox(indentGroup, RubyFormatterConstants.INDENT_CASE,
+		manager.createCheckbox(indentGroup, RubyFormatterConstants.INDENT_CASE,
 				"Statements within 'case' body");
-		createCheckbox(indentGroup, RubyFormatterConstants.INDENT_WHEN,
+		manager.createCheckbox(indentGroup, RubyFormatterConstants.INDENT_WHEN,
 				"Statements within 'when' body");
+	}
+
+	protected URL getPreviewContent() {
+		return getClass().getResource("indentation-preview.rb");
 	}
 }

@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.dltk.compiler.util.Util;
 import org.eclipse.jface.text.IRegion;
 
 public class FormatterWriter implements IFormatterVisitor {
@@ -30,7 +29,14 @@ public class FormatterWriter implements IFormatterVisitor {
 	private char lastChar = 0;
 	private final List newLineCallbacks = new ArrayList();
 
-	private final String lineDelimiter = Util.LINE_SEPARATOR;
+	private final String lineDelimiter;
+
+	/**
+	 * @param lineDelimiter
+	 */
+	public FormatterWriter(String lineDelimiter) {
+		this.lineDelimiter = lineDelimiter;
+	}
 
 	public void preVisit(IFormatterContext context, IFormatterTextNode node)
 			throws Exception {

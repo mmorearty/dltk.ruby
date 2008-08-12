@@ -1,3 +1,6 @@
+#
+# A sample source file for the code formatter preview
+#
 class Preview
 
 def printBinaryDigit(digit)

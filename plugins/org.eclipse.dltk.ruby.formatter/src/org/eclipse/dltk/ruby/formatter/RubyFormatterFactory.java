@@ -11,19 +11,14 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.formatter;
 
-import java.io.IOException;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.dltk.compiler.util.Util;
-import org.eclipse.dltk.core.IPreferencesLookupDelegate;
-import org.eclipse.dltk.core.IPreferencesSaveDelegate;
 import org.eclipse.dltk.ruby.formatter.internal.RubyFormatterPlugin;
 import org.eclipse.dltk.ruby.formatter.preferences.RubyFormatterModifyDialog;
 import org.eclipse.dltk.ui.formatter.AbstractScriptFormatterFactory;
-import org.eclipse.dltk.ui.formatter.IFormatterDialogOwner;
 import org.eclipse.dltk.ui.formatter.IFormatterModifyDialog;
+import org.eclipse.dltk.ui.formatter.IFormatterModifyDialogOwner;
 import org.eclipse.dltk.ui.formatter.IScriptFormatter;
 
 public class RubyFormatterFactory extends AbstractScriptFormatterFactory {
@@ -52,50 +47,18 @@ public class RubyFormatterFactory extends AbstractScriptFormatterFactory {
 		return KEYS;
 	}
 
-	public Map retrievePreferences(IPreferencesLookupDelegate delegate) {
-		final String qualifier = getPreferenceQualifier();
-		final Map result = new HashMap();
-		for (int i = 0; i < KEYS.length; ++i) {
-			final String key = KEYS[i];
-			result.put(key, delegate.getString(qualifier, key));
-		}
-		return result;
-	}
-
-	public void savePreferences(Map preferences,
-			IPreferencesSaveDelegate delegate) {
-		final String qualifier = getPreferenceQualifier();
-		for (int i = 0; i < KEYS.length; ++i) {
-			final String key = KEYS[i];
-			if (preferences.containsKey(key)) {
-				final String value = (String) preferences.get(key);
-				delegate.setString(qualifier, key, value);
-			}
-		}
-	}
-
 	public IScriptFormatter createFormatter(String lineDelimiter,
 			Map preferences) {
-		return new RubyFormatter(preferences);
+		return new RubyFormatter(lineDelimiter, preferences);
 	}
 
-	public String getPreviewContent() {
-		final URL resource = getClass().getResource("formatterPreview.rb");
-		if (resource != null) {
-			try {
-				return new String(Util.getInputStreamAsCharArray(resource
-						.openConnection().getInputStream(), -1, "ISO-8859-1"));
-			} catch (IOException e) {
-				RubyFormatterPlugin.warn("Error reading preview resource", e);
-			}
-		} else {
-			RubyFormatterPlugin.warn("Preview resource not found");
-		}
-		return null;
+	public URL getPreviewContent() {
+		return getClass().getResource("formatterPreview.rb");
 	}
 
-	public IFormatterModifyDialog createDialog(IFormatterDialogOwner dialogOwner) {
-		return new RubyFormatterModifyDialog(dialogOwner);
+	public IFormatterModifyDialog createDialog(
+			IFormatterModifyDialogOwner dialogOwner) {
+		return new RubyFormatterModifyDialog(dialogOwner, this);
 	}
 
 }

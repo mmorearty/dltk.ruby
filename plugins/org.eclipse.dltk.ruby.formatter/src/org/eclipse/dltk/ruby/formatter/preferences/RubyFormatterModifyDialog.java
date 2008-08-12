@@ -12,15 +12,17 @@
 package org.eclipse.dltk.ruby.formatter.preferences;
 
 import org.eclipse.dltk.ui.formatter.FormatterModifyDialog;
-import org.eclipse.dltk.ui.formatter.IFormatterDialogOwner;
+import org.eclipse.dltk.ui.formatter.IFormatterModifyDialogOwner;
+import org.eclipse.dltk.ui.formatter.IScriptFormatterFactory;
 
 public class RubyFormatterModifyDialog extends FormatterModifyDialog {
 
 	/**
 	 * @param parent
 	 */
-	public RubyFormatterModifyDialog(IFormatterDialogOwner dialogOwner) {
-		super(dialogOwner);
+	public RubyFormatterModifyDialog(IFormatterModifyDialogOwner dialogOwner,
+			IScriptFormatterFactory formatterFactory) {
+		super(dialogOwner, formatterFactory);
 		setTitle("Ruby Formatter");
 	}
 
