@@ -29,6 +29,7 @@ import org.eclipse.dltk.ruby.formatter.internal.Messages;
 import org.eclipse.dltk.ruby.formatter.internal.RubyFormatterNodeBuilder;
 import org.eclipse.dltk.ruby.formatter.internal.RubyFormatterPlugin;
 import org.eclipse.dltk.ruby.formatter.internal.RubyParser;
+import org.eclipse.dltk.ui.CodeFormatterConstants;
 import org.eclipse.dltk.ui.formatter.AbstractScriptFormatter;
 import org.eclipse.text.edits.ReplaceEdit;
 import org.eclipse.text.edits.TextEdit;
@@ -54,6 +55,12 @@ public class RubyFormatter extends AbstractScriptFormatter {
 		for (int i = 0; i < INDENTING.length; ++i) {
 			result.put(INDENTING[i], Boolean.TRUE);
 		}
+		result.put(RubyFormatterConstants.FORMATTER_TAB_CHAR,
+				CodeFormatterConstants.TAB);
+		result.put(RubyFormatterConstants.FORMATTER_INDENTATION_SIZE,
+				new Integer(1));
+		result.put(RubyFormatterConstants.LINES_PRESERVE, new Integer(
+				Integer.MAX_VALUE));
 		return result;
 	}
 
