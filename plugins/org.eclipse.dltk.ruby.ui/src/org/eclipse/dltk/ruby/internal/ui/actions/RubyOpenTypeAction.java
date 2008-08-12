@@ -19,18 +19,18 @@ public class RubyOpenTypeAction extends OpenTypeAction {
 	}
 
 	protected String getOpenTypeErrorMessage() {
-		return "An exception occurred while opening the class/module.";
+		return Messages.RubyOpenTypeAction_anExceptionOccurredWhileOpeningTheClassModule;
 	}
 
 	protected String getOpenTypeErrorTitle() {
-		return "Open Class/Module";
+		return Messages.RubyOpenTypeAction_openClassModule;
 	}
 
 	protected String getOpenTypeDialogMessage() {
-		return "&Select a class/module to open (? = any character, * = any String, TZ = TimeZone):";
+		return Messages.RubyOpenTypeAction_selectAClassModuleToOpen;
 	}
 
 	protected String getOpenTypeDialogTitle() {
-		return "Open Class/Module";
+		return Messages.RubyOpenTypeAction_openClassModule;
 	}
 }

@@ -24,9 +24,9 @@ import org.eclipse.ui.IPlaceholderFolderLayout;
 import org.eclipse.ui.progress.IProgressConstants;
 
 public class RubyBrowsingPerspectiveFactory implements IPerspectiveFactory {
-	public static final String ID_PROJECTS_VIEW = "org.eclipse.dltk.ruby.ui.Projects";
-	public static final String ID_PACKAGES_VIEW = "org.eclipse.dltk.ruby.ui.extbrowsing";
-	public static final String ID_MEMBERS_VIEW = "org.eclipse.dltk.ruby.ui.Members";
+	public static final String ID_PROJECTS_VIEW = "org.eclipse.dltk.ruby.ui.Projects"; //$NON-NLS-1$
+	public static final String ID_PACKAGES_VIEW = "org.eclipse.dltk.ruby.ui.extbrowsing"; //$NON-NLS-1$
+	public static final String ID_MEMBERS_VIEW = "org.eclipse.dltk.ruby.ui.Members"; //$NON-NLS-1$
 
 	public static final String ID_ACTION_SET = "org.eclipse.dltk.ruby.ui.RubyActionSet"; //$NON-NLS-1$
 	/*

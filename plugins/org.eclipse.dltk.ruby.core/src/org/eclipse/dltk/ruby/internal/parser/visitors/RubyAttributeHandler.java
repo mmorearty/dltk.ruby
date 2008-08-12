@@ -22,7 +22,7 @@ public class RubyAttributeHandler {
 	private static final String ATTR_INTERNAL_ACCESSOR = "attr_internal_accessor"; //$NON-NLS-1$
 	private static final String ATTR_INTERNAL_READER = "attr_internal_reader"; //$NON-NLS-1$
 	private static final String ATTR_INTERNAL_WRITER = "attr_internal_writer"; //$NON-NLS-1$
-	private static final String ATTR_PROTECTED = "attr_protected";
+	private static final String ATTR_PROTECTED = "attr_protected"; //$NON-NLS-1$
 	private static final String ATTR_READER = "attr_reader"; //$NON-NLS-1$
 	private static final String ATTR_READONLY = "attr_readonly"; //$NON-NLS-1$
 	private static final String ATTR_WRITER = "attr_writer"; //$NON-NLS-1$

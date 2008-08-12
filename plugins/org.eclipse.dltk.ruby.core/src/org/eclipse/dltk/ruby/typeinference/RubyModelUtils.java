@@ -188,9 +188,7 @@ public class RubyModelUtils {
 
 		if (keys != null && keys.length > 0) {
 			String inner = keys[keys.length - 1];
-			if (prefix.length() > 0 && !prefix.startsWith("@")) { // locals &
-																	// //$NON-NLS-1$
-				// constants
+			if (prefix.length() > 0 && !prefix.startsWith("@")) { //$NON-NLS-1$ // locals & constants
 				String varkey = inner + MixinModel.SEPARATOR + prefix;
 				String[] keys2 = rubyModel.getRawModel().findKeys(varkey + "*"); //$NON-NLS-1$
 				for (int i = 0; i < keys2.length; i++) {
@@ -404,17 +402,16 @@ public class RubyModelUtils {
 			String methodName) {
 		IMethod[] res = null;
 		// if (receiver instanceof VariableReference) {
-		VariableReference ref = (VariableReference) receiver;
 		String[] scopesKeys = RubyTypeInferencingUtils
 				.getModelStaticScopesKeys(RubyMixinModel.getRawInstance(),
-						parsedUnit, ref.sourceStart());
+						parsedUnit, receiver.sourceStart());
 		if (scopesKeys != null && scopesKeys.length > 0) {
 			String possibleName;
 			if (scopesKeys.length == 1) {
-				possibleName = ref.getName() + RubyMixin.VIRTUAL_SUFFIX;
+				possibleName = receiver.getName() + RubyMixin.VIRTUAL_SUFFIX;
 			} else {
 				String last = scopesKeys[scopesKeys.length - 1];
-				possibleName = last + MixinModel.SEPARATOR + ref.getName()
+				possibleName = last + MixinModel.SEPARATOR + receiver.getName()
 						+ RubyMixin.VIRTUAL_SUFFIX;
 			}
 			IRubyMixinElement element = RubyMixinModel.getInstance()

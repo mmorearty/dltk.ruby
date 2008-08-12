@@ -27,12 +27,12 @@ import org.eclipse.dltk.ruby.core.RubyNature;
 import org.eclipse.dltk.ruby.launching.RubyLaunchingPlugin;
 
 public class RubyGenericInstallType extends AbstractInterpreterInstallType {
-	private static final String CORRECT_INTERPRETER_PATTERN = "#DLTK INTERPRETER TEST:5";
+	private static final String CORRECT_INTERPRETER_PATTERN = "#DLTK INTERPRETER TEST:5"; //$NON-NLS-1$
 
 	private static final String INSTALL_TYPE_NAME = "Generic Ruby"; //$NON-NLS-1$
 
 	private static final String[] INTERPRETER_NAMES = {
-			"ruby", "rubyw", "ruby18", "ruby19" }; //$NON-NLS-1$ //$NON-NLS-2$
+			"ruby", "rubyw", "ruby18", "ruby19" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
 	public String getNatureId() {
 		return RubyNature.NATURE_ID;
@@ -70,10 +70,10 @@ public class RubyGenericInstallType extends AbstractInterpreterInstallType {
 				.getAdapter(IExecutionEnvironment.class);
 
 		String output = ScriptLaunchUtil.runEmbeddedScriptReadContent(
-				executionEnvironment, "scripts/test.rb", RubyLaunchingPlugin
+				executionEnvironment, "scripts/test.rb", RubyLaunchingPlugin //$NON-NLS-1$
 						.getDefault().getBundle(), installLocation,
 				new NullProgressMonitor());
-		String[] lines = output.split("\\n");
+		String[] lines = output.split("\\n"); //$NON-NLS-1$
 		boolean correct = false;
 		for (int i = 0; i < lines.length; i++) {
 			if (CORRECT_INTERPRETER_PATTERN.equals(lines[i])) {

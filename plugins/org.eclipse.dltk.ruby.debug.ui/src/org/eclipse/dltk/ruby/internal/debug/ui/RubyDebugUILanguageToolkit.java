@@ -24,6 +24,6 @@ public class RubyDebugUILanguageToolkit extends AbstractDebugUILanguageToolkit {
 	 * @see org.eclipse.dltk.debug.ui.AbstractDebugUILanguageToolkit#getVariablesViewPreferencePages()
 	 */
 	public String[] getVariablesViewPreferencePages() {
-		return new String[] { "org.eclipse.dltk.ruby.preferences.debug.detailFormatters" };
+		return new String[] { "org.eclipse.dltk.ruby.preferences.debug.detailFormatters" }; //$NON-NLS-1$
 	}
 }

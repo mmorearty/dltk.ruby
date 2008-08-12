@@ -47,8 +47,8 @@
       name="%showLocalVarsCommand.description" />
     <command
       id="org.eclipse.dltk.ruby.debug.ui.commands.showPreferences"
-      description="%showPreferences.description"
-      name="%showPreferencesCommand.name" />        	
+      description="%showPreferencesCommand.description"
+      name="%showPreferencesCommand.name" />
   </extension>
 	
 	<extension point="org.eclipse.ui.bindings">
