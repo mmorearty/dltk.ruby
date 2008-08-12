@@ -159,11 +159,10 @@ public abstract class Node implements ISourcePositionHolder, InstructionContext,
             return position;
         }
         
-        String fileName = position.getFile();
         int startOffset = position.getStartOffset();
         int endOffset = position.getEndOffset();
         
-        ISourcePosition commentIncludingPos = new SourcePosition(fileName, startOffset, endOffset);
+        ISourcePosition commentIncludingPos = new SourcePosition(startOffset, endOffset);
         
         Iterator commentItr = comments.iterator();
         while(commentItr.hasNext()) {
