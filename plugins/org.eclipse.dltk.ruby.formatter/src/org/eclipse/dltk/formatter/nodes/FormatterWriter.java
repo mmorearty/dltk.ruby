@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.dltk.ui.formatter.IFormatterIndentGenerator;
 import org.eclipse.jface.text.IRegion;
 
 public class FormatterWriter implements IFormatterVisitor {
@@ -30,12 +31,15 @@ public class FormatterWriter implements IFormatterVisitor {
 	private final List newLineCallbacks = new ArrayList();
 
 	private final String lineDelimiter;
+	private final IFormatterIndentGenerator indentGenerator;
 
 	/**
 	 * @param lineDelimiter
 	 */
-	public FormatterWriter(String lineDelimiter) {
+	public FormatterWriter(String lineDelimiter,
+			IFormatterIndentGenerator indentGenerator) {
 		this.lineDelimiter = lineDelimiter;
+		this.indentGenerator = indentGenerator;
 	}
 
 	public void preVisit(IFormatterContext context, IFormatterTextNode node)
@@ -107,7 +111,7 @@ public class FormatterWriter implements IFormatterVisitor {
 		final IFormatterWriter callbackWriter = new IFormatterWriter() {
 
 			public void writeIndent(IFormatterContext context) {
-				FormatterWriter.writeIndent(context, callbackBuffer);
+				FormatterWriter.this.writeIndent(context, callbackBuffer);
 			}
 
 			public void writeText(IFormatterContext context, String text) {
@@ -156,11 +160,8 @@ public class FormatterWriter implements IFormatterVisitor {
 		writeIndent(context, writer);
 	}
 
-	protected static void writeIndent(IFormatterContext context,
-			StringBuffer buffer) {
-		for (int i = 0, indent = context.getIndent(); i < indent; ++i) {
-			buffer.append('\t');
-		}
+	protected void writeIndent(IFormatterContext context, StringBuffer buffer) {
+		indentGenerator.generateIndent(context.getIndent(), buffer);
 	}
 
 	public String getOutput() {

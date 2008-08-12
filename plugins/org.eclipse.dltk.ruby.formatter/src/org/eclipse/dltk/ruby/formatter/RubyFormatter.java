@@ -100,7 +100,8 @@ public class RubyFormatter extends AbstractScriptFormatter {
 		}
 		IFormatterContainerNode root = builder.build(result, document);
 		FormatterContext context = new FormatterContext();
-		FormatterWriter writer = new FormatterWriter(lineDelimiter);
+		FormatterWriter writer = new FormatterWriter(lineDelimiter,
+				createIndentGenerator());
 		try {
 			root.accept(context, writer);
 			writer.flush(context);
