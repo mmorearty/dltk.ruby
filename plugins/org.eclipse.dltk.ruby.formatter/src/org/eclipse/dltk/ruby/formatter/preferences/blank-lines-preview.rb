@@ -1,6 +1,8 @@
 #
 # Blank lines
 #
+require 'date'
+
 module Alpha
 class Class1
 end
@@ -11,10 +13,9 @@ def topLevelMethod
 end
 module Beta
 def moduleMethod
-#blank lines - BEGIN
+#There are 3 blank lines below
 
 
 
-#blank lines - END
 end
 end

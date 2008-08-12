@@ -39,6 +39,7 @@ import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterMethodNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterModifierNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterModuleNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterRDocNode;
+import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterRequireNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterRescueElseNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterRescueNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterStringNode;
@@ -50,6 +51,7 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Region;
 import org.eclipse.osgi.util.NLS;
 import org.jruby.ast.ArgumentNode;
+import org.jruby.ast.ArrayNode;
 import org.jruby.ast.BeginNode;
 import org.jruby.ast.CaseNode;
 import org.jruby.ast.ClassNode;
@@ -59,6 +61,7 @@ import org.jruby.ast.DStrNode;
 import org.jruby.ast.DefnNode;
 import org.jruby.ast.DefsNode;
 import org.jruby.ast.EnsureNode;
+import org.jruby.ast.FCallNode;
 import org.jruby.ast.ForNode;
 import org.jruby.ast.IfNode;
 import org.jruby.ast.IterNode;
@@ -123,7 +126,8 @@ public class RubyFormatterNodeBuilder extends AbstractFormatterNodeBuilder {
 			}
 
 			public Instruction visitModuleNode(ModuleNode visited) {
-				FormatterModuleNode moduleNode = new FormatterModuleNode(document);
+				FormatterModuleNode moduleNode = new FormatterModuleNode(
+						document);
 				moduleNode.setBegin(createTextNode(document, visited
 						.getKeyword()));
 				push(moduleNode);
@@ -488,6 +492,27 @@ public class RubyFormatterNodeBuilder extends AbstractFormatterNodeBuilder {
 				heredocNode.setEndMarkerRegion(createRegion(visited
 						.getEndMarker().getPosition()));
 				return null;
+			}
+
+			public Instruction visitFCallNode(FCallNode visited) {
+				if (isRequireMethod(visited)) {
+					FormatterRequireNode requireNode = new FormatterRequireNode(
+							document, visited.getStartOffset(), visited
+									.getEndOffset());
+					addChild(requireNode);
+					return null;
+				} else {
+					return super.visitFCallNode(visited);
+				}
+			}
+
+			private boolean isRequireMethod(FCallNode call) {
+				if ("require".equals(call.getName())) {
+					if (call.getArgsNode() instanceof ArrayNode) {
+						return true;
+					}
+				}
+				return false;
 			}
 
 			private void visitChildren(Node visited) {

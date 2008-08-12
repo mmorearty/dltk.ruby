@@ -47,6 +47,7 @@ public class RubyFormatter extends AbstractScriptFormatter {
 			RubyFormatterConstants.INDENT_WHEN };
 
 	private static final String[] BLANK_LINES = {
+			RubyFormatterConstants.LINES_FILE_AFTER_REQUIRE,
 			RubyFormatterConstants.LINES_FILE_BETWEEN_MODULE,
 			RubyFormatterConstants.LINES_FILE_BETWEEN_CLASS,
 			RubyFormatterConstants.LINES_FILE_BETWEEN_METHOD,

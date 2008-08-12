@@ -33,6 +33,7 @@ public class RubyFormatterFactory extends AbstractScriptFormatterFactory {
 			RubyFormatterConstants.INDENT_IF,
 			RubyFormatterConstants.INDENT_CASE,
 			RubyFormatterConstants.INDENT_WHEN,
+			RubyFormatterConstants.LINES_FILE_AFTER_REQUIRE,
 			RubyFormatterConstants.LINES_FILE_BETWEEN_MODULE,
 			RubyFormatterConstants.LINES_FILE_BETWEEN_CLASS,
 			RubyFormatterConstants.LINES_FILE_BETWEEN_METHOD,

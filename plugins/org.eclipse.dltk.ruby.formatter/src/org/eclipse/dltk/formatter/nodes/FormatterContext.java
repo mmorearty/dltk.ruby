@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.dltk.ruby.formatter.internal.RubyFormatterPlugin;
+import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterRequireNode;
 
 public class FormatterContext implements IFormatterContext, Cloneable {
 
@@ -116,10 +117,15 @@ public class FormatterContext implements IFormatterContext, Cloneable {
 		if (entry.node != node) {
 			throw new IllegalStateException("leave() - node mismatch");
 		}
-		if (!path.isEmpty() && node instanceof IFormatterContainerNode) {
+		if (!path.isEmpty() && isCountable(node)) {
 			final PathEntry parent = (PathEntry) path.get(path.size() - 1);
 			++parent.childIndex;
 		}
+	}
+
+	private boolean isCountable(IFormatterNode node) {
+		return node instanceof IFormatterContainerNode
+				|| node instanceof FormatterRequireNode;
 	}
 
 	public IFormatterNode getParent() {

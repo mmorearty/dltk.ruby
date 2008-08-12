@@ -27,6 +27,8 @@ public class RubyFormatterConstants {
 	public static final String INDENT_CASE = "indent.case";
 	public static final String INDENT_WHEN = "indent.when";
 
+	public static final String LINES_FILE_AFTER_REQUIRE = "line.file.require.after";
+
 	public static final String LINES_FILE_BETWEEN_MODULE = "line.file.module.between";
 	public static final String LINES_FILE_BETWEEN_CLASS = "line.file.class.between";
 	public static final String LINES_FILE_BETWEEN_METHOD = "line.file.method.between";

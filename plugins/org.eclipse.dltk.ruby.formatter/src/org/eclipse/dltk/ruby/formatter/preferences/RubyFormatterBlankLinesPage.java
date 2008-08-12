@@ -36,11 +36,17 @@ public class RubyFormatterBlankLinesPage extends FormatterModifyTabPage {
 		Group emptyLinesGroup = SWTFactory.createGroup(parent,
 				"Blank lines in source file", 2, 1, GridData.FILL_HORIZONTAL);
 		manager.createNumber(emptyLinesGroup,
-				RubyFormatterConstants.LINES_BEFORE_MODULE, "Before module");
+				RubyFormatterConstants.LINES_FILE_AFTER_REQUIRE,
+				"After require directives");
 		manager.createNumber(emptyLinesGroup,
-				RubyFormatterConstants.LINES_BEFORE_CLASS, "Before class");
+				RubyFormatterConstants.LINES_FILE_BETWEEN_MODULE,
+				"Between modules");
 		manager.createNumber(emptyLinesGroup,
-				RubyFormatterConstants.LINES_BEFORE_METHOD, "Before method");
+				RubyFormatterConstants.LINES_FILE_BETWEEN_CLASS,
+				"Between classes");
+		manager.createNumber(emptyLinesGroup,
+				RubyFormatterConstants.LINES_FILE_BETWEEN_METHOD,
+				"Between methods");
 		//
 		Group emptyLinesInternalGroup = SWTFactory.createGroup(parent,
 				"Blank lines within class/module declarations", 2, 1,
