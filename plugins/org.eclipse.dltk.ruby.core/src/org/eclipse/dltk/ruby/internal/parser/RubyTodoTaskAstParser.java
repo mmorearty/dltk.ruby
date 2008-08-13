@@ -11,14 +11,14 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.internal.parser;
 
+import org.eclipse.dltk.compiler.task.ITodoTaskPreferences;
 import org.eclipse.dltk.compiler.task.TodoTaskAstParser;
-import org.eclipse.dltk.compiler.task.TodoTaskPreferences;
 import org.eclipse.dltk.validators.core.IBuildParticipant;
 
 public class RubyTodoTaskAstParser extends TodoTaskAstParser implements
 		IBuildParticipant {
 
-	public RubyTodoTaskAstParser(TodoTaskPreferences preferences) {
+	public RubyTodoTaskAstParser(ITodoTaskPreferences preferences) {
 		super(preferences);
 	}
 

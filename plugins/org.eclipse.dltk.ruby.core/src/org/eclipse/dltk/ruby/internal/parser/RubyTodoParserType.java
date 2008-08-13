@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.internal.parser;
 
+import org.eclipse.dltk.compiler.task.ITodoTaskPreferences;
 import org.eclipse.dltk.compiler.task.TodoTaskPreferences;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.ruby.core.RubyNature;
@@ -28,8 +29,16 @@ public class RubyTodoParserType extends AbstractBuildParticipantType {
 	}
 
 	protected IBuildParticipant createBuildParticipant(IScriptProject project) {
-		return new RubyTodoTaskAstParser(new TodoTaskPreferences(RubyPlugin
-				.getDefault().getPluginPreferences()));
+		final ITodoTaskPreferences prefs = new TodoTaskPreferences(RubyPlugin
+				.getDefault().getPluginPreferences());
+		if (prefs.isEnabled()) {
+			final RubyTodoTaskAstParser parser = new RubyTodoTaskAstParser(
+					prefs);
+			if (parser.isValid()) {
+				return parser;
+			}
+		}
+		return null;
 	}
 
 	public String getNature() {
