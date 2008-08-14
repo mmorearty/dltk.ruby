@@ -57,7 +57,7 @@ public class RubyMixinModel {
 	}
 
 	public IRubyMixinElement createRubyElement(IMixinElement element) {
-		Assert.isLegal(element != null);
+		Assert.isNotNull(element);
 		if (element.getKey().equals("Object")) { //$NON-NLS-1$
 			return new RubyObjectMixinClass(this, true);
 		} else if (element.getKey().equals("Object%")) { //$NON-NLS-1$
