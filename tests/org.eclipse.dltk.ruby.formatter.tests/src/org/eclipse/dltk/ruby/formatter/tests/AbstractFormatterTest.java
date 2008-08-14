@@ -17,6 +17,7 @@ import java.io.Reader;
 import java.net.URL;
 import java.util.Collection;
 
+import junit.framework.Assert;
 import junit.framework.ComparisonFailure;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -25,6 +26,7 @@ import org.eclipse.dltk.compiler.util.Util;
 import org.eclipse.dltk.internal.corext.util.Strings;
 import org.eclipse.dltk.ruby.formatter.RubyFormatter;
 import org.eclipse.dltk.ruby.formatter.internal.RubyFormatterPlugin;
+import org.eclipse.dltk.ui.formatter.FormatterException;
 import org.eclipse.dltk.utils.TextUtils;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
@@ -37,21 +39,20 @@ public abstract class AbstractFormatterTest extends TestCase {
 	/**
 	 * @param input
 	 * @return
+	 * @throws FormatterException
 	 */
-	protected static String format(String input) {
+	protected static String format(String input) throws FormatterException {
 		RubyFormatter f = new RubyFormatter(Util.LINE_SEPARATOR, RubyFormatter
 				.createTestingPreferences());
 		final TextEdit edit = f.format(input, 0, input.length(), 0);
-		if (edit != null) {
-			final IDocument document = new Document(input);
-			try {
-				edit.apply(document);
-			} catch (BadLocationException e) {
-				throw new RuntimeException(e);
-			}
-			return document.get();
+		Assert.assertNotNull(edit);
+		final IDocument document = new Document(input);
+		try {
+			edit.apply(document);
+		} catch (BadLocationException e) {
+			throw new RuntimeException(e);
 		}
-		return input;
+		return document.get();
 	}
 
 	protected static String joinLines(Collection lines) {
@@ -180,7 +181,7 @@ public abstract class AbstractFormatterTest extends TestCase {
 		return new ScriptedTest(testName, input, expected);
 	}
 
-	protected boolean compareIgnoreBlanks(Reader inputReader,
+	protected boolean compareIgnoreBlanks(String entryName, Reader inputReader,
 			Reader outputReader) throws IOException {
 		LineNumberReader input = new LineNumberReader(inputReader);
 		LineNumberReader output = new LineNumberReader(outputReader);
@@ -203,17 +204,17 @@ public abstract class AbstractFormatterTest extends TestCase {
 				if (outputLine == null) {
 					return true;
 				} else {
-					fail("Extra output " + output.getLineNumber() + ":"
-							+ outputLine);
+					fail(entryName + ": Extra output " + output.getLineNumber()
+							+ ":" + outputLine);
 				}
 			} else if (outputLine == null) {
-				fail("Missing output " + input.getLineNumber() + ":"
-						+ inputLine);
+				fail(entryName + ": Missing output " + input.getLineNumber()
+						+ ":" + inputLine);
 			} else if (!inputLine.equals(outputLine)) {
-				throw new ComparisonFailure("Comparison failed", input
-						.getLineNumber()
-						+ ":" + inputLine, output.getLineNumber() + ":"
-						+ outputLine);
+				throw new ComparisonFailure(entryName + ": Comparison failed",
+						input.getLineNumber() + ":" + inputLine, output
+								.getLineNumber()
+								+ ":" + outputLine);
 			}
 		}
 	}

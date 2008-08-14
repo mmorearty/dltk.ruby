@@ -8,76 +8,29 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.formatter.tests;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
-import java.net.URL;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import junit.framework.Assert;
 
 import org.eclipse.dltk.compiler.util.Util;
+import org.eclipse.dltk.ruby.formatter.RubyFormatter;
+import org.eclipse.dltk.ui.formatter.FormatterException;
+import org.eclipse.dltk.ui.formatter.FormatterSyntaxProblemException;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.Document;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.text.edits.TextEdit;
 
 public class FormatRubyLibTest extends AbstractFormatterTest {
 
 	static final String CHARSET = "ISO-8859-1"; //$NON-NLS-1$
-
-	private static final String SCRIPTS_ZIP = "zip/ruby-lib.zip"; //$NON-NLS-1$
-
-	public static TestSuite suite() {
-		final TestSuite suite = new TestSuite(FormatRubyLibTest.class.getName());
-		final URL scripts = getResourceBundle().getResource(SCRIPTS_ZIP);
-		if (scripts == null) {
-			suite.addTest(new TestCase("error") { //$NON-NLS-1$
-						protected void runTest() throws Throwable {
-							fail(SCRIPTS_ZIP + " is not found"); //$NON-NLS-1$
-						}
-					});
-		} else {
-			try {
-				final ZipInputStream zipInputStream = new ZipInputStream(
-						scripts.openStream());
-				try {
-					int count = 0;
-					ZipEntry entry;
-					while ((entry = zipInputStream.getNextEntry()) != null) {
-						if (!entry.isDirectory() && isRubyFile(entry.getName())) {
-							final InputStream entryStream = new FilterInputStream(
-									zipInputStream) {
-								public void close() throws IOException {
-									// empty
-								}
-							};
-							final char[] content = Util
-									.getInputStreamAsCharArray(entryStream,
-											(int) entry.getSize(), CHARSET);
-							final String testName = ++count
-									+ "-" + entry.getName(); //$NON-NLS-1$
-							suite.addTest(new FormatRubyLibTest(testName,
-									content));
-							zipInputStream.closeEntry();
-						}
-					}
-				} finally {
-					try {
-						zipInputStream.close();
-					} catch (IOException e) {
-						// 
-					}
-				}
-			} catch (final IOException e) {
-				suite.addTest(new TestCase("IOException") { //$NON-NLS-1$
-							protected void runTest() throws Throwable {
-								throw e;
-							}
-						});
-			}
-		}
-		return suite;
-	}
 
 	/**
 	 * @param name
@@ -87,18 +40,55 @@ public class FormatRubyLibTest extends AbstractFormatterTest {
 		return name.endsWith(".rb") || name.toLowerCase().endsWith(".rb");
 	}
 
-	private final char[] content;
-
-	public FormatRubyLibTest(String name, char[] content) {
-		setName(name);
-		this.content = content;
-	}
-
-	protected void runTest() throws Throwable {
-		final String input = new String(content);
-		final String output = format(input);
-		assertTrue(compareIgnoreBlanks(new StringReader(input),
-				new StringReader(output)));
+	public void testRubyLib() throws IOException {
+		final File path = new File("/home/dltk/apps/ruby-lib.zip");
+		if (!path.isFile()) {
+			fail(path + " is not found"); //$NON-NLS-1$
+		}
+		final ZipInputStream zipInputStream = new ZipInputStream(
+				new FileInputStream(path));
+		try {
+			final RubyFormatter f = new RubyFormatter(Util.LINE_SEPARATOR,
+					RubyFormatter.createTestingPreferences());
+			ZipEntry entry;
+			while ((entry = zipInputStream.getNextEntry()) != null) {
+				if (!entry.isDirectory() && isRubyFile(entry.getName())) {
+					final InputStream entryStream = new FilterInputStream(
+							zipInputStream) {
+						public void close() throws IOException {
+							// empty
+						}
+					};
+					final char[] content = Util.getInputStreamAsCharArray(
+							entryStream, (int) entry.getSize(), CHARSET);
+					final String input = new String(content);
+					try {
+						final TextEdit edit = f.format(input, 0,
+								input.length(), 0);
+						Assert.assertNotNull(entry.getName(), edit);
+						final IDocument document = new Document(input);
+						edit.apply(document);
+						assertTrue(compareIgnoreBlanks(entry.getName(),
+								new StringReader(input), new StringReader(
+										document.get())));
+					} catch (BadLocationException e) {
+						throw new RuntimeException(e);
+					} catch (FormatterSyntaxProblemException e) {
+						System.err
+								.println("Syntax error in " + entry.getName());
+					} catch (FormatterException e) {
+						throw new RuntimeException(e);
+					}
+					zipInputStream.closeEntry();
+				}
+			}
+		} finally {
+			try {
+				zipInputStream.close();
+			} catch (IOException e) {
+				// 
+			}
+		}
 	}
 
 }
