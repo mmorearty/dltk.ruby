@@ -42,8 +42,7 @@ public abstract class AbstractFormatterTest extends TestCase {
 	 * @throws FormatterException
 	 */
 	protected static String format(String input) throws FormatterException {
-		RubyFormatter f = new RubyFormatter(Util.LINE_SEPARATOR, RubyFormatter
-				.createTestingPreferences());
+		RubyFormatter f = new TestRubyFormatter();
 		final TextEdit edit = f.format(input, 0, input.length(), 0);
 		Assert.assertNotNull(edit);
 		final IDocument document = new Document(input);

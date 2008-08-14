@@ -21,6 +21,7 @@ import junit.framework.Assert;
 
 import org.eclipse.dltk.compiler.util.Util;
 import org.eclipse.dltk.ruby.formatter.RubyFormatter;
+import org.eclipse.dltk.ruby.formatter.internal.RubyFormatterPlugin;
 import org.eclipse.dltk.ui.formatter.FormatterException;
 import org.eclipse.dltk.ui.formatter.FormatterSyntaxProblemException;
 import org.eclipse.jface.text.BadLocationException;
@@ -48,8 +49,7 @@ public class FormatRubyLibTest extends AbstractFormatterTest {
 		final ZipInputStream zipInputStream = new ZipInputStream(
 				new FileInputStream(path));
 		try {
-			final RubyFormatter f = new RubyFormatter(Util.LINE_SEPARATOR,
-					RubyFormatter.createTestingPreferences());
+			final RubyFormatter f = new TestRubyFormatter();
 			ZipEntry entry;
 			while ((entry = zipInputStream.getNextEntry()) != null) {
 				if (!entry.isDirectory() && isRubyFile(entry.getName())) {
@@ -74,8 +74,9 @@ public class FormatRubyLibTest extends AbstractFormatterTest {
 					} catch (BadLocationException e) {
 						throw new RuntimeException(e);
 					} catch (FormatterSyntaxProblemException e) {
-						System.err
-								.println("Syntax error in " + entry.getName());
+						final String msg = "Syntax error in " + entry.getName();
+						System.err.println(msg);
+						RubyFormatterPlugin.error(msg);
 					} catch (FormatterException e) {
 						throw new RuntimeException(e);
 					}
