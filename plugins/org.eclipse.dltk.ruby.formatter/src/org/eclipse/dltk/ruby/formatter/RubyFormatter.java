@@ -31,6 +31,9 @@ import org.eclipse.dltk.ruby.formatter.internal.RubyFormatterPlugin;
 import org.eclipse.dltk.ruby.formatter.internal.RubyParser;
 import org.eclipse.dltk.ui.CodeFormatterConstants;
 import org.eclipse.dltk.ui.formatter.AbstractScriptFormatter;
+import org.eclipse.dltk.ui.formatter.FormatterException;
+import org.eclipse.dltk.ui.formatter.FormatterSyntaxProblemException;
+import org.eclipse.text.edits.MultiTextEdit;
 import org.eclipse.text.edits.ReplaceEdit;
 import org.eclipse.text.edits.TextEdit;
 import org.jruby.parser.RubyParserResult;
@@ -80,14 +83,19 @@ public class RubyFormatter extends AbstractScriptFormatter {
 		this.lineDelimiter = lineDelimiter;
 	}
 
-	public TextEdit format(String source, int offset, int length, int indent) {
+	public TextEdit format(String source, int offset, int length, int indent)
+			throws FormatterException {
 		final String input = source.substring(offset, offset + length);
 		final RubyParserResult result = RubyParser.parse(input);
-		if (result != null) {
-			final String output = format(input, result);
-			if (output != null && !input.equals(output)) {
-				if (equalsIgnoreBlanks(new StringReader(input),
-						new StringReader(output))) {
+		if (result == null) {
+			throw new FormatterSyntaxProblemException();
+		}
+		final String output = format(input, result);
+		if (output != null) {
+			if (!input.equals(output)) {
+				if (!isValidation()
+						|| equalsIgnoreBlanks(new StringReader(input),
+								new StringReader(output))) {
 					return new ReplaceEdit(offset, length, output);
 				} else {
 					RubyFormatterPlugin.log(new Status(IStatus.ERROR,
@@ -95,9 +103,15 @@ public class RubyFormatter extends AbstractScriptFormatter {
 							Messages.RubyFormatter_contentCorrupted,
 							new DumpContentException(input)));
 				}
+			} else {
+				return new MultiTextEdit(); // NOP
 			}
 		}
 		return null;
+	}
+
+	protected boolean isValidation() {
+		return true;
 	}
 
 	/**
