@@ -73,8 +73,11 @@ public class ThreadedMixinTests extends AbstractDLTKSearchTests {
 		private int cycles = 0;
 		private String[] keys;
 		public boolean finish = false;
+		private final RubyMixinModel mixinModel;
 
-		public Access(String keys[], int start, int stop, int cycles) {
+		public Access(RubyMixinModel mixinModel, String keys[], int start,
+				int stop, int cycles) {
+			this.mixinModel = mixinModel;
 			this.start = start;
 			this.stop = stop;
 			this.cycles = cycles;
@@ -82,11 +85,10 @@ public class ThreadedMixinTests extends AbstractDLTKSearchTests {
 		}
 
 		public void run() {
-			RubyMixinModel instance = RubyMixinModel.getInstance();
 			for (int i = 0; i < this.cycles; i++) {
 				for (int j = 0; j < this.stop - this.start; j++) {
-					instance.createRubyElement(this.keys[this.start + j]);
-				//	System.out.println("#:" + this.start + ":" + this.stop);
+					mixinModel.createRubyElement(this.keys[this.start + j]);
+					// System.out.println("#:" + this.start + ":" + this.stop);
 				}
 			}
 			this.finish = true;
@@ -96,19 +98,20 @@ public class ThreadedMixinTests extends AbstractDLTKSearchTests {
 
 	public void testMultiAccess() throws Exception {
 		int count = 10;
-		String[] findKeys = RubyMixinModel.getRawInstance().findKeys("*");
+		final RubyMixinModel mixinModel = RubyMixinModel.getInstance();
+		String[] findKeys = mixinModel.getRawModel().findKeys("*");
 		Thread[] threads = new Thread[count];
 		Access[] access = new Access[count];
 		int d = findKeys.length / count;
 		for (int i = 0; i < count; i++) {
 			if (i != count - 1) {
-				Access a = new Access(findKeys, d * (i), d
-						* (i+1), 1);
+				Access a = new Access(mixinModel, findKeys, d * (i), d
+						* (i + 1), 1);
 				access[i] = a;
 				threads[i] = new Thread(a);
-			}
-			else {
-				Access a = new Access(findKeys, d * (i), findKeys.length, 10);
+			} else {
+				Access a = new Access(mixinModel, findKeys, d * (i),
+						findKeys.length, 10);
 				access[i] = a;
 				threads[i] = new Thread(a);
 			}
@@ -117,7 +120,7 @@ public class ThreadedMixinTests extends AbstractDLTKSearchTests {
 		for (int i = 0; i < threads.length; i++) {
 			threads[i].start();
 		}
-		for (int i = 0; i < threads.length; i++) {			
+		for (int i = 0; i < threads.length; i++) {
 			threads[i].join(100000);
 			assertTrue(access[i].finish);
 		}
