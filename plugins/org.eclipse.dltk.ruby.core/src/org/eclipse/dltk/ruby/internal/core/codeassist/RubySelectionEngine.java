@@ -495,8 +495,9 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 			addArrayToCollection(m, availableMethods);
 			if (receiver instanceof VariableReference) {
 				IMethod[] availableMethods2 = RubyModelUtils
-						.getSingletonMethods((VariableReference) receiver,
-								parsedUnit, sourceModule, methodName);
+						.getSingletonMethods(mixinModel,
+								(VariableReference) receiver, parsedUnit,
+								sourceModule, methodName);
 				addArrayToCollection(availableMethods2, availableMethods);
 			}
 		}

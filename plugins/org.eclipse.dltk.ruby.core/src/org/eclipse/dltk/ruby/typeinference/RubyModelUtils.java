@@ -396,10 +396,10 @@ public class RubyModelUtils {
 		}
 	}
 
-	public static IMethod[] getSingletonMethods(VariableReference receiver,
+	public static IMethod[] getSingletonMethods(
+			final RubyMixinModel mixinModel, VariableReference receiver,
 			ModuleDeclaration parsedUnit, ISourceModule modelModule,
 			String methodName) {
-		final RubyMixinModel mixinModel = RubyMixinModel.getInstance();
 		IMethod[] res = null;
 		String[] scopesKeys = RubyTypeInferencingUtils
 				.getModelStaticScopesKeys(mixinModel.getRawModel(), parsedUnit,
