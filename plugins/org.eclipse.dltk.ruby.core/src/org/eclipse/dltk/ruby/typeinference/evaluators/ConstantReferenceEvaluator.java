@@ -37,49 +37,53 @@ public class ConstantReferenceEvaluator extends GoalEvaluator {
 	}
 
 	private ConstantTypeGoal getTypedGoal() {
-		return (ConstantTypeGoal) DefaultRubyEvaluatorFactory.translateGoal(goal);
+		return (ConstantTypeGoal) DefaultRubyEvaluatorFactory
+				.translateGoal(goal);
 	}
 
 	private ISourceModuleContext getTypedContext() {
 		return (ISourceModuleContext) goal.getContext();
 	}
 
-	public Object produceResult() {		
-		return result; 
+	public Object produceResult() {
+		return result;
 	}
-	
+
 	public IGoal[] init() {
 		helperGoal = null;
 		ISourceModuleContext typedContext = getTypedContext();
 		ConstantTypeGoal typedGoal = getTypedGoal();
 		String constantName = typedGoal.getName();
 		int calculationOffset = typedGoal.getOffset();
-		
-		String elementKey = RubyTypeInferencingUtils.searchConstantElement(typedContext.getRootNode(), calculationOffset, constantName);
-		
+
+		String elementKey = RubyTypeInferencingUtils.searchConstantElement(
+				typedContext.getRootNode(), calculationOffset, constantName);
+
 		IMixinElement constantElement = null;
-		
+
 		if (elementKey != null)
 			constantElement = mixinModel.get(elementKey);
-		
+
 		if (constantElement == null)
 			return IGoal.NO_GOALS;
-		
+
 		Object[] realObjs = constantElement.getAllObjects();
 		for (int i = 0; i < realObjs.length; i++) {
 			RubyMixinElementInfo realObj = (RubyMixinElementInfo) realObjs[i];
 			if (realObj == null)
 				continue;
-			if (realObj.getKind() == RubyMixinElementInfo.K_CLASS || 
-					realObj.getKind() == RubyMixinElementInfo.K_MODULE) { 
+			if (realObj.getKind() == RubyMixinElementInfo.K_CLASS
+					|| realObj.getKind() == RubyMixinElementInfo.K_MODULE) {
 				result = new RubyClassType(constantElement.getKey());
 				break;
 			} else if (realObj.getKind() == RubyMixinElementInfo.K_VARIABLE) {
-//				String parent = constantElement.getParent().getKey();
-//				String name = constantElement.getLastKeySegment();
-//				helperGoal = new VariableTypeGoal (goal.getContext(), name, parent, RubyVariableKind.CONSTANT);
-				Object[] allObjects = constantElement.getAllObjects();
-				helperGoal = new NonTypeConstantTypeGoal(goal.getContext(), constantElement);
+				// String parent = constantElement.getParent().getKey();
+				// String name = constantElement.getLastKeySegment();
+				// helperGoal = new VariableTypeGoal (goal.getContext(), name,
+				// parent, RubyVariableKind.CONSTANT);
+				// Object[] allObjects = constantElement.getAllObjects();
+				helperGoal = new NonTypeConstantTypeGoal(goal.getContext(),
+						constantElement);
 				break;
 			}
 		}

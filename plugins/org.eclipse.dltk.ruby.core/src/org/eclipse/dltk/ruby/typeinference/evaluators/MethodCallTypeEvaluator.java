@@ -38,7 +38,7 @@ public class MethodCallTypeEvaluator extends GoalEvaluator {
 	private final static int STATE_GOT_RECEIVER = 2;
 
 	private final static int STATE_WAITING_ARGUMENT_0 = 3;
-	
+
 	private final static int STATE_WAITING_ARGUMENT_LAST = 9999;
 
 	private final static int STATE_ARGS_DONE = 10000;
@@ -64,7 +64,8 @@ public class MethodCallTypeEvaluator extends GoalEvaluator {
 	private IGoal produceNextSubgoal(IGoal previousGoal, Object previousResult) {
 		if (state == STATE_INIT) {
 			ExpressionTypeGoal typedGoal = (ExpressionTypeGoal) goal;
-			CallExpression expression = (CallExpression) typedGoal.getExpression();
+			CallExpression expression = (CallExpression) typedGoal
+					.getExpression();
 			ASTNode receiver = expression.getReceiver();
 			if (receiver == null || receiver instanceof RubySelfReference) {
 				// handling SelfReference here just for simplicity, could be
@@ -115,35 +116,41 @@ public class MethodCallTypeEvaluator extends GoalEvaluator {
 		}
 		if (state == STATE_GOT_RECEIVER) {
 			ExpressionTypeGoal typedGoal = (ExpressionTypeGoal) goal;
-			CallExpression expression = (CallExpression) typedGoal.getExpression();
-			List arguments = expression.getArgs().getExpressions();
+			CallExpression expression = (CallExpression) typedGoal
+					.getExpression();
+			List arguments = expression.getArgs().getChilds();
 			this.arguments = new IEvaluatedType[arguments.size()];
 		}
-		if (state >= STATE_WAITING_ARGUMENT_0 && state <= STATE_WAITING_ARGUMENT_LAST) {
+		if (state >= STATE_WAITING_ARGUMENT_0
+				&& state <= STATE_WAITING_ARGUMENT_LAST) {
 			arguments[state - STATE_WAITING_ARGUMENT_0] = (IEvaluatedType) previousResult;
 		}
 		if (state == STATE_GOT_RECEIVER || state >= STATE_WAITING_ARGUMENT_0
 				&& state <= STATE_WAITING_ARGUMENT_LAST) {
-			int nextArg = (state == STATE_GOT_RECEIVER ? 0 : state - STATE_WAITING_ARGUMENT_0 + 1);
+			int nextArg = (state == STATE_GOT_RECEIVER ? 0 : state
+					- STATE_WAITING_ARGUMENT_0 + 1);
 			ExpressionTypeGoal typedGoal = (ExpressionTypeGoal) goal;
-			CallExpression expression = (CallExpression) typedGoal.getExpression();
-			List arguments = expression.getArgs().getExpressions();
+			CallExpression expression = (CallExpression) typedGoal
+					.getExpression();
+			List arguments = expression.getArgs().getChilds();
 			if (nextArg < arguments.size()) {
 				state = STATE_WAITING_ARGUMENT_0 + nextArg;
-				return new ExpressionTypeGoal(goal.getContext(), (ASTNode) arguments.get(nextArg));
+				return new ExpressionTypeGoal(goal.getContext(),
+						(ASTNode) arguments.get(nextArg));
 			} else {
 				state = STATE_ARGS_DONE;
 			}
 		}
 		if (state == STATE_ARGS_DONE) {
 			ExpressionTypeGoal typedGoal = (ExpressionTypeGoal) goal;
-			CallExpression expression = (CallExpression) typedGoal.getExpression();
+			CallExpression expression = (CallExpression) typedGoal
+					.getExpression();
 			state = STATE_WAITING_METHOD;
 			if (receiverType == UnknownType.INSTANCE)
 				receiverType = null;
-			return new MethodReturnTypeGoal(
-					new InstanceContext((ISourceModuleContext) goal.getContext(),
-					receiverType), expression.getName(), arguments);
+			return new MethodReturnTypeGoal(new InstanceContext(
+					(ISourceModuleContext) goal.getContext(), receiverType),
+					expression.getName(), arguments);
 		}
 		if (state == STATE_WAITING_METHOD) {
 			result = (IEvaluatedType) previousResult;
@@ -158,12 +165,12 @@ public class MethodCallTypeEvaluator extends GoalEvaluator {
 		else
 			return result;
 	}
-	
+
 	public IGoal[] init() {
-		IGoal goal = produceNextSubgoal(null, null); 
+		IGoal goal = produceNextSubgoal(null, null);
 		if (goal != null)
 			return new IGoal[] { goal };
-		return IGoal.NO_GOALS; 
+		return IGoal.NO_GOALS;
 	}
 
 	public IGoal[] subGoalDone(IGoal subgoal, Object result, GoalState state) {

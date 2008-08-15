@@ -17,7 +17,7 @@ import org.eclipse.dltk.ti.goals.GoalEvaluator;
 import org.eclipse.dltk.ti.goals.IGoal;
 
 public class BooleanLiteralEvaluator extends GoalEvaluator {
-	
+
 	public BooleanLiteralEvaluator(IGoal goal) {
 		super(goal);
 	}
@@ -30,9 +30,9 @@ public class BooleanLiteralEvaluator extends GoalEvaluator {
 		ExpressionTypeGoal tg = (ExpressionTypeGoal) goal;
 		BooleanLiteral l = (BooleanLiteral) tg.getExpression();
 		if (l.boolValue())
-			return new RubyClassType ("TrueClass%"); //$NON-NLS-1$
+			return new RubyClassType("TrueClass%"); //$NON-NLS-1$
 		else
-			return new RubyClassType ("FalseClass%");// TrueClass || FalseClass //$NON-NLS-1$
+			return new RubyClassType("FalseClass%");// TrueClass || FalseClass //$NON-NLS-1$
 	}
 
 	public IGoal[] init() {

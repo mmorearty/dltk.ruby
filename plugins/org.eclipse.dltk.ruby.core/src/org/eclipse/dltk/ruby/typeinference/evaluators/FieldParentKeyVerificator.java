@@ -37,7 +37,7 @@ public class FieldParentKeyVerificator extends GoalEvaluator {
 		ASTNode[] way = ASTUtils.restoreWayToNode(decl, node);
 		if (way.length >= 2 && way[way.length - 2] instanceof RubyAssignment) {
 			RubyAssignment assignment = (RubyAssignment) way[way.length - 2];
-			if (assignment.getLeft().equals(node)) 
+			if (assignment.getLeft().equals(node))
 				return way[way.length - 2];
 		}
 		return node;
@@ -62,28 +62,29 @@ public class FieldParentKeyVerificator extends GoalEvaluator {
 				RubyClassType selfClass = RubyTypeInferencingUtils
 						.determineSelfClass(sourceModule, module, node
 								.sourceStart());
-				
+
 				if (selfClass == null)
 					return null;
-				
+
 				node = translateNode(node, module);
-				
+
 				boolean approve = false;
-				
+
 				if (name.startsWith("$")) //$NON-NLS-1$
 					approve = true;
 				else if (goal.getGoal().getParentModelKey().equals(
-								selfClass.getModelKey())) {
+						selfClass.getModelKey())) {
 					approve = true;
-				} else if (constant) { //up-scope visible
-					if (goal.getGoal().getParentModelKey().startsWith(selfClass.getModelKey())) {
+				} else if (constant) { // up-scope visible
+					if (goal.getGoal().getParentModelKey().startsWith(
+							selfClass.getModelKey())) {
 						approve = true;
 					}
 				}
-									
+
 				if (approve) {
 					result = new RubyFieldReference(goal.getGoal().getName(),
-							selfClass.getModelKey(), position,  node);
+							selfClass.getModelKey(), position, node);
 				}
 			}
 		}
