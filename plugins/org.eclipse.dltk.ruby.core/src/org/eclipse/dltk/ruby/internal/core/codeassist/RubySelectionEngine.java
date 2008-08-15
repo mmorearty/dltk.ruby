@@ -79,7 +79,7 @@ import org.eclipse.dltk.ti.goals.IGoal;
 import org.eclipse.dltk.ti.types.IEvaluatedType;
 
 public class RubySelectionEngine extends ScriptSelectionEngine {
-	public static boolean DEBUG = DLTKCore.DEBUG_SELECTION;
+	public static final boolean DEBUG = DLTKCore.DEBUG_SELECTION;
 
 	protected int actualSelectionStart;
 
@@ -111,9 +111,12 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 		return null;
 	}
 
+	private RubyMixinModel mixinModel;
+
 	public IModelElement[] select(
 			org.eclipse.dltk.compiler.env.ISourceModule sourceUnit,
 			int selectionSourceStart, int selectionSourceEnd) {
+		mixinModel = RubyMixinModel.getInstance();
 		sourceModule = (ISourceModule) sourceUnit.getModelElement();
 		String source = sourceUnit.getSourceContents();
 		if (DEBUG) {
@@ -202,8 +205,7 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 				wayToNode, superExpr, false);
 		if (enclosingMethod != null) {
 			String name = enclosingMethod.getName();
-			RubyMixinClass rubyClass = RubyMixinModel.getInstance()
-					.createRubyClass(selfClass);
+			RubyMixinClass rubyClass = mixinModel.createRubyClass(selfClass);
 			RubyMixinClass superclass = rubyClass.getSuperclass();
 			RubyMixinMethod method = superclass.getMethod(name);
 			if (method != null) {
@@ -232,7 +234,7 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 				// type-constant
 				Object evaluatedType = evaluator.produceResult();
 				if (evaluatedType instanceof RubyClassType) {
-					RubyMixinClass mixinClass = RubyMixinModel.getInstance()
+					RubyMixinClass mixinClass = mixinModel
 							.createRubyClass((RubyClassType) evaluatedType);
 					if (mixinClass != null)
 						addArrayToCollection(mixinClass.getSourceTypes(),
@@ -276,7 +278,7 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 		if (init == null || init.length == 0) {
 			Object evaluatedType = evaluator.produceResult();
 			if (evaluatedType instanceof RubyClassType) {
-				RubyMixinClass mixinClass = RubyMixinModel.getInstance()
+				RubyMixinClass mixinClass = mixinModel
 						.createRubyClass((RubyClassType) evaluatedType);
 				if (mixinClass != null)
 					addArrayToCollection(mixinClass.getSourceTypes(),
@@ -423,7 +425,7 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 		IEvaluatedType evaluatedType = this.inferencer.evaluateType(typeGoal,
 				5000);
 		if (evaluatedType instanceof RubyClassType) {
-			RubyMixinClass mixinClass = RubyMixinModel.getInstance()
+			RubyMixinClass mixinClass = mixinModel
 					.createRubyClass((RubyClassType) evaluatedType);
 			if (mixinClass != null)
 				return mixinClass.getSourceTypes();
@@ -473,12 +475,10 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 		if (receiver == null) {
 			IEvaluatedType type = RubyTypeInferencingUtils.determineSelfClass(
 					sourceModule, parsedUnit, parentCall.sourceStart());
-			if ((type != null)
-					&& "Object".equals(type.getTypeName())) { //$NON-NLS-1$
+			if ((type != null) && "Object".equals(type.getTypeName())) { //$NON-NLS-1$
 				ExpressionTypeGoal goal = new ExpressionTypeGoal(
-						new BasicContext(sourceModule,parsedUnit), parsedUnit);
-				IEvaluatedType type2 = inferencer.evaluateType(
-						goal, 2000);
+						new BasicContext(sourceModule, parsedUnit), parsedUnit);
+				IEvaluatedType type2 = inferencer.evaluateType(goal, 2000);
 				if (type2 != null) {
 					type = type2;
 				}
