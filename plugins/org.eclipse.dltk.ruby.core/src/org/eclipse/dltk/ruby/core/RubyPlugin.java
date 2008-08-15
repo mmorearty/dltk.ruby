@@ -11,6 +11,7 @@ package org.eclipse.dltk.ruby.core;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
@@ -88,14 +89,14 @@ public class RubyPlugin extends Plugin {
 		if (message == null)
 			message = "(no message)"; //$NON-NLS-1$
 		getDefault().getLog().log(
-				new Status(Status.ERROR, PLUGIN_ID, 0, message, ex));
+				new Status(IStatus.ERROR, PLUGIN_ID, 0, message, ex));
 	}
 
 	public static void log(String message) {
 		if (DLTKCore.DEBUG || DUMP_EXCEPTIONS_TO_CONSOLE)
 			System.out.println(message);
 		getDefault().getLog().log(
-				new Status(Status.WARNING, PLUGIN_ID, 0, message, null));
+				new Status(IStatus.WARNING, PLUGIN_ID, 0, message, null));
 	}
 
 	/**
