@@ -41,7 +41,6 @@ import org.eclipse.dltk.core.search.SearchPattern;
 import org.eclipse.dltk.core.search.SearchRequestor;
 import org.eclipse.dltk.evaluation.types.AmbiguousType;
 import org.eclipse.dltk.internal.core.ModelElement;
-import org.eclipse.dltk.internal.core.SourceMethod;
 import org.eclipse.dltk.ruby.core.RubyLanguageToolkit;
 import org.eclipse.dltk.ruby.core.RubyPlugin;
 import org.eclipse.dltk.ruby.core.model.FakeMethod;
@@ -400,11 +399,11 @@ public class RubyModelUtils {
 	public static IMethod[] getSingletonMethods(VariableReference receiver,
 			ModuleDeclaration parsedUnit, ISourceModule modelModule,
 			String methodName) {
+		final RubyMixinModel mixinModel = RubyMixinModel.getInstance();
 		IMethod[] res = null;
-		// if (receiver instanceof VariableReference) {
 		String[] scopesKeys = RubyTypeInferencingUtils
-				.getModelStaticScopesKeys(RubyMixinModel.getRawInstance(),
-						parsedUnit, receiver.sourceStart());
+				.getModelStaticScopesKeys(mixinModel.getRawModel(), parsedUnit,
+						receiver.sourceStart());
 		if (scopesKeys != null && scopesKeys.length > 0) {
 			String possibleName;
 			if (scopesKeys.length == 1) {
@@ -414,7 +413,7 @@ public class RubyModelUtils {
 				possibleName = last + MixinModel.SEPARATOR + receiver.getName()
 						+ RubyMixin.VIRTUAL_SUFFIX;
 			}
-			IRubyMixinElement element = RubyMixinModel.getInstance()
+			IRubyMixinElement element = mixinModel
 					.createRubyElement(possibleName);
 			if (element instanceof RubyMixinClass) {
 				RubyMixinClass rubyMixinClass = (RubyMixinClass) element;
@@ -423,7 +422,6 @@ public class RubyModelUtils {
 						methodName);
 			}
 		}
-		// }
 		return res;
 	}
 
