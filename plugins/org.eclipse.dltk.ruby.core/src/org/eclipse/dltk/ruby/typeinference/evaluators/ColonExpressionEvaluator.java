@@ -12,6 +12,7 @@ package org.eclipse.dltk.ruby.typeinference.evaluators;
 import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.core.mixin.IMixinElement;
 import org.eclipse.dltk.core.mixin.IMixinRequestor;
+import org.eclipse.dltk.core.mixin.MixinModel;
 import org.eclipse.dltk.ruby.ast.RubyColonExpression;
 import org.eclipse.dltk.ruby.internal.parser.mixin.RubyMixinElementInfo;
 import org.eclipse.dltk.ruby.internal.parser.mixin.RubyMixinModel;
@@ -34,9 +35,11 @@ public class ColonExpressionEvaluator extends GoalEvaluator {
 	private IEvaluatedType helperResult = null;
 
 	private IEvaluatedType answer = null;
+	private final MixinModel mixinModel;
 
 	public ColonExpressionEvaluator(IGoal goal) {
 		super(goal);
+		mixinModel = RubyMixinModel.getInstance().getRawModel();
 	}
 
 	private ColonExpressionGoal getTypedGoal() {
@@ -58,8 +61,7 @@ public class ColonExpressionEvaluator extends GoalEvaluator {
 			helperGoal = new ExpressionTypeGoal(getGoal().getContext(), left);
 			return new IGoal[] { helperGoal };
 		} else {
-			IMixinElement mixinElement = RubyMixinModel.getRawInstance().get(
-					expr.getName());
+			IMixinElement mixinElement = mixinModel.get(expr.getName());
 			if (mixinElement != null)
 				answer = new RubyClassType(mixinElement.getKey());
 		}
@@ -75,13 +77,12 @@ public class ColonExpressionEvaluator extends GoalEvaluator {
 
 		if (left != null) {
 			if (helperResult instanceof ClassType) { // TODO: check existance
-														// of the new key
+				// of the new key
 				ClassType classType = (ClassType) helperResult;
 				String modelKey = classType.getModelKey();
 				modelKey += IMixinRequestor.MIXIN_NAME_SEPARATOR
 						+ expr.getName();
-				IMixinElement mixinElement = RubyMixinModel.getRawInstance()
-						.get(modelKey);
+				IMixinElement mixinElement = mixinModel.get(modelKey);
 				if (mixinElement != null) {
 					Object[] objects = mixinElement.getAllObjects();
 					boolean found = false;
@@ -102,12 +103,11 @@ public class ColonExpressionEvaluator extends GoalEvaluator {
 					}
 
 					answer = new RubyClassType(modelKey);
-				} else 
+				} else
 					answer = null;
 			}
 		} else {
-			IMixinElement mixinElement = RubyMixinModel.getRawInstance().get(
-					expr.getName());
+			IMixinElement mixinElement = mixinModel.get(expr.getName());
 			if (mixinElement != null)
 				answer = new RubyClassType(mixinElement.getKey());
 		}

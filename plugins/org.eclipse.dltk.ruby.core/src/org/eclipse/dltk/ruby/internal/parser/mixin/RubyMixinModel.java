@@ -28,11 +28,12 @@ public class RubyMixinModel implements IShutdownListener {
 	}
 
 	/**
+	 * @param key
 	 * @return
-	 * @deprecated
 	 */
-	public static MixinModel getRawInstance() {
-		return getInstance().getRawModel();
+	public static void clearKeysCache(String key) {
+		// TODO for all models
+		getInstance().getRawModel().clearKeysCache(key);
 	}
 
 	private final MixinModel model;

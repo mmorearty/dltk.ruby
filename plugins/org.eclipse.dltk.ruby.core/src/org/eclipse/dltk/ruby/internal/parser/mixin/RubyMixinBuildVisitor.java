@@ -489,10 +489,12 @@ public class RubyMixinBuildVisitor extends ASTVisitor {
 		} else if (RubyAttributeHandler.isAttributeCreationCall(call)
 				&& sourceModule != null) {
 			Scope scope = peekScope();
-			boolean isAlsoMeta = RubyAttributeHandler.isMetaAttributeCreationCall(call);
-			Scope metaScope = null;
-			if (isAlsoMeta)
+			final Scope metaScope;
+			if (RubyAttributeHandler.isMetaAttributeCreationCall(call)) {
 				metaScope = new MetaClassScope(call, scope.getClassKey());
+			} else {
+				metaScope = null;
+			}
 			RubyAttributeHandler info = new RubyAttributeHandler(call);
 			List readers = info.getReaders();
 			for (Iterator iterator = readers.iterator(); iterator.hasNext();) {
@@ -505,7 +507,7 @@ public class RubyMixinBuildVisitor extends ASTVisitor {
 						attr.length(), n.sourceStart(), attr.length());
 				fakeMethod.setFlags(Modifiers.AccPublic);
 				scope.reportMethod(attr, fakeMethod);
-				if (isAlsoMeta) {
+				if (metaScope != null) {
 					scopes.push(metaScope);
 					metaScope.reportMethod(attr, fakeMethod);
 					scopes.pop();
@@ -524,7 +526,7 @@ public class RubyMixinBuildVisitor extends ASTVisitor {
 				fakeMethod.setFlags(Modifiers.AccPublic);
 				fakeMethod.setParameters(new String[] { attr });
 				scope.reportMethod(attr + "=", fakeMethod); //$NON-NLS-1$
-				if (isAlsoMeta) {
+				if (metaScope != null) {
 					scopes.push(metaScope);
 					metaScope.reportMethod(attr + "=", fakeMethod); //$NON-NLS-1$
 					scopes.pop();
@@ -542,10 +544,11 @@ public class RubyMixinBuildVisitor extends ASTVisitor {
 			if (!(elementFor instanceof IType)) {
 				elementFor = findModelElementFor(decl);
 			}
-  	        //mhowe - sometimes this the model element is a SourceMethod, so get it's declaring type
-		    if (elementFor instanceof IMethod) {
-		      elementFor = ((IMethod)elementFor).getDeclaringType();
-		    }
+			// mhowe - sometimes this the model element is a SourceMethod, so
+			// get it's declaring type
+			if (elementFor instanceof IMethod) {
+				elementFor = ((IMethod) elementFor).getDeclaringType();
+			}
 			obj = (IType) elementFor;
 		}
 		boolean module = (decl.getModifiers() & Modifiers.AccModule) != 0;
@@ -620,11 +623,11 @@ public class RubyMixinBuildVisitor extends ASTVisitor {
 	}
 
 	private String report(String key, RubyMixinElementInfo object) {
-		RubyMixinModel.getRawInstance().clearKeysCashe(key);
-		ElementInfo info = new IMixinRequestor.ElementInfo();
-		info.key = key;
-		info.object = object;
+		RubyMixinModel.clearKeysCache(key);
 		if (requestor != null) {
+			ElementInfo info = new IMixinRequestor.ElementInfo();
+			info.key = key;
+			info.object = object;
 			requestor.reportElement(info);
 			// System.out.println("Mixin reported: " + key);
 		}
@@ -673,7 +676,7 @@ public class RubyMixinBuildVisitor extends ASTVisitor {
 	}
 
 	public static String[] restoreScopesByNodes(ASTNode[] nodes) {
-		Assert.isLegal(nodes != null);
+		Assert.isNotNull(nodes);
 		Assert.isLegal(nodes.length > 0);
 		String[] keys = new String[nodes.length];
 		RubyMixinBuildVisitor visitor = new RubyMixinBuildVisitor(

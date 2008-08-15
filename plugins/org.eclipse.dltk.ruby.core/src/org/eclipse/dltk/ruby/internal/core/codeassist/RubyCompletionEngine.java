@@ -90,7 +90,7 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 
 	private DLTKTypeInferenceEngine inferencer;
 	private ISourceParser parser = null;
-	private MixinModel model;
+	private RubyMixinModel mixinModel;
 	private HashSet completedNames = new HashSet();
 	private WeakHashSet intresting = new WeakHashSet();
 
@@ -100,7 +100,7 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 
 	public RubyCompletionEngine() {
 		this.inferencer = new DLTKTypeInferenceEngine();
-		this.model = RubyMixinModel.getRawInstance();
+		this.mixinModel = RubyMixinModel.getInstance();
 		this.parser = DLTKLanguageManager.getSourceParser(RubyNature.NATURE_ID);
 	}
 
@@ -289,12 +289,11 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 								wordStarting);
 					} else if (minimalNode instanceof ModuleDeclaration) {
 						ExpressionTypeGoal goal = new ExpressionTypeGoal(
-								new BasicContext(currentModule, moduleDeclaration),
-								minimalNode);
+								new BasicContext(currentModule,
+										moduleDeclaration), minimalNode);
 						IEvaluatedType self = inferencer.evaluateType(goal,
 								2000);
-						completeClassMethods(moduleDeclaration,
-								self, ""); //$NON-NLS-1$
+						completeClassMethods(moduleDeclaration, self, ""); //$NON-NLS-1$
 					} else if (minimalNode instanceof NumericLiteral
 							&& position > 0
 							&& position == minimalNode.sourceEnd()
@@ -415,7 +414,8 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 			if (element instanceof RubyMixinMethod) {
 				RubyMixinMethod method = (RubyMixinMethod) element;
 				RubyMixinClass selfClass = method.getSelfType();
-				if (lastParent == null || !lastParent.equals(selfClass.getKey())) {
+				if (lastParent == null
+						|| !lastParent.equals(selfClass.getKey())) {
 					this.flush();
 					lastParent = selfClass.getKey();
 				}
@@ -425,11 +425,12 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 				if (!shouldAdd) {
 					// ssanders: Method is defined in Object or Kernel
 					shouldAdd = ((selfClass.getKey().startsWith("Object") == true) || //$NON-NLS-1$
-							(selfClass.getKey().startsWith("Kernel") == true)); //$NON-NLS-1$
+					(selfClass.getKey().startsWith("Kernel") == true)); //$NON-NLS-1$
 				}
 
 				if (!shouldAdd) {
-					// ssanders: Method is defined in included or extended Module
+					// ssanders: Method is defined in included or extended
+					// Module
 					shouldAdd = selfClass.isModule();
 				}
 
@@ -453,7 +454,8 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 							boolean isSuperclass = false;
 							RubyMixinClass superclass = klass.getSuperclass();
 							while (superclass != null) {
-								isSuperclass = selfClass.getKey().equals(superclass.getKey());
+								isSuperclass = selfClass.getKey().equals(
+										superclass.getKey());
 
 								if (isSuperclass == true) {
 									break;
@@ -476,7 +478,8 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 				RubyMixinMethod[] mixinMethods = (RubyMixinMethod[]) group
 						.toArray(new RubyMixinMethod[group.size()]);
 				int skew = 0;
-				if (klass.getKey().equals(mixinMethods[0].getSelfType().getKey()))
+				if (klass.getKey().equals(
+						mixinMethods[0].getSelfType().getKey()))
 					skew = 1;
 				List allSourceMethods = RubyModelUtils.getAllSourceMethods(
 						mixinMethods, klass);
@@ -505,7 +508,7 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 			IEvaluatedType type, String prefix) {
 		if (type instanceof RubyClassType) {
 			RubyClassType rubyClassType = (RubyClassType) type;
-			RubyMixinClass rubyClass = RubyMixinModel.getInstance()
+			RubyMixinClass rubyClass = mixinModel
 					.createRubyClass(rubyClassType);
 			if (rubyClass != null) {
 				completeClassMethods(moduleDeclaration, rubyClass, prefix);
@@ -534,13 +537,13 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 		this.setSourceRange(position - (prefix != null ? prefix.length() : 0),
 				position);
 
-		IMixinElement[] elements = RubyMixinModel.getRawInstance().find(
+		IMixinElement[] elements = mixinModel.getRawModel().find(
 				(prefix != null ? prefix : "") + "*"); //$NON-NLS-1$ //$NON-NLS-2$
 
 		// String[] findKeys = RubyMixinModel.getRawInstance().findKeys(
 		// prefix + "*");
 		for (int i = 0; i < elements.length; i++) {
-			IRubyMixinElement rubyElement = RubyMixinModel.getInstance()
+			IRubyMixinElement rubyElement = mixinModel
 					.createRubyElement(elements[i]);
 			if (rubyElement instanceof RubyMixinVariable) {
 				RubyMixinVariable variable = (RubyMixinVariable) rubyElement;
@@ -602,7 +605,8 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 			return;
 		}
 		RubyClassType rubyClassType = (RubyClassType) type;
-		IMixinElement mixinElement = model.get(rubyClassType.getModelKey());
+		IMixinElement mixinElement = mixinModel.getRawModel().get(
+				rubyClassType.getModelKey());
 		if (mixinElement == null) {
 			return;
 		}
@@ -709,7 +713,8 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 
 		if (!topLevelOnly) {
 			IMixinElement[] modelStaticScopes = RubyTypeInferencingUtils
-					.getModelStaticScopes(model, moduleDeclaration, position);
+					.getModelStaticScopes(mixinModel.getRawModel(),
+							moduleDeclaration, position);
 			for (int i = modelStaticScopes.length - 1; i >= 0; i--) {
 				IMixinElement scope = modelStaticScopes[i];
 				if (scope == null)
@@ -720,10 +725,9 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 
 		if (prefix != null && prefix.length() > 0) {
 			String varkey = "Object" + MixinModel.SEPARATOR + prefix; //$NON-NLS-1$
-			RubyMixinModel rubyModel = RubyMixinModel.getInstance();
-			String[] keys2 = rubyModel.getRawModel().findKeys(varkey + "*"); //$NON-NLS-1$
+			String[] keys2 = mixinModel.getRawModel().findKeys(varkey + "*"); //$NON-NLS-1$
 			for (int i = 0; i < keys2.length; i++) {
-				IRubyMixinElement element = rubyModel
+				IRubyMixinElement element = mixinModel
 						.createRubyElement(keys2[i]);
 				if (element instanceof RubyMixinVariable) {
 					RubyMixinVariable variable = (RubyMixinVariable) element;
@@ -810,7 +814,8 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 					}
 				}
 				ExpressionTypeGoal goal = new ExpressionTypeGoal(
-						new BasicContext(currentModule, moduleDeclaration), minNode);
+						new BasicContext(currentModule, moduleDeclaration),
+						minNode);
 				IEvaluatedType self2 = inferencer.evaluateType(goal, 2000);
 				if (self2 != null) {
 					self = self2;

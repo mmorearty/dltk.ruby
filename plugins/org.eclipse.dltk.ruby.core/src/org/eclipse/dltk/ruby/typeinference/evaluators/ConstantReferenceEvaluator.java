@@ -10,6 +10,7 @@
 package org.eclipse.dltk.ruby.typeinference.evaluators;
 
 import org.eclipse.dltk.core.mixin.IMixinElement;
+import org.eclipse.dltk.core.mixin.MixinModel;
 import org.eclipse.dltk.ruby.internal.parser.mixin.RubyMixinElementInfo;
 import org.eclipse.dltk.ruby.internal.parser.mixin.RubyMixinModel;
 import org.eclipse.dltk.ruby.typeinference.ConstantTypeGoal;
@@ -28,9 +29,11 @@ public class ConstantReferenceEvaluator extends GoalEvaluator {
 	private IEvaluatedType result;
 
 	private IGoal helperGoal;
+	private final MixinModel mixinModel;
 
 	public ConstantReferenceEvaluator(IGoal goal) {
 		super(goal);
+		mixinModel = RubyMixinModel.getInstance().getRawModel();
 	}
 
 	private ConstantTypeGoal getTypedGoal() {
@@ -57,7 +60,7 @@ public class ConstantReferenceEvaluator extends GoalEvaluator {
 		IMixinElement constantElement = null;
 		
 		if (elementKey != null)
-			constantElement = RubyMixinModel.getRawInstance().get(elementKey);
+			constantElement = mixinModel.get(elementKey);
 		
 		if (constantElement == null)
 			return IGoal.NO_GOALS;
