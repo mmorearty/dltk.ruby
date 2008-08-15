@@ -10,22 +10,28 @@
 package org.eclipse.dltk.ruby.internal.parser.mixin;
 
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.dltk.core.IShutdownListener;
 import org.eclipse.dltk.core.mixin.IMixinElement;
 import org.eclipse.dltk.core.mixin.MixinModel;
 import org.eclipse.dltk.ruby.core.RubyLanguageToolkit;
+import org.eclipse.dltk.ruby.core.RubyPlugin;
 import org.eclipse.dltk.ruby.typeinference.RubyClassType;
 
-public class RubyMixinModel {
-	
+public class RubyMixinModel implements IShutdownListener {
+
 	private static RubyMixinModel instance;
 
-	public static RubyMixinModel getInstance () {
+	public static RubyMixinModel getInstance() {
 		if (instance == null)
-			instance = new RubyMixinModel ();
+			instance = new RubyMixinModel();
 		return instance;
 	}
-	
-	public static MixinModel getRawInstance () {
+
+	/**
+	 * @return
+	 * @deprecated
+	 */
+	public static MixinModel getRawInstance() {
 		return getInstance().getRawModel();
 	}
 
@@ -33,6 +39,7 @@ public class RubyMixinModel {
 
 	private RubyMixinModel() {
 		model = new MixinModel(RubyLanguageToolkit.getDefault());
+		RubyPlugin.getDefault().addShutdownListener(this);
 	}
 
 	public MixinModel getRawModel() {
@@ -62,7 +69,7 @@ public class RubyMixinModel {
 			return new RubyObjectMixinClass(this, true);
 		} else if (element.getKey().equals("Object%")) { //$NON-NLS-1$
 			return new RubyObjectMixinClass(this, false);
-		}		
+		}
 		Object[] objects = element.getAllObjects();
 		if (objects == null)
 			return null;
@@ -71,20 +78,27 @@ public class RubyMixinModel {
 			if (obj == null || obj.getObject() == null)
 				continue;
 			switch (obj.getKind()) {
-				case RubyMixinElementInfo.K_CLASS:
-				case RubyMixinElementInfo.K_SUPER:
-				case RubyMixinElementInfo.K_VIRTUAL:
-					return new RubyMixinClass(this, element.getKey(), false);
-				case RubyMixinElementInfo.K_MODULE:
-                  return new RubyMixinClass(this, element.getKey(), true);
-				case RubyMixinElementInfo.K_METHOD:					
-					return new RubyMixinMethod(this, element.getKey());
-				case RubyMixinElementInfo.K_ALIAS:					
-					return new RubyMixinAlias(this, element.getKey());
-				case RubyMixinElementInfo.K_VARIABLE:
-					return new RubyMixinVariable(this, element.getKey());
-			}						
+			case RubyMixinElementInfo.K_CLASS:
+			case RubyMixinElementInfo.K_SUPER:
+			case RubyMixinElementInfo.K_VIRTUAL:
+				return new RubyMixinClass(this, element.getKey(), false);
+			case RubyMixinElementInfo.K_MODULE:
+				return new RubyMixinClass(this, element.getKey(), true);
+			case RubyMixinElementInfo.K_METHOD:
+				return new RubyMixinMethod(this, element.getKey());
+			case RubyMixinElementInfo.K_ALIAS:
+				return new RubyMixinAlias(this, element.getKey());
+			case RubyMixinElementInfo.K_VARIABLE:
+				return new RubyMixinVariable(this, element.getKey());
+			}
 		}
 		return null;
+	}
+
+	/*
+	 * @see org.eclipse.dltk.core.IShutdownListener#shutdown()
+	 */
+	public void shutdown() {
+		model.stop();
 	}
 }

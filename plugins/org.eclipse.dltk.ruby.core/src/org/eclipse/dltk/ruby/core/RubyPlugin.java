@@ -12,19 +12,20 @@ package org.eclipse.dltk.ruby.core;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.dltk.core.DLTKCore;
+import org.eclipse.dltk.core.IShutdownListener;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.core.search.IDLTKSearchConstants;
 import org.eclipse.dltk.core.search.IDLTKSearchScope;
 import org.eclipse.dltk.core.search.SearchEngine;
 import org.eclipse.dltk.core.search.SearchPattern;
 import org.eclipse.dltk.core.search.TypeNameRequestor;
-import org.eclipse.dltk.ruby.internal.parser.mixin.RubyMixinModel;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -51,26 +52,29 @@ public class RubyPlugin extends Plugin {
 	}
 
 	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.core.runtime.Plugins#start(org.osgi.framework.BundleContext)
+	 * @see Plugins#start(BundleContext)
 	 */
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 	}
 
+	private final ListenerList shutdownListeners = new ListenerList();
+
+	public void addShutdownListener(IShutdownListener listener) {
+		shutdownListeners.add(listener);
+	}
+
 	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.core.runtime.Plugin#stop(org.osgi.framework.BundleContext)
+	 * @see Plugin#stop(BundleContext)
 	 */
 	public void stop(BundleContext context) throws Exception {
+		Object[] listeners = shutdownListeners.getListeners();
+		for (int i = 0; i < listeners.length; ++i) {
+			((IShutdownListener) listeners[i]).shutdown();
+		}
+		shutdownListeners.clear();
 		plugin = null;
 		super.stop(context);
-
-		RubyMixinModel.getRawInstance().stop();
 	}
 
 	/**
