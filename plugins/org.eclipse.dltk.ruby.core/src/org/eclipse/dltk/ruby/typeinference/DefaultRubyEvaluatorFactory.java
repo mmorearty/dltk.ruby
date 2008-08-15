@@ -53,7 +53,6 @@ import org.eclipse.dltk.ruby.typeinference.evaluators.SelfReferenceEvaluator;
 import org.eclipse.dltk.ruby.typeinference.evaluators.VariableReferenceEvaluator;
 import org.eclipse.dltk.ruby.typeinference.goals.ColonExpressionGoal;
 import org.eclipse.dltk.ruby.typeinference.goals.NonTypeConstantTypeGoal;
-import org.eclipse.dltk.ti.BasicContext;
 import org.eclipse.dltk.ti.IContext;
 import org.eclipse.dltk.ti.IGoalEvaluatorFactory;
 import org.eclipse.dltk.ti.goals.ExpressionTypeGoal;
@@ -107,13 +106,13 @@ public class DefaultRubyEvaluatorFactory implements IGoalEvaluatorFactory {
 		if (expr instanceof RubySelfReference)
 			return new SelfReferenceEvaluator(goal);
 		if (expr instanceof CallExpression)
-			return new MethodCallTypeEvaluator((ExpressionTypeGoal) goal);
+			return new MethodCallTypeEvaluator(goal);
 		if (expr instanceof RubyIfStatement)
-			return new IfStatementTypeEvaluator((ExpressionTypeGoal) goal);
+			return new IfStatementTypeEvaluator(goal);
 		if (expr instanceof RubyCaseStatement)
 			return new CaseStatementTypeEvaluator(goal);
 		if (expr instanceof Block)
-			return new BlockEvaluator((ExpressionTypeGoal) goal);
+			return new BlockEvaluator(goal);
 		if (expr instanceof RubyColonExpression)
 			return new ColonExpressionEvaluator(goal);
 		if (expr instanceof RubyConstantDeclaration)
@@ -136,7 +135,7 @@ public class DefaultRubyEvaluatorFactory implements IGoalEvaluatorFactory {
 			ExpressionTypeGoal exprGoal = (ExpressionTypeGoal) goal;
 			return createExpressionEvaluator(exprGoal);
 		} else if (goal instanceof ConstantTypeGoal)
-			return new ConstantReferenceEvaluator((ConstantTypeGoal) goal);
+			return new ConstantReferenceEvaluator(goal);
 		else if (goal instanceof MethodReturnTypeGoal)
 			return new MethodReturnTypeEvaluator(goal);
 		else if (goal instanceof ColonExpressionGoal)
