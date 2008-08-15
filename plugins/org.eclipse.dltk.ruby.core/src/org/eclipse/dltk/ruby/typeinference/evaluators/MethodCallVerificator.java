@@ -76,8 +76,10 @@ public class MethodCallVerificator extends GoalEvaluator {
 							receiver);
 					state = RECEIVER_WAIT;
 					return new IGoal[] { rgoal };
-				} else {					
-//					ASTNode[] nodes = RubyTypeInferencingUtils.getAllStaticScopes(decl, node.sourceStart());
+				} else {
+					// ASTNode[] nodes =
+					// RubyTypeInferencingUtils.getAllStaticScopes(decl,
+					// node.sourceStart());
 					receiverType = RubyTypeInferencingUtils.determineSelfClass(
 							(ISourceModule) element, decl, node.sourceStart());
 				}
@@ -96,27 +98,26 @@ public class MethodCallVerificator extends GoalEvaluator {
 		RubyClassType type = (RubyClassType) receiverType;
 		String parentModelKey = goal2.getGoal().getParentModelKey();
 		String name = goal2.getGoal().getName();
-		String requiredKey = ((parentModelKey != null)?(parentModelKey
-				+ MixinModel.SEPARATOR):"") + name; //$NON-NLS-1$
-		RubyMixinClass rclass = RubyMixinModel.getInstance().createRubyClass(
-				type);
+		String requiredKey = ((parentModelKey != null) ? (parentModelKey + MixinModel.SEPARATOR)
+				: "") + name; //$NON-NLS-1$
+		final RubyMixinModel mixinModel = RubyMixinModel.getInstance();
+		RubyMixinClass rclass = mixinModel.createRubyClass(type);
 		RubyMixinMethod method = null;
 		if (topLevelMethod) {
-			method = (RubyMixinMethod) RubyMixinModel.getInstance().createRubyElement(name);
+			method = (RubyMixinMethod) mixinModel.createRubyElement(name);
 		} else if (rclass != null) {
-			method = rclass
-					.getMethod(name);
+			method = rclass.getMethod(name);
 		}
 		if (method != null) {
 			String key = method.getKey();
-			if (key.equals(requiredKey) || (parentModelKey.equals("Object") && key.equals(name))) { //$NON-NLS-1$
-				result = new RubyMethodReference(name,
-						parentModelKey, position,
-						RubyMethodReference.ACCURATE);
+			if (key.equals(requiredKey)
+					|| (parentModelKey.equals("Object") && key.equals(name))) { //$NON-NLS-1$
+				result = new RubyMethodReference(name, parentModelKey,
+						position, RubyMethodReference.ACCURATE);
 				if (position.getNode() instanceof CallExpression) {
 					result.setNode((CallExpression) position.getNode());
 				}
-			} 
+			}
 		}
 
 		return result;
