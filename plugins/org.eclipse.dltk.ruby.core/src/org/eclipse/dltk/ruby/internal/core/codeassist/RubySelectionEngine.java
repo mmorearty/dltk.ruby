@@ -483,15 +483,15 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 					type = type2;
 				}
 			}
-			IMethod[] m = RubyModelUtils.searchClassMethodsExact(sourceModule,
-					parsedUnit, type, methodName);
+			IMethod[] m = RubyModelUtils.searchClassMethodsExact(mixinModel,
+					sourceModule, parsedUnit, type, methodName);
 			addArrayToCollection(m, availableMethods);
 		} else {
 			ExpressionTypeGoal goal = new ExpressionTypeGoal(new BasicContext(
 					sourceModule, parsedUnit), receiver);
 			IEvaluatedType type = inferencer.evaluateType(goal, 5000);
-			IMethod[] m = RubyModelUtils.searchClassMethodsExact(sourceModule,
-					parsedUnit, type, methodName);
+			IMethod[] m = RubyModelUtils.searchClassMethodsExact(mixinModel,
+					sourceModule, parsedUnit, type, methodName);
 			addArrayToCollection(m, availableMethods);
 			if (receiver instanceof VariableReference) {
 				IMethod[] availableMethods2 = RubyModelUtils

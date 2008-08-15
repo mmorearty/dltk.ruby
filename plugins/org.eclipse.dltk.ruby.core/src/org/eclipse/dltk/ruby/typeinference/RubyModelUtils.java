@@ -317,14 +317,14 @@ public class RubyModelUtils {
 		return result;
 	}
 
-	public static IMethod[] searchClassMethods(
+	public static IMethod[] searchClassMethods(final RubyMixinModel mixinModel,
 			org.eclipse.dltk.core.ISourceModule modelModule,
 			ModuleDeclaration moduleDeclaration, IEvaluatedType type,
 			String prefix) {
 		List result = new ArrayList();
 		if (type instanceof RubyClassType) {
 			RubyClassType rubyClassType = (RubyClassType) type;
-			RubyMixinClass rubyClass = RubyMixinModel.getInstance()
+			RubyMixinClass rubyClass = mixinModel
 					.createRubyClass(rubyClassType);
 			if (rubyClass != null) {
 				RubyMixinMethod[] methods = rubyClass.findMethods(prefix,
@@ -336,7 +336,7 @@ public class RubyModelUtils {
 			AmbiguousType type2 = (AmbiguousType) type;
 			IEvaluatedType[] possibleTypes = type2.getPossibleTypes();
 			for (int i = 0; i < possibleTypes.length; i++) {
-				IMethod[] m = searchClassMethods(modelModule,
+				IMethod[] m = searchClassMethods(mixinModel, modelModule,
 						moduleDeclaration, possibleTypes[i], prefix);
 				for (int j = 0; j < m.length; j++) {
 					result.add(m[j]);
@@ -347,13 +347,14 @@ public class RubyModelUtils {
 	}
 
 	public static IMethod[] searchClassMethodsExact(
+			final RubyMixinModel mixinModel,
 			org.eclipse.dltk.core.ISourceModule modelModule,
 			ModuleDeclaration moduleDeclaration, IEvaluatedType type,
 			String methodName) {
 		List result = new ArrayList();
 		if (type instanceof RubyClassType) {
 			RubyClassType rubyClassType = (RubyClassType) type;
-			RubyMixinClass rubyClass = RubyMixinModel.getInstance()
+			RubyMixinClass rubyClass = mixinModel
 					.createRubyClass(rubyClassType);
 			if (rubyClass != null) {
 				RubyMixinMethod[] methods = rubyClass
@@ -365,7 +366,7 @@ public class RubyModelUtils {
 			AmbiguousType type2 = (AmbiguousType) type;
 			IEvaluatedType[] possibleTypes = type2.getPossibleTypes();
 			for (int i = 0; i < possibleTypes.length; i++) {
-				IMethod[] m = searchClassMethodsExact(modelModule,
+				IMethod[] m = searchClassMethodsExact(mixinModel, modelModule,
 						moduleDeclaration, possibleTypes[i], methodName);
 				for (int j = 0; j < m.length; j++) {
 					result.add(m[j]);
@@ -417,9 +418,9 @@ public class RubyModelUtils {
 					.createRubyElement(possibleName);
 			if (element instanceof RubyMixinClass) {
 				RubyMixinClass rubyMixinClass = (RubyMixinClass) element;
-				res = RubyModelUtils.searchClassMethods(modelModule,
-						parsedUnit, new RubyClassType(rubyMixinClass.getKey()),
-						methodName);
+				res = RubyModelUtils.searchClassMethods(mixinModel,
+						modelModule, parsedUnit, new RubyClassType(
+								rubyMixinClass.getKey()), methodName);
 			}
 		}
 		return res;
