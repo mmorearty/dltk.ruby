@@ -108,7 +108,7 @@ public class MixinModelManipulationTests extends AbstractDLTKSearchTests
 		assertNull(mixinElement);
 	}
 
-	public void REM_testExistentClassExtension() throws Exception {
+	public void testExistentClassExtension() throws Exception {
 		MixinModel model = new MixinModel(RubyLanguageToolkit.getDefault());
 
 		IMixinElement mixinElement = model.get("Foo");
@@ -125,7 +125,7 @@ public class MixinModelManipulationTests extends AbstractDLTKSearchTests
 
 		mixinElement = model.get("Foo");
 		Object objs2[] = mixinElement.getAllObjects();
-		assertEquals(2, objs2.length);
+		assertEquals(3, objs2.length);
 	}
 
 	public void testNewClassAddition() throws Exception {
