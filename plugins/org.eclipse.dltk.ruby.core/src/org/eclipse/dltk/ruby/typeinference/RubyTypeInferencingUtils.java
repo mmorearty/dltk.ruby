@@ -63,14 +63,13 @@ public class RubyTypeInferencingUtils {
 	/**
 	 * Searches all top level types, which starts with prefix
 	 */
-	public static IType[] getAllTypes(
-			org.eclipse.dltk.core.ISourceModule module, String prefix) {
+	public static IType[] getAllTypes(ISourceModule module, String prefix) {
 		final List types = new ArrayList();
 
 		TypeNameMatchRequestor requestor = new TypeNameMatchRequestor() {
 
 			public void acceptTypeNameMatch(TypeNameMatch match) {
-				IType type = (IType) match.getType();
+				IType type = match.getType();
 				if (type.getParent() instanceof ISourceModule) {
 					types.add(type);
 				}
@@ -293,7 +292,7 @@ public class RubyTypeInferencingUtils {
 
 	public static String searchConstantElement(ModuleDeclaration module,
 			int calculationOffset, String constantName) {
-		MixinModel model = RubyMixinModel.getRawInstance();
+		MixinModel model = RubyMixinModel.getInstance().getRawModel();
 		String[] modelStaticScopes = getModelStaticScopesKeys(model, module,
 				calculationOffset);
 
