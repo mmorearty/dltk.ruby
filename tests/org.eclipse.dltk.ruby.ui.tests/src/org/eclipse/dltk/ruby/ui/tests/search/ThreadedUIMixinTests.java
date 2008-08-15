@@ -73,8 +73,11 @@ public class ThreadedUIMixinTests extends AbstractDLTKSearchTests {
 		private int cycles = 0;
 		private String[] keys;
 		public boolean finish = false;
+		private final RubyMixinModel mixinModel;
 
-		public Access(String keys[], int start, int stop, int cycles) {
+		public Access(RubyMixinModel mixinModel, String keys[], int start,
+				int stop, int cycles) {
+			this.mixinModel = mixinModel;
 			this.start = start;
 			this.stop = stop;
 			this.cycles = cycles;
@@ -82,63 +85,67 @@ public class ThreadedUIMixinTests extends AbstractDLTKSearchTests {
 		}
 
 		public void run() {
-			RubyMixinModel instance = RubyMixinModel.getInstance();
 			for (int i = 0; i < this.cycles; i++) {
 				for (int j = 0; j < this.stop - this.start; j++) {
-					instance.createRubyElement(this.keys[this.start + j]);
-				//	System.out.println("#:" + this.start + ":" + this.stop);
+					mixinModel.createRubyElement(this.keys[this.start + j]);
+					// System.out.println("#:" + this.start + ":" + this.stop);
 				}
 			}
 			this.finish = true;
 			System.out.println("Finished");
 		}
 	};
+
 	class AccessUI extends Access {
 
-		public AccessUI(String[] keys, int start, int stop, int cycles) {
-			super(keys, start, stop, cycles);
+		public AccessUI(RubyMixinModel mixinModel, String[] keys, int start,
+				int stop, int cycles) {
+			super(mixinModel, keys, start, stop, cycles);
 			// TODO Auto-generated constructor stub
 		}
 
 		public void run() {
 			// TODO Auto-generated method stub
-//			this.notifyAll();
+			// this.notifyAll();
 			super.run();
 		}
-		
+
 	}
+
 	public void testMultiAccess() throws Exception {
 		int count = 10;
-		String[] findKeys = RubyMixinModel.getRawInstance().findKeys("*");
-		Thread[] threads = new Thread[count-1];
+		final RubyMixinModel mixinModel = RubyMixinModel.getInstance();
+		String[] findKeys = mixinModel.getRawModel().findKeys("*");
+		Thread[] threads = new Thread[count - 1];
 		Access[] access = new Access[count];
 		int d = findKeys.length / count;
 		for (int i = 0; i < count; i++) {
 			if (i != count - 1) {
-				Access a = new Access(findKeys, d * (i), d
-						* (i+1), 1);
+				Access a = new Access(mixinModel, findKeys, d * (i), d
+						* (i + 1), 1);
 				access[i] = a;
 				threads[i] = new Thread(a);
-			}
-			else {
-				Access a = new AccessUI(findKeys, d * (i), findKeys.length, 10);
+			} else {
+				Access a = new AccessUI(mixinModel, findKeys, d * (i),
+						findKeys.length, 10);
 				access[i] = a;
-//				threads[i] = new Thread(a);
+				// threads[i] = new Thread(a);
 			}
 		}
 		long s = System.currentTimeMillis();
-//		RubyUITestsPlugin.getDefault().getWorkbench().getDisplay().syncExec(access[count -1]);
-//		access[count -1].wait();
+		// RubyUITestsPlugin.getDefault().getWorkbench().getDisplay().syncExec(
+		// access[count -1]);
+		// access[count -1].wait();
 		for (int i = 0; i < threads.length; i++) {
 			threads[i].start();
 		}
-		for (int i = 0; i < threads.length; i++) {			
+		for (int i = 0; i < threads.length; i++) {
 			threads[i].join(100000);
 			assertTrue(access[i].finish);
 		}
 		access[count - 1].run();
-		assertTrue(access[count-1].finish);
-//		assertTrue(access[count-1].finish);
+		assertTrue(access[count - 1].finish);
+		// assertTrue(access[count-1].finish);
 		long e = System.currentTimeMillis();
 		System.out.println("time:" + Long.toString(e - s));
 	}
