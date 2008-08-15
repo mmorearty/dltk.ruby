@@ -170,17 +170,17 @@ public class RubyPlugin extends Plugin {
 						// dummy search
 						);
 
-				String[] mainClasses = new String[] {
-						"Object", "String", "Fixnum", "Array", "Regexp", "Class", "Kernel" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
-				for (int i = 0; i < mainClasses.length; i++) {
-					RubyMixinModel.getInstance().createRubyElement(
-							mainClasses[i]);
-					RubyMixinModel.getInstance().createRubyElement(
-							mainClasses[i] + "%"); //$NON-NLS-1$
-					monitor.worked(10);
-				}
-				RubyMixinModel.getRawInstance().find("$*"); //$NON-NLS-1$
-				monitor.worked(10);
+				// String[] mainClasses = new String[] {
+				//	"Object", "String", "Fixnum", "Array", "Regexp", "Class", "Kernel" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
+				// for (int i = 0; i < mainClasses.length; i++) {
+				// RubyMixinModel.getInstance().createRubyElement(
+				// mainClasses[i]);
+				// RubyMixinModel.getInstance().createRubyElement(
+				//	mainClasses[i] + "%"); //$NON-NLS-1$
+				// monitor.worked(10);
+				// }
+				// RubyMixinModel.getRawInstance().find("$*"); //$NON-NLS-1$
+				// monitor.worked(10);
 			} catch (ModelException e) {
 				// /search failed: ignore
 			} catch (OperationCanceledException e) {
