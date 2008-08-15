@@ -591,8 +591,8 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 		if (prefix == null || prefix.startsWith("$")) { // globals //$NON-NLS-1$
 			completeGlobalVar(moduleDeclaration, prefix, position);
 		} else { // class & instance & locals
-			IField[] fields = RubyModelUtils.findFields(currentModule,
-					moduleDeclaration, prefix, position);
+			IField[] fields = RubyModelUtils.findFields(mixinModel,
+					currentModule, moduleDeclaration, prefix, position);
 			for (int i = 0; i < fields.length; i++) {
 				reportField(fields[i], RELEVANCE_VARIABLES);
 			}

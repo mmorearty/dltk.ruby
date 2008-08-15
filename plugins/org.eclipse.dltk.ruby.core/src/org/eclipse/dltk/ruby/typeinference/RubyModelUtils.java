@@ -174,11 +174,11 @@ public class RubyModelUtils {
 
 	}
 
-	public static IField[] findFields(ISourceModule modelModule,
-			ModuleDeclaration parsedUnit, String prefix, int position) {
+	public static IField[] findFields(RubyMixinModel rubyModel,
+			ISourceModule modelModule, ModuleDeclaration parsedUnit,
+			String prefix, int position) {
 		List result = new ArrayList();
 
-		RubyMixinModel rubyModel = RubyMixinModel.getInstance();
 		String[] keys = RubyTypeInferencingUtils.getModelStaticScopesKeys(
 				rubyModel.getRawModel(), parsedUnit, position);
 

@@ -379,8 +379,8 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 			VariableReference e) {
 		String name = e.getName();
 		if (name.startsWith("@")) { //$NON-NLS-1$
-			IField[] fields = RubyModelUtils.findFields(sourceModule,
-					parsedUnit, name, e.sourceStart());
+			IField[] fields = RubyModelUtils.findFields(mixinModel,
+					sourceModule, parsedUnit, name, e.sourceStart());
 			addArrayToCollection(fields, selectionElements);
 		} else {
 			/*
