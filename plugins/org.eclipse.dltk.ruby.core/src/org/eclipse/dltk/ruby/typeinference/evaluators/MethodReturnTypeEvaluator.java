@@ -30,7 +30,6 @@ import org.eclipse.dltk.ruby.internal.parser.mixin.IRubyMixinElement;
 import org.eclipse.dltk.ruby.internal.parser.mixin.RubyMixin;
 import org.eclipse.dltk.ruby.internal.parser.mixin.RubyMixinClass;
 import org.eclipse.dltk.ruby.internal.parser.mixin.RubyMixinMethod;
-import org.eclipse.dltk.ruby.internal.parser.mixin.RubyMixinModel;
 import org.eclipse.dltk.ruby.typeinference.MethodContext;
 import org.eclipse.dltk.ruby.typeinference.RubyClassType;
 import org.eclipse.dltk.ruby.typeinference.RubyModelUtils;
@@ -38,13 +37,12 @@ import org.eclipse.dltk.ruby.typeinference.RubyTypeInferencingUtils;
 import org.eclipse.dltk.ti.GoalState;
 import org.eclipse.dltk.ti.InstanceContext;
 import org.eclipse.dltk.ti.goals.ExpressionTypeGoal;
-import org.eclipse.dltk.ti.goals.GoalEvaluator;
 import org.eclipse.dltk.ti.goals.IGoal;
 import org.eclipse.dltk.ti.goals.MethodReturnTypeGoal;
 import org.eclipse.dltk.ti.types.ClassType;
 import org.eclipse.dltk.ti.types.IEvaluatedType;
 
-public class MethodReturnTypeEvaluator extends GoalEvaluator {
+public class MethodReturnTypeEvaluator extends RubyMixinGoalEvaluator {
 
 	private final List possibilities = new ArrayList();
 	private final List evaluated = new ArrayList();
@@ -98,8 +96,7 @@ public class MethodReturnTypeEvaluator extends GoalEvaluator {
 			instanceType = new RubyClassType("Object"); //$NON-NLS-1$			
 		}
 		if (instanceType instanceof RubyClassType) {
-			RubyClassType rubyClassType = (RubyClassType) instanceType;
-			final RubyMixinModel mixinModel = RubyMixinModel.getInstance();
+			RubyClassType rubyClassType = (RubyClassType) instanceType;			
 			RubyMixinClass class1 = mixinModel.createRubyClass(rubyClassType);
 			if (class1 != null) {
 				RubyMixinMethod mixinMethods = class1.getMethod(methodName);

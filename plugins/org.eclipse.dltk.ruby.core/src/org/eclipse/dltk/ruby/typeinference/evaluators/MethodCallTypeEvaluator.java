@@ -24,12 +24,11 @@ import org.eclipse.dltk.ti.GoalState;
 import org.eclipse.dltk.ti.ISourceModuleContext;
 import org.eclipse.dltk.ti.InstanceContext;
 import org.eclipse.dltk.ti.goals.ExpressionTypeGoal;
-import org.eclipse.dltk.ti.goals.GoalEvaluator;
 import org.eclipse.dltk.ti.goals.IGoal;
 import org.eclipse.dltk.ti.goals.MethodReturnTypeGoal;
 import org.eclipse.dltk.ti.types.IEvaluatedType;
 
-public class MethodCallTypeEvaluator extends GoalEvaluator {
+public class MethodCallTypeEvaluator extends RubyMixinGoalEvaluator {
 
 	private final static int STATE_INIT = 0;
 
@@ -71,8 +70,8 @@ public class MethodCallTypeEvaluator extends GoalEvaluator {
 				// handling SelfReference here just for simplicity, could be
 				// left to the TI engine as well
 				IEvaluatedType scopeType = RubyTypeInferencingUtils
-						.determineSelfClass(goal.getContext(), expression
-								.sourceStart());
+						.determineSelfClass(mixinModel, goal.getContext(),
+								expression.sourceStart());
 				if ((scopeType != null)
 						&& (!(scopeType instanceof RubyClassType) || !("Object" //$NON-NLS-1$
 						.equals(((RubyClassType) scopeType).getTypeName())))) {

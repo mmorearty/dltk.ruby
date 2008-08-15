@@ -19,7 +19,6 @@ import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.mixin.MixinModel;
 import org.eclipse.dltk.ruby.internal.parser.mixin.RubyMixinClass;
 import org.eclipse.dltk.ruby.internal.parser.mixin.RubyMixinMethod;
-import org.eclipse.dltk.ruby.internal.parser.mixin.RubyMixinModel;
 import org.eclipse.dltk.ruby.internal.parsers.jruby.ASTUtils;
 import org.eclipse.dltk.ruby.typeinference.RubyClassType;
 import org.eclipse.dltk.ruby.typeinference.RubyMethodReference;
@@ -27,13 +26,12 @@ import org.eclipse.dltk.ruby.typeinference.RubyTypeInferencingUtils;
 import org.eclipse.dltk.ti.BasicContext;
 import org.eclipse.dltk.ti.GoalState;
 import org.eclipse.dltk.ti.goals.ExpressionTypeGoal;
-import org.eclipse.dltk.ti.goals.GoalEvaluator;
 import org.eclipse.dltk.ti.goals.IGoal;
 import org.eclipse.dltk.ti.goals.MethodCallVerificationGoal;
 import org.eclipse.dltk.ti.goals.PossiblePosition;
 import org.eclipse.dltk.ti.types.IEvaluatedType;
 
-public class MethodCallVerificator extends GoalEvaluator {
+public class MethodCallVerificator extends RubyMixinGoalEvaluator {
 
 	private static final int INIT = 0;
 	private static final int RECEIVER_WAIT = 1;
@@ -81,7 +79,8 @@ public class MethodCallVerificator extends GoalEvaluator {
 					// RubyTypeInferencingUtils.getAllStaticScopes(decl,
 					// node.sourceStart());
 					receiverType = RubyTypeInferencingUtils.determineSelfClass(
-							(ISourceModule) element, decl, node.sourceStart());
+							mixinModel, (ISourceModule) element, decl, node
+									.sourceStart());
 				}
 			}
 		}
@@ -99,8 +98,7 @@ public class MethodCallVerificator extends GoalEvaluator {
 		String parentModelKey = goal2.getGoal().getParentModelKey();
 		String name = goal2.getGoal().getName();
 		String requiredKey = ((parentModelKey != null) ? (parentModelKey + MixinModel.SEPARATOR)
-				: "") + name; //$NON-NLS-1$
-		final RubyMixinModel mixinModel = RubyMixinModel.getInstance();
+				: "") + name; //$NON-NLS-1$		
 		RubyMixinClass rclass = mixinModel.createRubyClass(type);
 		RubyMixinMethod method = null;
 		if (topLevelMethod) {

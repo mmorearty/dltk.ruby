@@ -10,9 +10,7 @@
 package org.eclipse.dltk.ruby.typeinference.evaluators;
 
 import org.eclipse.dltk.core.mixin.IMixinElement;
-import org.eclipse.dltk.core.mixin.MixinModel;
 import org.eclipse.dltk.ruby.internal.parser.mixin.RubyMixinElementInfo;
-import org.eclipse.dltk.ruby.internal.parser.mixin.RubyMixinModel;
 import org.eclipse.dltk.ruby.typeinference.ConstantTypeGoal;
 import org.eclipse.dltk.ruby.typeinference.DefaultRubyEvaluatorFactory;
 import org.eclipse.dltk.ruby.typeinference.RubyClassType;
@@ -20,20 +18,17 @@ import org.eclipse.dltk.ruby.typeinference.RubyTypeInferencingUtils;
 import org.eclipse.dltk.ruby.typeinference.goals.NonTypeConstantTypeGoal;
 import org.eclipse.dltk.ti.GoalState;
 import org.eclipse.dltk.ti.ISourceModuleContext;
-import org.eclipse.dltk.ti.goals.GoalEvaluator;
 import org.eclipse.dltk.ti.goals.IGoal;
 import org.eclipse.dltk.ti.types.IEvaluatedType;
 
-public class ConstantReferenceEvaluator extends GoalEvaluator {
+public class ConstantReferenceEvaluator extends RubyMixinGoalEvaluator {
 
 	private IEvaluatedType result;
 
 	private IGoal helperGoal;
-	private final MixinModel mixinModel;
 
 	public ConstantReferenceEvaluator(IGoal goal) {
 		super(goal);
-		mixinModel = RubyMixinModel.getInstance().getRawModel();
 	}
 
 	private ConstantTypeGoal getTypedGoal() {
@@ -57,12 +52,13 @@ public class ConstantReferenceEvaluator extends GoalEvaluator {
 		int calculationOffset = typedGoal.getOffset();
 
 		String elementKey = RubyTypeInferencingUtils.searchConstantElement(
-				typedContext.getRootNode(), calculationOffset, constantName);
+				mixinModel.getRawModel(), typedContext.getRootNode(),
+				calculationOffset, constantName);
 
 		IMixinElement constantElement = null;
 
 		if (elementKey != null)
-			constantElement = mixinModel.get(elementKey);
+			constantElement = mixinModel.getRawModel().get(elementKey);
 
 		if (constantElement == null)
 			return IGoal.NO_GOALS;

@@ -200,7 +200,7 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 	private void selectOnSuper(ModuleDeclaration parsedUnit,
 			RubySuperExpression superExpr) {
 		RubyClassType selfClass = RubyTypeInferencingUtils.determineSelfClass(
-				sourceModule, parsedUnit, superExpr.sourceStart());
+				mixinModel, sourceModule, parsedUnit, superExpr.sourceStart());
 		MethodDeclaration enclosingMethod = ASTUtils.getEnclosingMethod(
 				wayToNode, superExpr, false);
 		if (enclosingMethod != null) {
@@ -474,7 +474,8 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 
 		if (receiver == null) {
 			IEvaluatedType type = RubyTypeInferencingUtils.determineSelfClass(
-					sourceModule, parsedUnit, parentCall.sourceStart());
+					mixinModel, sourceModule, parsedUnit, parentCall
+							.sourceStart());
 			if ((type != null) && "Object".equals(type.getTypeName())) { //$NON-NLS-1$
 				ExpressionTypeGoal goal = new ExpressionTypeGoal(
 						new BasicContext(sourceModule, parsedUnit), parsedUnit);

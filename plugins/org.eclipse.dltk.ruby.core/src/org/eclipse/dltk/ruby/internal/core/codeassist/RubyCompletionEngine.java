@@ -239,7 +239,7 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 								position);
 
 						IEvaluatedType self = RubyTypeInferencingUtils
-								.determineSelfClass(currentModule,
+								.determineSelfClass(mixinModel, currentModule,
 										moduleDeclaration, position);
 						if ((self != null)
 								&& "Object".equals(self.getTypeName())) { //$NON-NLS-1$
@@ -272,7 +272,7 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 								position);
 
 						IEvaluatedType self = RubyTypeInferencingUtils
-								.determineSelfClass(currentModule,
+								.determineSelfClass(mixinModel, currentModule,
 										moduleDeclaration, position);
 						if ((self != null)
 								&& "Object".equals(self.getTypeName())) { //$NON-NLS-1$
@@ -367,7 +367,7 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 		setSourceRange(position, position);
 		completeSimpleRef(moduleDeclaration, "", position); //$NON-NLS-1$
 		IClassType self = RubyTypeInferencingUtils.determineSelfClass(
-				currentModule, moduleDeclaration, position);
+				mixinModel, currentModule, moduleDeclaration, position);
 		if (self == null) {
 			return;
 		}
@@ -800,7 +800,7 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 			completeClassMethods(moduleDeclaration, receiver, starting);
 		} else {
 			IEvaluatedType self = RubyTypeInferencingUtils.determineSelfClass(
-					currentModule, moduleDeclaration, position);
+					mixinModel, currentModule, moduleDeclaration, position);
 			if ((self != null) && "Object".equals(self.getTypeName())) { //$NON-NLS-1$
 				ASTNode minNode = node;
 				ASTNode[] wayToNode = ASTUtils.restoreWayToNode(

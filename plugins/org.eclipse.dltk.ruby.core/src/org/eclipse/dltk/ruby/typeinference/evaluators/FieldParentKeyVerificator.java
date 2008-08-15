@@ -21,11 +21,10 @@ import org.eclipse.dltk.ruby.typeinference.RubyFieldReference;
 import org.eclipse.dltk.ruby.typeinference.RubyTypeInferencingUtils;
 import org.eclipse.dltk.ti.GoalState;
 import org.eclipse.dltk.ti.goals.FieldPositionVerificationGoal;
-import org.eclipse.dltk.ti.goals.GoalEvaluator;
 import org.eclipse.dltk.ti.goals.IGoal;
 import org.eclipse.dltk.ti.goals.PossiblePosition;
 
-public class FieldParentKeyVerificator extends GoalEvaluator {
+public class FieldParentKeyVerificator extends RubyMixinGoalEvaluator {
 
 	private RubyFieldReference result = null;
 
@@ -60,8 +59,8 @@ public class FieldParentKeyVerificator extends GoalEvaluator {
 				ISourceModule sourceModule = (ISourceModule) element;
 				ModuleDeclaration module = ASTUtils.getAST(sourceModule);
 				RubyClassType selfClass = RubyTypeInferencingUtils
-						.determineSelfClass(sourceModule, module, node
-								.sourceStart());
+						.determineSelfClass(mixinModel, sourceModule, module,
+								node.sourceStart());
 
 				if (selfClass == null)
 					return null;

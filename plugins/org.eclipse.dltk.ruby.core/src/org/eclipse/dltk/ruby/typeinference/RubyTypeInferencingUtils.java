@@ -131,7 +131,7 @@ public class RubyTypeInferencingUtils {
 		String[] modelStaticScopesKeys = getModelStaticScopesKeys(model,
 				rootNode, requestedOffset);
 		IMixinElement[] result = new IMixinElement[modelStaticScopesKeys.length];
-		for (int i = 1; i < modelStaticScopesKeys.length; i++) { // XXX-fourdman:
+		for (int i = 1; i < modelStaticScopesKeys.length; i++) { //XXX-fourdman:
 			// removed
 			// Object
 			// resulution
@@ -150,15 +150,15 @@ public class RubyTypeInferencingUtils {
 		return RubyMixinBuildVisitor.restoreScopesByNodes(allStaticScopes);
 	}
 
-	public static IEvaluatedType determineSelfClass(IContext context,
-			int keyOffset) {
+	public static IEvaluatedType determineSelfClass(RubyMixinModel mixinModel,
+			IContext context, int keyOffset) {
 		if (context instanceof IInstanceContext) {
 			IInstanceContext instanceContext = (IInstanceContext) context;
 			return instanceContext.getInstanceType();
 		} else {
 			ISourceModuleContext basicContext = (ISourceModuleContext) context;
-			return determineSelfClass(basicContext.getSourceModule(),
-					basicContext.getRootNode(), keyOffset);
+			return determineSelfClass(mixinModel, basicContext
+					.getSourceModule(), basicContext.getRootNode(), keyOffset);
 		}
 	}
 
@@ -174,18 +174,19 @@ public class RubyTypeInferencingUtils {
 	 *            the offset
 	 * @return The type of <code>self</code> at the given offset (never null)
 	 */
-	public static RubyClassType determineSelfClass(
+	public static RubyClassType determineSelfClass(RubyMixinModel rubyModel,
 			final ISourceModule sourceModule, ModuleDeclaration rootNode,
 			final int keyOffset) {
-		RubyMixinModel rubyModel = RubyMixinModel.getInstance();
 		String[] keys = getModelStaticScopesKeys(rubyModel.getRawModel(),
 				rootNode, keyOffset);
 		if (keys != null && keys.length > 0) {
 			String inner = keys[keys.length - 1];
 			IRubyMixinElement rubyElement = rubyModel.createRubyElement(inner);
 			// ssanders: Fallback to locating the immediate parent
-			if ((rubyElement == null) && (inner.indexOf(IIndexConstants.SEPARATOR) != -1)) {
-				rubyElement = rubyModel.createRubyElement(inner.substring(0, inner.lastIndexOf(IIndexConstants.SEPARATOR)));
+			if ((rubyElement == null)
+					&& (inner.indexOf(IIndexConstants.SEPARATOR) != -1)) {
+				rubyElement = rubyModel.createRubyElement(inner.substring(0,
+						inner.lastIndexOf(IIndexConstants.SEPARATOR)));
 			}
 			if (rubyElement instanceof RubyMixinMethod) {
 				RubyMixinMethod method = (RubyMixinMethod) rubyElement;
@@ -290,18 +291,17 @@ public class RubyTypeInferencingUtils {
 		return null;
 	}
 
-	public static String searchConstantElement(ModuleDeclaration module,
-			int calculationOffset, String constantName) {
-		MixinModel model = RubyMixinModel.getInstance().getRawModel();
-		String[] modelStaticScopes = getModelStaticScopesKeys(model, module,
-				calculationOffset);
+	public static String searchConstantElement(MixinModel mixinModel,
+			ModuleDeclaration module, int calculationOffset, String constantName) {
+		String[] modelStaticScopes = getModelStaticScopesKeys(mixinModel,
+				module, calculationOffset);
 
 		String resultKey = null;
 
 		for (int i = modelStaticScopes.length - 1; i >= 0; i--) {
 			String possibleKey = modelStaticScopes[i]
 					+ IMixinRequestor.MIXIN_NAME_SEPARATOR + constantName;
-			if (model.keyExists(possibleKey)) {
+			if (mixinModel.keyExists(possibleKey)) {
 				resultKey = possibleKey;
 				break;
 			}
@@ -309,7 +309,7 @@ public class RubyTypeInferencingUtils {
 
 		// check top-most scope
 		if (resultKey == null) {
-			if (model.keyExists(constantName)) {
+			if (mixinModel.keyExists(constantName)) {
 				resultKey = constantName;
 			}
 		}
@@ -425,7 +425,7 @@ public class RubyTypeInferencingUtils {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-//		System.out.println();
+		// System.out.println();
 		if (conditionals != null)
 			conditionals.addAll(visitor.getConditionals());
 		return visitor.getUnconditionalAssignment();
@@ -488,13 +488,14 @@ public class RubyTypeInferencingUtils {
 				if (isArgument) {
 					if (info.getKind() == LocalVariableInfo.KIND_DEFAULT)
 						info.setKind(LocalVariableInfo.KIND_BLOCK_ARG);
-// List conditionals = new ArrayList();
-// RubyAssignment last = findAssignments(name, scope, offset,
-// conditionals);
-// info.setLastAssignment(last);
-// info.setDeclaringScope(scope);
-// info.setConditionalAssignments(conditionals);
-// break;
+					// List conditionals = new ArrayList();
+					// RubyAssignment last = findAssignments(name, scope,
+					// offset,
+					// conditionals);
+					// info.setLastAssignment(last);
+					// info.setDeclaringScope(scope);
+					// info.setConditionalAssignments(conditionals);
+					// break;
 				}
 			} else if (scope instanceof RubyForStatement2) {
 
@@ -510,13 +511,14 @@ public class RubyTypeInferencingUtils {
 						if (ref.getName().equals(name)) {
 							if (info.getKind() == LocalVariableInfo.KIND_DEFAULT)
 								info.setKind(LocalVariableInfo.KIND_LOOP_VAR);
-// List conditionals = new ArrayList();
-// RubyAssignment last = findAssignments(name, scope,
-// offset, conditionals);
-// info.setLastAssignment(last);
-// info.setDeclaringScope(scope);
-// info.setConditionalAssignments(conditionals);
-// break;
+							// List conditionals = new ArrayList();
+							// RubyAssignment last = findAssignments(name,
+							// scope,
+							// offset, conditionals);
+							// info.setLastAssignment(last);
+							// info.setDeclaringScope(scope);
+							// info.setConditionalAssignments(conditionals);
+							// break;
 						}
 					}
 				}
@@ -535,58 +537,58 @@ public class RubyTypeInferencingUtils {
 		return info;
 	}
 
-// public static LocalVariableInfo searchLocalVars(ModuleDeclaration module,
-// int offset, String name) {
-// ASTNode[] scopes = getAllStaticScopes(module, offset);
-// int i = -1;
-// loop: for (i = scopes.length - 1; i >= 0; i--) {
-// if (scopes[i] instanceof MethodDeclaration
-// || scopes[i] instanceof TypeDeclaration) {
-// break;
-// } else if (scopes[i] instanceof RubyBlock) {
-// RubyBlock rubyBlock = (RubyBlock) scopes[i];
-// Set vars = rubyBlock.getVars();
-// for (Iterator iterator = vars.iterator(); iterator.hasNext();) {
-// ASTNode vnode = (ASTNode) iterator.next();
-// if (vnode instanceof RubyDAssgnExpression) {
-// RubyDAssgnExpression v = (RubyDAssgnExpression) vnode;
-// if (v.getName().equals(name)) {
-// break loop;
-// }
-// }
-// }
-// } else if (scopes[i] instanceof RubyForStatement2) {
-// RubyForStatement2 forst = (RubyForStatement2) scopes[i];
-// ASTListNode vars = forst.getList();
-// for (Iterator iterator = vars.getChilds().iterator(); iterator
-// .hasNext();) {
-// ASTNode vnode = (ASTNode) iterator.next();
-// if (vnode instanceof RubyAssignment) {
-// RubyAssignment assign = (RubyAssignment) vnode;
-// if (assign.getLeft() instanceof VariableReference) {
-// VariableReference ref = (VariableReference) assign
-// .getLeft();
-// if (ref.getName().equals(name))
-// break loop;
-// }
-// }
-// }
-// }
-// }
-// if (i < 0)
-// i = 0;
-// LocalVarSearchVisitor visitor = new LocalVarSearchVisitor(name,
-// scopes[i], offset);
-// try {
-// scopes[i].traverse(visitor);
-// } catch (Exception e) {
-// e.printStackTrace();
-// }
-// List conds = visitor.getConditionalAssignments();
-// RubyAssignment[] c = (RubyAssignment[]) conds
-// .toArray(new RubyAssignment[conds.size()]);
-// return new LocalVariableInfo(scopes[i], c, visitor.getLast());
-//
-// }
+	// public static LocalVariableInfo searchLocalVars(ModuleDeclaration module,
+	// int offset, String name) {
+	// ASTNode[] scopes = getAllStaticScopes(module, offset);
+	// int i = -1;
+	// loop: for (i = scopes.length - 1; i >= 0; i--) {
+	// if (scopes[i] instanceof MethodDeclaration
+	// || scopes[i] instanceof TypeDeclaration) {
+	// break;
+	// } else if (scopes[i] instanceof RubyBlock) {
+	// RubyBlock rubyBlock = (RubyBlock) scopes[i];
+	// Set vars = rubyBlock.getVars();
+	// for (Iterator iterator = vars.iterator(); iterator.hasNext();) {
+	// ASTNode vnode = (ASTNode) iterator.next();
+	// if (vnode instanceof RubyDAssgnExpression) {
+	// RubyDAssgnExpression v = (RubyDAssgnExpression) vnode;
+	// if (v.getName().equals(name)) {
+	// break loop;
+	// }
+	// }
+	// }
+	// } else if (scopes[i] instanceof RubyForStatement2) {
+	// RubyForStatement2 forst = (RubyForStatement2) scopes[i];
+	// ASTListNode vars = forst.getList();
+	// for (Iterator iterator = vars.getChilds().iterator(); iterator
+	// .hasNext();) {
+	// ASTNode vnode = (ASTNode) iterator.next();
+	// if (vnode instanceof RubyAssignment) {
+	// RubyAssignment assign = (RubyAssignment) vnode;
+	// if (assign.getLeft() instanceof VariableReference) {
+	// VariableReference ref = (VariableReference) assign
+	// .getLeft();
+	// if (ref.getName().equals(name))
+	// break loop;
+	// }
+	// }
+	// }
+	// }
+	// }
+	// if (i < 0)
+	// i = 0;
+	// LocalVarSearchVisitor visitor = new LocalVarSearchVisitor(name,
+	// scopes[i], offset);
+	// try {
+	// scopes[i].traverse(visitor);
+	// } catch (Exception e) {
+	// e.printStackTrace();
+	// }
+	// List conds = visitor.getConditionalAssignments();
+	// RubyAssignment[] c = (RubyAssignment[]) conds
+	// .toArray(new RubyAssignment[conds.size()]);
+	// return new LocalVariableInfo(scopes[i], c, visitor.getLast());
+	//
+	// }
 
 }
