@@ -32,7 +32,6 @@ import org.eclipse.dltk.ruby.formatter.internal.RubyParser;
 import org.eclipse.dltk.ui.CodeFormatterConstants;
 import org.eclipse.dltk.ui.formatter.AbstractScriptFormatter;
 import org.eclipse.dltk.ui.formatter.FormatterException;
-import org.eclipse.dltk.ui.formatter.FormatterSyntaxProblemException;
 import org.eclipse.text.edits.MultiTextEdit;
 import org.eclipse.text.edits.ReplaceEdit;
 import org.eclipse.text.edits.TextEdit;
@@ -87,9 +86,6 @@ public class RubyFormatter extends AbstractScriptFormatter {
 			throws FormatterException {
 		final String input = source.substring(offset, offset + length);
 		final RubyParserResult result = RubyParser.parse(input);
-		if (result == null) {
-			throw new FormatterSyntaxProblemException();
-		}
 		final String output = format(input, result);
 		if (output != null) {
 			if (!input.equals(output)) {

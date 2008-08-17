@@ -2,6 +2,7 @@ package org.eclipse.dltk.ruby.formatter.internal;
 
 import org.eclipse.dltk.ruby.formatter.lexer.ILexerReader;
 import org.eclipse.dltk.ruby.formatter.lexer.StringLexerReader;
+import org.eclipse.dltk.ui.formatter.FormatterSyntaxProblemException;
 import org.jruby.common.NullWarnings;
 import org.jruby.lexer.yacc.LexerSource;
 import org.jruby.lexer.yacc.SyntaxException;
@@ -15,11 +16,13 @@ import org.jruby.parser.RubyParserResult;
  */
 public class RubyParser {
 
-	public static RubyParserResult parse(String content) {
+	public static RubyParserResult parse(String content)
+			throws FormatterSyntaxProblemException {
 		return parse(new StringLexerReader(content));
 	}
 
-	public static RubyParserResult parse(ILexerReader content) {
+	public static RubyParserResult parse(ILexerReader content)
+			throws FormatterSyntaxProblemException {
 		final RubyParserConfiguration configuration = new RubyParserConfiguration();
 		final RubyParserPool parserPool = RubyParserPool.getInstance();
 		final DefaultRubyParser parser = parserPool.borrowParser();
@@ -29,7 +32,7 @@ public class RubyParser {
 			final RubyParserResult result = parser.parse(configuration, source);
 			return result;
 		} catch (SyntaxException e) {
-			return null;
+			throw new FormatterSyntaxProblemException(e);
 		} finally {
 			parserPool.returnParser(parser);
 		}
