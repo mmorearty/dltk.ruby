@@ -24,6 +24,7 @@ import org.eclipse.dltk.formatter.nodes.IFormatterNode;
 import org.eclipse.dltk.ruby.formatter.internal.RubyFormatterNodeBuilder;
 import org.eclipse.dltk.ruby.formatter.internal.RubyParser;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterBlockWithBeginEndNode;
+import org.eclipse.dltk.ui.formatter.FormatterException;
 import org.jruby.ast.ArgumentNode;
 import org.jruby.ast.ListNode;
 import org.jruby.ast.Node;
@@ -35,7 +36,7 @@ import org.jruby.parser.RubyParserResult;
 
 public class ParserTest extends AbstractFormatterTest {
 
-	public void testEndKeyword() {
+	public void testEndKeyword() throws FormatterException {
 		final String input = "class Test" + Util.LINE_SEPARATOR + "end"
 				+ Util.LINE_SEPARATOR;
 		final RubyParserResult result = RubyParser.parse(input);
@@ -53,14 +54,14 @@ public class ParserTest extends AbstractFormatterTest {
 		assertEquals(input.indexOf("end"), endNode.getStartOffset());
 	}
 
-	public void testEmptyHereDoc() {
+	public void testEmptyHereDoc() throws FormatterException {
 		final String input = "a = <<THIS" + Util.LINE_SEPARATOR + "THIS"
 				+ Util.LINE_SEPARATOR;
 		RubyParserResult result = RubyParser.parse(input);
 		assertNotNull(result);
 	}
 
-	public void testHereDocParser() {
+	public void testHereDocParser() throws FormatterException {
 		final String id1 = "THIS";
 		final String[] hereDoc1 = new String[] { "Line 1=a", "Line 2" };
 		final String id2 = "THAT";
