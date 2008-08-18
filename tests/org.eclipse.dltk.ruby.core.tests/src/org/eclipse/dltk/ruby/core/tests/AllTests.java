@@ -11,6 +11,7 @@ import org.eclipse.dltk.ruby.core.tests.resources.SourceModuleInfoCacheTest;
 import org.eclipse.dltk.ruby.core.tests.search.RubySearchTests;
 import org.eclipse.dltk.ruby.core.tests.search.mixin.AutoMixinTests;
 import org.eclipse.dltk.ruby.core.tests.search.mixin.MixinModelManipulationTests;
+import org.eclipse.dltk.ruby.core.tests.search.mixin.MixinProjectIsolationTests;
 import org.eclipse.dltk.ruby.core.tests.text.completion.RubyCompletionTests;
 import org.eclipse.dltk.ruby.core.tests.typeinference.MethodsTest;
 import org.eclipse.dltk.ruby.core.tests.typeinference.SimpleTest;
@@ -45,6 +46,7 @@ public class AllTests {
 		suite.addTest(MethodsTest.suite());
 		suite.addTest(StatementsTest.suite());
 		suite.addTest(SimpleTest.suite());
+		suite.addTest(MixinProjectIsolationTests.suite());
 
 		// Launching
 		// suite.addTest(RubyLaunchingTests.suite());
