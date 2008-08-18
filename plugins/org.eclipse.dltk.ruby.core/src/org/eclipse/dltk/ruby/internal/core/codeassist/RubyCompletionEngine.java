@@ -72,6 +72,11 @@ import org.jruby.util.collections.WeakHashSet;
 
 public class RubyCompletionEngine extends ScriptCompletionEngine {
 
+	/**
+	 * Type inferencer timeout
+	 */
+	private static final int TI_TIMEOUT = 2000;
+
 	private final static int RELEVANCE_FREE_SPACE = 100000;
 
 	private final static int RELEVANCE_KEYWORD = 1000000;
@@ -100,7 +105,6 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 
 	public RubyCompletionEngine() {
 		this.inferencer = new DLTKTypeInferenceEngine();
-		this.mixinModel = RubyMixinModel.getInstance();
 		this.parser = DLTKLanguageManager.getSourceParser(RubyNature.NATURE_ID);
 	}
 
@@ -177,6 +181,8 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 	public void complete(org.eclipse.dltk.compiler.env.ISourceModule module,
 			int position, int i) {
 		this.currentModule = (ISourceModule) module;
+		this.mixinModel = RubyMixinModel.getInstance(currentModule
+				.getScriptProject());
 
 		completedNames.clear();
 		this.actualCompletionPosition = position;
@@ -247,7 +253,7 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 									new BasicContext(currentModule,
 											moduleDeclaration), minimalNode);
 							IEvaluatedType self2 = inferencer.evaluateType(
-									goal, 2000);
+									goal, TI_TIMEOUT);
 							if (self2 != null) {
 								self = self2;
 							}
@@ -280,7 +286,7 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 									new BasicContext(currentModule,
 											moduleDeclaration), minimalNode);
 							IEvaluatedType self2 = inferencer.evaluateType(
-									goal, 2000);
+									goal, TI_TIMEOUT);
 							if (self2 != null) {
 								self = self2;
 							}
@@ -292,7 +298,7 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 								new BasicContext(currentModule,
 										moduleDeclaration), minimalNode);
 						IEvaluatedType self = inferencer.evaluateType(goal,
-								2000);
+								TI_TIMEOUT);
 						completeClassMethods(moduleDeclaration, self, ""); //$NON-NLS-1$
 					} else if (minimalNode instanceof NumericLiteral
 							&& position > 0
@@ -528,7 +534,7 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 			ASTNode receiver, String pattern) {
 		ExpressionTypeGoal goal = new ExpressionTypeGoal(new BasicContext(
 				currentModule, moduleDeclaration), receiver);
-		IEvaluatedType type = inferencer.evaluateType(goal, 2000);
+		IEvaluatedType type = inferencer.evaluateType(goal, TI_TIMEOUT);
 		completeClassMethods(moduleDeclaration, type, pattern);
 	}
 
@@ -816,7 +822,8 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 				ExpressionTypeGoal goal = new ExpressionTypeGoal(
 						new BasicContext(currentModule, moduleDeclaration),
 						minNode);
-				IEvaluatedType self2 = inferencer.evaluateType(goal, 2000);
+				IEvaluatedType self2 = inferencer
+						.evaluateType(goal, TI_TIMEOUT);
 				if (self2 != null) {
 					self = self2;
 				}

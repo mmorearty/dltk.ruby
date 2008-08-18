@@ -11,7 +11,10 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.typeinference.evaluators;
 
+import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.ruby.internal.parser.mixin.RubyMixinModel;
+import org.eclipse.dltk.ti.IContext;
+import org.eclipse.dltk.ti.ISourceModuleContext;
 import org.eclipse.dltk.ti.goals.GoalEvaluator;
 import org.eclipse.dltk.ti.goals.IGoal;
 
@@ -24,7 +27,15 @@ public abstract class RubyMixinGoalEvaluator extends GoalEvaluator {
 	 */
 	public RubyMixinGoalEvaluator(IGoal goal) {
 		super(goal);
-		mixinModel = RubyMixinModel.getInstance();
+		final IContext context = goal.getContext();
+		if (context instanceof ISourceModuleContext) {
+			ISourceModule sourceModule = ((ISourceModuleContext) context)
+					.getSourceModule();
+			mixinModel = RubyMixinModel.getInstance(sourceModule
+					.getScriptProject());
+		} else {
+			mixinModel = RubyMixinModel.getWorkspaceInstance();
+		}
 	}
 
 }

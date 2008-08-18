@@ -14,7 +14,6 @@ package org.eclipse.dltk.ruby.internal.core.codeassist;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -116,8 +115,9 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 	public IModelElement[] select(
 			org.eclipse.dltk.compiler.env.ISourceModule sourceUnit,
 			int selectionSourceStart, int selectionSourceEnd) {
-		mixinModel = RubyMixinModel.getInstance();
 		sourceModule = (ISourceModule) sourceUnit.getModelElement();
+		mixinModel = RubyMixinModel
+				.getInstance(sourceModule.getScriptProject());
 		String source = sourceUnit.getSourceContents();
 		if (DEBUG) {
 			System.out.print("SELECTION IN "); //$NON-NLS-1$
@@ -185,16 +185,8 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 			RubyPlugin.log(e);
 		}
 
-		final List result = new ArrayList();
-		final IScriptProject sourceProject = sourceUnit.getModelElement()
-				.getScriptProject();
-		for (Iterator i = selectionElements.iterator(); i.hasNext();) {
-			final IModelElement element = (IModelElement) i.next();
-			if (sourceProject.isOnBuildpath(element))
-				result.add(element);
-		}
-		return (IModelElement[]) result
-				.toArray(new IModelElement[result.size()]);
+		return (IModelElement[]) selectionElements
+				.toArray(new IModelElement[selectionElements.size()]);
 	}
 
 	private void selectOnSuper(ModuleDeclaration parsedUnit,

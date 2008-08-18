@@ -9,7 +9,12 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.internal.parser.mixin;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.IShutdownListener;
 import org.eclipse.dltk.core.mixin.IMixinElement;
 import org.eclipse.dltk.core.mixin.MixinModel;
@@ -21,10 +26,26 @@ public class RubyMixinModel implements IShutdownListener {
 
 	private static RubyMixinModel instance;
 
-	public static RubyMixinModel getInstance() {
-		if (instance == null)
-			instance = new RubyMixinModel();
-		return instance;
+	public static RubyMixinModel getWorkspaceInstance() {
+		synchronized (instances) {
+			if (instance == null)
+				instance = new RubyMixinModel(null);
+			return instance;
+		}
+	}
+
+	private static final Map instances = new HashMap();
+
+	public static RubyMixinModel getInstance(IScriptProject project) {
+		Assert.isNotNull(project);
+		synchronized (instances) {
+			RubyMixinModel mixinModel = (RubyMixinModel) instances.get(project);
+			if (mixinModel == null) {
+				mixinModel = new RubyMixinModel(project);
+				instances.put(project, mixinModel);
+			}
+			return mixinModel;
+		}
 	}
 
 	/**
@@ -32,14 +53,21 @@ public class RubyMixinModel implements IShutdownListener {
 	 * @return
 	 */
 	public static void clearKeysCache(String key) {
-		// TODO for all models
-		getInstance().getRawModel().clearKeysCache(key);
+		synchronized (instances) {
+			if (instance != null) {
+				instance.getRawModel().clearKeysCache(key);
+			}
+			for (Iterator i = instances.values().iterator(); i.hasNext();) {
+				RubyMixinModel mixinModel = (RubyMixinModel) i.next();
+				mixinModel.getRawModel().clearKeysCache(key);
+			}
+		}
 	}
 
 	private final MixinModel model;
 
-	private RubyMixinModel() {
-		model = new MixinModel(RubyLanguageToolkit.getDefault());
+	private RubyMixinModel(IScriptProject project) {
+		model = new MixinModel(RubyLanguageToolkit.getDefault(), project);
 		RubyPlugin.getDefault().addShutdownListener(this);
 	}
 
