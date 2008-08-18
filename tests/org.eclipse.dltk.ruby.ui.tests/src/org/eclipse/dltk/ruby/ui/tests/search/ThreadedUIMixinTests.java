@@ -114,7 +114,7 @@ public class ThreadedUIMixinTests extends AbstractDLTKSearchTests {
 
 	public void testMultiAccess() throws Exception {
 		int count = 10;
-		final RubyMixinModel mixinModel = RubyMixinModel.getInstance();
+		final RubyMixinModel mixinModel = RubyMixinModel.getWorkspaceInstance();
 		String[] findKeys = mixinModel.getRawModel().findKeys("*");
 		Thread[] threads = new Thread[count - 1];
 		Access[] access = new Access[count];
