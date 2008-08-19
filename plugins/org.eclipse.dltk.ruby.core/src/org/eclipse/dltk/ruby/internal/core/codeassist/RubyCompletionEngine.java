@@ -220,7 +220,8 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 							moduleDeclaration);
 					ExpressionTypeGoal goal = new ExpressionTypeGoal(
 							basicContext, node);
-					IEvaluatedType type = inferencer.evaluateType(goal, 3000);
+					IEvaluatedType type = inferencer.evaluateType(goal,
+							TI_TIMEOUT * 3 / 2);
 					reportSubElements(type, Util.EMPTY_STRING);
 				} else {
 					completeConstant(moduleDeclaration, Util.EMPTY_STRING,
@@ -704,7 +705,7 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 
 		ExpressionTypeGoal goal = new ExpressionTypeGoal(new BasicContext(
 				currentModule, moduleDeclaration), node.getLeft());
-		IEvaluatedType type = inferencer.evaluateType(goal, 3000);
+		IEvaluatedType type = inferencer.evaluateType(goal, TI_TIMEOUT * 3 / 2);
 		reportSubElements(type, starting);
 	}
 
