@@ -30,6 +30,7 @@ import org.eclipse.dltk.ast.references.ConstantReference;
 import org.eclipse.dltk.ast.references.SimpleReference;
 import org.eclipse.dltk.codeassist.IAssistParser;
 import org.eclipse.dltk.codeassist.ScriptCompletionEngine;
+import org.eclipse.dltk.compiler.util.Util;
 import org.eclipse.dltk.core.CompletionProposal;
 import org.eclipse.dltk.core.DLTKLanguageManager;
 import org.eclipse.dltk.core.Flags;
@@ -220,9 +221,9 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 					ExpressionTypeGoal goal = new ExpressionTypeGoal(
 							basicContext, node);
 					IEvaluatedType type = inferencer.evaluateType(goal, 3000);
-					reportSubElements(type, ""); //$NON-NLS-1$
+					reportSubElements(type, Util.EMPTY_STRING);
 				} else {
-					completeConstant(moduleDeclaration, "", //$NON-NLS-1$
+					completeConstant(moduleDeclaration, Util.EMPTY_STRING,
 							position, true);
 				}
 			} else {
@@ -258,7 +259,8 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 								self = self2;
 							}
 						}
-						completeClassMethods(moduleDeclaration, self, ""); //$NON-NLS-1$
+						completeClassMethods(moduleDeclaration, self,
+								Util.EMPTY_STRING);
 					} else if (minimalNode instanceof ConstantReference) {
 						completeConstant(moduleDeclaration,
 								(ConstantReference) minimalNode, position);
@@ -299,14 +301,16 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 										moduleDeclaration), minimalNode);
 						IEvaluatedType self = inferencer.evaluateType(goal,
 								TI_TIMEOUT);
-						completeClassMethods(moduleDeclaration, self, ""); //$NON-NLS-1$
+						completeClassMethods(moduleDeclaration, self,
+								Util.EMPTY_STRING);
 					} else if (minimalNode instanceof NumericLiteral
 							&& position > 0
 							&& position == minimalNode.sourceEnd()
 							&& position > minimalNode.sourceStart()
 							&& content.charAt(position - 1) == '.') {
 						setSourceRange(position, position);
-						completeClassMethods(moduleDeclaration, minimalNode, ""); //$NON-NLS-1$
+						completeClassMethods(moduleDeclaration, minimalNode,
+								Util.EMPTY_STRING);
 					} else { // worst case
 						completeSimpleRef(moduleDeclaration, wordStarting,
 								position);
@@ -371,13 +375,13 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 	private void reportCurrentElements(ModuleDeclaration moduleDeclaration,
 			int position) {
 		setSourceRange(position, position);
-		completeSimpleRef(moduleDeclaration, "", position); //$NON-NLS-1$
+		completeSimpleRef(moduleDeclaration, Util.EMPTY_STRING, position);
 		IClassType self = RubyTypeInferencingUtils.determineSelfClass(
 				mixinModel, currentModule, moduleDeclaration, position);
 		if (self == null) {
 			return;
 		}
-		completeClassMethods(moduleDeclaration, self, ""); //$NON-NLS-1$
+		completeClassMethods(moduleDeclaration, self, Util.EMPTY_STRING);
 		if ("Object".equals(self.getTypeName())) { //$NON-NLS-1$
 			try {
 				final IModelElement[] children = currentModule.getChildren();
@@ -544,7 +548,7 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 				position);
 
 		IMixinElement[] elements = mixinModel.getRawModel().find(
-				(prefix != null ? prefix : "") + "*"); //$NON-NLS-1$ //$NON-NLS-2$
+				(prefix != null ? prefix : Util.EMPTY_STRING) + "*"); //$NON-NLS-1$
 
 		// String[] findKeys = RubyMixinModel.getRawInstance().findKeys(
 		// prefix + "*");
