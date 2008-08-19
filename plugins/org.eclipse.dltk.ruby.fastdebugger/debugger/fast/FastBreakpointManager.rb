@@ -21,16 +21,15 @@ module XoredDebugger
         end
         
         def check_line_breakpoint(raw_id)
-            result = false
             breakpoints.each() do |bp|
                 if ((bp.is_a? LineBreakpointContract) && (bp.raw_bp.id.equal?(raw_id)))                    
                     if (bp.temporary)
                         remove_breakpoint(bp.breakpoint_id)
                     end
-                    result = true
+                    return bp.state
                 end
             end
-            return result
+            return false
         end       
 	end
 end
