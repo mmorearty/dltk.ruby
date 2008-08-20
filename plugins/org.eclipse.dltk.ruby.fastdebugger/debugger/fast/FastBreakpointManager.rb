@@ -22,14 +22,14 @@ module XoredDebugger
         
         def check_line_breakpoint(raw_id)
             breakpoints.each() do |bp|
-                if ((bp.is_a? LineBreakpointContract) && (bp.raw_bp.id.equal?(raw_id)))                    
+                if ((bp.is_a? FastLineBreakpoint) && (bp.raw_bp.id.equal?(raw_id)))                    
                     if (bp.temporary)
                         remove_breakpoint(bp.breakpoint_id)
                     end
-                    return bp.state
+                    return bp
                 end
             end
-            return false
+            return nil
         end       
 	end
 end

@@ -85,11 +85,15 @@ module XoredDebugger
 
         # Event handlers
         def at_breakpoint(context, breakpoint)
-            #check if breakpoint was disabled
-            if (@breakpoint_manager.check_line_breakpoint(breakpoint.id))
-                handler.at_breakpoint(current_context) unless handler.nil?
+            bp = @breakpoint_manager.check_line_breakpoint(breakpoint.id) 
+            if bp
+            	if bp.state
+                	handler.at_breakpoint(current_context) unless handler.nil?
+                else
+                	current_context.skip_line = true
+                end
             else
-                log('Line breakpoint doesn''t exist (raw id: ' + breakpoint.id + ')')
+                log('Line breakpoint doesn''t exist (raw id: ' + breakpoint.id.to_s + ')')
                 current_context.skip_line = true
             end
         end
