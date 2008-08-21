@@ -9,6 +9,7 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.internal.ui.text.rules;
 
+import org.eclipse.dltk.compiler.CharOperation;
 import org.eclipse.jface.text.rules.ICharacterScanner;
 import org.eclipse.jface.text.rules.IRule;
 import org.eclipse.jface.text.rules.IToken;
@@ -37,7 +38,7 @@ public class StartWithRule implements IRule
 		this.noSameBefore = nsb;
 	}
 	protected char[] getAdditional() {
-		return new char[0];
+		return CharOperation.NO_CHAR;
 	}
 
 	boolean isInAddition(char c ) {
