@@ -28,6 +28,7 @@ import org.eclipse.debug.ui.DebugUITools;
 import org.eclipse.debug.ui.IDebugModelPresentation;
 import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.debug.ui.ILaunchShortcut;
+import org.eclipse.dltk.compiler.util.Util;
 import org.eclipse.dltk.core.IMethod;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.IScriptProject;
@@ -51,8 +52,6 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 
 public class RubyTestingLaunchShortcut implements ILaunchShortcut {
-
-	private static final String EMPTY_STRING = ""; //$NON-NLS-1$
 
 	/**
 	 * Default constructor.
@@ -289,14 +288,14 @@ public class RubyTestingLaunchShortcut implements ILaunchShortcut {
 
 		switch (element.getElementType()) {
 		case IModelElement.SOURCE_MODULE: {
-			containerHandleId = EMPTY_STRING;
+			containerHandleId = Util.EMPTY_STRING;
 			testFileName = element.getResource().getProjectRelativePath()
 					.toPortableString();
-			testElementName = EMPTY_STRING;
+			testElementName = Util.EMPTY_STRING;
 		}
 			break;
 		case IModelElement.METHOD: {
-			containerHandleId = EMPTY_STRING;
+			containerHandleId = Util.EMPTY_STRING;
 			testFileName = element.getResource().getProjectRelativePath()
 					.toPortableString();
 			testElementName = element.getElementName();
@@ -373,9 +372,9 @@ public class RubyTestingLaunchShortcut implements ILaunchShortcut {
 		try {
 			for (int i = 0; i < attributeToCompare.length; i++) {
 				String val1 = config1.getAttribute(attributeToCompare[i],
-						EMPTY_STRING);
+						Util.EMPTY_STRING);
 				String val2 = config2.getAttribute(attributeToCompare[i],
-						EMPTY_STRING);
+						Util.EMPTY_STRING);
 				if (!val1.equals(val2)) {
 					return false;
 				}
