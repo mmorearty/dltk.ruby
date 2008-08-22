@@ -38,7 +38,6 @@ import org.eclipse.dltk.launching.ScriptLaunchConfigurationConstants;
 import org.eclipse.dltk.ruby.core.RubyNature;
 import org.eclipse.dltk.ruby.testing.IRubyTestingEngine;
 import org.eclipse.dltk.testing.IDLTKTestingConstants;
-import org.eclipse.dltk.testing.ITestKind;
 import org.eclipse.dltk.ui.DLTKUIPlugin;
 import org.eclipse.dltk.ui.ModelElementLabelProvider;
 import org.eclipse.dltk.ui.ScriptElementLabels;
@@ -315,7 +314,6 @@ public class RubyTestingLaunchShortcut implements ILaunchShortcut {
 
 		wc.setAttribute(ScriptLaunchConfigurationConstants.ATTR_PROJECT_NAME,
 				element.getScriptProject().getElementName());
-		wc.setAttribute(ITestKind.LAUNCH_ATTR_TEST_KIND, "#");
 		wc.setAttribute(
 				ScriptLaunchConfigurationConstants.ATTR_MAIN_SCRIPT_NAME,
 				testFileName);
