@@ -11,10 +11,15 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.testing.internal;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -63,6 +68,8 @@ public class RubyTestingLaunchConfigurationDelegate extends
 		return config;
 	}
 
+	private static final String TEST_UNIT_RUNNER = "/testing/dltk-testunit-runner.rb"; //$NON-NLS-1$
+
 	protected void runRunner(ILaunchConfiguration configuration,
 			IInterpreterRunner runner, InterpreterConfig config,
 			ILaunch launch, IProgressMonitor monitor) throws CoreException {
@@ -77,6 +84,31 @@ public class RubyTestingLaunchConfigurationDelegate extends
 		launch.setAttribute(DLTKTestingLaunchConfigurationConstants.ATTR_PORT,
 				strPort);
 		config.addEnvVar(RUBY_TESTING_PORT, strPort);
+		if (config.getEnvironment().isLocal()) {
+			URL runnerScript = Activator.getDefault().getBundle().getEntry(
+					TEST_UNIT_RUNNER);
+			if (runnerScript == null) {
+				throw new CoreException(
+						new Status(IStatus.ERROR, Activator.PLUGIN_ID,
+								TEST_UNIT_RUNNER + " is not found"));
+			}
+			try {
+				runnerScript = FileLocator.toFileURL(runnerScript);
+				config.addInterpreterArg("-r"); //$NON-NLS-1$
+				config.addInterpreterArg(new File(new URI(runnerScript
+						.toString())).toString());
+			} catch (IOException e) {
+				throw new CoreException(new Status(IStatus.ERROR,
+						Activator.PLUGIN_ID,
+						TEST_UNIT_RUNNER + " is not found", e));
+			} catch (URISyntaxException e) {
+				throw new CoreException(new Status(IStatus.ERROR,
+						Activator.PLUGIN_ID,
+						TEST_UNIT_RUNNER + " is not found", e));
+			}
+		}
+		// if (config.getEnvironment().getAdapter(IExecutionEnvironment.class))
+		//		
 		super.runRunner(configuration, runner, config, launch, monitor);
 	}
 
