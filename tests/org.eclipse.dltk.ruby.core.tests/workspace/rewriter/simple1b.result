@@ -1,0 +1,15 @@
+class Simple
+  
+  def m1
+  end
+  
+  def new_method
+  end
+
+  def m2
+  end
+  
+  def m3
+  end
+end
+
