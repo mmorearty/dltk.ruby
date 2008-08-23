@@ -47,7 +47,7 @@ public class RewriterTests extends AbstractModelTests {
 	private static final String SRC_PROJECT = "rewriter";
 
 	public RewriterTests(String name) {
-		super("org.eclipse.dltk.ruby.core.tests", name);
+		super(Activator.PLUGIN_ID, name);
 	}
 
 	public void setUpSuite() throws Exception {
