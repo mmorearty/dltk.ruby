@@ -16,17 +16,17 @@
    <extension
          point="org.eclipse.debug.ui.launchConfigurationTypeImages">
       <launchConfigurationTypeImage
-            configTypeID="org.eclipse.dltk.tcl.testing.launchConfig"
+            configTypeID="org.eclipse.dltk.ruby.testing.launchConfig"
             icon="icons/obj16/ruby_obj.gif"
-            id="org.org.eclipse.dltk.tcl.testing.launchConfigImage">
+            id="org.org.eclipse.dltk.ruby.testing.launchConfigImage">
       </launchConfigurationTypeImage>
    </extension>
    <extension
          point="org.eclipse.debug.ui.launchConfigurationTabGroups">
       <launchConfigurationTabGroup
             class="org.eclipse.dltk.ruby.testing.internal.RubyTestingTabGroup"
-            id="org.eclipse.dltk.tcl.testing.launchConfigTabGroup"
-            type="org.eclipse.dltk.tcl.testing.launchConfig">
+            id="org.eclipse.dltk.ruby.testing.launchConfigTabGroup"
+            type="org.eclipse.dltk.ruby.testing.launchConfig">
          <launchMode
                description="Run mode"
                mode="run">
@@ -44,7 +44,7 @@
             class="org.eclipse.dltk.ruby.testing.internal.RubyTestingLaunchShortcut"
             description="%RubyLaunchShortcut.description"
             icon="icons/obj16/ruby_obj.gif"
-            id="org.eclipse.dltk.tcl.testing.launchShortcut"
+            id="org.eclipse.dltk.ruby.testing.launchShortcut"
             label="%RubyLaunchShortcut.name"
             modes="run,debug">
          <configurationType
