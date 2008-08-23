@@ -9,4 +9,8 @@ public class RDocNode extends CommentNode {
 		super(position, content);
 	}
 
+	public boolean isBlock() {
+		return true;
+	}
+
 }

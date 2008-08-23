@@ -64,4 +64,8 @@ public class CommentNode extends Node {
         return EMPTY_LIST;
     }
 
+	public boolean isBlock() {
+		return false;
+	}
+
 }
