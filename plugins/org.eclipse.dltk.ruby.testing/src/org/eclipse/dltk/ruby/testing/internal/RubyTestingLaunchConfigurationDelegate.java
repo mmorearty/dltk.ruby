@@ -68,7 +68,9 @@ public class RubyTestingLaunchConfigurationDelegate extends
 		return config;
 	}
 
-	private static final String TEST_UNIT_RUNNER = "/testing/dltk-testunit-runner.rb"; //$NON-NLS-1$
+	private static final String TEST_UNIT_RUNNER = "dltk-testunit-runner.rb"; //$NON-NLS-1$
+
+	private static final String TEST_UNIT_RUNNER_FULL_PATH = "/testing/" + TEST_UNIT_RUNNER; //$NON-NLS-1$
 
 	protected void runRunner(ILaunchConfiguration configuration,
 			IInterpreterRunner runner, InterpreterConfig config,
@@ -84,9 +86,9 @@ public class RubyTestingLaunchConfigurationDelegate extends
 		launch.setAttribute(DLTKTestingLaunchConfigurationConstants.ATTR_PORT,
 				strPort);
 		config.addEnvVar(RUBY_TESTING_PORT, strPort);
-		if (config.getEnvironment().isLocal()) {
+		if (config.getEnvironment().isLocal() && !isDevelopmentMode(config)) {
 			URL runnerScript = Activator.getDefault().getBundle().getEntry(
-					TEST_UNIT_RUNNER);
+					TEST_UNIT_RUNNER_FULL_PATH);
 			if (runnerScript == null) {
 				throw new CoreException(
 						new Status(IStatus.ERROR, Activator.PLUGIN_ID,
@@ -107,9 +109,13 @@ public class RubyTestingLaunchConfigurationDelegate extends
 						TEST_UNIT_RUNNER + " is not found", e));
 			}
 		}
-		// if (config.getEnvironment().getAdapter(IExecutionEnvironment.class))
-		//		
 		super.runRunner(configuration, runner, config, launch, monitor);
+	}
+
+	private boolean isDevelopmentMode(InterpreterConfig config) {
+		return config.getScriptFilePath() != null
+				&& config.getScriptFilePath().lastSegment().equals(
+						TEST_UNIT_RUNNER);
 	}
 
 	/**
