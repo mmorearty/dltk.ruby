@@ -42,6 +42,7 @@ public class FormatRubyLibTest extends AbstractFormatterTest {
 	}
 
 	public void testRubyLib() throws IOException {
+		int errorCount = 0;
 		final File path = new File("/home/dltk/apps/ruby-lib.zip");
 		if (!path.isFile()) {
 			fail(path + " is not found"); //$NON-NLS-1$
@@ -74,9 +75,10 @@ public class FormatRubyLibTest extends AbstractFormatterTest {
 					} catch (BadLocationException e) {
 						throw new RuntimeException(e);
 					} catch (FormatterSyntaxProblemException e) {
-						final String msg = "Syntax error in " + entry.getName();
-						System.err.println(msg);
-						RubyFormatterPlugin.error(msg);
+						++errorCount;
+						final String msg = "Syntax error in " + entry.getName()
+								+ ": " + e.getMessage();
+						printError(msg);
 					} catch (FormatterException e) {
 						throw new RuntimeException(e);
 					}
@@ -87,9 +89,18 @@ public class FormatRubyLibTest extends AbstractFormatterTest {
 			try {
 				zipInputStream.close();
 			} catch (IOException e) {
-				// 
+				//
 			}
 		}
+		if (errorCount > 0) {
+			final String msg = "Syntax errors: " + errorCount;
+			printError(msg);
+		}
+	}
+
+	private void printError(final String msg) {
+		System.err.println(msg);
+		RubyFormatterPlugin.error(msg);
 	}
 
 }
