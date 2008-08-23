@@ -16,6 +16,7 @@ import java.io.StringReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.dltk.ast.Modifiers;
 import org.eclipse.dltk.core.IField;
 import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.IMethod;
@@ -137,8 +138,7 @@ public class RubyDocumentationProvider implements IScriptDocumentationProvider {
 				if (region.getType().equals(IDocument.DEFAULT_CONTENT_TYPE)) {
 					String content = doc.get(region.getOffset(),
 							region.getLength()).trim();
-					if (content.length() > 0
-							&& !content.startsWith("public") //$NON-NLS-1$
+					if (content.length() > 0 && !content.startsWith("public") //$NON-NLS-1$
 							&& !content.startsWith("protected") //$NON-NLS-1$
 							&& !content.startsWith("private")) //$NON-NLS-1$
 						break;
@@ -159,8 +159,7 @@ public class RubyDocumentationProvider implements IScriptDocumentationProvider {
 				if (region.getType().equals(IDocument.DEFAULT_CONTENT_TYPE)) {
 					String content = doc.get(region.getOffset(),
 							region.getLength()).trim();
-					if (content.length() > 0
-							&& !content.startsWith("public") //$NON-NLS-1$
+					if (content.length() > 0 && !content.startsWith("public") //$NON-NLS-1$
 							&& !content.startsWith("protected") //$NON-NLS-1$
 							&& !content.startsWith("private")) //$NON-NLS-1$
 						break;
@@ -182,7 +181,13 @@ public class RubyDocumentationProvider implements IScriptDocumentationProvider {
 
 	protected String getHeaderComment(IMember member) {
 		if (member instanceof IField) {
-			return null;
+			try {
+				if ((member.getFlags() & Modifiers.AccConstant) == 0) {
+					return null;
+				}
+			} catch (ModelException e) {
+				return null;
+			}
 		}
 		try {
 			ISourceRange range = member.getSourceRange();
