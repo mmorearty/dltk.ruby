@@ -408,8 +408,9 @@ public class RubyMixinBuildVisitor extends ASTVisitor {
 			Scope scope = peekScope();
 			IField obj = null;
 			if (sourceModule != null) {
-				obj = new FakeField((ModelElement) sourceModule, name, s
-						.sourceStart(), s.sourceEnd() - s.sourceStart());
+				obj = new FakeField(sourceModule, name, s.sourceStart(), s
+						.sourceEnd()
+						- s.sourceStart());
 			}
 			scope.reportVariable(name, obj);
 		} else if (s instanceof RubyAssignment) {
@@ -421,8 +422,8 @@ public class RubyMixinBuildVisitor extends ASTVisitor {
 				Scope scope = peekScope();
 				IField obj = null;
 				if (sourceModule != null)
-					obj = new FakeField((ModelElement) sourceModule, name, ref
-							.sourceStart(), ref.sourceEnd() - ref.sourceStart());
+					obj = new FakeField(sourceModule, name, ref.sourceStart(),
+							ref.sourceEnd() - ref.sourceStart());
 				scope.reportVariable(name, obj);
 			}
 		} else if (s instanceof CallExpression) {
@@ -444,8 +445,8 @@ public class RubyMixinBuildVisitor extends ASTVisitor {
 			Scope scope = peekScope();
 			IField obj = null;
 			if (sourceModule != null)
-				obj = new FakeField((ModelElement) sourceModule, name, name2
-						.sourceStart(), name2.sourceEnd() - name2.sourceStart());
+				obj = new FakeField(sourceModule, name, name2.sourceStart(),
+						name2.sourceEnd() - name2.sourceStart());
 			scope.reportVariable(name, obj);
 			if (closeScope)
 				this.scopes.pop();

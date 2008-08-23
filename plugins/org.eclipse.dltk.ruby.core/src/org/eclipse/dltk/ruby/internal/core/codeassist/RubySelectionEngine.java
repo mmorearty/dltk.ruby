@@ -49,7 +49,6 @@ import org.eclipse.dltk.core.search.SearchPattern;
 import org.eclipse.dltk.core.search.SearchRequestor;
 import org.eclipse.dltk.core.search.TypeNameMatch;
 import org.eclipse.dltk.core.search.TypeNameMatchRequestor;
-import org.eclipse.dltk.internal.core.ModelElement;
 import org.eclipse.dltk.ruby.ast.RubyAssignment;
 import org.eclipse.dltk.ruby.ast.RubyColonExpression;
 import org.eclipse.dltk.ruby.ast.RubyForStatement2;
@@ -406,7 +405,7 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 	}
 
 	private IField createLocalVariable(String name, int nameStart, int nameEnd) {
-		return new FakeField((ModelElement) sourceModule, name, nameStart,
+		return new FakeField(sourceModule, name, nameStart,
 				nameEnd - nameStart);
 	}
 

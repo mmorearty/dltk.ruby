@@ -44,7 +44,6 @@ import org.eclipse.dltk.core.mixin.IMixinElement;
 import org.eclipse.dltk.core.mixin.MixinModel;
 import org.eclipse.dltk.evaluation.types.AmbiguousType;
 import org.eclipse.dltk.evaluation.types.IClassType;
-import org.eclipse.dltk.internal.core.ModelElement;
 import org.eclipse.dltk.ruby.ast.RubyBlock;
 import org.eclipse.dltk.ruby.ast.RubyColonExpression;
 import org.eclipse.dltk.ruby.ast.RubyDAssgnExpression;
@@ -570,8 +569,8 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 
 		for (int i = 0; i < globalVars.length; i++) {
 			if (prefix == null || globalVars[i].startsWith(prefix))
-				reportField(new FakeField((ModelElement) currentModule,
-						globalVars[i], 0, 0), RELEVANCE_VARIABLES);
+				reportField(new FakeField(currentModule, globalVars[i], 0, 0),
+						RELEVANCE_VARIABLES);
 		}
 	}
 
@@ -590,9 +589,8 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 					if (n instanceof RubyDAssgnExpression) {
 						RubyDAssgnExpression rd = (RubyDAssgnExpression) n;
 						if (prefix == null || rd.getName().startsWith(prefix)) {
-							reportField(new FakeField(
-									(ModelElement) currentModule, rd.getName(),
-									0, 0), RELEVANCE_VARIABLES);
+							reportField(new FakeField(currentModule, rd
+									.getName(), 0, 0), RELEVANCE_VARIABLES);
 						}
 					}
 				}
