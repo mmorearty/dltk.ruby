@@ -4,6 +4,8 @@ require 'socket'
 module DLTK
 	module TestUnit
 		module EnvVars
+			# environment variable name to pass communication port number
+			# to the launched script
 			PORT = "RUBY_TESTING_PORT"
 		end
 
