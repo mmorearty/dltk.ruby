@@ -446,7 +446,8 @@ public class RubyMixinBuildVisitor extends ASTVisitor {
 			IField obj = null;
 			if (sourceModule != null)
 				obj = new FakeField(sourceModule, name, name2.sourceStart(),
-						name2.sourceEnd() - name2.sourceStart());
+						name2.sourceEnd() - name2.sourceStart(),
+						Modifiers.AccConstant);
 			scope.reportVariable(name, obj);
 			if (closeScope)
 				this.scopes.pop();
