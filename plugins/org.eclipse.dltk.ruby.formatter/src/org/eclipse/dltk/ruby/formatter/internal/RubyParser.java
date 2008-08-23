@@ -32,7 +32,7 @@ public class RubyParser {
 			final RubyParserResult result = parser.parse(configuration, source);
 			return result;
 		} catch (SyntaxException e) {
-			throw new FormatterSyntaxProblemException(e);
+			throw new FormatterSyntaxProblemException(e.getMessage(), e);
 		} finally {
 			parserPool.returnParser(parser);
 		}
