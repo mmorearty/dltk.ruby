@@ -150,7 +150,7 @@ public class LexerSource {
     }
     
     /**
-     * Are we at beggining of line?
+     * Are we at beginning of line?
      * 
      * @return the column (0..x)
      */
