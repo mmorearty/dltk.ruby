@@ -40,4 +40,6 @@ public interface IFormatterDocument {
 
 	int getInt(String key);
 
+	char charAt(int start);
+
 }

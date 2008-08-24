@@ -69,4 +69,8 @@ public class FormatterDocument implements IFormatterDocument {
 		return value != null ? value.intValue() : 0;
 	}
 
+	public char charAt(int index) {
+		return text.charAt(index);
+	}
+
 }
