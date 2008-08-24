@@ -620,8 +620,8 @@ public class RubyYaccLexer {
             switch(c) {
             case '\004':		/* ^D */
             case '\032':		/* ^Z */
-            case 0:			/* end of script. */
-                return 0;
+            case EOF:			/* end of script. */
+                return EOF;
            
                 /* white spaces */
             case ' ': case '\t': case '\f': case '\r':
@@ -630,7 +630,7 @@ public class RubyYaccLexer {
                 spaceSeen = true;
                 continue retry;
             case '#':		/* it's a comment */
-                if (readComment(c) == 0) return 0;
+                if (readComment(c) == EOF) return EOF;
                     
                 /* fall through */
             case '\n':
