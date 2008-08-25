@@ -16,6 +16,8 @@ import java.util.List;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
@@ -29,11 +31,14 @@ import org.eclipse.debug.ui.IDebugModelPresentation;
 import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.debug.ui.ILaunchShortcut;
 import org.eclipse.dltk.compiler.util.Util;
+import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IMethod;
 import org.eclipse.dltk.core.IModelElement;
+import org.eclipse.dltk.core.IScriptModel;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.IType;
+import org.eclipse.dltk.internal.testing.launcher.DLTKTestingMigrationDelegate;
 import org.eclipse.dltk.launching.ScriptLaunchConfigurationConstants;
 import org.eclipse.dltk.ruby.core.RubyNature;
 import org.eclipse.dltk.ruby.testing.IRubyTestingEngine;
@@ -159,7 +164,13 @@ public class RubyTestingLaunchShortcut implements ILaunchShortcut {
 				temporary, mode);
 		if (config == null) {
 			// no existing found: create a new one
+			final IResource resource = element.getUnderlyingResource();
+			if (resource != null) {
+				temporary.setMappedResources(new IResource[] { resource });
+			}
 			config = temporary.doSave();
+		} else {
+			config = DLTKTestingMigrationDelegate.fixMappedResources(config);
 		}
 		DebugUITools.launch(config, mode);
 	}
@@ -188,7 +199,10 @@ public class RubyTestingLaunchShortcut implements ILaunchShortcut {
 		ILaunchConfiguration config = findExistingLaunchConfiguration(wc, mode);
 		if (config == null) {
 			// no existing found: create a new one
+			wc.setMappedResources(new IResource[] { folder });
 			config = wc.doSave();
+		} else {
+			config = DLTKTestingMigrationDelegate.fixMappedResources(config);
 		}
 		DebugUITools.launch(config, mode);
 	}
