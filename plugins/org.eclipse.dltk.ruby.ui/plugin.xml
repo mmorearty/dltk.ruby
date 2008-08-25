@@ -164,13 +164,28 @@
               id="org.eclipse.dltk.ruby.preferences.templates"
               name="%RubyCodeTemplatesPreferencePage.name">
      </page>	          
+     <page
+            name="Libraries"
+            category="org.eclipse.dltk.ruby.preferences"
+            class="org.eclipse.dltk.ruby.internal.ui.preferences.RubyLibraryPreferencePage"
+            id="org.eclipse.dltk.ruby.preferences.UserLibraryPreferencePage">
+      </page>
       <page
               category="org.eclipse.dltk.ruby.preferences"
               class="org.eclipse.dltk.ruby.internal.ui.preferences.RubyTodoTaskPreferencePage"
               id="org.eclipse.dltk.ruby.preferences.todo"
               name="%RubyTaskTagsPreferencePage.name"/>
     </extension>
-    
+
+<extension point="org.eclipse.dltk.ui.buildpathContainerPage">
+	<buildpathContainerPath
+		nature="org.eclipse.dltk.ruby.core.nature"
+		name="User Library"
+		class="org.eclipse.dltk.internal.ui.wizards.buildpath.UserLibraryWizardPage"
+		id="org.eclipse.dltk.USER_LIBRARY">
+	</buildpathContainerPath>
+</extension>
+
     <extension point="org.eclipse.ui.views">  
 		<category id="org.eclipse.dltk.ruby.ui" name="%RubyViewsCategory.name"/>
 		<view
