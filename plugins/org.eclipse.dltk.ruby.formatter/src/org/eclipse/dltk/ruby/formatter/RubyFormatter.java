@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.core.runtime.IStatus;
@@ -30,7 +29,6 @@ import org.eclipse.dltk.ruby.formatter.internal.RubyFormatterNodeBuilder;
 import org.eclipse.dltk.ruby.formatter.internal.RubyFormatterNodeRewriter;
 import org.eclipse.dltk.ruby.formatter.internal.RubyFormatterPlugin;
 import org.eclipse.dltk.ruby.formatter.internal.RubyParser;
-import org.eclipse.dltk.ui.CodeFormatterConstants;
 import org.eclipse.dltk.ui.formatter.AbstractScriptFormatter;
 import org.eclipse.dltk.ui.formatter.FormatterException;
 import org.eclipse.text.edits.MultiTextEdit;
@@ -40,7 +38,7 @@ import org.jruby.parser.RubyParserResult;
 
 public class RubyFormatter extends AbstractScriptFormatter {
 
-	private static final String[] INDENTING = {
+	protected static final String[] INDENTING = {
 			RubyFormatterConstants.INDENT_CLASS,
 			RubyFormatterConstants.INDENT_MODULE,
 			RubyFormatterConstants.INDENT_METHOD,
@@ -49,7 +47,7 @@ public class RubyFormatter extends AbstractScriptFormatter {
 			RubyFormatterConstants.INDENT_CASE,
 			RubyFormatterConstants.INDENT_WHEN };
 
-	private static final String[] BLANK_LINES = {
+	protected static final String[] BLANK_LINES = {
 			RubyFormatterConstants.LINES_FILE_AFTER_REQUIRE,
 			RubyFormatterConstants.LINES_FILE_BETWEEN_MODULE,
 			RubyFormatterConstants.LINES_FILE_BETWEEN_CLASS,
@@ -58,23 +56,6 @@ public class RubyFormatter extends AbstractScriptFormatter {
 			RubyFormatterConstants.LINES_BEFORE_MODULE,
 			RubyFormatterConstants.LINES_BEFORE_CLASS,
 			RubyFormatterConstants.LINES_BEFORE_METHOD };
-
-	public static Map createTestingPreferences() {
-		final Map result = new HashMap();
-		for (int i = 0; i < INDENTING.length; ++i) {
-			result.put(INDENTING[i], Boolean.TRUE);
-		}
-		for (int i = 0; i < BLANK_LINES.length; ++i) {
-			result.put(BLANK_LINES[i], new Integer(-1));
-		}
-		result.put(RubyFormatterConstants.FORMATTER_TAB_CHAR,
-				CodeFormatterConstants.TAB);
-		result.put(RubyFormatterConstants.FORMATTER_INDENTATION_SIZE,
-				new Integer(1));
-		result.put(RubyFormatterConstants.LINES_PRESERVE, new Integer(
-				Integer.MAX_VALUE));
-		return result;
-	}
 
 	private final String lineDelimiter;
 
