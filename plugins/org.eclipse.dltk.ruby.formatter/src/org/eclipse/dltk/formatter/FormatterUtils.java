@@ -11,6 +11,9 @@
  *******************************************************************************/
 package org.eclipse.dltk.formatter;
 
+import java.util.List;
+
+import org.eclipse.dltk.formatter.nodes.IFormatterDocument;
 import org.eclipse.dltk.formatter.nodes.IFormatterNode;
 import org.eclipse.dltk.formatter.nodes.IFormatterTextNode;
 
@@ -35,6 +38,44 @@ public class FormatterUtils {
 			}
 		}
 		return true;
+	}
+
+	public static IFormatterTextNode[] toTextNodeArray(List list) {
+		if (list != null) {
+			return (IFormatterTextNode[]) list
+					.toArray(new IFormatterTextNode[list.size()]);
+		} else {
+			return null;
+		}
+	}
+
+	public static boolean isNewLine(IFormatterNode node) {
+		if (node instanceof IFormatterTextNode) {
+			final IFormatterTextNode textNode = (IFormatterTextNode) node;
+			final IFormatterDocument document = node.getDocument();
+			int start = textNode.getStartOffset();
+			if (start < textNode.getEndOffset()) {
+				if (document.charAt(start) == '\n') {
+					++start;
+				} else if (document.charAt(start) == '\r') {
+					++start;
+					if (start < textNode.getEndOffset()
+							&& document.charAt(start) == '\n') {
+						++start;
+					}
+				} else {
+					return false;
+				}
+			}
+			while (start < textNode.getEndOffset()) {
+				if (!isSpace(document.charAt(start))) {
+					return false;
+				}
+				++start;
+			}
+			return true;
+		}
+		return false;
 	}
 
 }

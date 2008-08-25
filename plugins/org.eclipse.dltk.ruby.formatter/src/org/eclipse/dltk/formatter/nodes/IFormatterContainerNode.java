@@ -19,6 +19,8 @@ public interface IFormatterContainerNode extends IFormatterNode {
 
 	boolean isEmpty();
 
+	List getBody();
+
 	List getChildren();
 
 }

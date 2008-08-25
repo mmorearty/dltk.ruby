@@ -11,9 +11,11 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.formatter.internal.nodes;
 
+import org.eclipse.dltk.formatter.nodes.IFormatterCommentableNode;
 import org.eclipse.dltk.formatter.nodes.IFormatterDocument;
 
-public class FormatterAtEndNode extends FormatterBlockWithBeginEndNode {
+public class FormatterAtEndNode extends FormatterBlockWithBeginEndNode
+		implements IFormatterCommentableNode {
 
 	/**
 	 * @param document

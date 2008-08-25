@@ -27,6 +27,7 @@ import org.eclipse.dltk.formatter.nodes.IFormatterContainerNode;
 import org.eclipse.dltk.ruby.formatter.internal.DumpContentException;
 import org.eclipse.dltk.ruby.formatter.internal.Messages;
 import org.eclipse.dltk.ruby.formatter.internal.RubyFormatterNodeBuilder;
+import org.eclipse.dltk.ruby.formatter.internal.RubyFormatterNodeRewriter;
 import org.eclipse.dltk.ruby.formatter.internal.RubyFormatterPlugin;
 import org.eclipse.dltk.ruby.formatter.internal.RubyParser;
 import org.eclipse.dltk.ui.CodeFormatterConstants;
@@ -125,6 +126,7 @@ public class RubyFormatter extends AbstractScriptFormatter {
 			document.setInt(BLANK_LINES[i], getInt(BLANK_LINES[i]));
 		}
 		IFormatterContainerNode root = builder.build(result, document);
+		new RubyFormatterNodeRewriter(result, document).rewrite(root);
 		FormatterContext context = new FormatterContext();
 		FormatterWriter writer = new FormatterWriter(lineDelimiter,
 				createIndentGenerator());

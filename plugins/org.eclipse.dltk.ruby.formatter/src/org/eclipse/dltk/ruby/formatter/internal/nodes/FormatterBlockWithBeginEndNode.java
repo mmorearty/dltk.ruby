@@ -12,8 +12,10 @@
 package org.eclipse.dltk.ruby.formatter.internal.nodes;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.dltk.formatter.FormatterUtils;
 import org.eclipse.dltk.formatter.nodes.FormatterBlockNode;
 import org.eclipse.dltk.formatter.nodes.IFormatterContext;
 import org.eclipse.dltk.formatter.nodes.IFormatterDocument;
@@ -29,14 +31,16 @@ public abstract class FormatterBlockWithBeginEndNode extends FormatterBlockNode 
 		super(document);
 	}
 
-	private IFormatterTextNode begin;
+	private List begin = null;
 	private IFormatterTextNode end;
 
 	public void accept(IFormatterContext context, IFormatterVisitor visitor)
 			throws Exception {
 		context.setBlankLines(getBlankLinesBefore(context));
 		if (begin != null) {
-			visitor.visit(context, begin);
+			for (Iterator i = begin.iterator(); i.hasNext();) {
+				visitor.visit(context, (IFormatterTextNode) i.next());
+			}
 		}
 		context.resetBlankLines();
 		final boolean indenting = isIndenting();
@@ -64,8 +68,8 @@ public abstract class FormatterBlockWithBeginEndNode extends FormatterBlockNode 
 	/**
 	 * @return the begin
 	 */
-	public IFormatterTextNode getBegin() {
-		return begin;
+	public IFormatterTextNode[] getBegin() {
+		return FormatterUtils.toTextNodeArray(begin);
 	}
 
 	/**
@@ -73,7 +77,17 @@ public abstract class FormatterBlockWithBeginEndNode extends FormatterBlockNode 
 	 *            the begin to set
 	 */
 	public void setBegin(IFormatterTextNode begin) {
-		this.begin = begin;
+		if (this.begin == null) {
+			this.begin = new ArrayList();
+		}
+		this.begin.add(begin);
+	}
+
+	public void insertBefore(List nodes) {
+		if (this.begin == null) {
+			this.begin = new ArrayList();
+		}
+		this.begin.addAll(0, nodes);
 	}
 
 	/**
@@ -96,7 +110,7 @@ public abstract class FormatterBlockWithBeginEndNode extends FormatterBlockNode 
 	 */
 	public int getStartOffset() {
 		if (begin != null) {
-			return begin.getStartOffset();
+			return ((IFormatterTextNode) begin.get(0)).getStartOffset();
 		}
 		return super.getStartOffset();
 	}
@@ -113,7 +127,8 @@ public abstract class FormatterBlockWithBeginEndNode extends FormatterBlockNode 
 			return super.getEndOffset();
 		}
 		if (begin != null) {
-			return begin.getEndOffset();
+			return ((IFormatterTextNode) begin.get(begin.size() - 1))
+					.getEndOffset();
 		}
 		return DEFAULT_OFFSET;
 	}
@@ -134,7 +149,7 @@ public abstract class FormatterBlockWithBeginEndNode extends FormatterBlockNode 
 		} else {
 			List result = new ArrayList();
 			if (begin != null) {
-				result.add(begin);
+				result.addAll(begin);
 			}
 			result.addAll(super.getChildren());
 			if (end != null) {

@@ -100,4 +100,8 @@ public class FormatterBlockNode extends AbstractFormatterNode implements
 		return true;
 	}
 
+	public List getBody() {
+		return body;
+	}
+
 }
