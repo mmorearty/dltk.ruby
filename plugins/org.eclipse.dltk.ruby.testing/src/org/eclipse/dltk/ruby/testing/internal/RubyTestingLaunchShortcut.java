@@ -151,15 +151,15 @@ public class RubyTestingLaunchShortcut implements ILaunchShortcut {
 
 	private void performLaunch(IModelElement element, String mode)
 			throws InterruptedException, CoreException {
-		ILaunchConfigurationWorkingCopy temparary = createLaunchConfiguration(element);
-		if (temparary == null) {
+		ILaunchConfigurationWorkingCopy temporary = createLaunchConfiguration(element);
+		if (temporary == null) {
 			return;
 		}
 		ILaunchConfiguration config = findExistingLaunchConfiguration(
-				temparary, mode);
+				temporary, mode);
 		if (config == null) {
 			// no existing found: create a new one
-			config = temparary.doSave();
+			config = temporary.doSave();
 		}
 		DebugUITools.launch(config, mode);
 	}
