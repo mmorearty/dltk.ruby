@@ -11,12 +11,25 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.formatter.tests;
 
+import java.util.Map;
+
 import junit.framework.TestSuite;
 
-public class ModulesTest extends ScriptedTest {
+import org.eclipse.dltk.compiler.util.Util;
+import org.eclipse.dltk.ruby.formatter.RubyFormatter;
+import org.eclipse.dltk.ruby.formatter.RubyFormatterConstants;
+
+public class RubyDoc1Test extends ScriptedTest {
 
 	public static TestSuite suite() {
-		return new ModulesTest().createScriptedSuite("scripts/modules.rb");
+		return new RubyDoc1Test().createScriptedSuite("scripts/rubydocs1.rb");
+	}
+
+	protected RubyFormatter createFormatter() {
+		Map preferences = TestRubyFormatter.createTestingPreferences();
+		preferences.put(RubyFormatterConstants.LINES_BEFORE_FIRST, "1");
+		preferences.put(RubyFormatterConstants.LINES_BEFORE_METHOD, "1");
+		return new TestRubyFormatter(Util.LINE_SEPARATOR, preferences);
 	}
 
 }

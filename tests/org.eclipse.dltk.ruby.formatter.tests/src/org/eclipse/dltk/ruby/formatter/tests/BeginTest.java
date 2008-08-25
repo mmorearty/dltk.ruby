@@ -13,9 +13,9 @@ package org.eclipse.dltk.ruby.formatter.tests;
 
 import junit.framework.TestSuite;
 
-public class BeginTest extends AbstractFormatterTest {
+public class BeginTest extends ScriptedTest {
 	public static TestSuite suite() {
-		return createScriptedSuite(BeginTest.class, "scripts/begin.rb");
+		return new BeginTest().createScriptedSuite("scripts/begin.rb");
 	}
 
 }

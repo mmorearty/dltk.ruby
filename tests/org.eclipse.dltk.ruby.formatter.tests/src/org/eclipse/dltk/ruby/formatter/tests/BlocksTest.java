@@ -13,11 +13,10 @@ package org.eclipse.dltk.ruby.formatter.tests;
 
 import junit.framework.TestSuite;
 
-public class BlocksTest extends AbstractFormatterTest {
+public class BlocksTest extends ScriptedTest {
 
 	public static TestSuite suite() {
-		return createScriptedSuite(BlocksTest.class.getName(),
-				"scripts/blocks.rb");
+		return new BlocksTest().createScriptedSuite("scripts/blocks.rb");
 	}
 
 }

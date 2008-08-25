@@ -37,6 +37,8 @@ public class AllTests {
 		suite.addTest(HereDocumentTest.suite());
 		suite.addTest(StringsTest.suite());
 		suite.addTest(RegexpTest.suite());
+		suite.addTest(RubyDoc1Test.suite());
+		suite.addTest(RubyDoc2Test.suite());
 		suite.addTestSuite(FormatRubyLibTest.class);
 		// $JUnit-END$
 		return suite;

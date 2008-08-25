@@ -13,10 +13,10 @@ package org.eclipse.dltk.ruby.formatter.tests;
 
 import junit.framework.TestSuite;
 
-public class IfTest extends AbstractFormatterTest {
+public class IfTest extends ScriptedTest {
 
 	public static TestSuite suite() {
-		return createScriptedSuite(IfTest.class, "scripts/if.rb");
+		return new IfTest().createScriptedSuite("scripts/if.rb");
 	}
 
 }

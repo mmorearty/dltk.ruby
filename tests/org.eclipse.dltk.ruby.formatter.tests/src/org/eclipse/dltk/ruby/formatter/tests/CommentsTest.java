@@ -2,10 +2,10 @@ package org.eclipse.dltk.ruby.formatter.tests;
 
 import junit.framework.TestSuite;
 
-public class CommentsTest extends AbstractFormatterTest {
+public class CommentsTest extends ScriptedTest {
 
 	public static TestSuite suite() {
-		return createScriptedSuite(CommentsTest.class, "scripts/comments.rb");
+		return new CommentsTest().createScriptedSuite("scripts/comments.rb");
 	}
 
 }
