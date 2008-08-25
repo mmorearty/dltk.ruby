@@ -142,13 +142,7 @@ public class FormatterWriter implements IFormatterVisitor {
 			}
 			context.resetBlankLines();
 		} else if (emptyLines.length() != 0) {
-			if (linesPreserve >= 0 && linesPreserve < Integer.MAX_VALUE
-					&& TextUtils.countLines(emptyLines) > linesPreserve) {
-				writer.append(TextUtils.selectHeadLines(emptyLines,
-						linesPreserve));
-			} else {
-				writer.append(emptyLines);
-			}
+			writeEmptyLines();
 		}
 		emptyLines.setLength(0);
 		if (context.isIndenting()) {
@@ -158,6 +152,15 @@ public class FormatterWriter implements IFormatterVisitor {
 		}
 		indent.setLength(0);
 		lineStarted = true;
+	}
+
+	private void writeEmptyLines() {
+		if (linesPreserve >= 0 && linesPreserve < Integer.MAX_VALUE
+				&& TextUtils.countLines(emptyLines) > linesPreserve) {
+			writer.append(TextUtils.selectHeadLines(emptyLines, linesPreserve));
+		} else {
+			writer.append(emptyLines);
+		}
 	}
 
 	/**
@@ -199,7 +202,7 @@ public class FormatterWriter implements IFormatterVisitor {
 			callbackBuffer.setLength(0);
 		}
 		if (emptyLines.length() != 0) {
-			writer.append(emptyLines);
+			writeEmptyLines();
 			emptyLines.setLength(0);
 		}
 	}
