@@ -322,7 +322,8 @@ public class RubyTestingMainLaunchConfigurationTab extends
 		Font font = parent.getFont();
 		Label fTestEngine = new Label(parent, SWT.NONE);
 		fTestEngine.setText(text);
-		engineType = new Combo(parent, SWT.SINGLE | SWT.BORDER | SWT.DROP_DOWN);
+		engineType = new Combo(parent, SWT.SINGLE | SWT.BORDER | SWT.DROP_DOWN
+				| SWT.READ_ONLY);
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 		engineType.setLayoutData(gd);
 		engineType.setFont(font);
