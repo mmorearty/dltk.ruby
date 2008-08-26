@@ -169,12 +169,18 @@ public class RubyTestingMainLaunchConfigurationTab extends
 		updateLaunchConfigurationDialog();
 	}
 
-	/**
-	 * 
-	 */
-	private void validatePage() {
-		// TODO Auto-generated method stub
-
+	protected boolean validate() {
+		final boolean result;
+		if (fTestContainerRadioButton.getSelection()) {
+			if (fContainerElement == null) {
+				setErrorMessage(DLTKTestingMessages.JUnitLaunchConfigurationTab_error_noContainer);
+				return false;
+			}
+			result = validateProject(fContainerElement.getScriptProject());
+		} else {
+			result = super.validate();
+		}
+		return result && validateEngine();
 	}
 
 	private String getPresentationName(IModelElement element) {
@@ -364,10 +370,6 @@ public class RubyTestingMainLaunchConfigurationTab extends
 		}
 		IResource resource = project.getProject().getFile(getScriptName());
 		return (ISourceModule) DLTKCore.create(resource);
-	}
-
-	protected boolean doCanSave() {
-		return validateScript() && validateEngine();
 	}
 
 	private boolean validateEngine() {
