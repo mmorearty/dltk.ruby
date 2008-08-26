@@ -8,11 +8,9 @@
  ******************************************************************************/
 package org.eclipse.dltk.ruby.internal.debug.ui.launchConfigurations;
 
-import org.eclipse.dltk.core.IDLTKLanguageToolkit;
 import org.eclipse.dltk.core.PreferencesLookupDelegate;
 import org.eclipse.dltk.debug.core.DLTKDebugPreferenceConstants;
 import org.eclipse.dltk.debug.ui.launchConfigurations.MainLaunchConfigurationTab;
-import org.eclipse.dltk.ruby.core.RubyLanguageToolkit;
 import org.eclipse.dltk.ruby.core.RubyNature;
 import org.eclipse.dltk.ruby.debug.RubyDebugPlugin;
 
@@ -49,10 +47,4 @@ public class RubyMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 		return RubyNature.NATURE_ID;
 	}
 
-	/*
-	 * @see org.eclipse.dltk.debug.ui.launchConfigurations.ScriptLaunchConfigurationTab#isValidToolkit(org.eclipse.dltk.core.IDLTKLanguageToolkit)
-	 */
-	protected boolean isValidToolkit(IDLTKLanguageToolkit toolkit) {
-		return (toolkit instanceof RubyLanguageToolkit) ? true : false;
-	}
 }
