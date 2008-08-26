@@ -42,7 +42,7 @@ import org.eclipse.dltk.internal.testing.launcher.DLTKTestingMigrationDelegate;
 import org.eclipse.dltk.launching.ScriptLaunchConfigurationConstants;
 import org.eclipse.dltk.ruby.core.RubyNature;
 import org.eclipse.dltk.ruby.testing.IRubyTestingEngine;
-import org.eclipse.dltk.testing.IDLTKTestingConstants;
+import org.eclipse.dltk.testing.DLTKTestingConstants;
 import org.eclipse.dltk.ui.DLTKUIPlugin;
 import org.eclipse.dltk.ui.ModelElementLabelProvider;
 import org.eclipse.dltk.ui.ScriptElementLabels;
@@ -347,7 +347,7 @@ public class RubyTestingLaunchShortcut implements ILaunchShortcut {
 		boolean engineFound = false;
 		for (int i = 0; i < engines.length; i++) {
 			if (engines[i].isValidModule(module)) {
-				wc.setAttribute(IDLTKTestingConstants.ENGINE_ID_ATR, engines[i]
+				wc.setAttribute(DLTKTestingConstants.ATTR_ENGINE_ID, engines[i]
 						.getId());
 				engineFound = true;
 				break;

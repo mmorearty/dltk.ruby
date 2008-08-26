@@ -27,16 +27,15 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
 import org.eclipse.dltk.compiler.util.Util;
-import org.eclipse.dltk.internal.testing.launcher.DLTKTestingLaunchConfigurationConstants;
-import org.eclipse.dltk.internal.testing.ui.DLTKTestingMessages;
 import org.eclipse.dltk.launching.IInterpreterRunner;
 import org.eclipse.dltk.launching.InterpreterConfig;
 import org.eclipse.dltk.launching.ScriptLaunchConfigurationConstants;
 import org.eclipse.dltk.ruby.launching.RubyLaunchConfigurationDelegate;
 import org.eclipse.dltk.ruby.testing.IRubyTestingEngine;
 import org.eclipse.dltk.testing.DLTKTestingCore;
+import org.eclipse.dltk.testing.DLTKTestingConstants;
+import org.eclipse.dltk.testing.DLTKTestingMessages;
 import org.eclipse.dltk.testing.DLTKTestingPlugin;
-import org.eclipse.dltk.testing.IDLTKTestingConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -56,7 +55,7 @@ public class RubyTestingLaunchConfigurationDelegate extends
 				launch);
 		IRubyTestingEngine[] engines = RubyTestingEngineManager.getEngines();
 		String engineId = configuration.getAttribute(
-				IDLTKTestingConstants.ENGINE_ID_ATR, Util.EMPTY_STRING);
+				DLTKTestingConstants.ATTR_ENGINE_ID, Util.EMPTY_STRING);
 		for (int i = 0; i < engines.length; i++) {
 			if (engines[i].getId().equals(engineId)) {
 				engines[i].correctLaunchConfiguration(config, configuration,
@@ -83,7 +82,7 @@ public class RubyTestingLaunchConfigurationDelegate extends
 		// initialize testing model
 		DLTKTestingPlugin.getModel().start();
 		final String strPort = String.valueOf(evaluatePort());
-		launch.setAttribute(DLTKTestingLaunchConfigurationConstants.ATTR_PORT,
+		launch.setAttribute(DLTKTestingConstants.ATTR_PORT,
 				strPort);
 		config.addEnvVar(RUBY_TESTING_PORT, strPort);
 		if (config.getEnvironment().isLocal() && !isDevelopmentMode(config)) {

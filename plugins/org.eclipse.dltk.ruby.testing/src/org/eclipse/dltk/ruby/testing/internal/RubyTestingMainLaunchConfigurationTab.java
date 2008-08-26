@@ -29,7 +29,6 @@ import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.debug.ui.messages.DLTKLaunchConfigurationsMessages;
-import org.eclipse.dltk.internal.testing.ui.DLTKTestingMessages;
 import org.eclipse.dltk.internal.ui.ModelElementComparator;
 import org.eclipse.dltk.internal.ui.StandardModelElementContentProvider;
 import org.eclipse.dltk.internal.ui.wizards.TypedElementSelectionValidator;
@@ -37,7 +36,8 @@ import org.eclipse.dltk.internal.ui.wizards.TypedViewerFilter;
 import org.eclipse.dltk.launching.ScriptLaunchConfigurationConstants;
 import org.eclipse.dltk.ruby.internal.debug.ui.launchConfigurations.RubyMainLaunchConfigurationTab;
 import org.eclipse.dltk.ruby.testing.IRubyTestingEngine;
-import org.eclipse.dltk.testing.IDLTKTestingConstants;
+import org.eclipse.dltk.testing.DLTKTestingConstants;
+import org.eclipse.dltk.testing.DLTKTestingMessages;
 import org.eclipse.dltk.ui.ModelElementLabelProvider;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.ILabelProvider;
@@ -395,8 +395,10 @@ public class RubyTestingMainLaunchConfigurationTab extends
 			config.setAttribute(
 					ScriptLaunchConfigurationConstants.ATTR_PROJECT_NAME,
 					fContainerElement.getScriptProject().getElementName());
-			config.setAttribute(IDLTKTestingConstants.ATTR_TEST_CONTAINER,
-					fContainerElement.getHandleIdentifier());
+			config
+					.setAttribute(
+							DLTKTestingConstants.ATTR_TEST_CONTAINER,
+							fContainerElement.getHandleIdentifier());
 			config.setAttribute(
 					ScriptLaunchConfigurationConstants.ATTR_MAIN_SCRIPT_NAME,
 					EMPTY_STRING);
@@ -407,11 +409,13 @@ public class RubyTestingMainLaunchConfigurationTab extends
 			config.setAttribute(
 					ScriptLaunchConfigurationConstants.ATTR_MAIN_SCRIPT_NAME,
 					getScriptName());
-			config.setAttribute(IDLTKTestingConstants.ATTR_TEST_CONTAINER,
-					EMPTY_STRING);
+			config
+					.setAttribute(
+							DLTKTestingConstants.ATTR_TEST_CONTAINER,
+							EMPTY_STRING);
 		}
 		performApplyInteractiveConsole(config);
-		config.setAttribute(IDLTKTestingConstants.ENGINE_ID_ATR, getEngineId());
+		config.setAttribute(DLTKTestingConstants.ATTR_ENGINE_ID, getEngineId());
 	}
 
 	private String getEngineId() {
@@ -423,9 +427,10 @@ public class RubyTestingMainLaunchConfigurationTab extends
 		// update test type
 		String containerHandle = Util.EMPTY_STRING;
 		try {
-			containerHandle = config.getAttribute(
-					IDLTKTestingConstants.ATTR_TEST_CONTAINER,
-					Util.EMPTY_STRING);
+			containerHandle = config
+					.getAttribute(
+							DLTKTestingConstants.ATTR_TEST_CONTAINER,
+							Util.EMPTY_STRING);
 		} catch (CoreException ce) {
 		}
 		if (containerHandle.length() > 0) {
@@ -437,7 +442,7 @@ public class RubyTestingMainLaunchConfigurationTab extends
 		IRubyTestingEngine[] engines = RubyTestingEngineManager.getEngines();
 		String id = null;
 		try {
-			id = config.getAttribute(IDLTKTestingConstants.ENGINE_ID_ATR,
+			id = config.getAttribute(DLTKTestingConstants.ATTR_ENGINE_ID,
 					Util.EMPTY_STRING);
 		} catch (CoreException e) {
 			if (DLTKCore.DEBUG) {
@@ -476,8 +481,10 @@ public class RubyTestingMainLaunchConfigurationTab extends
 		String containerHandle = EMPTY_STRING;
 		IModelElement containerElement = null;
 		try {
-			containerHandle = config.getAttribute(
-					IDLTKTestingConstants.ATTR_TEST_CONTAINER, EMPTY_STRING);
+			containerHandle = config
+					.getAttribute(
+							DLTKTestingConstants.ATTR_TEST_CONTAINER,
+							EMPTY_STRING);
 			if (containerHandle.length() > 0) {
 				containerElement = DLTKCore.create(containerHandle);
 			}
