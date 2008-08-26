@@ -395,10 +395,8 @@ public class RubyTestingMainLaunchConfigurationTab extends
 			config.setAttribute(
 					ScriptLaunchConfigurationConstants.ATTR_PROJECT_NAME,
 					fContainerElement.getScriptProject().getElementName());
-			config
-					.setAttribute(
-							DLTKTestingConstants.ATTR_TEST_CONTAINER,
-							fContainerElement.getHandleIdentifier());
+			config.setAttribute(DLTKTestingConstants.ATTR_TEST_CONTAINER,
+					fContainerElement.getHandleIdentifier());
 			config.setAttribute(
 					ScriptLaunchConfigurationConstants.ATTR_MAIN_SCRIPT_NAME,
 					EMPTY_STRING);
@@ -409,10 +407,8 @@ public class RubyTestingMainLaunchConfigurationTab extends
 			config.setAttribute(
 					ScriptLaunchConfigurationConstants.ATTR_MAIN_SCRIPT_NAME,
 					getScriptName());
-			config
-					.setAttribute(
-							DLTKTestingConstants.ATTR_TEST_CONTAINER,
-							EMPTY_STRING);
+			config.setAttribute(DLTKTestingConstants.ATTR_TEST_CONTAINER,
+					EMPTY_STRING);
 		}
 		performApplyInteractiveConsole(config);
 		config.setAttribute(DLTKTestingConstants.ATTR_ENGINE_ID, getEngineId());
@@ -428,8 +424,7 @@ public class RubyTestingMainLaunchConfigurationTab extends
 		String containerHandle = Util.EMPTY_STRING;
 		try {
 			containerHandle = config
-					.getAttribute(
-							DLTKTestingConstants.ATTR_TEST_CONTAINER,
+					.getAttribute(DLTKTestingConstants.ATTR_TEST_CONTAINER,
 							Util.EMPTY_STRING);
 		} catch (CoreException ce) {
 		}
@@ -452,14 +447,12 @@ public class RubyTestingMainLaunchConfigurationTab extends
 		if (id == null || id.length() == 0) {
 			handleDetectButtonSelected();
 		} else {
-			// this.engineType.select(0);
 			for (int i = 0; i < engines.length; i++) {
 				if (engines[i].getId().equals(id)) {
 					this.engineType.select(i);
 				}
 			}
 		}
-		// handleDetectButtonSelected();
 	}
 
 	/**
@@ -471,7 +464,7 @@ public class RubyTestingMainLaunchConfigurationTab extends
 		setEnableSingleTestGroup(true);
 		setEnableContainerTestGroup(false);
 		fTestContainerRadioButton.setSelection(false);
-		fContainerText.setText(""); //$NON-NLS-1$
+		fContainerText.setText(EMPTY_STRING);
 	}
 
 	/**
@@ -481,10 +474,8 @@ public class RubyTestingMainLaunchConfigurationTab extends
 		String containerHandle = EMPTY_STRING;
 		IModelElement containerElement = null;
 		try {
-			containerHandle = config
-					.getAttribute(
-							DLTKTestingConstants.ATTR_TEST_CONTAINER,
-							EMPTY_STRING);
+			containerHandle = config.getAttribute(
+					DLTKTestingConstants.ATTR_TEST_CONTAINER, EMPTY_STRING);
 			if (containerHandle.length() > 0) {
 				containerElement = DLTKCore.create(containerHandle);
 			}
