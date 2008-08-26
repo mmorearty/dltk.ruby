@@ -79,7 +79,15 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 
 	private final static int RELEVANCE_FREE_SPACE = 100000;
 
+	/**
+	 * Relevance for keywords. Should be used only for keywords - the distinct
+	 * value is required to sort templates (their relevance is much lower by
+	 * default) before the matching keywords - see
+	 * ScriptCompletionProposalComputer#updateTemplateProposalRelevance()
+	 */
 	private final static int RELEVANCE_KEYWORD = 1000000;
+
+	private final static int RELEVANCE_TYPE = 2000000;
 
 	private final static int RELEVANCE_METHODS = 10000000;
 
@@ -664,7 +672,7 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 
 		for (Iterator iterator = types.iterator(); iterator.hasNext();) {
 			IType t = (IType) iterator.next();
-			reportType(t, RELEVANCE_KEYWORD);
+			reportType(t, RELEVANCE_TYPE);
 		}
 
 		for (Iterator iterator = methods.iterator(); iterator.hasNext();) {
@@ -716,7 +724,7 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 		for (int i = 0; i < types.length; i++) {
 			final String elementName = types[i].getElementName();
 			if (names.add(elementName)) {
-				reportType(types[i], RELEVANCE_KEYWORD);
+				reportType(types[i], RELEVANCE_TYPE);
 			}
 		}
 
