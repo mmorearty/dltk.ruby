@@ -7,6 +7,7 @@ module DLTK
 			# environment variable name to pass communication port number
 			# to the launched script
 			PORT = "RUBY_TESTING_PORT"
+			PATH = "RUBY_TESTING_PATH"
 		end
 
 		module MessageIds
@@ -243,7 +244,9 @@ at_exit do
 	unless $! || Test::Unit.run?
 		port = ENV[DLTK::TestUnit::EnvVars::PORT].to_i
 		if port != 0
-			autoRunner = Test::Unit::AutoRunner.new(false)
+			path = ENV[DLTK::TestUnit::EnvVars::PATH]
+			autoRunner = Test::Unit::AutoRunner.new(path != nil)
+			autoRunner.base = path if path
 			autoRunner.runner = proc do |r|
 				DLTK::TestUnit::Runner
 			end
@@ -254,5 +257,6 @@ end
 
 if __FILE__ == $0
 	#debug mode
-	require 'demo-tests'
+	#require 'test_math'
+	#require 'test_shoulda'
 end
