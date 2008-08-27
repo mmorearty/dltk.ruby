@@ -166,6 +166,10 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 		return false;
 	}
 
+	private boolean afterDot(String content, int position) {
+		return position >= 1 && content.charAt(position - 1) == '.';
+	}
+
 	private String getWordStarting(String content, int position, int maxLen) {
 		if (position <= 0 || position > content.length())
 			return Util.EMPTY_STRING;
@@ -276,8 +280,13 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 						completeSimpleRef(moduleDeclaration, wordStarting,
 								position);
 					} else if (minimalNode instanceof RubyDVarExpression) {
-						completeSimpleRef(moduleDeclaration, wordStarting,
-								position);
+						if (afterDot(content, position)) {
+							completeClassMethods(moduleDeclaration,
+									minimalNode, wordStarting);
+						} else {
+							completeSimpleRef(moduleDeclaration, wordStarting,
+									position);
+						}
 					} else if (minimalNode instanceof MethodDeclaration
 							|| minimalNode instanceof TypeDeclaration
 							|| minimalNode instanceof StringLiteral) {
