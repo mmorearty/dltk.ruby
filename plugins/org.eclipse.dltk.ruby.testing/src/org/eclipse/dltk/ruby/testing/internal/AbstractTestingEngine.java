@@ -228,4 +228,11 @@ public abstract class AbstractTestingEngine extends DLTKContributedExtension
 		return display;
 	}
 
+	/*
+	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
+	 */
+	public Object getAdapter(Class adapter) {
+		return null;
+	}
+
 }
