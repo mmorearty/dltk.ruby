@@ -363,14 +363,18 @@ public class RubyTestingMainLaunchConfigurationTab extends
 	}
 
 	private ISourceModule getSourceModule() {
-		IScriptProject project = this.getProject();
+		final IScriptProject project = this.getProject();
 		if (project == null) {
 			return null;
 		}
 		if (!fTestRadioButton.getSelection()) {
 			return null;
 		}
-		IResource resource = project.getProject().getFile(getScriptName());
+		final String scriptName = getScriptName();
+		if (scriptName.length() == 0) {
+			return null;
+		}
+		final IResource resource = project.getProject().getFile(scriptName);
 		return (ISourceModule) DLTKCore.create(resource);
 	}
 
