@@ -168,7 +168,7 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 
 	private String getWordStarting(String content, int position, int maxLen) {
 		if (position <= 0 || position > content.length())
-			return null;
+			return Util.EMPTY_STRING;
 		final int original = position;
 		while (position > 0
 				&& maxLen > 0
@@ -180,10 +180,7 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 			--position;
 			--maxLen;
 		}
-		if (position < original) {
-			return content.substring(position, original);
-		}
-		return null;
+		return content.substring(position, original);
 	}
 
 	public void complete(org.eclipse.dltk.compiler.env.ISourceModule module,
@@ -200,7 +197,7 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 
 			String wordStarting = getWordStarting(content, position, 10);
 
-			if (wordStarting != null) {
+			if (wordStarting.length() != 0) {
 				this.setSourceRange(position - wordStarting.length(), position);
 				String[] keywords = RubyKeyword.findByPrefix(wordStarting);
 				for (int j = 0; j < keywords.length; j++) {
@@ -323,7 +320,7 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 						completeSimpleRef(moduleDeclaration, wordStarting,
 								position);
 
-						if (wordStarting == null
+						if (wordStarting.length() == 0
 								&& !requestor.isContextInformationMode()) {
 							if (!afterContentAndSpace(moduleDeclaration,
 									content, position)) {
@@ -584,8 +581,7 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 
 	private void completeSimpleRef(ModuleDeclaration moduleDeclaration,
 			String prefix, int position) {
-		this.setSourceRange(position - (prefix != null ? prefix.length() : 0),
-				position);
+		this.setSourceRange(position - prefix.length(), position);
 		ASTNode[] wayToNode = ASTUtils.restoreWayToNode(moduleDeclaration,
 				this.completionNode);
 		for (int i = wayToNode.length - 1; i > 0; i--) {
@@ -596,7 +592,7 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 					ASTNode n = (ASTNode) iterator.next();
 					if (n instanceof RubyDAssgnExpression) {
 						RubyDAssgnExpression rd = (RubyDAssgnExpression) n;
-						if (prefix == null || rd.getName().startsWith(prefix)) {
+						if (rd.getName().startsWith(prefix)) {
 							reportField(new FakeField(currentModule, rd
 									.getName(), 0, 0), RELEVANCE_VARIABLES);
 						}
@@ -605,7 +601,7 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 			}
 		}
 
-		if (prefix == null || prefix.startsWith("$")) { // globals //$NON-NLS-1$
+		if (prefix.startsWith("$")) { // globals //$NON-NLS-1$
 			completeGlobalVar(moduleDeclaration, prefix, position);
 		} else { // class & instance & locals
 			IField[] fields = RubyModelUtils.findFields(mixinModel,

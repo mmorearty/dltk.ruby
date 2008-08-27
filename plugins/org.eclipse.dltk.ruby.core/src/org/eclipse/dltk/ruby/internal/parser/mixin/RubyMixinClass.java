@@ -261,8 +261,7 @@ public class RubyMixinClass implements IRubyMixinElement {
 			return;
 		IMixinElement[] children = mixinElement.getChildren();
 		for (int i = 0; i < children.length; i++) {
-			if (prefix == null
-					|| children[i].getLastKeySegment().startsWith(prefix)) {
+			if (children[i].getLastKeySegment().startsWith(prefix)) {
 				IRubyMixinElement element = model
 						.createRubyElement(children[i]);
 				if (element instanceof RubyMixinMethod) {

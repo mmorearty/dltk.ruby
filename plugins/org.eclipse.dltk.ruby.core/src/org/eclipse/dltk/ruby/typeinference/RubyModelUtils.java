@@ -177,6 +177,7 @@ public class RubyModelUtils {
 	public static IField[] findFields(RubyMixinModel rubyModel,
 			ISourceModule modelModule, ModuleDeclaration parsedUnit,
 			String prefix, int position) {
+		assert (prefix != null);
 		List result = new ArrayList();
 
 		String[] keys = RubyTypeInferencingUtils.getModelStaticScopesKeys(
@@ -196,8 +197,7 @@ public class RubyModelUtils {
 					if (element instanceof RubyMixinVariable) {
 						RubyMixinVariable variable = (RubyMixinVariable) element;
 						IField field = variable.getSourceFields()[0];
-						if (prefix == null
-								|| field.getElementName().startsWith(prefix))
+						if (field.getElementName().startsWith(prefix))
 							result.add(field);
 					}
 				}
@@ -224,9 +224,7 @@ public class RubyModelUtils {
 					for (int i = 0; i < children.length; i++) {
 						if (children[i] instanceof IField) {
 							IField field = (IField) children[i];
-							if (prefix == null
-									|| field.getElementName()
-											.startsWith(prefix))
+							if (field.getElementName().startsWith(prefix))
 								result.add(field);
 						}
 					}
@@ -383,9 +381,7 @@ public class RubyModelUtils {
 			if (sourceFields != null) {
 				for (int j = 0; j < sourceFields.length; j++) {
 					if (sourceFields[j] != null) {
-						if (prefix == null
-								|| sourceFields[j].getElementName().startsWith(
-										prefix)) {
+						if (sourceFields[j].getElementName().startsWith(prefix)) {
 							resultList.add(sourceFields[j]);
 							break;
 						}
