@@ -129,7 +129,10 @@ public class NatureExtensionManager {
 						result.add(element);
 					} else {
 						try {
-							result.add(createInstanceByDescriptor(element));
+							final Object instance = createInstanceByDescriptor(element);
+							if (instance != null) {
+								result.add(instance);
+							}
 						} catch (Exception e) {
 							RubyTestingPlugin
 									.error(
