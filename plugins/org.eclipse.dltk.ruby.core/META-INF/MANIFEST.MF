@@ -76,7 +76,5 @@ Export-Package: org.eclipse.dltk.ruby.ast;
    org.eclipse.dltk.ast.declarations,
    org.eclipse.dltk.core,
    org.eclipse.dltk.ruby.typeinference.internal"
-Bundle-ClassPath: jruby.jar,
- .
 Bundle-RequiredExecutionEnvironment: J2SE-1.4
-
+Bundle-ActivationPolicy: lazy
