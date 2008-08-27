@@ -11,11 +11,8 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.testing.internal;
 
-import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTabGroup;
-import org.eclipse.debug.ui.CommonTab;
 import org.eclipse.debug.ui.EnvironmentTab;
-import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.debug.ui.ILaunchConfigurationDialog;
 import org.eclipse.debug.ui.ILaunchConfigurationTab;
 import org.eclipse.dltk.debug.ui.launchConfigurations.ScriptArgumentsTab;
@@ -28,15 +25,7 @@ public class RubyTestingTabGroup extends AbstractLaunchConfigurationTabGroup {
 				mode);
 		ILaunchConfigurationTab[] tabs = new ILaunchConfigurationTab[] { main,
 				new ScriptArgumentsTab(), new RubyInterpreterTab(main),
-				new EnvironmentTab(), new CommonTab() {
-					public void performApply(
-							ILaunchConfigurationWorkingCopy configuration) {
-						super.performApply(configuration);
-						configuration.setAttribute(
-								IDebugUIConstants.ATTR_CAPTURE_IN_CONSOLE,
-								(String) null);
-					}
-				} };
+				new EnvironmentTab(), new RubyTestingCommonTab() };
 		setTabs(tabs);
 	}
 

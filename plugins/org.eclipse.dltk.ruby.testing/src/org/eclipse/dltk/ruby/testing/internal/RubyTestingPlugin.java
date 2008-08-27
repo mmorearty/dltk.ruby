@@ -11,24 +11,26 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.testing.internal;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle
  */
-public class Activator extends AbstractUIPlugin {
+public class RubyTestingPlugin extends AbstractUIPlugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.eclipse.dltk.ruby.testing"; //$NON-NLS-1$
 
 	// The shared instance
-	private static Activator plugin;
+	private static RubyTestingPlugin plugin;
 
 	/**
 	 * The constructor
 	 */
-	public Activator() {
+	public RubyTestingPlugin() {
 	}
 
 	/*
@@ -52,8 +54,13 @@ public class Activator extends AbstractUIPlugin {
 	 * 
 	 * @return the shared instance
 	 */
-	public static Activator getDefault() {
+	public static RubyTestingPlugin getDefault() {
 		return plugin;
+	}
+
+	public static void error(String message, Throwable t) {
+		plugin.getLog().log(
+				new Status(IStatus.ERROR, PLUGIN_ID, IStatus.OK, message, t));
 	}
 
 }

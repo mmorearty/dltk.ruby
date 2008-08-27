@@ -17,10 +17,10 @@ import java.util.List;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
@@ -31,17 +31,15 @@ import org.eclipse.debug.ui.IDebugModelPresentation;
 import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.debug.ui.ILaunchShortcut;
 import org.eclipse.dltk.compiler.util.Util;
-import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IMethod;
 import org.eclipse.dltk.core.IModelElement;
-import org.eclipse.dltk.core.IScriptModel;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.IType;
 import org.eclipse.dltk.internal.testing.launcher.DLTKTestingMigrationDelegate;
 import org.eclipse.dltk.launching.ScriptLaunchConfigurationConstants;
 import org.eclipse.dltk.ruby.core.RubyNature;
-import org.eclipse.dltk.ruby.testing.IRubyTestingEngine;
+import org.eclipse.dltk.ruby.testing.ITestingEngine;
 import org.eclipse.dltk.testing.DLTKTestingConstants;
 import org.eclipse.dltk.ui.DLTKUIPlugin;
 import org.eclipse.dltk.ui.ModelElementLabelProvider;
@@ -341,13 +339,15 @@ public class RubyTestingLaunchShortcut implements ILaunchShortcut {
 		// wc.setAttribute(XUnitLaunchConfigurationConstants.
 		// ATTR_TEST_ELEMENT_NAME, testElementName);
 		// XUnitMigrationDelegate.mapResources(wc);
-		IRubyTestingEngine[] engines = RubyTestingEngineManager.getEngines();
+		ITestingEngine[] engines = TestingEngineManager.getEngines();
 		ISourceModule module = (ISourceModule) element
 				.getAncestor(IModelElement.SOURCE_MODULE);
 		boolean engineFound = false;
 		for (int i = 0; i < engines.length; i++) {
-			if (engines[i].isValidModule(module)) {
-				wc.setAttribute(DLTKTestingConstants.ATTR_ENGINE_ID, engines[i]
+			final ITestingEngine engine = engines[i];
+			final IStatus status = engine.validateSourceModule(module);
+			if (status != null && status.isOK()) {
+				wc.setAttribute(DLTKTestingConstants.ATTR_ENGINE_ID, engine
 						.getId());
 				engineFound = true;
 				break;

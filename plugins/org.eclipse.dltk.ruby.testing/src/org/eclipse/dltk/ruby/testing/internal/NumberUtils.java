@@ -9,10 +9,19 @@
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Alex Panchenko)
  *******************************************************************************/
-package org.eclipse.dltk.ruby.testing.internal.testunit;
+package org.eclipse.dltk.ruby.testing.internal;
 
-import org.eclipse.dltk.ruby.testing.internal.AbstractTestingEngine;
+public class NumberUtils {
 
-public class TestUnitTestingEngine extends AbstractTestingEngine {
+	static int toInt(final String strPriority) {
+		if (strPriority != null && strPriority.length() != 0) {
+			try {
+				return Integer.parseInt(strPriority);
+			} catch (NumberFormatException e) {
+				// ignore
+			}
+		}
+		return 0;
+	}
 
 }

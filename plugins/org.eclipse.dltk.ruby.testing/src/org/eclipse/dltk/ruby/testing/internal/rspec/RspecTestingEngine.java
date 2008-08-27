@@ -11,16 +11,8 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.testing.internal.rspec;
 
-import org.eclipse.dltk.core.ISourceModule;
-import org.eclipse.dltk.ruby.testing.IRubyTestingEngine;
 import org.eclipse.dltk.ruby.testing.internal.AbstractTestingEngine;
 
-public class RspecTestingEngine extends AbstractTestingEngine implements
-		IRubyTestingEngine {
-
-	public boolean isValidModule(ISourceModule module) {
-		// TODO Auto-generated method stub
-		return true;
-	}
+public class RspecTestingEngine extends AbstractTestingEngine {
 
 }

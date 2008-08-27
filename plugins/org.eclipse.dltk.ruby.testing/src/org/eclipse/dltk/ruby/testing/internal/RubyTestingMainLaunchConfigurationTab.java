@@ -16,6 +16,7 @@ import java.util.Map;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
@@ -35,7 +36,7 @@ import org.eclipse.dltk.internal.ui.wizards.TypedElementSelectionValidator;
 import org.eclipse.dltk.internal.ui.wizards.TypedViewerFilter;
 import org.eclipse.dltk.launching.ScriptLaunchConfigurationConstants;
 import org.eclipse.dltk.ruby.internal.debug.ui.launchConfigurations.RubyMainLaunchConfigurationTab;
-import org.eclipse.dltk.ruby.testing.IRubyTestingEngine;
+import org.eclipse.dltk.ruby.testing.ITestingEngine;
 import org.eclipse.dltk.testing.DLTKTestingConstants;
 import org.eclipse.dltk.testing.DLTKTestingMessages;
 import org.eclipse.dltk.ui.ModelElementLabelProvider;
@@ -322,8 +323,7 @@ public class RubyTestingMainLaunchConfigurationTab extends
 		Font font = parent.getFont();
 		Label fTestEngine = new Label(parent, SWT.NONE);
 		fTestEngine.setText(text);
-		engineType = new Combo(parent, SWT.SINGLE | SWT.BORDER | SWT.DROP_DOWN
-				| SWT.READ_ONLY);
+		engineType = new Combo(parent, SWT.SINGLE | SWT.BORDER | SWT.DROP_DOWN);
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 		engineType.setLayoutData(gd);
 		engineType.setFont(font);
@@ -334,7 +334,7 @@ public class RubyTestingMainLaunchConfigurationTab extends
 		});
 		detect = createPushButton(parent, "Detect", null);
 
-		IRubyTestingEngine[] engines = RubyTestingEngineManager.getEngines();
+		ITestingEngine[] engines = TestingEngineManager.getEngines();
 		for (int i = 0; i < engines.length; i++) {
 			String name = engines[i].getName();
 			this.engineType.add(name);
@@ -349,12 +349,13 @@ public class RubyTestingMainLaunchConfigurationTab extends
 	}
 
 	private void handleDetectButtonSelected() {
-		IRubyTestingEngine[] engines = RubyTestingEngineManager.getEngines();
+		ITestingEngine[] engines = TestingEngineManager.getEngines();
 		// this.engineType.select(0);
 		ISourceModule module = getSourceModule();
 		if (module != null && module.exists()) {
 			for (int i = 0; i < engines.length; i++) {
-				if (engines[i].isValidModule(module)) {
+				final IStatus status = engines[i].validateSourceModule(module);
+				if (status != null && status.isOK()) {
 					this.engineType.select(i);
 				}
 			}
@@ -374,19 +375,10 @@ public class RubyTestingMainLaunchConfigurationTab extends
 	}
 
 	private boolean validateEngine() {
-		ISourceModule module = getSourceModule();
-		if (module != null) {
-			IRubyTestingEngine[] engines = RubyTestingEngineManager
-					.getEngines();
-			for (int i = 0; i < engines.length; i++) {
-				String selectedEngine = this.getEngineId();
-				if (engines[i].getId().equals(selectedEngine)
-						&& engines[i].isValidModule(module)) {
-					return true;
-				}
-			}
+		if (TestingEngineManager.getEngine(getEngineId()) == null) {
+			setErrorMessage("Testing engine not selected");
+			return false;
 		}
-		setErrorMessage("Testing engine not support specified script");
 		return true;
 	}
 
@@ -435,7 +427,7 @@ public class RubyTestingMainLaunchConfigurationTab extends
 			updateTestScriptFromConfig(config);
 		}
 		// update engine
-		IRubyTestingEngine[] engines = RubyTestingEngineManager.getEngines();
+		ITestingEngine[] engines = TestingEngineManager.getEngines();
 		String id = null;
 		try {
 			id = config.getAttribute(DLTKTestingConstants.ATTR_ENGINE_ID,

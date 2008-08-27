@@ -6,14 +6,16 @@
    <testingEngine
          class="org.eclipse.dltk.ruby.testing.internal.testunit.TestUnitTestingEngine"
          id="org.eclipse.dltk.ruby.testing.testunit"
-         name="Test::Unit testing engine"
-         priority="1">
+         name="Test::Unit"
+         nature="org.eclipse.dltk.ruby.core.nature"
+         priority="20">
    </testingEngine>
    <testingEngine
          class="org.eclipse.dltk.ruby.testing.internal.rspec.RspecTestingEngine"
          id="org.eclipse.dltk.ruby.testing.rspec"
-         name="RSpec testing engine"
-         priority="2">
+         name="RSpec"
+         nature="org.eclipse.dltk.ruby.core.nature"
+         priority="10">
    </testingEngine>
    </extension>
    <extension

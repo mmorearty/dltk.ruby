@@ -9,10 +9,19 @@
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Alex Panchenko)
  *******************************************************************************/
-package org.eclipse.dltk.ruby.testing.internal.testunit;
+package org.eclipse.dltk.ruby.testing.internal;
 
-import org.eclipse.dltk.ruby.testing.internal.AbstractTestingEngine;
+import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
+import org.eclipse.debug.ui.CommonTab;
+import org.eclipse.debug.ui.IDebugUIConstants;
 
-public class TestUnitTestingEngine extends AbstractTestingEngine {
+public class RubyTestingCommonTab extends CommonTab {
+
+	public void performApply(ILaunchConfigurationWorkingCopy configuration) {
+		super.performApply(configuration);
+		// TODO only if console output mode
+		configuration.setAttribute(IDebugUIConstants.ATTR_CAPTURE_IN_CONSOLE,
+				(String) null);
+	}
 
 }
