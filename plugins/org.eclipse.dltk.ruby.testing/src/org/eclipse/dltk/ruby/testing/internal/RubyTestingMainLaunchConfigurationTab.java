@@ -20,7 +20,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
-import org.eclipse.dltk.compiler.util.Util;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.IProjectFragment;
@@ -418,11 +417,10 @@ public class RubyTestingMainLaunchConfigurationTab extends
 	protected void doInitializeForm(ILaunchConfiguration config) {
 		initializeInteractiveConsoleFrom(config);
 		// update test type
-		String containerHandle = Util.EMPTY_STRING;
+		String containerHandle = EMPTY_STRING;
 		try {
-			containerHandle = config
-					.getAttribute(DLTKTestingConstants.ATTR_TEST_CONTAINER,
-							Util.EMPTY_STRING);
+			containerHandle = config.getAttribute(
+					DLTKTestingConstants.ATTR_TEST_CONTAINER, EMPTY_STRING);
 		} catch (CoreException ce) {
 		}
 		if (containerHandle.length() > 0) {
@@ -435,7 +433,7 @@ public class RubyTestingMainLaunchConfigurationTab extends
 		String id = null;
 		try {
 			id = config.getAttribute(DLTKTestingConstants.ATTR_ENGINE_ID,
-					Util.EMPTY_STRING);
+					EMPTY_STRING);
 		} catch (CoreException e) {
 			if (DLTKCore.DEBUG) {
 				e.printStackTrace();
