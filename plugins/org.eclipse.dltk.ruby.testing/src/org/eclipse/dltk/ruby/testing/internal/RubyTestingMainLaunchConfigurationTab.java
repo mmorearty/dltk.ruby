@@ -343,7 +343,6 @@ public class RubyTestingMainLaunchConfigurationTab extends
 				handleDetectButtonSelected();
 			}
 		});
-		handleDetectButtonSelected();
 	}
 
 	private void handleDetectButtonSelected() {
