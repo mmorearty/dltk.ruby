@@ -69,6 +69,7 @@ module DLTK
 
 		class Runner < Test::Unit::UI::Console::TestRunner
 			def start
+				connectSocket ENV[EnvVars::PORT].to_i
 				@testsByName = {}
 				super
 			ensure
@@ -91,7 +92,6 @@ module DLTK
 			end
 
 			def connect(result)
-				connectSocket ENV[EnvVars::PORT].to_i
 				@startTime = Time.now
 				notifyTestRunStarted @suite.size
 				sendTree(@suite)
@@ -246,6 +246,7 @@ at_exit do
 		if port != 0
 			path = ENV[DLTK::TestUnit::EnvVars::PATH]
 			autoRunner = Test::Unit::AutoRunner.new(path != nil)
+			autoRunner.output_level = Test::Unit::UI::SILENT
 			autoRunner.base = path if path
 			autoRunner.runner = proc do |r|
 				DLTK::TestUnit::Runner
