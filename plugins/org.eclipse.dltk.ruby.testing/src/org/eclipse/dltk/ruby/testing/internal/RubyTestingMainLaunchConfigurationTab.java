@@ -30,6 +30,7 @@ import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.debug.ui.messages.DLTKLaunchConfigurationsMessages;
+import org.eclipse.dltk.internal.testing.launcher.DLTKTestingMigrationDelegate;
 import org.eclipse.dltk.internal.ui.ModelElementComparator;
 import org.eclipse.dltk.internal.ui.StandardModelElementContentProvider;
 import org.eclipse.dltk.internal.ui.wizards.TypedElementSelectionValidator;
@@ -488,6 +489,11 @@ public class RubyTestingMainLaunchConfigurationTab extends
 		}
 		performApplyInteractiveConsole(config);
 		config.setAttribute(DLTKTestingConstants.ATTR_ENGINE_ID, getEngineId());
+	}
+
+	protected void mapResources(ILaunchConfigurationWorkingCopy config)
+			throws CoreException {
+		DLTKTestingMigrationDelegate.mapResources(config);
 	}
 
 	private String getEngineId() {
