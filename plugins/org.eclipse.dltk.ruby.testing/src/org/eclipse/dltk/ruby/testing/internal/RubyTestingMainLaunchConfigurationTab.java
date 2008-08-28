@@ -14,7 +14,6 @@ package org.eclipse.dltk.ruby.testing.internal;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
@@ -432,20 +431,11 @@ public class RubyTestingMainLaunchConfigurationTab extends
 		}
 	}
 
-	private ISourceModule getSourceModule() {
-		final IScriptProject project = this.getProject();
-		if (project == null) {
-			return null;
-		}
+	protected ISourceModule getSourceModule() {
 		if (!fTestRadioButton.getSelection()) {
 			return null;
 		}
-		final String scriptName = getScriptName();
-		if (scriptName.length() == 0) {
-			return null;
-		}
-		final IResource resource = project.getProject().getFile(scriptName);
-		return (ISourceModule) DLTKCore.create(resource);
+		return super.getSourceModule();
 	}
 
 	private boolean validateEngine() {
@@ -454,6 +444,20 @@ public class RubyTestingMainLaunchConfigurationTab extends
 			return false;
 		}
 		return true;
+	}
+
+	protected void setDefaults(ILaunchConfigurationWorkingCopy configuration,
+			IModelElement element) {
+		if (element instanceof ISourceModule) {
+			super.setDefaults(configuration, element);
+		} else {
+			configuration.setAttribute(
+					ScriptLaunchConfigurationConstants.ATTR_PROJECT_NAME,
+					element.getScriptProject().getElementName());
+			configuration.setAttribute(
+					DLTKTestingConstants.ATTR_TEST_CONTAINER, element
+							.getHandleIdentifier());
+		}
 	}
 
 	protected void doPerformApply(ILaunchConfigurationWorkingCopy config) {
