@@ -20,7 +20,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
@@ -39,8 +38,10 @@ import org.eclipse.dltk.core.IType;
 import org.eclipse.dltk.internal.testing.launcher.DLTKTestingMigrationDelegate;
 import org.eclipse.dltk.launching.ScriptLaunchConfigurationConstants;
 import org.eclipse.dltk.ruby.core.RubyNature;
-import org.eclipse.dltk.ruby.testing.ITestingEngine;
 import org.eclipse.dltk.testing.DLTKTestingConstants;
+import org.eclipse.dltk.testing.ITestingEngine;
+import org.eclipse.dltk.testing.TestingEngineDetectResult;
+import org.eclipse.dltk.testing.TestingEngineManager;
 import org.eclipse.dltk.ui.DLTKUIPlugin;
 import org.eclipse.dltk.ui.ModelElementLabelProvider;
 import org.eclipse.dltk.ui.ScriptElementLabels;
@@ -339,23 +340,15 @@ public class RubyTestingLaunchShortcut implements ILaunchShortcut {
 		// wc.setAttribute(XUnitLaunchConfigurationConstants.
 		// ATTR_TEST_ELEMENT_NAME, testElementName);
 		// XUnitMigrationDelegate.mapResources(wc);
-		ITestingEngine[] engines = TestingEngineManager.getEngines();
+		ITestingEngine[] engines = TestingEngineManager.getEngines(RubyNature.NATURE_ID);
 		ISourceModule module = (ISourceModule) element
 				.getAncestor(IModelElement.SOURCE_MODULE);
-		boolean engineFound = false;
-		for (int i = 0; i < engines.length; i++) {
-			final ITestingEngine engine = engines[i];
-			final IStatus status = engine.validateSourceModule(module);
-			if (status != null && status.isOK()) {
-				wc.setAttribute(DLTKTestingConstants.ATTR_ENGINE_ID, engine
-						.getId());
-				engineFound = true;
-				break;
-			}
+		TestingEngineDetectResult detection = TestingEngineManager.detect(engines,
+				module);
+		if (detection != null) {
+			wc.setAttribute(DLTKTestingConstants.ATTR_ENGINE_ID, detection
+					.getEngine().getId());
 		}
-		// if( engineFound == false ) {
-		// return null;
-		// }
 
 		return wc;
 	}

@@ -37,9 +37,11 @@ import org.eclipse.dltk.internal.ui.wizards.TypedElementSelectionValidator;
 import org.eclipse.dltk.internal.ui.wizards.TypedViewerFilter;
 import org.eclipse.dltk.launching.ScriptLaunchConfigurationConstants;
 import org.eclipse.dltk.ruby.internal.debug.ui.launchConfigurations.RubyMainLaunchConfigurationTab;
-import org.eclipse.dltk.ruby.testing.ITestingEngine;
 import org.eclipse.dltk.testing.DLTKTestingConstants;
 import org.eclipse.dltk.testing.DLTKTestingMessages;
+import org.eclipse.dltk.testing.ITestingEngine;
+import org.eclipse.dltk.testing.TestingEngineDetectResult;
+import org.eclipse.dltk.testing.TestingEngineManager;
 import org.eclipse.dltk.ui.ModelElementLabelProvider;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.resource.JFaceResources;
@@ -330,7 +332,8 @@ public class RubyTestingMainLaunchConfigurationTab extends
 				DLTKTestingMessages.MainLaunchConfigurationTab_detectEngine,
 				null);
 
-		ITestingEngine[] engines = TestingEngineManager.getEngines();
+		ITestingEngine[] engines = TestingEngineManager
+				.getEngines(getNatureID());
 		for (int i = 0; i < engines.length; i++) {
 			String name = engines[i].getName();
 			this.engineType.add(name);
@@ -354,8 +357,9 @@ public class RubyTestingMainLaunchConfigurationTab extends
 	private void handleDetectButtonSelected() {
 		ISourceModule module = getSourceModule();
 		if (module != null && module.exists()) {
-			final ITestingEngine[] engines = TestingEngineManager.getEngines();
-			final TestingEngineDetection result = TestingEngineManager.detect(
+			final ITestingEngine[] engines = TestingEngineManager
+					.getEngines(getNatureID());
+			final TestingEngineDetectResult result = TestingEngineManager.detect(
 					engines, module);
 			if (result != null) {
 				engineType.select(Arrays.asList(engines).indexOf(
@@ -450,8 +454,9 @@ public class RubyTestingMainLaunchConfigurationTab extends
 			IModelElement element) {
 		if (element instanceof ISourceModule) {
 			super.setDefaults(configuration, element);
-			TestingEngineDetection detection = TestingEngineManager.detect(
-					TestingEngineManager.getEngines(), (ISourceModule) element);
+			TestingEngineDetectResult detection = TestingEngineManager.detect(
+					TestingEngineManager.getEngines(getNatureID()),
+					(ISourceModule) element);
 			if (detection != null) {
 				configuration.setAttribute(DLTKTestingConstants.ATTR_ENGINE_ID,
 						detection.getEngine().getId());
@@ -527,7 +532,8 @@ public class RubyTestingMainLaunchConfigurationTab extends
 		if (id == null || id.length() == 0) {
 			handleDetectButtonSelected();
 		} else {
-			final ITestingEngine[] engines = TestingEngineManager.getEngines();
+			final ITestingEngine[] engines = TestingEngineManager
+					.getEngines(getNatureID());
 			for (int i = 0; i < engines.length; i++) {
 				final ITestingEngine engine = engines[i];
 				if (engine.getId().equals(id)) {

@@ -28,10 +28,11 @@ import org.eclipse.dltk.launching.IInterpreterRunner;
 import org.eclipse.dltk.launching.InterpreterConfig;
 import org.eclipse.dltk.launching.ScriptLaunchConfigurationConstants;
 import org.eclipse.dltk.ruby.launching.RubyLaunchConfigurationDelegate;
-import org.eclipse.dltk.ruby.testing.ITestingEngine;
 import org.eclipse.dltk.testing.DLTKTestingConstants;
 import org.eclipse.dltk.testing.DLTKTestingMessages;
 import org.eclipse.dltk.testing.DLTKTestingPlugin;
+import org.eclipse.dltk.testing.ITestingEngine;
+import org.eclipse.dltk.testing.TestingEngineManager;
 
 public class RubyTestingLaunchConfigurationDelegate extends
 		RubyLaunchConfigurationDelegate implements ILaunchConfigurationDelegate {

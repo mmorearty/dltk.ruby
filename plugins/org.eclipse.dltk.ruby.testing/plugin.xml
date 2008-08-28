@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.2"?>
 <plugin>
-   <extension-point id="engine" name="engine" schema="schema/testingEngine.exsd"/>
-   <extension point="org.eclipse.dltk.ruby.testing.engine">
+   <extension point="org.eclipse.dltk.testing.engine">
    <testingEngine
          class="org.eclipse.dltk.ruby.testing.internal.testunit.TestUnitTestingEngine"
          id="org.eclipse.dltk.ruby.testing.testunit"

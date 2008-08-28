@@ -15,7 +15,6 @@ import org.eclipse.osgi.util.NLS;
 
 public class RubyTestingMessages extends NLS {
 	private static final String BUNDLE_NAME = "org.eclipse.dltk.ruby.testing.internal.RubyTestingMessages"; //$NON-NLS-1$
-	public static String NatureExtensionManager_instanceCreateError;
 	public static String Delegate_errorExtractingRunner;
 	public static String Delegate_internalErrorExtractingRunner;
 	public static String Delegate_runnerNotFound;
