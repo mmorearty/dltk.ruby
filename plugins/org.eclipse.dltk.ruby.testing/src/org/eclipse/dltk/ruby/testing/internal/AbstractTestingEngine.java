@@ -122,7 +122,7 @@ public abstract class AbstractTestingEngine extends DLTKContributedExtension
 			runnerScript = FileLocator.toFileURL(runnerScript);
 		} catch (IOException e) {
 			final String msg = NLS.bind(
-					RubyTestingMessages.Delegate_errorExtratingRunner,
+					RubyTestingMessages.Delegate_errorExtractingRunner,
 					runnerName);
 			throw new CoreException(new Status(IStatus.ERROR,
 					RubyTestingPlugin.PLUGIN_ID, msg, e));
