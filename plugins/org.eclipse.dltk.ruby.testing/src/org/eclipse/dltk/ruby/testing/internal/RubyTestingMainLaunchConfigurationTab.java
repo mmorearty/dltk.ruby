@@ -331,7 +331,9 @@ public class RubyTestingMainLaunchConfigurationTab extends
 				updateLaunchConfigurationDialog();
 			}
 		});
-		detect = createPushButton(parent, "Detect", null);
+		detect = createPushButton(parent,
+				DLTKTestingMessages.MainLaunchConfigurationTab_detectEngine,
+				null);
 
 		ITestingEngine[] engines = TestingEngineManager.getEngines();
 		for (int i = 0; i < engines.length; i++) {
@@ -379,7 +381,7 @@ public class RubyTestingMainLaunchConfigurationTab extends
 
 	private boolean validateEngine() {
 		if (TestingEngineManager.getEngine(getEngineId()) == null) {
-			setErrorMessage("Testing engine not selected");
+			setErrorMessage(DLTKTestingMessages.MainLaunchConfigurationTab_ErrorEngineNotSelected);
 			return false;
 		}
 		return true;
