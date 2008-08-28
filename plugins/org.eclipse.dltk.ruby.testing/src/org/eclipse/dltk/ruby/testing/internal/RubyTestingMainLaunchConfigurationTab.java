@@ -49,7 +49,6 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -319,13 +318,11 @@ public class RubyTestingMainLaunchConfigurationTab extends
 	}
 
 	protected void createTestEngineEditor(Composite parent, String text) {
-		Font font = parent.getFont();
 		Label fTestEngine = new Label(parent, SWT.NONE);
 		fTestEngine.setText(text);
 		engineType = new Combo(parent, SWT.SINGLE | SWT.BORDER | SWT.DROP_DOWN);
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 		engineType.setLayoutData(gd);
-		engineType.setFont(font);
 		engineType.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				updateLaunchConfigurationDialog();
