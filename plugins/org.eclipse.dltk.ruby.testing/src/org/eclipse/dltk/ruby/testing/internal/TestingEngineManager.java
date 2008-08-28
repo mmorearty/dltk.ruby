@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.ruby.core.RubyNature;
 import org.eclipse.dltk.ruby.testing.ITestingEngine;
 
@@ -99,4 +101,29 @@ public final class TestingEngineManager extends NatureExtensionManager {
 		}
 		return null;
 	}
+
+	public static TestingEngineDetection detect(ITestingEngine[] engines,
+			ISourceModule module) {
+		IStatus infoStatus = null;
+		ITestingEngine infoEngine = null;
+		for (int i = 0; i < engines.length; i++) {
+			final ITestingEngine engine = engines[i];
+			final IStatus status = engine.validateSourceModule(module);
+			if (status != null) {
+				if (status.isOK()) {
+					return new TestingEngineDetection(engine, status);
+				} else if (status.getSeverity() == IStatus.INFO
+						&& infoStatus == null) {
+					infoStatus = status;
+					infoEngine = engine;
+				}
+			}
+		}
+		if (infoEngine != null) {
+			return new TestingEngineDetection(infoEngine, infoStatus);
+		} else {
+			return null;
+		}
+	}
+
 }

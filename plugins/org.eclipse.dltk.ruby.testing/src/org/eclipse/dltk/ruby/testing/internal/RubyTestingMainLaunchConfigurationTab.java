@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.testing.internal;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -350,17 +351,15 @@ public class RubyTestingMainLaunchConfigurationTab extends
 	}
 
 	private void handleDetectButtonSelected() {
-		ITestingEngine[] engines = TestingEngineManager.getEngines();
-		// this.engineType.select(0);
 		ISourceModule module = getSourceModule();
 		if (module != null && module.exists()) {
-			for (int i = 0; i < engines.length; i++) {
-				final IStatus status = engines[i].validateSourceModule(module);
-				if (status != null && status.isOK()) {
-					this.engineType.select(i);
-					updateEngineStatus(status);
-					break;
-				}
+			final ITestingEngine[] engines = TestingEngineManager.getEngines();
+			final TestingEngineDetection result = TestingEngineManager.detect(
+					engines, module);
+			if (result != null) {
+				engineType.select(Arrays.asList(engines).indexOf(
+						result.getEngine()));
+				updateEngineStatus(result.getStatus());
 			}
 		}
 	}
@@ -450,6 +449,12 @@ public class RubyTestingMainLaunchConfigurationTab extends
 			IModelElement element) {
 		if (element instanceof ISourceModule) {
 			super.setDefaults(configuration, element);
+			TestingEngineDetection detection = TestingEngineManager.detect(
+					TestingEngineManager.getEngines(), (ISourceModule) element);
+			if (detection != null) {
+				configuration.setAttribute(DLTKTestingConstants.ATTR_ENGINE_ID,
+						detection.getEngine().getId());
+			}
 		} else {
 			configuration.setAttribute(
 					ScriptLaunchConfigurationConstants.ATTR_PROJECT_NAME,
