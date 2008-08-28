@@ -18,6 +18,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.dltk.core.DLTKCore;
@@ -40,17 +41,18 @@ import org.eclipse.dltk.testing.DLTKTestingConstants;
 import org.eclipse.dltk.testing.DLTKTestingMessages;
 import org.eclipse.dltk.ui.ModelElementLabelProvider;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -64,6 +66,8 @@ public class RubyTestingMainLaunchConfigurationTab extends
 	private Button detect;
 	private Combo engineType;
 	private Map nameToId = new HashMap();
+	private Label engineMessageLabel;
+	private Label engineMessageImageLabel;
 
 	private Button fTestRadioButton;
 	private Button fTestContainerRadioButton;
@@ -123,11 +127,7 @@ public class RubyTestingMainLaunchConfigurationTab extends
 		gd.horizontalIndent = 25;
 		gd.horizontalSpan = 2;
 		fContainerText.setLayoutData(gd);
-		fContainerText.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent evt) {
-				updateLaunchConfigurationDialog();
-			}
-		});
+		fContainerText.addModifyListener(getWidgetListener());
 
 		fContainerSearchButton = createPushButton(comp,
 				DLTKTestingMessages.JUnitLaunchConfigurationTab_label_search,
@@ -169,6 +169,7 @@ public class RubyTestingMainLaunchConfigurationTab extends
 	}
 
 	protected boolean validate() {
+		updateEngineStatus();
 		final boolean result;
 		if (fTestContainerRadioButton.getSelection()) {
 			if (fContainerElement == null) {
@@ -323,11 +324,7 @@ public class RubyTestingMainLaunchConfigurationTab extends
 		engineType = new Combo(parent, SWT.SINGLE | SWT.BORDER | SWT.DROP_DOWN);
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 		engineType.setLayoutData(gd);
-		engineType.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
-				updateLaunchConfigurationDialog();
-			}
-		});
+		engineType.addModifyListener(getWidgetListener());
 		detect = createPushButton(parent,
 				DLTKTestingMessages.MainLaunchConfigurationTab_detectEngine,
 				null);
@@ -343,6 +340,14 @@ public class RubyTestingMainLaunchConfigurationTab extends
 				handleDetectButtonSelected();
 			}
 		});
+		new Label(parent, SWT.NONE); // place holder
+		Composite engineStatusComposite = new Composite(parent, SWT.NONE);
+		gd = new GridData();
+		gd.horizontalSpan = ((GridLayout) parent.getLayout()).numColumns - 1;
+		engineStatusComposite.setLayoutData(gd);
+		engineStatusComposite.setLayout(new RowLayout());
+		engineMessageImageLabel = new Label(engineStatusComposite, SWT.NONE);
+		engineMessageLabel = new Label(engineStatusComposite, SWT.NONE);
 	}
 
 	private void handleDetectButtonSelected() {
@@ -354,8 +359,76 @@ public class RubyTestingMainLaunchConfigurationTab extends
 				final IStatus status = engines[i].validateSourceModule(module);
 				if (status != null && status.isOK()) {
 					this.engineType.select(i);
+					updateEngineStatus(status);
+					break;
 				}
 			}
+		}
+	}
+
+	/**
+	 * @param status
+	 */
+	private void updateEngineStatus(IStatus status) {
+		Image newImage = null;
+		String newMessage = status.getMessage();
+		switch (status.getSeverity()) {
+		case IStatus.OK:
+			newMessage = EMPTY_STRING;
+			break;
+		case IStatus.INFO:
+			newImage = JFaceResources.getImage(Dialog.DLG_IMG_MESSAGE_INFO);
+			break;
+		case IStatus.WARNING:
+			newImage = JFaceResources.getImage(Dialog.DLG_IMG_MESSAGE_WARNING);
+			break;
+		case IStatus.ERROR:
+			newImage = JFaceResources.getImage(Dialog.DLG_IMG_MESSAGE_ERROR);
+			break;
+		}
+		showMessage(newMessage, newImage);
+	}
+
+	private String message = EMPTY_STRING;
+	private Image messageImage;
+
+	/**
+	 * Show the new message and image.
+	 * 
+	 * @param newMessage
+	 * @param newImage
+	 */
+	private void showMessage(String newMessage, Image newImage) {
+		// Any change?
+		if (message.equals(newMessage) && messageImage == newImage) {
+			return;
+		}
+		message = newMessage;
+		if (message == null)
+			message = EMPTY_STRING;
+		messageImage = newImage;
+		engineMessageImageLabel.setImage(newImage);
+		engineMessageLabel.setText(message);
+	}
+
+	private void updateEngineStatus() {
+		updateEngineStatus(TestingEngineManager.getEngine(getEngineId()));
+	}
+
+	private void updateEngineStatus(final ITestingEngine engine) {
+		IStatus status = Status.OK_STATUS;
+		if (engine != null) {
+			if (fTestRadioButton.getSelection()) {
+				final ISourceModule module = getSourceModule();
+				if (module != null) {
+					status = engine.validateSourceModule(module);
+				}
+			} else {
+				// TODO validate container
+			}
+		}
+		if (status != null) {
+			updateEngineStatus(status);
 		}
 	}
 
@@ -427,7 +500,6 @@ public class RubyTestingMainLaunchConfigurationTab extends
 			updateTestScriptFromConfig(config);
 		}
 		// update engine
-		ITestingEngine[] engines = TestingEngineManager.getEngines();
 		String id = null;
 		try {
 			id = config.getAttribute(DLTKTestingConstants.ATTR_ENGINE_ID,
@@ -440,9 +512,13 @@ public class RubyTestingMainLaunchConfigurationTab extends
 		if (id == null || id.length() == 0) {
 			handleDetectButtonSelected();
 		} else {
+			final ITestingEngine[] engines = TestingEngineManager.getEngines();
 			for (int i = 0; i < engines.length; i++) {
-				if (engines[i].getId().equals(id)) {
+				final ITestingEngine engine = engines[i];
+				if (engine.getId().equals(id)) {
 					this.engineType.select(i);
+					updateEngineStatus(engine);
+					break;
 				}
 			}
 		}

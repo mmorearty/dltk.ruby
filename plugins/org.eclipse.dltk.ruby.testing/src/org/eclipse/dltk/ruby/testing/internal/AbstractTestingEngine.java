@@ -55,11 +55,11 @@ public abstract class AbstractTestingEngine extends DLTKContributedExtension
 	private static final String RUNNER_PATH = "/testing/"; //$NON-NLS-1$
 
 	public IStatus validateSourceModule(ISourceModule module) {
-		return Status.OK_STATUS;
+		return Status.CANCEL_STATUS;
 	}
 
 	public IStatus validateContainer(IModelElement element) {
-		return Status.OK_STATUS;
+		return Status.CANCEL_STATUS;
 	}
 
 	public void configureLaunch(InterpreterConfig config,
@@ -233,6 +233,15 @@ public abstract class AbstractTestingEngine extends DLTKContributedExtension
 	 */
 	public Object getAdapter(Class adapter) {
 		return null;
+	}
+
+	/**
+	 * @param info
+	 * @param string
+	 * @return
+	 */
+	protected static IStatus createStatus(int severity, String message) {
+		return new Status(severity, RubyTestingPlugin.PLUGIN_ID, message);
 	}
 
 }
