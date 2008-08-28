@@ -79,11 +79,11 @@ module DLTK
 
 			def attach_to_mediator
 				super
-				@mediator.add_listener(Test::Unit::TestResult::FAULT, &method(:testFailure))
+				@mediator.add_listener(Test::Unit::TestResult::FAULT, &method(:onTestFailure))
 				@mediator.add_listener(Test::Unit::UI::TestRunnerMediator::STARTED, DLTK, &method(:connect))
 				@mediator.add_listener(Test::Unit::UI::TestRunnerMediator::FINISHED, DLTK, &method(:disconnect))
-				@mediator.add_listener(Test::Unit::TestCase::STARTED, DLTK, &method(:testStarted))
-				@mediator.add_listener(Test::Unit::TestCase::FINISHED, DLTK, &method(:testFinished))
+				@mediator.add_listener(Test::Unit::TestCase::STARTED, DLTK, &method(:onTestStarted))
+				@mediator.add_listener(Test::Unit::TestCase::FINISHED, DLTK, &method(:onTestFinished))
 			end
 
 			def debug(msg)
@@ -128,7 +128,7 @@ module DLTK
 				end
 			end
 
-			def testStarted(name)
+			def onTestStarted(name)
 				t = @testsByName[name]
 				if t
 					notifyTestStarted getTestId(t), t.name
@@ -138,7 +138,7 @@ module DLTK
 				end
 			end
 
-			def testFinished(name)
+			def onTestFinished(name)
 				t = @testsByName[name]
 				if t
 					notifyTestEnded getTestId(t), t.name
@@ -150,7 +150,7 @@ module DLTK
 
 			ACTUAL_EXPECTED_RE = /^<(.+)> expected but was\n<(.+)>.$/s
 
-			def testFailure(f)
+			def onTestFailure(f)
 				if f.is_a? Test::Unit::Failure
 					t = @testsByName[f.test_name]
 					if t
