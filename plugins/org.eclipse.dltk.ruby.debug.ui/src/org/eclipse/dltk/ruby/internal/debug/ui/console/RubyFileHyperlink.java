@@ -162,7 +162,8 @@ public class RubyFileHyperlink implements IHyperlink {
 	}
 
 	/**
-	 * Returns the line number associated with the stack trace or -1 if none.
+	 * Returns the line number associated with the stack trace or throws
+	 * {@link IllegalArgumentException}.
 	 * 
 	 * @exception IllegalArgumentException
 	 *                if unable to parse the number
