@@ -19,6 +19,7 @@ import org.eclipse.dltk.ast.declarations.FakeModuleDeclaration;
 import org.eclipse.dltk.ast.declarations.MethodDeclaration;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
 import org.eclipse.dltk.ast.expressions.CallExpression;
+import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.SourceParserUtil;
 import org.eclipse.dltk.ruby.ast.RubyClassDeclaration;
@@ -106,8 +107,9 @@ public class TestUnitTestingEngine extends AbstractRubyTestingEngine {
 	/*
 	 * @see org.eclipse.dltk.testing.ITestingEngine#getTestRunnerUI()
 	 */
-	public ITestRunnerUI getTestRunnerUI(ILaunchConfiguration configuration) {
-		// TODO extract project
+	public ITestRunnerUI getTestRunnerUI(IScriptProject project,
+			ILaunchConfiguration configuration) {
+		// TODO use project
 		return new TestUnitTestRunnerUI(this);
 	}
 
