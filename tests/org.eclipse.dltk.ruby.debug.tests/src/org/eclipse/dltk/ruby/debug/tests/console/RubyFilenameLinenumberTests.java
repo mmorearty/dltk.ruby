@@ -29,8 +29,7 @@ public class RubyFilenameLinenumberTests extends SuiteOfTestCases {
 
 	public RubyFilenameLinenumberTests(String name) {
 		super(name);
-		RubyFilenameLinenumberResolver resolver = new RubyFilenameLinenumberResolver();
-		pattern = Pattern.compile(resolver.resolveValue(null, null));
+		pattern = RubyFilenameLinenumberResolver.createPattern();
 	}
 
 	public void testSimple() throws Exception {
@@ -61,10 +60,16 @@ public class RubyFilenameLinenumberTests extends SuiteOfTestCases {
 		assertTrue(filename.endsWith("rubygems.rb"));
 	}
 
+	public void testShoulda() {
+		final String input = "c:/ruby/lib/ruby/gems/1.8/gems/Shoulda-1.2.0/lib/shoulda.rb:226:in `call'";
+		Matcher m = pattern.matcher(input);
+		assertTrue(m.find());
+	}
+
 	public void testNegativeMatch() {
-//		Matcher m = pattern
-//				.matcher("C:0:Warning: require_gem is obsolete.  Use gem instead.");
-//		assertFalse(m.find());
+		// Matcher m = pattern
+		// .matcher("C:0:Warning: require_gem is obsolete.  Use gem instead.");
+		// assertFalse(m.find());
 	}
 
 }
