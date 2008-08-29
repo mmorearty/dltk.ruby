@@ -10,6 +10,7 @@
 package org.eclipse.dltk.ruby.internal.core.search;
 
 import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.dltk.core.ISearchPatternProcessor;
 import org.eclipse.dltk.core.search.AbstractSearchFactory;
 import org.eclipse.dltk.core.search.IDLTKSearchScope;
 import org.eclipse.dltk.core.search.IMatchLocatorParser;
@@ -27,5 +28,9 @@ public class RubySearchFactory extends AbstractSearchFactory {
 
 	public IMatchLocatorParser createMatchParser(MatchLocator locator) {
 		return new RubyMatchLocatorParser(locator);
+	}
+
+	public ISearchPatternProcessor createSearchPatternProcessor() {
+		return new RubySearchPatternProcessor();
 	}
 }
