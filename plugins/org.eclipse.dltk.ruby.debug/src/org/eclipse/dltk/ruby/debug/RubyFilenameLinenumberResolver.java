@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.debug;
 
+import java.util.regex.Pattern;
+
 import org.eclipse.core.variables.IDynamicVariable;
 import org.eclipse.core.variables.IDynamicVariableResolver;
 
@@ -38,5 +40,13 @@ public class RubyFilenameLinenumberResolver implements IDynamicVariableResolver 
 		sb.append(LINE_NUMBER);
 		//		sb.append("(?=(?:\\W|$))"); //$NON-NLS-1$ not word char after
 		return sb.toString();
+	}
+
+	public static Pattern createPattern() {
+		return Pattern.compile(getRegex());
+	}
+
+	public static String getRegex() {
+		return new RubyFilenameLinenumberResolver().resolveValue(null, null);
 	}
 }
