@@ -13,20 +13,21 @@ package org.eclipse.dltk.ruby.testing.internal;
 
 import org.eclipse.osgi.util.NLS;
 
-public class RubyTestingMessages extends NLS {
-	private static final String BUNDLE_NAME = "org.eclipse.dltk.ruby.testing.internal.RubyTestingMessages"; //$NON-NLS-1$
+public class Messages extends NLS {
+	private static final String BUNDLE_NAME = "org.eclipse.dltk.ruby.testing.internal.messages"; //$NON-NLS-1$
 	public static String Delegate_errorExtractingRunner;
 	public static String Delegate_internalErrorExtractingRunner;
 	public static String Delegate_runnerNotFound;
+	public static String openEditorError;
 	public static String validate_notTestUnit;
 	public static String validate_probablyTestUnit;
 	public static String validate_runtimeError;
 	public static String validate_sourceErrors;
 	static {
 		// initialize resource bundle
-		NLS.initializeMessages(BUNDLE_NAME, RubyTestingMessages.class);
+		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
-	private RubyTestingMessages() {
+	private Messages() {
 	}
 }

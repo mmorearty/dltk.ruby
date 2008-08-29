@@ -11,8 +11,8 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.testing.internal.rspec;
 
-import org.eclipse.dltk.ruby.testing.internal.AbstractTestingEngine;
+import org.eclipse.dltk.ruby.testing.internal.AbstractRubyTestingEngine;
 
-public class RspecTestingEngine extends AbstractTestingEngine {
+public class RspecTestingEngine extends AbstractRubyTestingEngine {
 
 }

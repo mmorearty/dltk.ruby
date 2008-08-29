@@ -28,24 +28,21 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.dltk.compiler.util.Util;
-import org.eclipse.dltk.core.DLTKContributedExtension;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IModelElement;
-import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.environment.IEnvironment;
 import org.eclipse.dltk.launching.InterpreterConfig;
 import org.eclipse.dltk.launching.ScriptLaunchConfigurationConstants;
+import org.eclipse.dltk.testing.AbstractTestingEngine;
 import org.eclipse.dltk.testing.DLTKTestingConstants;
 import org.eclipse.dltk.testing.DLTKTestingPlugin;
-import org.eclipse.dltk.testing.ITestingEngine;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.osgi.framework.Bundle;
 
-public abstract class AbstractTestingEngine extends DLTKContributedExtension
-		implements ITestingEngine {
+public abstract class AbstractRubyTestingEngine extends AbstractTestingEngine {
 
 	private static final String RUBY_TESTING_PORT = "RUBY_TESTING_PORT"; //$NON-NLS-1$
 	private static final String RUBY_TESTING_PATH = "RUBY_TESTING_PATH"; //$NON-NLS-1$
@@ -53,14 +50,6 @@ public abstract class AbstractTestingEngine extends DLTKContributedExtension
 	private static final String TEST_UNIT_RUNNER = "dltk-testunit-runner.rb"; //$NON-NLS-1$
 
 	private static final String RUNNER_PATH = "/testing/"; //$NON-NLS-1$
-
-	public IStatus validateSourceModule(ISourceModule module) {
-		return Status.CANCEL_STATUS;
-	}
-
-	public IStatus validateContainer(IModelElement element) {
-		return Status.CANCEL_STATUS;
-	}
 
 	public void configureLaunch(InterpreterConfig config,
 			ILaunchConfiguration configuration, ILaunch launch)
@@ -114,7 +103,7 @@ public abstract class AbstractTestingEngine extends DLTKContributedExtension
 		URL runnerScript = bundle.getEntry(runnerPath + runnerName);
 		if (runnerScript == null) {
 			final String msg = NLS.bind(
-					RubyTestingMessages.Delegate_runnerNotFound, runnerName);
+					Messages.Delegate_runnerNotFound, runnerName);
 			throw new CoreException(new Status(IStatus.ERROR,
 					RubyTestingPlugin.PLUGIN_ID, msg, null));
 		}
@@ -122,7 +111,7 @@ public abstract class AbstractTestingEngine extends DLTKContributedExtension
 			runnerScript = FileLocator.toFileURL(runnerScript);
 		} catch (IOException e) {
 			final String msg = NLS.bind(
-					RubyTestingMessages.Delegate_errorExtractingRunner,
+					Messages.Delegate_errorExtractingRunner,
 					runnerName);
 			throw new CoreException(new Status(IStatus.ERROR,
 					RubyTestingPlugin.PLUGIN_ID, msg, e));
@@ -131,13 +120,13 @@ public abstract class AbstractTestingEngine extends DLTKContributedExtension
 			return new File(new URI(runnerScript.toString()));
 		} catch (IllegalArgumentException e) {
 			final String msg = NLS.bind(
-					RubyTestingMessages.Delegate_internalErrorExtractingRunner,
+					Messages.Delegate_internalErrorExtractingRunner,
 					runnerName);
 			throw new CoreException(new Status(IStatus.ERROR,
 					RubyTestingPlugin.PLUGIN_ID, msg, e));
 		} catch (URISyntaxException e) {
 			final String msg = NLS.bind(
-					RubyTestingMessages.Delegate_internalErrorExtractingRunner,
+					Messages.Delegate_internalErrorExtractingRunner,
 					runnerName);
 			throw new CoreException(new Status(IStatus.ERROR,
 					RubyTestingPlugin.PLUGIN_ID, msg, e));

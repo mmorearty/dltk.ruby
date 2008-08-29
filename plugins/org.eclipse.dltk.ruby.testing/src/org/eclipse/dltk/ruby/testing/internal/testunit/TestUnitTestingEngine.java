@@ -13,6 +13,7 @@ package org.eclipse.dltk.ruby.testing.internal.testunit;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.declarations.FakeModuleDeclaration;
 import org.eclipse.dltk.ast.declarations.MethodDeclaration;
@@ -21,12 +22,13 @@ import org.eclipse.dltk.ast.expressions.CallExpression;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.SourceParserUtil;
 import org.eclipse.dltk.ruby.ast.RubyClassDeclaration;
-import org.eclipse.dltk.ruby.testing.internal.AbstractTestingEngine;
+import org.eclipse.dltk.ruby.testing.internal.AbstractRubyTestingEngine;
 import org.eclipse.dltk.ruby.testing.internal.AbstractTestingEngineValidateVisitor;
-import org.eclipse.dltk.ruby.testing.internal.RubyTestingMessages;
+import org.eclipse.dltk.ruby.testing.internal.Messages;
+import org.eclipse.dltk.testing.ITestRunnerUI;
 import org.eclipse.osgi.util.NLS;
 
-public class TestUnitTestingEngine extends AbstractTestingEngine {
+public class TestUnitTestingEngine extends AbstractRubyTestingEngine {
 
 	static class TestUnitValidateVisitor extends
 			AbstractTestingEngineValidateVisitor {
@@ -78,11 +80,10 @@ public class TestUnitTestingEngine extends AbstractTestingEngine {
 				return Status.OK_STATUS;
 			}
 			if (testUnitWeight + shouldaWeight >= METHOD_WEIGHT) {
-				return AbstractTestingEngine.createStatus(IStatus.INFO,
-						RubyTestingMessages.validate_probablyTestUnit);
+				return createStatus(IStatus.INFO,
+						Messages.validate_probablyTestUnit);
 			}
-			return AbstractTestingEngine.createStatus(IStatus.WARNING,
-					RubyTestingMessages.validate_notTestUnit);
+			return createStatus(IStatus.WARNING, Messages.validate_notTestUnit);
 		}
 	}
 
@@ -90,17 +91,24 @@ public class TestUnitTestingEngine extends AbstractTestingEngine {
 		final ModuleDeclaration declaration = SourceParserUtil
 				.getModuleDeclaration(module);
 		if (declaration == null || declaration instanceof FakeModuleDeclaration) {
-			return createStatus(IStatus.WARNING,
-					RubyTestingMessages.validate_sourceErrors);
+			return createStatus(IStatus.WARNING, Messages.validate_sourceErrors);
 		}
 		final TestUnitValidateVisitor visitor = new TestUnitValidateVisitor();
 		try {
 			declaration.traverse(visitor);
 		} catch (Exception e) {
 			return createStatus(IStatus.WARNING, NLS.bind(
-					RubyTestingMessages.validate_runtimeError, e.getMessage()));
+					Messages.validate_runtimeError, e.getMessage()));
 		}
 		return visitor.getStatus();
+	}
+
+	/*
+	 * @see org.eclipse.dltk.testing.ITestingEngine#getTestRunnerUI()
+	 */
+	public ITestRunnerUI getTestRunnerUI(ILaunchConfiguration configuration) {
+		// TODO extract project
+		return new TestUnitTestRunnerUI(this);
 	}
 
 }
