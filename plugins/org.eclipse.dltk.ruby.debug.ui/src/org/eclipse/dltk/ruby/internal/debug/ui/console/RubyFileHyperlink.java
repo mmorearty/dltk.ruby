@@ -71,10 +71,6 @@ public class RubyFileHyperlink implements IHyperlink {
 			DLTKDebugPlugin.log(e);
 			return;
 		}
-		// documents start at 0
-		if (lineNumber > 0) {
-			lineNumber--;
-		}
 		try {
 			final Object element = findSourceModule(fileName);
 			if (element == null) {
@@ -89,22 +85,38 @@ public class RubyFileHyperlink implements IHyperlink {
 												new Object[] { fileName }));
 				return;
 			}
-			final IEditorInput input = EditorUtility.getEditorInput(element);
-			if (input == null) {
-				return;
-			}
-			final IEditorDescriptor descriptor = IDE.getEditorDescriptor(input
-					.getName());
-			final IWorkbenchPage page = DLTKDebugUIPlugin.getActivePage();
-			final IEditorPart editor = page.openEditor(input, descriptor
-					.getId());
-			EditorUtility.revealInEditor(editor, lineNumber);
+			openInEditor(element, lineNumber);
 		} catch (CoreException e) {
 			DLTKDebugUIPlugin
 					.errorDialog(
 							ConsoleMessages.RubyFileHyperlink_An_exception_occurred_while_following_link__3,
 							e);
 		}
+	}
+
+	/**
+	 * Opens the editor on the specified element and line number
+	 * 
+	 * @param element
+	 * @param lineNumber
+	 *            line number starting at 1
+	 * @throws CoreException
+	 */
+	public static void openInEditor(final Object element, int lineNumber)
+			throws CoreException {
+		final IEditorInput input = EditorUtility.getEditorInput(element);
+		if (input == null) {
+			return;
+		}
+		final IEditorDescriptor descriptor = IDE.getEditorDescriptor(input
+				.getName());
+		final IWorkbenchPage page = DLTKDebugUIPlugin.getActivePage();
+		final IEditorPart editor = page.openEditor(input, descriptor.getId());
+		// documents start at 0
+		if (lineNumber > 0) {
+			lineNumber--;
+		}
+		EditorUtility.revealInEditor(editor, lineNumber);
 	}
 
 	/**
