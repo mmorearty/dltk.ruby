@@ -17,10 +17,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.IMethod;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ISourceRange;
-import org.eclipse.dltk.core.ISourceReference;
+import org.eclipse.dltk.core.IType;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.core.search.IDLTKSearchConstants;
 import org.eclipse.dltk.core.search.IDLTKSearchScope;
@@ -41,6 +42,7 @@ import org.eclipse.dltk.testing.ITestRunnerUI;
 import org.eclipse.dltk.testing.TestElementResolution;
 import org.eclipse.dltk.testing.model.ITestCaseElement;
 import org.eclipse.dltk.testing.model.ITestElement;
+import org.eclipse.dltk.testing.model.ITestSuiteElement;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.osgi.util.NLS;
 
@@ -117,34 +119,57 @@ public class TestUnitTestRunnerUI extends AbstractTestRunnerUI implements
 
 	public TestElementResolution resolveElement(ITestElement element) {
 		if (element instanceof ITestCaseElement) {
-			ITestCaseElement testCase = (ITestCaseElement) element;
-			final String testName = testCase.getTestName();
-			if (testName.length() == 0) {
-				return null;
-			}
-			final int pos = testName.indexOf('(');
-			if (pos > 0 && testName.charAt(testName.length() - 1) == ')') {
-				final String className = testName.substring(pos + 1, testName
-						.length() - 1);
-				if (!RubySyntaxUtils.isValidClass(className)) {
-					return null;
-				}
-				final String methodName = testName.substring(0, pos).trim();
-				if (RubySyntaxUtils.isRubyMethodName(methodName)) {
-					final IMethod method = findMethod(className, methodName);
-					if (method != null) {
-						return new TestElementResolution(method,
-								getSourceRange(method));
-					}
-				}
+			return resolveTestCase((ITestCaseElement) element);
+		} else if (element instanceof ITestSuiteElement) {
+			return resolveTestSuite((ITestSuiteElement) element);
+		}
+		return null;
+	}
+
+	private TestElementResolution resolveTestCase(ITestCaseElement testCase) {
+		final String testName = testCase.getTestName();
+		if (testName.length() == 0) {
+			return null;
+		}
+		final int pos = testName.indexOf('(');
+		if (!(pos > 0 && testName.charAt(testName.length() - 1) == ')')) {
+			return null;
+		}
+		final String className = testName.substring(pos + 1,
+				testName.length() - 1);
+		if (!RubySyntaxUtils.isValidClass(className)) {
+			return null;
+		}
+		final String methodName = testName.substring(0, pos).trim();
+		if (RubySyntaxUtils.isRubyMethodName(methodName)) {
+			final IMethod method = findMethod(className, methodName);
+			if (method != null) {
+				return new TestElementResolution(method, getSourceRange(method));
 			}
 		}
 		return null;
 	}
 
-	private ISourceRange getSourceRange(final ISourceReference reference) {
+	private TestElementResolution resolveTestSuite(ITestSuiteElement element) {
+		final List types = findClasses(element.getSuiteTypeName());
+		if (types != null) {
+			final IType type = (IType) types.get(0);
+			return new TestElementResolution(type, getSourceRange(type));
+		}
+		return null;
+	}
+
+	private ISourceRange getSourceRange(final IMember member) {
 		try {
-			return reference.getSourceRange();
+			final ISourceRange range = member.getNameRange();
+			if (range != null && range.getLength() > 0) {
+				return range;
+			}
+		} catch (ModelException e) {
+			// ignore
+		}
+		try {
+			return member.getSourceRange();
 		} catch (ModelException e) {
 			return null;
 		}
