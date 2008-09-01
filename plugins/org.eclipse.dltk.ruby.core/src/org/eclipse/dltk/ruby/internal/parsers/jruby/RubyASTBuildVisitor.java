@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.Assert;
@@ -38,6 +39,7 @@ import org.eclipse.dltk.ast.references.ConstantReference;
 import org.eclipse.dltk.ast.references.SimpleReference;
 import org.eclipse.dltk.ast.references.VariableReference;
 import org.eclipse.dltk.ast.statements.Block;
+import org.eclipse.dltk.compiler.util.Util;
 import org.eclipse.dltk.ruby.ast.RubyAliasExpression;
 import org.eclipse.dltk.ruby.ast.RubyArrayExpression;
 import org.eclipse.dltk.ruby.ast.RubyAssignment;
@@ -198,7 +200,7 @@ import org.jruby.runtime.Arity;
 import org.jruby.runtime.Visibility;
 
 /**
- * RubyASTBuildVisitor performs trasformation from JRuby's AST to DLTK AST.
+ * RubyASTBuildVisitor performs transformation from JRuby's AST to DLTK AST.
  */
 public class RubyASTBuildVisitor implements NodeVisitor {
 
@@ -214,6 +216,17 @@ public class RubyASTBuildVisitor implements NodeVisitor {
 
 	protected static interface IState {
 		public void add(ASTNode node);
+	}
+
+	protected static String getShortClassName(Object instance) {
+		final String className = instance.getClass().getName();
+		int dotIndex = className.lastIndexOf('.');
+		int dollarIndex = className.lastIndexOf('$');
+		if (dotIndex >= 0 || dollarIndex >= 0) {
+			return className.substring(Math.max(dotIndex, dollarIndex) + 1);
+		} else {
+			return className;
+		}
 	}
 
 	protected static class CollectingState implements IState {
@@ -235,6 +248,10 @@ public class RubyASTBuildVisitor implements NodeVisitor {
 			list.clear();
 		}
 
+		public String toString() {
+			return getShortClassName(this) + '[' + list + ']';
+		}
+
 	}
 
 	protected static class ArgumentsState implements IState {
@@ -248,6 +265,9 @@ public class RubyASTBuildVisitor implements NodeVisitor {
 			list.addArgument(s, 0);
 		}
 
+		public String toString() {
+			return getShortClassName(this) + '[' + list + ']';
+		}
 	}
 
 	protected static class TopLevelState implements IState {
@@ -260,14 +280,21 @@ public class RubyASTBuildVisitor implements NodeVisitor {
 		public void add(ASTNode statement) {
 			module.getStatements().add(statement);
 		}
+
+		public String toString() {
+			return getShortClassName(this);
+		}
 	}
 
 	protected static abstract class ClassLikeState implements IState {
 		public int visibility;
 		public final TypeDeclaration type;
+		public final String fullName;
 
-		public ClassLikeState(TypeDeclaration type) {
+		public ClassLikeState(TypeDeclaration type, String parentName) {
 			this.type = type;
+			this.fullName = parentName.length() == 0 ? type.getName()
+					: parentName + "::" + type.getName(); //$NON-NLS-1$
 			visibility = Modifiers.AccPublic;
 		}
 
@@ -275,20 +302,23 @@ public class RubyASTBuildVisitor implements NodeVisitor {
 			type.getStatements().add(statement);
 		}
 
+		public String toString() {
+			return getShortClassName(this) + '[' + fullName + ']';
+		}
 	}
 
 	protected static class ClassState extends ClassLikeState {
 
-		public ClassState(TypeDeclaration type) {
-			super(type);
+		public ClassState(TypeDeclaration type, String parentName) {
+			super(type, parentName);
 		}
 
 	}
 
 	protected static class ModuleState extends ClassLikeState {
 
-		public ModuleState(TypeDeclaration type) {
-			super(type);
+		public ModuleState(TypeDeclaration type, String parentName) {
+			super(type, parentName);
 		}
 
 	}
@@ -305,6 +335,9 @@ public class RubyASTBuildVisitor implements NodeVisitor {
 			method.getStatements().add(statement);
 		}
 
+		public String toString() {
+			return getShortClassName(this) + '[' + method.getName() + ']';
+		}
 	}
 
 	protected static class BlockState implements IState {
@@ -319,6 +352,9 @@ public class RubyASTBuildVisitor implements NodeVisitor {
 			block.getStatements().add(statement);
 		}
 
+		public String toString() {
+			return getShortClassName(this);
+		}
 	}
 
 	private static class StateManager {
@@ -340,9 +376,13 @@ public class RubyASTBuildVisitor implements NodeVisitor {
 			IState state = peek();
 			if (state instanceof ClassLikeState) {
 				return true;
-			} else if (state instanceof BlockState) {
-				if (states.size() > 1) {
-					return states.get(1) instanceof ClassLikeState;
+			} else if (states.size() > 1) {
+				ListIterator i = states.listIterator(states.size());
+				while (i.hasPrevious()) {
+					Object s = i.previous();
+					if (s instanceof ClassLikeState) {
+						return true;
+					}
 				}
 			}
 			return false;
@@ -352,15 +392,25 @@ public class RubyASTBuildVisitor implements NodeVisitor {
 			IState state = peek();
 			if (state instanceof ClassLikeState) {
 				return (ClassLikeState) state;
-			} else if (state instanceof BlockState) {
-				if (states.size() > 1) {
-					Object blocksDeclaringState = states.get(1);
-					if (blocksDeclaringState instanceof ClassLikeState) {
-						return (ClassLikeState) blocksDeclaringState;
+			} else if (states.size() > 1) {
+				final ListIterator i = states.listIterator(states.size());
+				while (i.hasPrevious()) {
+					final Object s = i.previous();
+					if (s instanceof ClassLikeState) {
+						return (ClassLikeState) s;
 					}
 				}
 			}
 			return null;
+		}
+
+		public String getFullClassName() {
+			final ClassLikeState classState = getClassLikeState();
+			if (classState != null) {
+				return classState.fullName;
+			} else {
+				return Util.EMPTY_STRING;
+			}
 		}
 
 	}
@@ -396,9 +446,9 @@ public class RubyASTBuildVisitor implements NodeVisitor {
 
 	/**
 	 * Tries to convert single JRuby's node to single DLTK AST node. If
-	 * convertion fails, and for ex., more than one or zero nodes were fetched
-	 * as result, then RuntimeException will be thrown. Optoin
-	 * <code>allowZero</code> allows to fetch no dltk nodes and just return null
+	 * conversion fails, and for ex., more than one or zero nodes were fetched
+	 * as result, then RuntimeException will be thrown. Option
+	 * <code>allowZero</code> allows to fetch no DLTK nodes and just return null
 	 * without throwing an exception.
 	 * 
 	 * @param node
@@ -904,7 +954,7 @@ public class RubyASTBuildVisitor implements NodeVisitor {
 		type.setName(name);
 
 		states.peek().add(type);
-		states.push(new ClassState(type));
+		states.push(new ClassState(type, states.getFullClassName()));
 		// body
 		Node bodyNode = iVisited.getBodyNode();
 		if (bodyNode != null) {
@@ -1205,6 +1255,10 @@ public class RubyASTBuildVisitor implements NodeVisitor {
 			ASTUtils.setVisibility(method, classState.visibility);
 		}
 
+		final ClassLikeState classState = states.getClassLikeState();
+		if (classState != null) {
+			method.setDeclaringTypeName(classState.fullName);
+		}
 		states.peek().add(method);
 		states.push(new MethodState(method));
 		Node bodyNode = iVisited.getBodyNode();
@@ -1681,7 +1735,7 @@ public class RubyASTBuildVisitor implements NodeVisitor {
 				cPos.getStartOffset(), cPos.getEndOffset());
 		type.setModifier(Modifiers.AccModule);
 		states.peek().add(type);
-		states.push(new ModuleState(type));
+		states.push(new ModuleState(type, states.getFullClassName()));
 		// body
 		Node bodyNode = iVisited.getBodyNode();
 		if (bodyNode != null) {
@@ -1899,7 +1953,7 @@ public class RubyASTBuildVisitor implements NodeVisitor {
 				type.setName("<< " + reference.getName()); //$NON-NLS-1$
 			}
 		}
-		states.push(new ClassState(type));
+		states.push(new ClassState(type, states.getFullClassName()));
 		Node bodyNode = iVisited.getBodyNode();
 		if (bodyNode != null) {
 			pos = bodyNode.getPosition();
