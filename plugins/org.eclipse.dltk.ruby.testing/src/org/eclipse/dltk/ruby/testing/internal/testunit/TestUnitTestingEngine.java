@@ -109,8 +109,7 @@ public class TestUnitTestingEngine extends AbstractRubyTestingEngine {
 	 */
 	public ITestRunnerUI getTestRunnerUI(IScriptProject project,
 			ILaunchConfiguration configuration) {
-		// TODO use project
-		return new TestUnitTestRunnerUI(this);
+		return new TestUnitTestRunnerUI(this, project);
 	}
 
 }
