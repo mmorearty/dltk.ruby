@@ -948,13 +948,13 @@ public class RubyASTBuildVisitor implements NodeVisitor {
 		RubyClassDeclaration type = new RubyClassDeclaration(supernode, cpath,
 				null, cPos.getStartOffset(), cPos.getEndOffset());
 
-		String name = String.copyValueOf(content, pos.getStartOffset(), pos
-				.getEndOffset()
-				- pos.getStartOffset());
+		String name = colons2Name(cpathNode);
 		type.setName(name);
 
 		states.peek().add(type);
-		states.push(new ClassState(type, states.getFullClassName()));
+		final String enclosingTypeName = states.getFullClassName();
+		type.setEnclosingTypeName(enclosingTypeName);
+		states.push(new ClassState(type, enclosingTypeName));
 		// body
 		Node bodyNode = iVisited.getBodyNode();
 		if (bodyNode != null) {
@@ -1735,7 +1735,9 @@ public class RubyASTBuildVisitor implements NodeVisitor {
 				cPos.getStartOffset(), cPos.getEndOffset());
 		type.setModifier(Modifiers.AccModule);
 		states.peek().add(type);
-		states.push(new ModuleState(type, states.getFullClassName()));
+		final String enclosingTypeName = states.getFullClassName();
+		type.setEnclosingTypeName(enclosingTypeName);
+		states.push(new ModuleState(type, enclosingTypeName));
 		// body
 		Node bodyNode = iVisited.getBodyNode();
 		if (bodyNode != null) {
