@@ -398,8 +398,8 @@ public class RubyASTBuildVisitor implements NodeVisitor {
 	 * Tries to convert single JRuby's node to single DLTK AST node. If
 	 * convertion fails, and for ex., more than one or zero nodes were fetched
 	 * as result, then RuntimeException will be thrown. Optoin
-	 * <code>allowZero</code> allows to fetch no dltk nodes and just return
-	 * null without throwing an exception.
+	 * <code>allowZero</code> allows to fetch no dltk nodes and just return null
+	 * without throwing an exception.
 	 * 
 	 * @param node
 	 * @param allowZero
@@ -612,8 +612,9 @@ public class RubyASTBuildVisitor implements NodeVisitor {
 			int possibleDotPosition, int firstArgStart, int lastArgEnd) {
 		int dotPosition = RubySyntaxUtils.skipWhitespaceForward(content,
 				possibleDotPosition);
-		if (dotPosition >= 0 && dotPosition < content.length && content[dotPosition] == ']')
-		  dotPosition++;
+		if (dotPosition >= 0 && dotPosition < content.length
+				&& content[dotPosition] == ']')
+			dotPosition++;
 		if (dotPosition >= 0 && dotPosition < content.length
 				&& (content[dotPosition] == '.' || content[dotPosition] == ':')) {
 			if (content[dotPosition] == ':')
@@ -1117,9 +1118,8 @@ public class RubyASTBuildVisitor implements NodeVisitor {
 							}
 						}
 
-						aa
-								.set(new SimpleReference(nameStart, nameEnd, a.getName()),
-										defaultVal);
+						aa.set(new SimpleReference(nameStart, nameEnd, a
+								.getName()), defaultVal);
 						aa.setModifier(RubyMethodArgument.SIMPLE);
 						arguments.add(aa);
 					} else {
@@ -2266,9 +2266,9 @@ public class RubyASTBuildVisitor implements NodeVisitor {
 		copyOffsets(expr, arg0);
 		int possNameStart = arg0.getPosition().getStartOffset();
 		if (receiver != null)
-		  possNameStart = receiver.sourceEnd() + 1;
+			possNameStart = receiver.sourceEnd() + 1;
 		fixFunctionCallOffsets(expr, arg0.getName(), possNameStart, list
-		                       .sourceStart(), list.sourceEnd());
+				.sourceStart(), list.sourceEnd());
 		states.peek().add(expr);
 		return null;
 	}
