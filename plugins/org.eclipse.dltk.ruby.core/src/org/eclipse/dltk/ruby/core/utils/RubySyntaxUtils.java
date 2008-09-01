@@ -131,7 +131,7 @@ public class RubySyntaxUtils {
 	}
 	
 	private static final Pattern RE_METHOD_NAME = Pattern
-			.compile("([_a-zA-Z0-9]+[\\?!=]?"); //$NON-NLS-1$
+			.compile("[_a-zA-Z0-9]+[\\?!=]?"); //$NON-NLS-1$
 
 	/**
 	 * Checks whether given name is a Ruby method name.
