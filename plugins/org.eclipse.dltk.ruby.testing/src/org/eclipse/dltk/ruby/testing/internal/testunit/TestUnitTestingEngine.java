@@ -46,11 +46,6 @@ public class TestUnitTestingEngine extends AbstractRubyTestingEngine {
 		static final int TESTCASE_WEIGHT = 10;
 		static final int METHOD_WEIGHT = 1;
 
-		private static final String[] SHOULDA_METHODS = { "context", //$NON-NLS-1$
-				"should", //$NON-NLS-1$
-				"should_eventually" //$NON-NLS-1$
-		};
-
 		public boolean visitGeneral(ASTNode node) throws Exception {
 			if (node instanceof CallExpression) {
 				final CallExpression call = (CallExpression) node;
@@ -58,7 +53,7 @@ public class TestUnitTestingEngine extends AbstractRubyTestingEngine {
 					testUnitWeight += REQUIRE_WEIGHT;
 				} else if (isRequire(call, SHOULDA)) {
 					shouldaWeight += REQUIRE_WEIGHT;
-				} else if (isMethodCall(call, SHOULDA_METHODS)) {
+				} else if (isMethodCall(call, ShouldaUtils.METHODS)) {
 					shouldaWeight += METHOD_WEIGHT;
 				}
 			} else if (node instanceof RubyClassDeclaration) {

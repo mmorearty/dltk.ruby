@@ -87,15 +87,20 @@ public class AbstractTestingEngineValidateVisitor extends ASTVisitor {
 
 	protected boolean isRequire(CallExpression call, String moduleName) {
 		if (isRequire(call)) {
-			ASTNode argument = (ASTNode) call.getArgs().getChilds().get(0);
-			if (argument instanceof RubyCallArgument) {
-				RubyCallArgument callArgument = (RubyCallArgument) argument;
-				if (callArgument.getValue() instanceof StringLiteral) {
-					StringLiteral literal = (StringLiteral) callArgument
-							.getValue();
-					if (moduleName.equals(literal.getValue())) {
-						return true;
-					}
+			final ASTNode argument = (ASTNode) call.getArgs().getChilds()
+					.get(0);
+			return isStringLiteralArgument(argument, moduleName);
+		}
+		return false;
+	}
+
+	protected boolean isStringLiteralArgument(ASTNode argument, String value) {
+		if (argument instanceof RubyCallArgument) {
+			RubyCallArgument callArg = (RubyCallArgument) argument;
+			if (callArg.getValue() instanceof StringLiteral) {
+				StringLiteral literal = (StringLiteral) callArg.getValue();
+				if (value.equals(literal.getValue())) {
+					return true;
 				}
 			}
 		}
