@@ -226,7 +226,7 @@ module DLTK
 			end
 
 			def escapeComma(s)
-				s.gsub('[\\,]', '\\\1')
+				s.gsub('([\\,])', '\\\1')
 			end
 
 			def sendMessage(message)
