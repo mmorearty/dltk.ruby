@@ -498,11 +498,14 @@ public class RubyASTBuildVisitor implements NodeVisitor {
 	}
 
 	public Instruction visitAliasNode(AliasNode iVisited) { // done
-		String oldName = iVisited.getOldName();
-		String newName = iVisited.getNewName();
 		ISourcePosition pos = iVisited.getPosition();
-		RubyAliasExpression expr = new RubyAliasExpression(
-				pos.getStartOffset(), pos.getEndOffset(), oldName, newName);
+		final int start = pos.getStartOffset();
+		int end = pos.getEndOffset();
+		while (end > start && Character.isWhitespace(content[end - 1])) {
+			--end;
+		}
+		RubyAliasExpression expr = new RubyAliasExpression(start, end, iVisited
+				.getOldName(), iVisited.getNewName());
 		states.peek().add(expr);
 		return null;
 	}
