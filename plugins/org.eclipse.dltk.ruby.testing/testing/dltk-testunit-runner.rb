@@ -210,15 +210,15 @@ module DLTK
 			end
 
 			def notifyTestStarted(testId, testName)
-				sendMessage MessageIds::TEST_START + testId + "," + testName
+				sendMessage MessageIds::TEST_START + testId + "," + escapeComma(testName)
 			end
 
 			def notifyTestEnded(testId, testName)
-				sendMessage MessageIds::TEST_END + testId + "," + testName
+				sendMessage MessageIds::TEST_END + testId + "," + escapeComma(testName)
 			end
 
 			def notifyTestFailure(testId, testName, status)
-				sendMessage status + testId + "," + testName
+				sendMessage status + testId + "," + escapeComma(testName)
 			end
 
 			def getTestId(t)
@@ -226,7 +226,7 @@ module DLTK
 			end
 
 			def escapeComma(s)
-				s.gsub('([\\,])', '\\\1')
+				s.gsub(/([\\,])/, '\\\\\1')
 			end
 
 			def sendMessage(message)
