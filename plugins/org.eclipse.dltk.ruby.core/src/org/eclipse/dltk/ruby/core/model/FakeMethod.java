@@ -9,6 +9,7 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.core.model;
 
+import org.eclipse.dltk.compiler.CharOperation;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ISourceRange;
 import org.eclipse.dltk.core.ModelException;
@@ -18,26 +19,24 @@ import org.eclipse.dltk.internal.core.SourceRange;
 
 public class FakeMethod extends SourceMethod {
 
-	private static final String[] NO_STRINGS = new String[0];
-
 	private String receiver;
-	
-	private String[] parameters = NO_STRINGS;
-	
-	private String[] parameterInitializers = NO_STRINGS;
-	
+
+	private String[] parameters = CharOperation.NO_STRINGS;
+
+	private String[] parameterInitializers = CharOperation.NO_STRINGS;
+
 	private int flags;
 
 	private int offset;
 
 	private int length;
-	
+
 	private boolean hasSpecialOffsets = false;
 
 	private int nameOffset;
 
 	private int nameLength;
-	
+
 	public String getReceiver() {
 		return receiver;
 	}
@@ -50,7 +49,8 @@ public class FakeMethod extends SourceMethod {
 		super(parent, name);
 	}
 
-	public FakeMethod(ModelElement parent, String name, int offset, int length, int nameOffset, int nameLength) {
+	public FakeMethod(ModelElement parent, String name, int offset, int length,
+			int nameOffset, int nameLength) {
 		super(parent, name);
 		this.offset = offset;
 		this.length = length;
@@ -58,7 +58,7 @@ public class FakeMethod extends SourceMethod {
 		this.nameLength = nameLength;
 		hasSpecialOffsets = true;
 	}
-	
+
 	public ISourceRange getNameRange() throws ModelException {
 		if (hasSpecialOffsets)
 			return new SourceRange(nameOffset, nameLength);
@@ -67,11 +67,11 @@ public class FakeMethod extends SourceMethod {
 
 	public ISourceRange getSourceRange() throws ModelException {
 		if (hasSpecialOffsets)
-			return new SourceRange(offset,length);
+			return new SourceRange(offset, length);
 		return super.getSourceRange();
 	}
-	
-	public IScriptProject getScriptProject() {		
+
+	public IScriptProject getScriptProject() {
 		return parent.getScriptProject();
 	}
 
@@ -98,6 +98,5 @@ public class FakeMethod extends SourceMethod {
 	public String[] getParameters() throws ModelException {
 		return parameters;
 	}
-	
 
 }
