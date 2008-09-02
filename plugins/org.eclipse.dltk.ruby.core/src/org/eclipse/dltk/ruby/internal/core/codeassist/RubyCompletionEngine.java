@@ -316,7 +316,7 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 						IEvaluatedType self = inferencer.evaluateType(goal,
 								TI_TIMEOUT);
 						completeClassMethods(moduleDeclaration, self,
-								Util.EMPTY_STRING);
+								wordStarting);
 					} else if (minimalNode instanceof NumericLiteral
 							&& position > 0
 							&& position == minimalNode.sourceEnd()
