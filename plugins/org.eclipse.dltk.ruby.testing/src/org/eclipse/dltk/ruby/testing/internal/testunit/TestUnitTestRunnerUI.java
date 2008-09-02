@@ -55,6 +55,7 @@ import org.eclipse.dltk.ruby.testing.internal.ResolverUtils;
 import org.eclipse.dltk.ruby.testing.internal.RubyOpenEditorAction;
 import org.eclipse.dltk.ruby.testing.internal.RubyTestingPlugin;
 import org.eclipse.dltk.testing.AbstractTestRunnerUI;
+import org.eclipse.dltk.testing.DLTKTestingMessages;
 import org.eclipse.dltk.testing.ITestElementResolver;
 import org.eclipse.dltk.testing.ITestRunnerUI;
 import org.eclipse.dltk.testing.TestElementResolution;
@@ -132,6 +133,28 @@ public class TestUnitTestRunnerUI extends AbstractTestRunnerUI implements
 				--index;
 			}
 			return testName.substring(0, index);
+		} else {
+			return testName;
+		}
+	}
+
+	public String getTestStartedMessage(ITestCaseElement caseElement) {
+		final String testName = caseElement.getTestName();
+		int index = testName.indexOf('(');
+		if (index > 0) {
+			int end = testName.length();
+			if (end > index && testName.charAt(end - 1) == ')') {
+				--end;
+			}
+			final String className = testName.substring(index + 1, end);
+			while (index > 0
+					&& Character.isWhitespace(testName.charAt(index - 1))) {
+				--index;
+			}
+			final String method = testName.substring(0, index);
+			return NLS.bind(
+					DLTKTestingMessages.TestRunnerViewPart_message_started,
+					className, method);
 		} else {
 			return testName;
 		}
