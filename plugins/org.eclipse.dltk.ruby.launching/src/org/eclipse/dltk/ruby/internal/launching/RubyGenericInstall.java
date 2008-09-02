@@ -140,10 +140,13 @@ public class RubyGenericInstall extends AbstractInterpreterInstall {
 				} catch (CoreException e) {
 					e.printStackTrace();
 				}
+				lastModified = System.currentTimeMillis();
 			}
 
 			return sources;
 		}
+		
+		long lastModified;
 	}
 
 	private BuiltinsHelper helper = new BuiltinsHelper();
@@ -174,6 +177,11 @@ public class RubyGenericInstall extends AbstractInterpreterInstall {
 	public String getBuiltinModuleContent(String name) {
 		final Map sources = helper.getSources();
 		return (String) sources.get(name);
+	}
+	
+	public long lastModified() {
+		helper.getSources();
+		return helper.lastModified;
 	}
 
 	public String[] getBuiltinModules() {
