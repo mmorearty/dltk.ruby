@@ -133,7 +133,9 @@ public class RubyMixinBuildVisitor extends ASTVisitor {
 		}
 
 		public String reportInclude(String object) {
-			return null;
+			return report(getClassKey() + INSTANCE_SUFFIX,
+					new RubyMixinElementInfo(RubyMixinElementInfo.K_INCLUDE,
+							object));
 		}
 
 		public String reportExtend(String object) {
