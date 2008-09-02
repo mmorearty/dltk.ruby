@@ -17,25 +17,40 @@ public class AliasedRubyMixinMethod extends RubyMixinMethod {
 	public AliasedRubyMixinMethod(RubyMixinModel model, RubyMixinAlias alias) {
 		super(model, alias.getKey());
 		this.alias = alias;
-		RubyAliasExpression node = alias.getAlias();
-		String newName = node.getNewValue();
-		int length = node.sourceEnd() - node.sourceStart();
-		FakeMethod fakeMethod = new FakeMethod((ModelElement) alias
-				.getSourceModule(), newName, node.sourceStart(), length, node
-				.sourceStart(), length);
-		IMethod[] sourceMethods2 = RubyMixinMethod.getSourceMethods(model,
-				alias.getOldKey());
-		if (sourceMethods2.length == 1 && sourceMethods2[0] != null) {
-			IMethod method = sourceMethods2[0];
+		final RubyAliasExpression node = alias.getAlias();
+		final int length = node.sourceEnd() - node.sourceStart();
+		final IMethod sourceMethod = findSourceMethod(model, alias);
+		final ModelElement fakeMethodParent;
+		if (sourceMethod != null
+				&& sourceMethod.getParent() instanceof ModelElement) {
+			fakeMethodParent = (ModelElement) sourceMethod.getParent();
+		} else {
+			fakeMethodParent = (ModelElement) alias.getSourceModule();
+		}
+		FakeMethod fakeMethod = new FakeMethod(fakeMethodParent, node
+				.getNewValue(), node.sourceStart(), length, node.sourceStart(),
+				length);
+		if (sourceMethod != null) {
 			try {
-				fakeMethod.setFlags(method.getFlags());
-				fakeMethod.setParameters(method.getParameters());
-				fakeMethod.setParameterInitializers(method
+				fakeMethod.setFlags(sourceMethod.getFlags());
+				fakeMethod.setParameters(sourceMethod.getParameters());
+				fakeMethod.setParameterInitializers(sourceMethod
 						.getParameterInitializers());
 			} catch (ModelException e) {
 			}
 		}
 		this.setSourceMethods(new IMethod[] { fakeMethod });
+	}
+
+	private static IMethod findSourceMethod(RubyMixinModel model,
+			RubyMixinAlias alias) {
+		final IMethod[] sourceMethods = RubyMixinMethod.getSourceMethods(model,
+				alias.getOldKey());
+		if (sourceMethods.length == 1 && sourceMethods[0] != null) {
+			return sourceMethods[0];
+		} else {
+			return null;
+		}
 	}
 
 	public String getName() {
