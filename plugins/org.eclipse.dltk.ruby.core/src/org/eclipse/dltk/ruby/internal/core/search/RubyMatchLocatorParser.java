@@ -9,6 +9,7 @@ package org.eclipse.dltk.ruby.internal.core.search;
 
 import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.declarations.FieldDeclaration;
+import org.eclipse.dltk.ast.declarations.MethodDeclaration;
 import org.eclipse.dltk.ast.expressions.CallExpression;
 import org.eclipse.dltk.ast.references.ConstantReference;
 import org.eclipse.dltk.ast.references.SimpleReference;
@@ -17,6 +18,7 @@ import org.eclipse.dltk.ast.references.VariableReference;
 import org.eclipse.dltk.core.search.matching.MatchLocator;
 import org.eclipse.dltk.core.search.matching.MatchLocatorParser;
 import org.eclipse.dltk.core.search.matching.PatternLocator;
+import org.eclipse.dltk.ruby.ast.RubyAliasExpression;
 import org.eclipse.dltk.ruby.ast.RubyAssignment;
 import org.eclipse.dltk.ruby.ast.RubyConstantDeclaration;
 
@@ -53,6 +55,12 @@ public class RubyMatchLocatorParser extends MatchLocatorParser {
 					locator.match(ref, this.getNodeSet());
 				}
 			}
+		} else if (node instanceof RubyAliasExpression) {
+			final RubyAliasExpression alias = (RubyAliasExpression) node;
+			final MethodDeclaration method = new MethodDeclaration(alias
+					.getNewValue(), alias.sourceStart(), alias.sourceEnd(),
+					alias.sourceStart(), alias.sourceEnd());
+			locator.match(method, this.getNodeSet());
 		} else if (node instanceof RubyAssignment) {
 			// Assignment handling (this is static variable assignment.)
 
