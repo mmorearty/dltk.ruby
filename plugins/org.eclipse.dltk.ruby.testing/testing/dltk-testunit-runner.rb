@@ -65,6 +65,9 @@ module DLTK
 			# Notification that an actual result ends.
 			ACTUAL_END     = "%ACTUALE"
 
+			#Test identifier prefix for ignored tests.
+			IGNORED_TEST_PREFIX = "@Ignore: "
+
 		end # of MessageIds
 
 		class Runner < Test::Unit::UI::Console::TestRunner
