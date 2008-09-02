@@ -123,6 +123,20 @@ public class TestUnitTestRunnerUI extends AbstractTestRunnerUI implements
 		return testingEngine.getName();
 	}
 
+	public String getTestCaseLabel(ITestCaseElement caseElement) {
+		final String testName = caseElement.getTestName();
+		int index = testName.indexOf('(');
+		if (index > 0) {
+			while (index > 0
+					&& Character.isWhitespace(testName.charAt(index - 1))) {
+				--index;
+			}
+			return testName.substring(0, index);
+		} else {
+			return testName;
+		}
+	}
+
 	/*
 	 * @see
 	 * org.eclipse.dltk.testing.AbstractTestRunnerUI#getAdapter(java.lang.Class)
