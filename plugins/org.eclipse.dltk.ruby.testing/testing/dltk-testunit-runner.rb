@@ -65,7 +65,7 @@ module DLTK
 			# Notification that an actual result ends.
 			ACTUAL_END     = "%ACTUALE"
 
-		end
+		end # of MessageIds
 
 		class Runner < Test::Unit::UI::Console::TestRunner
 			def start
