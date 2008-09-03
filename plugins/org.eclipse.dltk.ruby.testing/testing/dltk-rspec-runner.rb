@@ -187,7 +187,7 @@ module DLTK
 				@connection.notifyTestEnded getTestId(example), MessageIds::IGNORED_TEST_PREFIX + getTestName(example)
 			end
 
-			EXPECTED_GOT_RE = /^expected: (.+),\n\s+got: (.+) \(using (==|===|=~)\)$/s
+			EXPECTED_GOT_RE = /^expected: (.+),\n\s+got: (.+) \(using (==|===)\)$/s
 
 			def example_failed(example, counter, failure)
 				testId = getTestId(example)
