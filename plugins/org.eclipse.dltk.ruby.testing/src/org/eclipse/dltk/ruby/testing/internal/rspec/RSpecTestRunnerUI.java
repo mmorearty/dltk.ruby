@@ -12,23 +12,16 @@
 package org.eclipse.dltk.ruby.testing.internal.rspec;
 
 import org.eclipse.dltk.core.IScriptProject;
-import org.eclipse.dltk.ruby.testing.internal.AbstractRubyTestingEngine;
-import org.eclipse.dltk.testing.AbstractTestRunnerUI;
+import org.eclipse.dltk.ruby.testing.internal.AbstractRubyTestRunnerUI;
 import org.eclipse.dltk.testing.DLTKTestingMessages;
-import org.eclipse.dltk.testing.ITestElementResolver;
-import org.eclipse.dltk.testing.ITestRunnerUI;
 import org.eclipse.dltk.testing.TestElementResolution;
 import org.eclipse.dltk.testing.model.ITestCaseElement;
-import org.eclipse.dltk.testing.model.ITestElement;
+import org.eclipse.dltk.testing.model.ITestSuiteElement;
 import org.eclipse.osgi.util.NLS;
 
-public class RSpecTestRunnerUI extends AbstractTestRunnerUI implements
-		ITestRunnerUI, ITestElementResolver {
+public class RSpecTestRunnerUI extends AbstractRubyTestRunnerUI {
 
 	private static final char CLASS_BEGIN = '<';
-
-	private final IScriptProject project;
-	private final AbstractRubyTestingEngine testingEngine;
 
 	/**
 	 * @param testingEngine
@@ -36,15 +29,12 @@ public class RSpecTestRunnerUI extends AbstractTestRunnerUI implements
 	 */
 	public RSpecTestRunnerUI(RspecTestingEngine testingEngine,
 			IScriptProject project) {
-		this.testingEngine = testingEngine;
-		this.project = project;
+		super(testingEngine, project);
 	}
 
-	/*
-	 * @see org.eclipse.dltk.testing.ITestRunnerUI#getDisplayName()
-	 */
-	public String getDisplayName() {
-		return testingEngine.getName();
+	public String filterStackTrace(String trace) {
+		// TODO implement filtering
+		return trace;
 	}
 
 	/*
@@ -79,21 +69,12 @@ public class RSpecTestRunnerUI extends AbstractTestRunnerUI implements
 		return testName;
 	}
 
-	/*
-	 * @see AbstractTestRunnerUI#getAdapter(java.lang.Class)
-	 */
-	public Object getAdapter(Class adapter) {
-		if (ITestElementResolver.class.equals(adapter)) {
-			return this;
-		} else {
-			return super.getAdapter(adapter);
-		}
+	protected TestElementResolution resolveTestCase(ITestCaseElement element) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
-	/*
-	 * @see ITestElementResolver#resolveElement(ITestElement)
-	 */
-	public TestElementResolution resolveElement(ITestElement element) {
+	protected TestElementResolution resolveTestSuite(ITestSuiteElement element) {
 		// TODO Auto-generated method stub
 		return null;
 	}

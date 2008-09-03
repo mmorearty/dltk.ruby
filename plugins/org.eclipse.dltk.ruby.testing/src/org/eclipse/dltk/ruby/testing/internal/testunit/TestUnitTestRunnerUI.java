@@ -17,8 +17,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.Stack;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -47,84 +45,33 @@ import org.eclipse.dltk.core.search.SearchRequestor;
 import org.eclipse.dltk.corext.SourceRange;
 import org.eclipse.dltk.ruby.ast.RubyCallArgument;
 import org.eclipse.dltk.ruby.core.utils.RubySyntaxUtils;
-import org.eclipse.dltk.ruby.debug.RubyFilenameLinenumberResolver;
-import org.eclipse.dltk.ruby.internal.debug.ui.console.RubyFileHyperlink;
+import org.eclipse.dltk.ruby.testing.internal.AbstractRubyTestRunnerUI;
 import org.eclipse.dltk.ruby.testing.internal.AbstractRubyTestingEngine;
 import org.eclipse.dltk.ruby.testing.internal.AbstractTestingEngineValidateVisitor;
 import org.eclipse.dltk.ruby.testing.internal.ResolverUtils;
-import org.eclipse.dltk.ruby.testing.internal.RubyOpenEditorAction;
 import org.eclipse.dltk.ruby.testing.internal.RubyTestingPlugin;
-import org.eclipse.dltk.testing.AbstractTestRunnerUI;
 import org.eclipse.dltk.testing.DLTKTestingMessages;
-import org.eclipse.dltk.testing.ITestElementResolver;
-import org.eclipse.dltk.testing.ITestRunnerUI;
 import org.eclipse.dltk.testing.TestElementResolution;
 import org.eclipse.dltk.testing.model.ITestCaseElement;
-import org.eclipse.dltk.testing.model.ITestElement;
 import org.eclipse.dltk.testing.model.ITestSuiteElement;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.osgi.util.NLS;
 
-public class TestUnitTestRunnerUI extends AbstractTestRunnerUI implements
-		ITestRunnerUI, ITestElementResolver {
+public class TestUnitTestRunnerUI extends AbstractRubyTestRunnerUI {
 
 	private static final char CLASS_BEGIN = '(';
 	private static final char CLASS_END = ')';
-
-	private final IScriptProject project;
-	private final AbstractRubyTestingEngine testingEngine;
 
 	/**
 	 * @param testingEngine
 	 */
 	public TestUnitTestRunnerUI(AbstractRubyTestingEngine testingEngine,
 			IScriptProject project) {
-		this.testingEngine = testingEngine;
-		this.project = project;
+		super(testingEngine, project);
 	}
 
 	public String filterStackTrace(String trace) {
 		// TODO implement filtering
 		return trace;
-	}
-
-	private static final Pattern STACK_FRAME_IN_PATTERN = Pattern
-			.compile("(.+):(\\d+):in `(.+)'"); //$NON-NLS-1$
-
-	private static final Pattern STACK_FRAME_PATTERN = RubyFilenameLinenumberResolver
-			.createPattern();
-
-	public boolean isStackFrame(String line) {
-		return STACK_FRAME_IN_PATTERN.matcher(line).matches()
-				|| STACK_FRAME_PATTERN.matcher(line).matches();
-	}
-
-	public IAction createOpenEditorAction(String line) {
-		Matcher matcher = STACK_FRAME_IN_PATTERN.matcher(line);
-		if (!matcher.matches()) {
-			matcher = STACK_FRAME_PATTERN.matcher(line);
-		}
-		if (matcher.matches()) {
-			Object element = RubyFileHyperlink.findSourceModule(matcher
-					.group(1));
-			if (element != null) {
-				final int lineNumber;
-				try {
-					lineNumber = Integer.parseInt(matcher.group(2));
-				} catch (NumberFormatException e) {
-					return null;
-				}
-				return new RubyOpenEditorAction(element, lineNumber);
-			}
-		}
-		return null;
-	}
-
-	/*
-	 * @see org.eclipse.dltk.testing.ITestRunnerUI#getDisplayName()
-	 */
-	public String getDisplayName() {
-		return testingEngine.getName();
 	}
 
 	public String getTestCaseLabel(ITestCaseElement caseElement, boolean full) {
@@ -175,30 +122,9 @@ public class TestUnitTestRunnerUI extends AbstractTestRunnerUI implements
 		}
 	}
 
-	/*
-	 * @see
-	 * org.eclipse.dltk.testing.AbstractTestRunnerUI#getAdapter(java.lang.Class)
-	 */
-	public Object getAdapter(Class adapter) {
-		if (ITestElementResolver.class.equals(adapter)) {
-			return this;
-		} else {
-			return super.getAdapter(adapter);
-		}
-	}
-
-	public TestElementResolution resolveElement(ITestElement element) {
-		if (element instanceof ITestCaseElement) {
-			return resolveTestCase((ITestCaseElement) element);
-		} else if (element instanceof ITestSuiteElement) {
-			return resolveTestSuite((ITestSuiteElement) element);
-		}
-		return null;
-	}
-
 	private static final String SHOULDA_TEST_PREFIX = "test:"; //$NON-NLS-1$
 
-	private TestElementResolution resolveTestCase(ITestCaseElement testCase) {
+	protected TestElementResolution resolveTestCase(ITestCaseElement testCase) {
 		final String testName = testCase.getTestName();
 		if (testName.length() == 0) {
 			return null;
@@ -425,7 +351,7 @@ public class TestUnitTestRunnerUI extends AbstractTestRunnerUI implements
 		return null;
 	}
 
-	private TestElementResolution resolveTestSuite(ITestSuiteElement element) {
+	protected TestElementResolution resolveTestSuite(ITestSuiteElement element) {
 		final String className = element.getSuiteTypeName();
 		if (RubySyntaxUtils.isValidClass(className)) {
 			final List types = findClasses(className);
