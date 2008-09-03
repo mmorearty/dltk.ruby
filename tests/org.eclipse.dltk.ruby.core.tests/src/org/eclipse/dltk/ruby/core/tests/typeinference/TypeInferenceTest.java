@@ -33,7 +33,7 @@ public class TypeInferenceTest extends AbstractTypeInferencingTests {
 		super.setUpSuite();
 		waitUntilIndexesReady();
 		ResourcesPlugin.getWorkspace().build(IncrementalProjectBuilder.FULL_BUILD, new NullProgressMonitor());
-		
+		waitForAutoBuild();
 	}
 	
 	public void tearDownSuite() throws Exception {
@@ -42,7 +42,6 @@ public class TypeInferenceTest extends AbstractTypeInferencingTests {
 	}
 
 	public void executeTest(String folder, String name, ITypeInferencer inferencer, Collection assertions) throws Exception {
-		waitForAutoBuild();
 		ISourceModule cu = getSourceModule(SRC_PROJECT, folder, name);
 		ModuleDeclaration rootNode = RubyTypeInferencingUtils.parseSource(cu);
 		for (Iterator iter = assertions.iterator(); iter.hasNext();) {

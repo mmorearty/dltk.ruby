@@ -11,11 +11,11 @@ package org.eclipse.dltk.ruby.core.tests.typeinference;
 
 import junit.framework.Test;
 
-
 public class SimpleTest {
 
 	public static Test suite() {
-		return new TypeInferenceSuite("/workspace/typeinference/simple");
+		return new TypeInferenceSuite(SimpleTest.class,
+				"/workspace/typeinference/simple");
 	}
 
 }

@@ -1175,4 +1175,20 @@ public class RubyCompletionTests extends AbstractModelCompletionTests {
 		int scanfIndex = completionResults.indexOf("scanf");
 		assertTrue(scanfIndex == -1);
 	}
+
+	public void testCompletionAfterDot() throws ModelException {
+		CompletionTestsRequestor requestor = new CompletionTestsRequestor();
+		ISourceModule cu = getSourceModule("completion", "src", "afterDot.rb");
+
+		String str = cu.getSource();
+		String completeBehind = "x.";
+		int cursorLocation = str.lastIndexOf(completeBehind)
+				+ completeBehind.length();
+
+		waitForAutoBuild();
+		cu.codeComplete(cursorLocation, requestor);
+		String completionResults = requestor.getResults(false, false);
+		assertTrue(completionResults.indexOf("method1inAfterDot") != -1);
+		assertTrue(completionResults.indexOf("method2inAfterDot") != -1);
+	}
 }

@@ -23,6 +23,7 @@ import java.util.StringTokenizer;
 
 import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
+import junit.framework.TestResult;
 import junit.framework.TestSuite;
 
 import org.eclipse.core.runtime.Assert;
@@ -43,16 +44,36 @@ import org.eclipse.dltk.ti.ITypeInferencer;
 import org.eclipse.dltk.ti.goals.ExpressionTypeGoal;
 import org.eclipse.dltk.ti.types.IEvaluatedType;
 import org.eclipse.dltk.ti.types.RecursionTypeCall;
+import org.osgi.framework.Bundle;
 
 public class TypeInferenceSuite extends TestSuite {
 
-	public TypeInferenceSuite(String testsDirectory) {
-		super(testsDirectory);
-		Enumeration entryPaths = Activator.getDefault().getBundle()
-				.getEntryPaths(testsDirectory);
+	public void run(TestResult result) {
+		TypeInferenceTest tests = new TypeInferenceTest("ruby selection tests");
+		try {
+			tests.setUpSuite();
+		} catch (Throwable t) {
+			result.addError(this, t);
+			return;
+		}
+		try {
+			super.run(result);
+		} finally {
+			try {
+				tests.tearDownSuite();
+			} catch (Throwable t) {
+				t.printStackTrace();
+			}
+		}
+	}
+
+	public TypeInferenceSuite(Class clazz, String testsDirectory) {
+		super(clazz.getName());
+		final Bundle bundle = Activator.getDefault().getBundle();
+		Enumeration entryPaths = bundle.getEntryPaths(testsDirectory);
 		while (entryPaths.hasMoreElements()) {
 			final String path = (String) entryPaths.nextElement();
-			URL entry = Activator.getDefault().getBundle().getEntry(path);
+			URL entry = bundle.getEntry(path);
 			try {
 				entry.openStream().close();
 			} catch (Exception e) {
@@ -104,7 +125,7 @@ public class TypeInferenceSuite extends TestSuite {
 								assertions.add(new ExpressionTypeAssertion(
 										expr, namePos, correctClassRef));
 							} else {
-// Assert.isLegal(false);
+								// Assert.isLegal(false);
 							}
 						}
 						lineOffset += lines[i].length() + 1;
@@ -117,25 +138,20 @@ public class TypeInferenceSuite extends TestSuite {
 
 					TypeInferenceTest tests = new TypeInferenceTest(
 							"ruby selection tests");
-					tests.setUpSuite();
-					try {
-						tests.executeTest(folder, name, inferencer, assertions);
-					} finally {
-						tests.tearDownSuite();
-					}
+					tests.executeTest(folder, name, inferencer, assertions);
 				}
 
 				class VariableReturnTypeAssertion implements IAssertion {
 
 					private final String correctClassRef;
 
-// private final String varName;
+					// private final String varName;
 
 					private final int namePos;
 
 					public VariableReturnTypeAssertion(String varName,
 							int namePos, String correctClassRef) {
-// this.varName = varName;
+						// this.varName = varName;
 						this.namePos = namePos;
 						this.correctClassRef = correctClassRef;
 					}
@@ -174,13 +190,13 @@ public class TypeInferenceSuite extends TestSuite {
 
 					private final String correctClassRef;
 
-// private final String expression;
+					// private final String expression;
 
 					private final int namePos;
 
 					public ExpressionTypeAssertion(String expression,
 							int namePos, String correctClassRef) {
-// this.expression = expression;
+						// this.expression = expression;
 						this.namePos = namePos;
 						this.correctClassRef = correctClassRef;
 					}
@@ -275,10 +291,10 @@ public class TypeInferenceSuite extends TestSuite {
 			correctType = RecursionTypeCall.INSTANCE;
 		else if ("any".equals(correctClassRef))
 			correctType = UnknownType.INSTANCE;
-// else if ("Fixnum".equals(correctClassRef))
-// correctType = new SimpleType(SimpleType.TYPE_NUMBER);
-// else if ("Str".equals(correctClassRef))
-// correctType = new SimpleType(SimpleType.TYPE_STRING);
+		// else if ("Fixnum".equals(correctClassRef))
+		// correctType = new SimpleType(SimpleType.TYPE_NUMBER);
+		// else if ("Str".equals(correctClassRef))
+		// correctType = new SimpleType(SimpleType.TYPE_STRING);
 		else
 			correctType = null;
 		return correctType;

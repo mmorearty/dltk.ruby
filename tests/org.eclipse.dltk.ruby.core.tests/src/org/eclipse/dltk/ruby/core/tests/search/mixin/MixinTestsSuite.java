@@ -9,11 +9,9 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.core.tests.search.mixin;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URL;
+import java.nio.CharBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -24,11 +22,13 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.dltk.compiler.util.Util;
 import org.eclipse.dltk.core.mixin.IMixinElement;
 import org.eclipse.dltk.core.mixin.MixinModel;
 import org.eclipse.dltk.ruby.core.RubyLanguageToolkit;
 import org.eclipse.dltk.ruby.core.tests.Activator;
 import org.eclipse.dltk.ruby.internal.parser.mixin.RubyMixinElementInfo;
+import org.eclipse.dltk.utils.TextUtils;
 
 public class MixinTestsSuite extends TestSuite {
 
@@ -36,7 +36,7 @@ public class MixinTestsSuite extends TestSuite {
 
 	public MixinTestsSuite(String testsDirectory) {
 		super(testsDirectory);
-		
+
 		model = new MixinModel(RubyLanguageToolkit.getDefault());
 		final MixinTest tests = new MixinTest("Ruby Mixin Tests");
 		try {
@@ -44,7 +44,7 @@ public class MixinTestsSuite extends TestSuite {
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
-		
+
 		Enumeration entryPaths = Activator.getDefault().getBundle()
 				.getEntryPaths(testsDirectory);
 		while (entryPaths.hasMoreElements()) {
@@ -59,7 +59,7 @@ public class MixinTestsSuite extends TestSuite {
 			final String name = (pos >= 0 ? path.substring(pos + 1) : path);
 			String x = path.substring(0, pos);
 			pos = x.lastIndexOf('/');
-			final String folder = (pos >= 0 ? x.substring(pos + 1) : x);
+			// final String folder = (pos >= 0 ? x.substring(pos + 1) : x);
 
 			addTest(new TestCase(name) {
 
@@ -82,25 +82,33 @@ public class MixinTestsSuite extends TestSuite {
 						model = new MixinModel(RubyLanguageToolkit.getDefault());
 						IMixinElement mixinElement = model.get(key);
 						if (mixinElement == null) {
-							throw new AssertionFailedError("Key " + key + " not found");
+							throw new AssertionFailedError("Key " + key
+									+ " not found");
 						}
 						Object[] allObjects = mixinElement.getAllObjects();
-						if (allObjects == null && allObjects.length > 0)
-							throw new AssertionFailedError("Key " + key + " has null or empty object set");
-						for (int i = 0; i < allObjects.length; i++) {							
+						if (allObjects == null || allObjects.length == 0)
+							throw new AssertionFailedError("Key " + key
+									+ " has null or empty object set");
+						for (int i = 0; i < allObjects.length; i++) {
 							if (allObjects[i] == null)
-								throw new AssertionFailedError("Key " + key + " has null object at index " + i);
+								throw new AssertionFailedError("Key " + key
+										+ " has null object at index " + i);
 							RubyMixinElementInfo info = (RubyMixinElementInfo) allObjects[i];
 							if (info.getObject() == null)
-								throw new AssertionFailedError("Key " + key + " has info with a null object at index " + i + " (kind=" + info.getKind() + ")");
+								throw new AssertionFailedError(
+										"Key "
+												+ key
+												+ " has info with a null object at index "
+												+ i + " (kind="
+												+ info.getKind() + ")");
 						}
 					}
 
 				}
 
-				protected void runTest() throws Throwable {					
-					String content = loadContent(path);
-					String[] lines = content.split("\n");
+				protected void runTest() throws Throwable {
+					CharSequence content = loadContent(path);
+					String[] lines = TextUtils.splitLines(content);
 					int lineOffset = 0;
 					for (int i = 0; i < lines.length; i++) {
 						String line = lines[i].trim();
@@ -117,8 +125,8 @@ public class MixinTestsSuite extends TestSuite {
 								assertions.add(new GetElementAssertion(key,
 										MixinTestsSuite.this.model));
 							} else {
-//								continue;
-//								Assert.isLegal(false);
+								// continue;
+								// Assert.isLegal(false);
 							}
 						}
 						lineOffset += lines[i].length() + 1;
@@ -127,36 +135,19 @@ public class MixinTestsSuite extends TestSuite {
 					Assert.isLegal(assertions.size() > 0);
 
 					tests.executeTest(assertions);
-//					try {
-//					} finally {
-//						//tests.tearDownSuite();						
-//					}
+					// try {
+					// } finally {
+					// //tests.tearDownSuite();
+					// }
 				}
 
 			});
 		}
 	}
 
-	private String loadContent(String path) throws IOException {
-		StringBuffer buffer = new StringBuffer();
-		InputStream input = null;
-		try {
-			input = Activator.getDefault().openResource(path);
-			char buff[] = new char[4096];
-			int len = 0;
-			BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-			while( (len = reader.read(buff))!=-1) {
-				if( len > 0 ) {
-					buffer.append(buff, 0, len);
-				}
-			}
-		} finally {
-			if (input != null) {
-				input.close();
-			}
-		}
-		String content = buffer.toString();
-		return content;
+	private CharSequence loadContent(String path) throws IOException {
+		return CharBuffer.wrap(Util.getInputStreamAsCharArray(Activator
+				.openResource(path), -1, null));
 	}
 
 }

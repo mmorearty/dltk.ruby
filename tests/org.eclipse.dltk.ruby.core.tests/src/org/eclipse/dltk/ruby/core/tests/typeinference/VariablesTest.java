@@ -14,7 +14,8 @@ import junit.framework.Test;
 public class VariablesTest {
 
 	public static Test suite() {
-		return new TypeInferenceSuite("/workspace/typeinference/variables");
+		return new TypeInferenceSuite(VariablesTest.class,
+				"/workspace/typeinference/variables");
 	}
 
 }
