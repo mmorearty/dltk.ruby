@@ -32,7 +32,7 @@ public abstract class AbstractRubyTestRunnerUI extends AbstractTestRunnerUI
 	private static final Pattern STACK_FRAME_IN_PATTERN = Pattern
 			.compile("(.+):(\\d+):in `(.+)'"); //$NON-NLS-1$
 
-	private static final Pattern STACK_FRAME_PATTERN = RubyFilenameLinenumberResolver
+	protected static final Pattern STACK_FRAME_PATTERN = RubyFilenameLinenumberResolver
 			.createPattern();
 
 	protected final IScriptProject project;
