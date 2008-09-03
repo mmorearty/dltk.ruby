@@ -13,7 +13,6 @@
 
 package org.eclipse.dltk.ruby.ast;
 
-import org.eclipse.dltk.ast.DLTKToken;
 import org.eclipse.dltk.ast.references.Reference;
 import org.eclipse.dltk.utils.CorePrinter;
 
@@ -21,11 +20,6 @@ public class RubySelfReference extends Reference {
 
 	public RubySelfReference(int start, int end) {
 		super(start, end);
-	}
-
-	public RubySelfReference(DLTKToken token) {
-		this.setStart(token.getColumn());
-		this.setEnd(this.sourceStart() + 4);
 	}
 
 	public String getStringRepresentation() {
