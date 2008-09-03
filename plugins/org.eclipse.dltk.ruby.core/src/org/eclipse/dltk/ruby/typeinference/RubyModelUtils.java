@@ -177,7 +177,6 @@ public class RubyModelUtils {
 	public static IField[] findFields(RubyMixinModel rubyModel,
 			ISourceModule modelModule, ModuleDeclaration parsedUnit,
 			String prefix, int position) {
-		assert (prefix != null);
 		List result = new ArrayList();
 
 		String[] keys = RubyTypeInferencingUtils.getModelStaticScopesKeys(
