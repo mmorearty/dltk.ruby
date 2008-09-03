@@ -12,6 +12,7 @@ package org.eclipse.dltk.ruby.typeinference;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.ASTVisitor;
@@ -177,7 +178,7 @@ public class RubyModelUtils {
 	public static IField[] findFields(RubyMixinModel rubyModel,
 			ISourceModule modelModule, ModuleDeclaration parsedUnit,
 			String prefix, int position) {
-		assert (prefix != null);
+		Assert.isNotNull(prefix);
 		List result = new ArrayList();
 
 		String[] keys = RubyTypeInferencingUtils.getModelStaticScopesKeys(
