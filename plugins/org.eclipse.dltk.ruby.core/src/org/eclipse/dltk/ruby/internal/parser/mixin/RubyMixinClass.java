@@ -390,6 +390,13 @@ public class RubyMixinClass implements IRubyMixinElement {
 	}
 
 	public RubyMixinMethod getMethod(String name) {
+		return getMethod(name, new HashSet());
+	}
+
+	protected RubyMixinMethod getMethod(String name, Set processedKeys) {
+		if (!processedKeys.add(key)) {
+			return null;
+		}
 		String possibleKey = key + MixinModel.SEPARATOR + name;
 		IMixinElement mixinElement = model.getRawModel().get(possibleKey);
 		if (mixinElement != null) {
@@ -409,7 +416,8 @@ public class RubyMixinClass implements IRubyMixinElement {
 		RubyMixinClass[] included = this.getIncluded();
 		for (int i = 0; i < included.length; i++) {
 			if (!this.key.equals(included[i].key)) {
-				RubyMixinMethod method = included[i].getMethod(name);
+				RubyMixinMethod method = included[i].getMethod(name,
+						processedKeys);
 				if (method != null)
 					return method;
 			}
@@ -417,7 +425,7 @@ public class RubyMixinClass implements IRubyMixinElement {
 
 		RubyMixinClass[] extended = this.getExtended();
 		for (int i = 0; i < extended.length; i++) {
-			RubyMixinMethod method = extended[i].getMethod(name);
+			RubyMixinMethod method = extended[i].getMethod(name, processedKeys);
 			if (method != null)
 				return method;
 		}
@@ -428,7 +436,7 @@ public class RubyMixinClass implements IRubyMixinElement {
 		if (superclass != null) {
 			if (superclass.getKey().equals(key))
 				return null;
-			return superclass.getMethod(name);
+			return superclass.getMethod(name, processedKeys);
 		}
 		// }
 		return null;
