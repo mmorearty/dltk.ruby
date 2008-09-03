@@ -88,7 +88,6 @@ module DLTK
 		class SocketConnection
 			def disconnect
 				if @socket
-					notifyTestRunEnded ((Time.now.to_f - @startTime.to_f) * 1000).to_i
 					#debug "Closing socket"
 					begin
 						@socket.close
