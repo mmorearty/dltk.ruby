@@ -171,7 +171,7 @@ module DLTK
 
 			def start(example_count)
 				@connection.connectSocket ENV[EnvVars::PORT].to_i
-				@connection.notifyTestRunStarted 0
+				@connection.notifyTestRunStarted example_count
 			end
 
 			def add_example_group(example_group)
