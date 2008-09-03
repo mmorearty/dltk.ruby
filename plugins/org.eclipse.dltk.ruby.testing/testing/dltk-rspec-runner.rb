@@ -16,7 +16,7 @@ module Spec
 					if backtrace =~ IN_METHOD_RE 
 						backtrace = $1
 					end
-					@DLTK_testName = description + '<' + backtrace + '>'
+					@DLTK_testName = description + '<' + backtrace
 				end
 				@DLTK_testName
 			end
