@@ -11,8 +11,19 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.testing.internal.rspec;
 
+import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.ruby.testing.internal.AbstractRubyTestingEngine;
+import org.eclipse.dltk.testing.ITestRunnerUI;
 
 public class RspecTestingEngine extends AbstractRubyTestingEngine {
+
+	/*
+	 * @see org.eclipse.dltk.testing.ITestingEngine#getTestRunnerUI()
+	 */
+	public ITestRunnerUI getTestRunnerUI(IScriptProject project,
+			ILaunchConfiguration configuration) {
+		return new RSpecTestRunnerUI(this, project);
+	}
 
 }
