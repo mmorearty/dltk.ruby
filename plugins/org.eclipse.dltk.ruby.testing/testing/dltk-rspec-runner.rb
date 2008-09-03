@@ -9,8 +9,16 @@ require 'spec/runner/formatter/base_formatter'
 module Spec
 	module Example
 		module ExampleMethods
-			def implementationProc
-				@_implementation
+			IN_METHOD_RE = /^(.+):in `(.+)'$/
+			def rspecTestName
+				if @DLTK_testName.nil?
+					backtrace = implementation_backtrace[0]
+					if backtrace =~ IN_METHOD_RE 
+						backtrace = $1
+					end
+					@DLTK_testName = description + '<' + backtrace + '>'
+				end
+				@DLTK_testName
 			end
 		end
 	end
@@ -162,7 +170,7 @@ module DLTK
 			end
 
 			def start(example_count)
-				@connection.connectSocket ENV[DLTK::RSpec::EnvVars::PORT].to_i
+				@connection.connectSocket ENV[EnvVars::PORT].to_i
 				@connection.notifyTestRunStarted 0
 			end
 
@@ -229,7 +237,7 @@ module DLTK
 			end
 
 			def getTestName(example)
-				return example.inspect				
+				return example.rspecTestName
 			end
 
 		end
