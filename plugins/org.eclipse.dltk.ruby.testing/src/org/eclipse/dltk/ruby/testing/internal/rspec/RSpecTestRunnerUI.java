@@ -11,8 +11,10 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.testing.internal.rspec;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 
@@ -23,6 +25,7 @@ import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
 import org.eclipse.dltk.ast.expressions.CallArgumentsList;
 import org.eclipse.dltk.ast.expressions.CallExpression;
 import org.eclipse.dltk.ast.expressions.StringLiteral;
+import org.eclipse.dltk.ast.references.ConstantReference;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.IScriptProject;
@@ -31,6 +34,7 @@ import org.eclipse.dltk.core.ISourceRange;
 import org.eclipse.dltk.core.SourceParserUtil;
 import org.eclipse.dltk.corext.SourceRange;
 import org.eclipse.dltk.ruby.ast.RubyCallArgument;
+import org.eclipse.dltk.ruby.ast.RubyColonExpression;
 import org.eclipse.dltk.ruby.internal.debug.ui.console.RubyFileHyperlink;
 import org.eclipse.dltk.ruby.testing.internal.AbstractRubyTestRunnerUI;
 import org.eclipse.dltk.ruby.testing.internal.AbstractTestingEngineValidateVisitor;
@@ -133,20 +137,27 @@ public class RSpecTestRunnerUI extends AbstractRubyTestRunnerUI {
 					final CallExpression call = (CallExpression) node;
 					if (isMethodCall(call, RSpecUtils.CONTEXT_METHODS)) {
 						final CallArgumentsList args = call.getArgs();
-
 						if (args.getChilds().size() >= 1) {
-							final Object arg0 = args.getChilds().get(0);
-							if (arg0 instanceof RubyCallArgument) {
-								final RubyCallArgument callArg = (RubyCallArgument) arg0;
-								final ASTNode argValue = callArg.getValue();
-								if (argValue instanceof StringLiteral) {
-									if (isMatched(contextName, args)) {
-										range = new SourceRange(call
-												.sourceStart(), callArg
-												.sourceEnd()
-												- call.sourceStart());
+							final List texts = new ArrayList();
+							ASTNode arg0 = null;
+							for (Iterator i = args.getChilds().iterator(); i
+									.hasNext();) {
+								final Object arg = i.next();
+								if (arg instanceof RubyCallArgument) {
+									final ASTNode value = ((RubyCallArgument) arg)
+											.getValue();
+									final String text = toText(value);
+									if (text != null) {
+										texts.add(text);
+										arg0 = value;
 									}
 								}
+							}
+							if (!texts.isEmpty()
+									&& isMatched(contextName, texts)) {
+								assert (arg0 != null);
+								range = new SourceRange(call.sourceStart(),
+										arg0.sourceEnd() - call.sourceStart());
 							}
 						}
 					}
@@ -159,15 +170,60 @@ public class RSpecTestRunnerUI extends AbstractRubyTestRunnerUI {
 		 * @param value
 		 * @return
 		 */
-		private boolean isMatched(String value, CallArgumentsList args) {
-			final RubyCallArgument callArg = (RubyCallArgument) args
-					.getChilds().get(0);
-			final String literal = ((StringLiteral) callArg.getValue())
-					.getValue();
-			if (value.equals(literal)) {
-				return true;
+		private String toText(ASTNode value) {
+			if (value instanceof StringLiteral) {
+				return ((StringLiteral) value).getValue();
 			}
-			return false;
+			if (value instanceof ConstantReference) {
+				return ((ConstantReference) value).getName();
+			}
+			if (value instanceof RubyColonExpression) {
+				final StringBuffer sb = new StringBuffer();
+				if (collectColonExpression((RubyColonExpression) value, sb)) {
+					return sb.toString();
+				}
+			}
+			return null;
+		}
+
+		/**
+		 * @param value
+		 * @param sb
+		 */
+		private boolean collectColonExpression(RubyColonExpression value,
+				StringBuffer sb) {
+			final ASTNode left = value.getLeft();
+			if (left instanceof RubyColonExpression) {
+				if (!collectColonExpression((RubyColonExpression) left, sb)) {
+					return false;
+				}
+			} else if (left instanceof ConstantReference) {
+				sb.append(((ConstantReference) left).getName());
+			} else if (left != null) {
+				final String msg = "Unexpected node in colon-expression " + left.getClass().getName(); //$NON-NLS-1$
+				RubyTestingPlugin.error(msg, null);
+				return false;
+			}
+			if (sb.length() != 0) {
+				sb.append("::"); //$NON-NLS-1$
+			}
+			sb.append(value.getName());
+			return true;
+		}
+
+		/**
+		 * @param value
+		 * @return
+		 */
+		private boolean isMatched(String value, List texts) {
+			final StringBuffer sb = new StringBuffer();
+			for (Iterator i = texts.iterator(); i.hasNext();) {
+				if (sb.length() != 0) {
+					sb.append(' ');
+				}
+				sb.append(i.next());
+			}
+			return value.equals(sb.toString());
 		}
 
 	}
