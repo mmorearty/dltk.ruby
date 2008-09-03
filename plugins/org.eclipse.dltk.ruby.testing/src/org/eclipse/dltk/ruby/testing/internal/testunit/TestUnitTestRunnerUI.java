@@ -124,15 +124,26 @@ public class TestUnitTestRunnerUI extends AbstractTestRunnerUI implements
 		return testingEngine.getName();
 	}
 
-	public String getTestCaseLabel(ITestCaseElement caseElement) {
+	public String getTestCaseLabel(ITestCaseElement caseElement, boolean full) {
 		final String testName = caseElement.getTestName();
 		int index = testName.indexOf('(');
 		if (index > 0) {
+			final int braceIndex = index;
 			while (index > 0
 					&& Character.isWhitespace(testName.charAt(index - 1))) {
 				--index;
 			}
-			return testName.substring(0, index);
+			if (full) {
+				int end = testName.length();
+				if (end > braceIndex + 1 && testName.charAt(end - 1) == ')') {
+					--end;
+				}
+				final String template = DLTKTestingMessages.TestSessionLabelProvider_testMethodName_className;
+				return NLS.bind(template, testName.substring(braceIndex + 1,
+						end), testName.substring(0, index));
+			} else {
+				return testName.substring(0, index);
+			}
 		} else {
 			return testName;
 		}
