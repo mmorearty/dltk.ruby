@@ -24,6 +24,7 @@ import org.eclipse.dltk.ast.declarations.FakeModuleDeclaration;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
 import org.eclipse.dltk.ast.expressions.CallArgumentsList;
 import org.eclipse.dltk.ast.expressions.CallExpression;
+import org.eclipse.dltk.ast.expressions.NumericLiteral;
 import org.eclipse.dltk.ast.expressions.StringLiteral;
 import org.eclipse.dltk.ast.references.ConstantReference;
 import org.eclipse.dltk.core.DLTKCore;
@@ -139,7 +140,7 @@ public class RSpecTestRunnerUI extends AbstractRubyTestRunnerUI {
 						final CallArgumentsList args = call.getArgs();
 						if (args.getChilds().size() >= 1) {
 							final List texts = new ArrayList();
-							ASTNode arg0 = null;
+							ASTNode lastArg = null;
 							for (Iterator i = args.getChilds().iterator(); i
 									.hasNext();) {
 								final Object arg = i.next();
@@ -149,15 +150,16 @@ public class RSpecTestRunnerUI extends AbstractRubyTestRunnerUI {
 									final String text = toText(value);
 									if (text != null) {
 										texts.add(text);
-										arg0 = value;
+										lastArg = value;
 									}
 								}
 							}
 							if (!texts.isEmpty()
 									&& isMatched(contextName, texts)) {
-								assert (arg0 != null);
+								assert (lastArg != null);
 								range = new SourceRange(call.sourceStart(),
-										arg0.sourceEnd() - call.sourceStart());
+										lastArg.sourceEnd()
+												- call.sourceStart());
 							}
 						}
 					}
@@ -173,6 +175,9 @@ public class RSpecTestRunnerUI extends AbstractRubyTestRunnerUI {
 		private String toText(ASTNode value) {
 			if (value instanceof StringLiteral) {
 				return ((StringLiteral) value).getValue();
+			}
+			if (value instanceof NumericLiteral) {
+				return ((NumericLiteral) value).getValue();
 			}
 			if (value instanceof ConstantReference) {
 				return ((ConstantReference) value).getName();
