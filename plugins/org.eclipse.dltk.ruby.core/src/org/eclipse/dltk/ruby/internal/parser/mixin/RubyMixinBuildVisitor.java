@@ -133,7 +133,9 @@ public class RubyMixinBuildVisitor extends ASTVisitor {
 		}
 
 		public String reportInclude(String object) {
-			return null;
+			return report(getClassKey() + INSTANCE_SUFFIX,
+					new RubyMixinElementInfo(RubyMixinElementInfo.K_INCLUDE,
+							object));
 		}
 
 		public String reportExtend(String object) {
@@ -513,7 +515,7 @@ public class RubyMixinBuildVisitor extends ASTVisitor {
 					scopes.push(metaScope);
 					metaScope.reportMethod(attr, fakeMethod);
 					scopes.pop();
-			}
+				}
 			}
 			List writers = info.getWriters();
 			for (Iterator iterator = writers.iterator(); iterator.hasNext();) {
@@ -627,9 +629,9 @@ public class RubyMixinBuildVisitor extends ASTVisitor {
 	private String report(String key, RubyMixinElementInfo object) {
 		RubyMixinModel.clearKeysCache(key);
 		if (requestor != null) {
-		ElementInfo info = new IMixinRequestor.ElementInfo();
-		info.key = key;
-		info.object = object;
+			ElementInfo info = new IMixinRequestor.ElementInfo();
+			info.key = key;
+			info.object = object;
 			requestor.reportElement(info);
 			// System.out.println("Mixin reported: " + key);
 		}
