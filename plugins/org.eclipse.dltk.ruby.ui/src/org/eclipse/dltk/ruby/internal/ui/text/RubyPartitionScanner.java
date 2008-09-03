@@ -12,6 +12,7 @@ package org.eclipse.dltk.ruby.internal.ui.text;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.dltk.ruby.internal.ui.text.rules.RubyDoubleQuoteStringRule;
 import org.eclipse.dltk.ruby.internal.ui.text.rules.RubyGlobalVarRule;
 import org.eclipse.dltk.ruby.internal.ui.text.rules.RubyPercentStringRule;
 import org.eclipse.dltk.ruby.internal.ui.text.rules.RubySlashRegexpRule;
@@ -29,6 +30,7 @@ public class RubyPartitionScanner extends RuleBasedPartitionScanner {
 	private Token rubyDoc;
 	private Token defaultToken;
 	private Token singleQuoteString;
+	private Token percentString;
 
 	/**
 	 * Creates the partitioner and sets up the appropriate rules.
@@ -42,21 +44,23 @@ public class RubyPartitionScanner extends RuleBasedPartitionScanner {
 
 		singleQuoteString = new Token(IRubyPartitions.RUBY_SINGLE_QUOTE_STRING);
 
+		percentString = new Token(IRubyPartitions.RUBY_PERCENT_STRING);
+
 		comment = new Token(IRubyPartitions.RUBY_COMMENT);
 
 		rubyDoc = new Token(IRubyPartitions.RUBY_DOC);
 
 		List rules = new ArrayList();
 
-		rules.add(new MultiLineRule("=begin", "=end", rubyDoc)); //$NON-NLS-1$ //$NON-NLS-2$
+		rules.add(new RDocRule(rubyDoc));
 
 		rules.add(new EndOfLineRule("#", comment)); //$NON-NLS-1$
 
-		rules.add(new MultiLineRule("\"", "\"", string, '\\', false)); //$NON-NLS-1$ //$NON-NLS-2$
+		rules.add(new RubyDoubleQuoteStringRule(string));
 
 		rules.add(new MultiLineRule("'", "'", singleQuoteString, '\\', false)); //$NON-NLS-1$ //$NON-NLS-2$
 
-		rules.add(new RubyPercentStringRule(string, false));
+		rules.add(new RubyPercentStringRule(percentString, false));
 
 		rules.add(new RubySlashRegexpRule(string));
 

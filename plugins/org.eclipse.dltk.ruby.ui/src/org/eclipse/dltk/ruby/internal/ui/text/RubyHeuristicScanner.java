@@ -169,15 +169,13 @@ public class RubyHeuristicScanner extends ScriptHeuristicScanner implements
 
 			if (Arrays.binarySearch(BLOCK_BEGINNING_KEYWORDS, token) >= 0) {
 				int pos = getPosition();
+				int prevToken = token;
 				token = previousToken(getPosition(), offset);
-				if (token == NOT_FOUND || token == TokenEQUAL) {
+				if (token == NOT_FOUND || token == TokenEQUAL || prevToken == TokenDO) {
 					setPosition(pos + 1);
 					return true;
 				}
 			}
-			
-			if (Arrays.binarySearch(BLOCK_ENDINGS, token) >= 0)
-				return false;
 			
 			token = previousToken(getPosition(), offset);
 		}
@@ -216,15 +214,26 @@ public class RubyHeuristicScanner extends ScriptHeuristicScanner implements
 				IRegion info = d.getLineInformation(line);
 				int start = info.getOffset();
 				int end = Math.min(info.getOffset() + info.getLength(), offset);
-				if (isBlockBeginning(start, end)) {
-					if (endingCount > 0) {
-						endingCount--;
-					} else {
-						return getPosition();
+				setPosition(start);
+				while (getPosition() < end) {
+					if (isBlockEnding(getPosition(), end)) {
+						endingCount++;
 					}
-				} else if (isBlockEnding(start, end)) {
-					endingCount++;
 				}
+
+				start = info.getOffset();
+				end = Math.min(info.getOffset() + info.getLength(), offset);
+				setPosition(end);
+				while (getPosition() > start) {
+					if (isBlockBeginning(start, getPosition())) {
+						if (endingCount > 0) {
+							endingCount--;
+						} else {
+							return getPosition();
+						}
+					}
+				}
+
 				line--;
 			}
 		} catch (BadLocationException e) {
@@ -243,15 +252,26 @@ public class RubyHeuristicScanner extends ScriptHeuristicScanner implements
 				IRegion info = d.getLineInformation(line);
 				int start = Math.max(info.getOffset(), offset);
 				int end = info.getOffset() + info.getLength();
-				if (isBlockBeginning(start, end)) {
-					beginningCount++;
-				} else if (isBlockEnding(start, end)) {
-					if (beginningCount > 0) {
-						beginningCount--;
-					} else {
-						return getPosition();
+				setPosition(end);
+				while (getPosition() > start) {
+					if (isBlockBeginning(start, getPosition())) {
+						beginningCount++;
 					}
 				}
+
+				start = Math.max(info.getOffset(), offset);
+				end = info.getOffset() + info.getLength();
+				setPosition(start);
+				while (getPosition() < end) {
+					if (isBlockEnding(getPosition(), end)) {
+						if (beginningCount > 0) {
+							beginningCount--;
+						} else {
+							return getPosition();
+						}
+					}
+				}
+
 				line++;
 			}
 		} catch (BadLocationException e) {

@@ -13,6 +13,7 @@ import org.eclipse.dltk.ruby.internal.ui.wizards.RubyNewClassWizard;
 import org.eclipse.dltk.ruby.internal.ui.wizards.RubyNewFileWizard;
 import org.eclipse.dltk.ruby.internal.ui.wizards.RubyNewModuleWizard;
 import org.eclipse.dltk.ruby.internal.ui.wizards.RubyNewProjectWizard;
+import org.eclipse.search.ui.NewSearchUI;
 import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
@@ -42,13 +43,14 @@ public class RubyPerspective implements IPerspectiveFactory {
 		bottomFolder.addView(IPageLayout.ID_TASK_LIST);
 		bottomFolder.addView("org.eclipse.dltk.ruby.ui.RubyDocumentationView"); //$NON-NLS-1$
 		bottomFolder.addView(IConsoleConstants.ID_CONSOLE_VIEW);		
-		bottomFolder.addPlaceholder(IPageLayout.ID_BOOKMARKS);
+		bottomFolder.addPlaceholder(NewSearchUI.SEARCH_VIEW_ID);
 		bottomFolder.addPlaceholder(IProgressConstants.PROGRESS_VIEW_ID);
 	}
 	
 	protected void addActionSets(IPageLayout layout) {
 		layout.addActionSet(IPageLayout.ID_NAVIGATE_ACTION_SET);
 		layout.addActionSet("org.eclipse.dltk.ruby.ui.RubyActionSet"); //$NON-NLS-1$
+		layout.addActionSet("org.eclipse.debug.ui.launchActionSet"); //$NON-NLS-1$
 	}
 	
 	protected void addViews(IPageLayout layout) {
@@ -62,6 +64,9 @@ public class RubyPerspective implements IPerspectiveFactory {
 		layout.addShowViewShortcut("org.eclipse.dltk.ui.ScriptExplorer"); //$NON-NLS-1$
 		layout.addShowViewShortcut(IPageLayout.ID_TASK_LIST);
 		layout.addShowViewShortcut(IProgressConstants.PROGRESS_VIEW_ID);
+		layout.addShowViewShortcut(IConsoleConstants.ID_CONSOLE_VIEW);
+		layout.addShowViewShortcut("org.eclipse.dltk.ruby.ui.RubyDocumentationView"); //$NON-NLS-1$
+		layout.addShowViewShortcut(NewSearchUI.SEARCH_VIEW_ID);
 	}
 
 	protected void addNewWizardShortcuts(IPageLayout layout) {
@@ -79,5 +84,7 @@ public class RubyPerspective implements IPerspectiveFactory {
 	
 	protected void addPerspectiveShotcuts(IPageLayout layout) {
 		layout.addPerspectiveShortcut("org.eclipse.debug.ui.DebugPerspective"); //$NON-NLS-1$
+		layout.addPerspectiveShortcut("org.eclipse.ui.resourcePerspective"); //$NON-NLS-1$
+		layout.addPerspectiveShortcut("org.eclipse.team.ui.TeamSynchronizingPerspective"); //$NON-NLS-1$
 	}
 }

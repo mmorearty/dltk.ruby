@@ -16,6 +16,7 @@ import java.io.StringReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.dltk.ast.Modifiers;
 import org.eclipse.dltk.core.IField;
 import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.IMethod;
@@ -60,6 +61,7 @@ public class RubyDocumentationProvider implements IScriptDocumentationProvider {
 	private static void installStuff(Document document) {
 		String[] types = new String[] { IRubyPartitions.RUBY_STRING,
 				IRubyPartitions.RUBY_SINGLE_QUOTE_STRING,
+				IRubyPartitions.RUBY_PERCENT_STRING,
 				IRubyPartitions.RUBY_COMMENT, IRubyPartitions.RUBY_DOC,
 				IDocument.DEFAULT_CONTENT_TYPE };
 		FastPartitioner partitioner = new FastPartitioner(
@@ -136,7 +138,9 @@ public class RubyDocumentationProvider implements IScriptDocumentationProvider {
 				if (region.getType().equals(IDocument.DEFAULT_CONTENT_TYPE)) {
 					String content = doc.get(region.getOffset(),
 							region.getLength()).trim();
-					if (content.length() > 0)
+					if (content.length() > 0 && !content.startsWith("public") //$NON-NLS-1$
+							&& !content.startsWith("protected") //$NON-NLS-1$
+							&& !content.startsWith("private")) //$NON-NLS-1$
 						break;
 				}
 				pos = region.getOffset() - 1;
@@ -155,7 +159,9 @@ public class RubyDocumentationProvider implements IScriptDocumentationProvider {
 				if (region.getType().equals(IDocument.DEFAULT_CONTENT_TYPE)) {
 					String content = doc.get(region.getOffset(),
 							region.getLength()).trim();
-					if (content.length() > 0)
+					if (content.length() > 0 && !content.startsWith("public") //$NON-NLS-1$
+							&& !content.startsWith("protected") //$NON-NLS-1$
+							&& !content.startsWith("private")) //$NON-NLS-1$
 						break;
 				}
 				pos = region.getOffset() + region.getLength() + 1;
@@ -175,7 +181,13 @@ public class RubyDocumentationProvider implements IScriptDocumentationProvider {
 
 	protected String getHeaderComment(IMember member) {
 		if (member instanceof IField) {
-			return null;
+			try {
+				if ((member.getFlags() & Modifiers.AccConstant) == 0) {
+					return null;
+				}
+			} catch (ModelException e) {
+				return null;
+			}
 		}
 		try {
 			ISourceRange range = member.getSourceRange();

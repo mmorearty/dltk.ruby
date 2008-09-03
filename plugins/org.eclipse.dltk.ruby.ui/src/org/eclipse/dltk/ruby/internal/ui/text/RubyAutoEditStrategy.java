@@ -84,7 +84,8 @@ public class RubyAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 
 		IRegion line = d.getLineInformationOfOffset(beginning);
 		int ending = Math.min(line.getOffset() + line.getLength(), offset);
-		int token = scanner.previousToken(ending, beginning);
+		int blockOffset = scanner.findBlockBeginningOffset(ending);
+		int token = scanner.nextToken(blockOffset, ending);
 		if (token == IRubySymbols.TokenLBRACE) {
 			return "}"; //$NON-NLS-1$
 		} else {
@@ -170,6 +171,12 @@ public class RubyAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 		if (Arrays.binarySearch(INDENT_TO_BLOCK_TOKENS, token) >= 0) {
 			String indent = ""; //$NON-NLS-1$
 			indent = getBlockIndent(d, info.getOffset(), scanner);
+
+			// ssanders: If Block was opened on same line, add extra indent
+			int blockStart = scanner.findBlockBeginningOffset(c.offset);
+			int prevBlockStart = scanner.findBlockBeginningOffset(info.getOffset());
+			if (blockStart >= info.getOffset() && prevBlockStart != -1)
+				indent += fPreferences.getIndent();
 
 			int pos = scanner.findNonWhitespaceForwardInAnyPartition(info
 					.getOffset(), c.offset);

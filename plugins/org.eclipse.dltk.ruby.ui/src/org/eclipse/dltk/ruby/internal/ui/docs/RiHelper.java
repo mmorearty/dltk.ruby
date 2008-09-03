@@ -20,6 +20,7 @@ import java.util.WeakHashMap;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.dltk.core.IShutdownListener;
 import org.eclipse.dltk.core.environment.IDeployment;
 import org.eclipse.dltk.core.environment.IEnvironment;
 import org.eclipse.dltk.core.environment.IExecutionEnvironment;
@@ -32,7 +33,6 @@ import org.eclipse.dltk.launching.ScriptLaunchUtil;
 import org.eclipse.dltk.launching.ScriptRuntime;
 import org.eclipse.dltk.ruby.core.RubyNature;
 import org.eclipse.dltk.ruby.internal.ui.RubyUI;
-import org.eclipse.dltk.ruby.internal.ui.ShutdownEventListener;
 import org.eclipse.dltk.ui.DLTKUIPlugin;
 
 public class RiHelper {
@@ -231,7 +231,7 @@ public class RiHelper {
 							IInterpreterInstall Interpreter) {
 					}
 				});
-		RubyUI.getDefault().addShutdownListener(new ShutdownEventListener() {
+		RubyUI.getDefault().addShutdownListener(new IShutdownListener() {
 
 			public void shutdown() {
 				destroyRiProcess();
