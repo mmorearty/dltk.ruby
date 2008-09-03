@@ -132,6 +132,10 @@ module DLTK
 				sendMessage MessageIds::TEST_START + testId + "," + escapeComma(testName)
 			end
 
+			def notifyTestFailure(testId, testName, status)
+				sendMessage status + testId + "," + escapeComma(testName)
+			end
+
 			def notifyTestEnded(testId, testName)
 				sendMessage MessageIds::TEST_END + testId + "," + escapeComma(testName)
 			end
@@ -164,9 +168,6 @@ module DLTK
 			end
 
 			def add_example_group(example_group)
-				#puts "[GROUP]"
-				#puts example_group.description_text
-				#puts example_group.spec_path
 				examples = example_group.examples
 				@connection.notifyTestTreeEntry getTestId(example_group), example_group.description_text, true, examples.size
 				examples.each do |e|
@@ -176,21 +177,41 @@ module DLTK
 			end
 
 			def example_started(example)
-				#puts "Started", example.inspect
 				@connection.notifyTestStarted getTestId(example), getTestName(example)
-				#example.cl
-				#puts example.implementationProc
-				#puts example.description
-				#puts example.implementation_backtrace
 			end
 
 			def example_passed(example)
 				@connection.notifyTestEnded getTestId(example), getTestName(example)
-				#puts "Passed", example.inspect
 			end
 
 			def example_pending(example, message)
 				@connection.notifyTestEnded getTestId(example), MessageIds::IGNORED_TEST_PREFIX + getTestName(example)
+			end
+
+			EXPECTED_GOT_RE = /^expected: (.+),\n\s+got: (.+) \(using (==|===|=~)\)$/s
+
+			def example_failed(example, counter, failure)
+				testId = getTestId(example)
+				testName = getTestName(example)
+				f = failure.exception
+				if failure.expectation_not_met?
+					@connection.notifyTestFailure testId, testName, MessageIds::TEST_FAILED
+					if f.message =~ EXPECTED_GOT_RE
+						@connection.sendMessage MessageIds::EXPECTED_START
+						@connection.sendMessage $1
+						@connection.sendMessage MessageIds::EXPECTED_END
+						@connection.sendMessage MessageIds::ACTUAL_START
+						@connection.sendMessage $2
+						@connection.sendMessage MessageIds::ACTUAL_END
+					end
+				else
+					@connection.notifyTestFailure testId, testName, MessageIds::TEST_ERROR
+				end
+				@connection.sendMessage MessageIds::TRACE_START
+				@connection.sendMessage f.message
+				f.backtrace.each { |line| @connection.sendMessage line }
+				@connection.sendMessage MessageIds::TRACE_END
+				@connection.notifyTestEnded testId, testName
 			end
 
 			def dump_summary(duration, example_count, failure_count, pending_count)
