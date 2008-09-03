@@ -68,6 +68,9 @@ import org.eclipse.osgi.util.NLS;
 public class TestUnitTestRunnerUI extends AbstractTestRunnerUI implements
 		ITestRunnerUI, ITestElementResolver {
 
+	private static final char CLASS_BEGIN = '(';
+	private static final char CLASS_END = ')';
+
 	private final IScriptProject project;
 	private final AbstractRubyTestingEngine testingEngine;
 
@@ -126,7 +129,7 @@ public class TestUnitTestRunnerUI extends AbstractTestRunnerUI implements
 
 	public String getTestCaseLabel(ITestCaseElement caseElement, boolean full) {
 		final String testName = caseElement.getTestName();
-		int index = testName.indexOf('(');
+		int index = testName.lastIndexOf(CLASS_BEGIN);
 		if (index > 0) {
 			final int braceIndex = index;
 			while (index > 0
@@ -135,7 +138,8 @@ public class TestUnitTestRunnerUI extends AbstractTestRunnerUI implements
 			}
 			if (full) {
 				int end = testName.length();
-				if (end > braceIndex + 1 && testName.charAt(end - 1) == ')') {
+				if (end > braceIndex + 1
+						&& testName.charAt(end - 1) == CLASS_END) {
 					--end;
 				}
 				final String template = DLTKTestingMessages.TestSessionLabelProvider_testMethodName_className;
@@ -151,10 +155,10 @@ public class TestUnitTestRunnerUI extends AbstractTestRunnerUI implements
 
 	public String getTestStartedMessage(ITestCaseElement caseElement) {
 		final String testName = caseElement.getTestName();
-		int index = testName.indexOf('(');
+		int index = testName.lastIndexOf(CLASS_BEGIN);
 		if (index > 0) {
 			int end = testName.length();
-			if (end > index && testName.charAt(end - 1) == ')') {
+			if (end > index && testName.charAt(end - 1) == CLASS_END) {
 				--end;
 			}
 			final String className = testName.substring(index + 1, end);
@@ -199,8 +203,8 @@ public class TestUnitTestRunnerUI extends AbstractTestRunnerUI implements
 		if (testName.length() == 0) {
 			return null;
 		}
-		final int pos = testName.indexOf('(');
-		if (!(pos > 0 && testName.charAt(testName.length() - 1) == ')')) {
+		final int pos = testName.lastIndexOf(CLASS_BEGIN);
+		if (!(pos > 0 && testName.charAt(testName.length() - 1) == CLASS_END)) {
 			return null;
 		}
 		final String className = testName.substring(pos + 1,
