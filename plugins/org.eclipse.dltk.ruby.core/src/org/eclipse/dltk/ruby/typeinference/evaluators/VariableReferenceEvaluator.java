@@ -43,13 +43,12 @@ import org.eclipse.dltk.ti.GoalState;
 import org.eclipse.dltk.ti.IContext;
 import org.eclipse.dltk.ti.ISourceModuleContext;
 import org.eclipse.dltk.ti.goals.ExpressionTypeGoal;
-import org.eclipse.dltk.ti.goals.GoalEvaluator;
 import org.eclipse.dltk.ti.goals.IGoal;
 import org.eclipse.dltk.ti.goals.ItemReference;
 import org.eclipse.dltk.ti.goals.MethodCallsGoal;
 import org.eclipse.dltk.ti.types.IEvaluatedType;
 
-public class VariableReferenceEvaluator extends GoalEvaluator {
+public class VariableReferenceEvaluator extends RubyMixinGoalEvaluator {
 
 	private LocalVariableInfo info;
 	private MethodCallsGoal callsGoal = null;
@@ -78,7 +77,7 @@ public class VariableReferenceEvaluator extends GoalEvaluator {
 					return name;
 				} else {
 					selfClass = RubyTypeInferencingUtils.determineSelfClass(
-							module, decl, ref.sourceStart());
+							mixinModel, module, decl, ref.sourceStart());
 					if (selfClass == null)
 						return null;
 				}
@@ -156,7 +155,8 @@ public class VariableReferenceEvaluator extends GoalEvaluator {
 
 		} else {
 			IEvaluatedType selfClass = RubyTypeInferencingUtils
-					.determineSelfClass(goal.getContext(), ref.sourceStart());
+					.determineSelfClass(mixinModel, goal.getContext(), ref
+							.sourceStart());
 			if (selfClass instanceof RubyClassType) {
 				String selfKey = ((RubyClassType) selfClass).getModelKey();
 				return new IGoal[] { new VariableTypeGoal(goal.getContext(),

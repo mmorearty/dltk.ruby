@@ -9,6 +9,8 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.core.utils;
 
+import java.util.regex.Pattern;
+
 import org.eclipse.dltk.core.ISourceRange;
 import org.eclipse.dltk.internal.core.SourceRange;
 
@@ -126,6 +128,19 @@ public class RubySyntaxUtils {
 				return true;
 		}				
 		return str.matches("^(@{0,2}|\\$)[_a-zA-Z0-9]+[\\?!=]?$"); //$NON-NLS-1$
+	}
+	
+	private static final Pattern RE_METHOD_NAME = Pattern
+			.compile("[_a-zA-Z0-9]+[\\?!=]?"); //$NON-NLS-1$
+
+	/**
+	 * Checks whether given name is a Ruby method name.
+	 * 
+	 * @param str
+	 * @return
+	 */
+	public static boolean isRubyMethodName(String str) {
+		return RE_METHOD_NAME.matcher(str).matches();
 	}
 
 	public static boolean isLessStrictIdentifierCharacter(char ch) {

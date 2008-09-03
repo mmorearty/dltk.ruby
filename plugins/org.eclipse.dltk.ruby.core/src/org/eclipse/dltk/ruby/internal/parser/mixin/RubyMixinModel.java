@@ -9,30 +9,66 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.internal.parser.mixin;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.dltk.core.IScriptProject;
+import org.eclipse.dltk.core.IShutdownListener;
 import org.eclipse.dltk.core.mixin.IMixinElement;
 import org.eclipse.dltk.core.mixin.MixinModel;
 import org.eclipse.dltk.ruby.core.RubyLanguageToolkit;
+import org.eclipse.dltk.ruby.core.RubyPlugin;
 import org.eclipse.dltk.ruby.typeinference.RubyClassType;
 
-public class RubyMixinModel {
-	
+public class RubyMixinModel implements IShutdownListener {
+
 	private static RubyMixinModel instance;
 
-	public static RubyMixinModel getInstance () {
-		if (instance == null)
-			instance = new RubyMixinModel ();
-		return instance;
+	public static RubyMixinModel getWorkspaceInstance() {
+		synchronized (instances) {
+			if (instance == null)
+				instance = new RubyMixinModel(null);
+			return instance;
+		}
 	}
-	
-	public static MixinModel getRawInstance () {
-		return getInstance().getRawModel();
+
+	private static final Map instances = new HashMap();
+
+	public static RubyMixinModel getInstance(IScriptProject project) {
+		Assert.isNotNull(project);
+		synchronized (instances) {
+			RubyMixinModel mixinModel = (RubyMixinModel) instances.get(project);
+			if (mixinModel == null) {
+				mixinModel = new RubyMixinModel(project);
+				instances.put(project, mixinModel);
+			}
+			return mixinModel;
+		}
+	}
+
+	/**
+	 * @param key
+	 * @return
+	 */
+	public static void clearKeysCache(String key) {
+		synchronized (instances) {
+			if (instance != null) {
+				instance.getRawModel().clearKeysCache(key);
+			}
+			for (Iterator i = instances.values().iterator(); i.hasNext();) {
+				RubyMixinModel mixinModel = (RubyMixinModel) i.next();
+				mixinModel.getRawModel().clearKeysCache(key);
+			}
+		}
 	}
 
 	private final MixinModel model;
 
-	private RubyMixinModel() {
-		model = new MixinModel(RubyLanguageToolkit.getDefault());
+	private RubyMixinModel(IScriptProject project) {
+		model = new MixinModel(RubyLanguageToolkit.getDefault(), project);
+		RubyPlugin.getDefault().addShutdownListener(this);
 	}
 
 	public MixinModel getRawModel() {
@@ -57,12 +93,12 @@ public class RubyMixinModel {
 	}
 
 	public IRubyMixinElement createRubyElement(IMixinElement element) {
-		Assert.isLegal(element != null);
+		Assert.isNotNull(element);
 		if (element.getKey().equals("Object")) { //$NON-NLS-1$
 			return new RubyObjectMixinClass(this, true);
 		} else if (element.getKey().equals("Object%")) { //$NON-NLS-1$
 			return new RubyObjectMixinClass(this, false);
-		}		
+		}
 		Object[] objects = element.getAllObjects();
 		if (objects == null)
 			return null;
@@ -71,20 +107,27 @@ public class RubyMixinModel {
 			if (obj == null || obj.getObject() == null)
 				continue;
 			switch (obj.getKind()) {
-				case RubyMixinElementInfo.K_CLASS:
-				case RubyMixinElementInfo.K_SUPER:
-				case RubyMixinElementInfo.K_VIRTUAL:
-					return new RubyMixinClass(this, element.getKey(), false);
-				case RubyMixinElementInfo.K_MODULE:
-                  return new RubyMixinClass(this, element.getKey(), true);
-				case RubyMixinElementInfo.K_METHOD:					
-					return new RubyMixinMethod(this, element.getKey());
-				case RubyMixinElementInfo.K_ALIAS:					
-					return new RubyMixinAlias(this, element.getKey());
-				case RubyMixinElementInfo.K_VARIABLE:
-					return new RubyMixinVariable(this, element.getKey());
-			}						
+			case RubyMixinElementInfo.K_CLASS:
+			case RubyMixinElementInfo.K_SUPER:
+			case RubyMixinElementInfo.K_VIRTUAL:
+				return new RubyMixinClass(this, element.getKey(), false);
+			case RubyMixinElementInfo.K_MODULE:
+				return new RubyMixinClass(this, element.getKey(), true);
+			case RubyMixinElementInfo.K_METHOD:
+				return new RubyMixinMethod(this, element.getKey());
+			case RubyMixinElementInfo.K_ALIAS:
+				return new RubyMixinAlias(this, element.getKey());
+			case RubyMixinElementInfo.K_VARIABLE:
+				return new RubyMixinVariable(this, element.getKey());
+			}
 		}
 		return null;
+	}
+
+	/*
+	 * @see org.eclipse.dltk.core.IShutdownListener#shutdown()
+	 */
+	public void shutdown() {
+		model.stop();
 	}
 }

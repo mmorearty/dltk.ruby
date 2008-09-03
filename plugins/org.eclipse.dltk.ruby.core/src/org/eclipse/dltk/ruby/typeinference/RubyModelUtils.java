@@ -41,7 +41,6 @@ import org.eclipse.dltk.core.search.SearchPattern;
 import org.eclipse.dltk.core.search.SearchRequestor;
 import org.eclipse.dltk.evaluation.types.AmbiguousType;
 import org.eclipse.dltk.internal.core.ModelElement;
-import org.eclipse.dltk.internal.core.SourceMethod;
 import org.eclipse.dltk.ruby.core.RubyLanguageToolkit;
 import org.eclipse.dltk.ruby.core.RubyPlugin;
 import org.eclipse.dltk.ruby.core.model.FakeMethod;
@@ -175,11 +174,12 @@ public class RubyModelUtils {
 
 	}
 
-	public static IField[] findFields(ISourceModule modelModule,
-			ModuleDeclaration parsedUnit, String prefix, int position) {
+	public static IField[] findFields(RubyMixinModel rubyModel,
+			ISourceModule modelModule, ModuleDeclaration parsedUnit,
+			String prefix, int position) {
+		assert (prefix != null);
 		List result = new ArrayList();
 
-		RubyMixinModel rubyModel = RubyMixinModel.getInstance();
 		String[] keys = RubyTypeInferencingUtils.getModelStaticScopesKeys(
 				rubyModel.getRawModel(), parsedUnit, position);
 
@@ -188,9 +188,7 @@ public class RubyModelUtils {
 
 		if (keys != null && keys.length > 0) {
 			String inner = keys[keys.length - 1];
-			if (prefix.length() > 0 && !prefix.startsWith("@")) { // locals &
-																	// //$NON-NLS-1$
-				// constants
+			if (prefix.length() > 0 && !prefix.startsWith("@")) { //$NON-NLS-1$ // locals & constants
 				String varkey = inner + MixinModel.SEPARATOR + prefix;
 				String[] keys2 = rubyModel.getRawModel().findKeys(varkey + "*"); //$NON-NLS-1$
 				for (int i = 0; i < keys2.length; i++) {
@@ -199,8 +197,7 @@ public class RubyModelUtils {
 					if (element instanceof RubyMixinVariable) {
 						RubyMixinVariable variable = (RubyMixinVariable) element;
 						IField field = variable.getSourceFields()[0];
-						if (prefix == null
-								|| field.getElementName().startsWith(prefix))
+						if (field.getElementName().startsWith(prefix))
 							result.add(field);
 					}
 				}
@@ -227,9 +224,7 @@ public class RubyModelUtils {
 					for (int i = 0; i < children.length; i++) {
 						if (children[i] instanceof IField) {
 							IField field = (IField) children[i];
-							if (prefix == null
-									|| field.getElementName()
-											.startsWith(prefix))
+							if (field.getElementName().startsWith(prefix))
 								result.add(field);
 						}
 					}
@@ -252,8 +247,9 @@ public class RubyModelUtils {
 	private static List handleSpecialMethod(RubyMixinMethod method,
 			RubyMixinClass selfKlass) {
 		if (method.getKey().equals("Class%{new")) { //$NON-NLS-1$
-			RubyMixinMethod init = selfKlass.getInstanceClass().getMethod(
-					"initialize"); //$NON-NLS-1$
+			RubyMixinMethod init = selfKlass.getInstanceClass() != null ? selfKlass
+					.getInstanceClass().getMethod("initialize") //$NON-NLS-1$
+					: null;
 			if (init != null) {
 				IMethod[] initMethods = init.getSourceMethods();
 				List result = new ArrayList();
@@ -319,14 +315,14 @@ public class RubyModelUtils {
 		return result;
 	}
 
-	public static IMethod[] searchClassMethods(
+	public static IMethod[] searchClassMethods(final RubyMixinModel mixinModel,
 			org.eclipse.dltk.core.ISourceModule modelModule,
 			ModuleDeclaration moduleDeclaration, IEvaluatedType type,
 			String prefix) {
 		List result = new ArrayList();
 		if (type instanceof RubyClassType) {
 			RubyClassType rubyClassType = (RubyClassType) type;
-			RubyMixinClass rubyClass = RubyMixinModel.getInstance()
+			RubyMixinClass rubyClass = mixinModel
 					.createRubyClass(rubyClassType);
 			if (rubyClass != null) {
 				RubyMixinMethod[] methods = rubyClass.findMethods(prefix,
@@ -338,7 +334,7 @@ public class RubyModelUtils {
 			AmbiguousType type2 = (AmbiguousType) type;
 			IEvaluatedType[] possibleTypes = type2.getPossibleTypes();
 			for (int i = 0; i < possibleTypes.length; i++) {
-				IMethod[] m = searchClassMethods(modelModule,
+				IMethod[] m = searchClassMethods(mixinModel, modelModule,
 						moduleDeclaration, possibleTypes[i], prefix);
 				for (int j = 0; j < m.length; j++) {
 					result.add(m[j]);
@@ -349,13 +345,14 @@ public class RubyModelUtils {
 	}
 
 	public static IMethod[] searchClassMethodsExact(
+			final RubyMixinModel mixinModel,
 			org.eclipse.dltk.core.ISourceModule modelModule,
 			ModuleDeclaration moduleDeclaration, IEvaluatedType type,
 			String methodName) {
 		List result = new ArrayList();
 		if (type instanceof RubyClassType) {
 			RubyClassType rubyClassType = (RubyClassType) type;
-			RubyMixinClass rubyClass = RubyMixinModel.getInstance()
+			RubyMixinClass rubyClass = mixinModel
 					.createRubyClass(rubyClassType);
 			if (rubyClass != null) {
 				RubyMixinMethod[] methods = rubyClass
@@ -367,7 +364,7 @@ public class RubyModelUtils {
 			AmbiguousType type2 = (AmbiguousType) type;
 			IEvaluatedType[] possibleTypes = type2.getPossibleTypes();
 			for (int i = 0; i < possibleTypes.length; i++) {
-				IMethod[] m = searchClassMethodsExact(modelModule,
+				IMethod[] m = searchClassMethodsExact(mixinModel, modelModule,
 						moduleDeclaration, possibleTypes[i], methodName);
 				for (int j = 0; j < m.length; j++) {
 					result.add(m[j]);
@@ -384,9 +381,7 @@ public class RubyModelUtils {
 			if (sourceFields != null) {
 				for (int j = 0; j < sourceFields.length; j++) {
 					if (sourceFields[j] != null) {
-						if (prefix == null
-								|| sourceFields[j].getElementName().startsWith(
-										prefix)) {
+						if (sourceFields[j].getElementName().startsWith(prefix)) {
 							resultList.add(sourceFields[j]);
 							break;
 						}
@@ -398,34 +393,32 @@ public class RubyModelUtils {
 		}
 	}
 
-	public static IMethod[] getSingletonMethods(VariableReference receiver,
+	public static IMethod[] getSingletonMethods(
+			final RubyMixinModel mixinModel, VariableReference receiver,
 			ModuleDeclaration parsedUnit, ISourceModule modelModule,
 			String methodName) {
 		IMethod[] res = null;
-		// if (receiver instanceof VariableReference) {
-		VariableReference ref = (VariableReference) receiver;
 		String[] scopesKeys = RubyTypeInferencingUtils
-				.getModelStaticScopesKeys(RubyMixinModel.getRawInstance(),
-						parsedUnit, ref.sourceStart());
+				.getModelStaticScopesKeys(mixinModel.getRawModel(), parsedUnit,
+						receiver.sourceStart());
 		if (scopesKeys != null && scopesKeys.length > 0) {
 			String possibleName;
 			if (scopesKeys.length == 1) {
-				possibleName = ref.getName() + RubyMixin.VIRTUAL_SUFFIX;
+				possibleName = receiver.getName() + RubyMixin.VIRTUAL_SUFFIX;
 			} else {
 				String last = scopesKeys[scopesKeys.length - 1];
-				possibleName = last + MixinModel.SEPARATOR + ref.getName()
+				possibleName = last + MixinModel.SEPARATOR + receiver.getName()
 						+ RubyMixin.VIRTUAL_SUFFIX;
 			}
-			IRubyMixinElement element = RubyMixinModel.getInstance()
+			IRubyMixinElement element = mixinModel
 					.createRubyElement(possibleName);
 			if (element instanceof RubyMixinClass) {
 				RubyMixinClass rubyMixinClass = (RubyMixinClass) element;
-				res = RubyModelUtils.searchClassMethods(modelModule,
-						parsedUnit, new RubyClassType(rubyMixinClass.getKey()),
-						methodName);
+				res = RubyModelUtils.searchClassMethods(mixinModel,
+						modelModule, parsedUnit, new RubyClassType(
+								rubyMixinClass.getKey()), methodName);
 			}
 		}
-		// }
 		return res;
 	}
 
@@ -619,8 +612,8 @@ public class RubyModelUtils {
 			public void acceptSearchMatch(SearchMatch match)
 					throws CoreException {
 				Object element = match.getElement();
-				if (element instanceof SourceMethod) {
-					SourceMethod meth = (SourceMethod) element;
+				if (element instanceof IMethod) {
+					IMethod meth = (IMethod) element;
 					if (meth.getParent() instanceof ISourceModule) {
 						result.add(meth);
 					}

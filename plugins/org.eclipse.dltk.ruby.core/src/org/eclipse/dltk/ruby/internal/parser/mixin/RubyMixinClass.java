@@ -161,6 +161,36 @@ public class RubyMixinClass implements IRubyMixinElement {
 		return s;
 	}
 
+	private boolean isRecursiveInclusion(Set includedKeys) {
+		IMixinElement mixinElement = model.getRawModel().get(key);
+		if (mixinElement == null)
+			return false;
+		Object[] allObjects = mixinElement.getAllObjects();
+		for (int i = 0; i < allObjects.length; i++) {
+			RubyMixinElementInfo info = (RubyMixinElementInfo) allObjects[i];
+			if (info == null) {
+				continue;
+			}
+			if (info.getKind() == RubyMixinElementInfo.K_INCLUDE) {
+				String inclKey = (String) info.getObject();
+				if (/* !this.isMeta() && */!inclKey
+						.endsWith(RubyMixin.INSTANCE_SUFFIX))
+					inclKey += RubyMixin.INSTANCE_SUFFIX;
+				if (includedKeys.contains(inclKey))
+					return true;
+				IRubyMixinElement element = model.createRubyElement(inclKey);
+				if (element instanceof RubyMixinClass) {
+					includedKeys.add(inclKey);
+					if (((RubyMixinClass) element)
+							.isRecursiveInclusion(includedKeys))
+						return true;
+					includedKeys.remove(inclKey);
+				}
+			}
+		}
+		return false;
+	}
+
 	public RubyMixinClass[] getIncluded() {
 		List result = new ArrayList();
 		HashSet names = new HashSet();
@@ -182,7 +212,10 @@ public class RubyMixinClass implements IRubyMixinElement {
 						inclKey += RubyMixin.INSTANCE_SUFFIX;
 					IRubyMixinElement element = model
 							.createRubyElement(inclKey);
-					if (element instanceof RubyMixinClass)
+					if (element instanceof RubyMixinClass
+					// ssanders: Break recursive inclusion
+							&& ((element instanceof RubyObjectMixinClass) || !((RubyMixinClass) element)
+									.isRecursiveInclusion(new HashSet())))
 						result.add(element);
 				}
 			}

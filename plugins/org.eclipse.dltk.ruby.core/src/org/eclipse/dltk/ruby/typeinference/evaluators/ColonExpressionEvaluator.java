@@ -14,7 +14,6 @@ import org.eclipse.dltk.core.mixin.IMixinElement;
 import org.eclipse.dltk.core.mixin.IMixinRequestor;
 import org.eclipse.dltk.ruby.ast.RubyColonExpression;
 import org.eclipse.dltk.ruby.internal.parser.mixin.RubyMixinElementInfo;
-import org.eclipse.dltk.ruby.internal.parser.mixin.RubyMixinModel;
 import org.eclipse.dltk.ruby.typeinference.DefaultRubyEvaluatorFactory;
 import org.eclipse.dltk.ruby.typeinference.RubyClassType;
 import org.eclipse.dltk.ruby.typeinference.goals.ColonExpressionGoal;
@@ -22,12 +21,11 @@ import org.eclipse.dltk.ruby.typeinference.goals.NonTypeConstantTypeGoal;
 import org.eclipse.dltk.ti.GoalState;
 import org.eclipse.dltk.ti.goals.AbstractTypeGoal;
 import org.eclipse.dltk.ti.goals.ExpressionTypeGoal;
-import org.eclipse.dltk.ti.goals.GoalEvaluator;
 import org.eclipse.dltk.ti.goals.IGoal;
 import org.eclipse.dltk.ti.types.ClassType;
 import org.eclipse.dltk.ti.types.IEvaluatedType;
 
-public class ColonExpressionEvaluator extends GoalEvaluator {
+public class ColonExpressionEvaluator extends RubyMixinGoalEvaluator {
 
 	private AbstractTypeGoal helperGoal = null;
 
@@ -58,7 +56,7 @@ public class ColonExpressionEvaluator extends GoalEvaluator {
 			helperGoal = new ExpressionTypeGoal(getGoal().getContext(), left);
 			return new IGoal[] { helperGoal };
 		} else {
-			IMixinElement mixinElement = RubyMixinModel.getRawInstance().get(
+			IMixinElement mixinElement = mixinModel.getRawModel().get(
 					expr.getName());
 			if (mixinElement != null)
 				answer = new RubyClassType(mixinElement.getKey());
@@ -75,13 +73,13 @@ public class ColonExpressionEvaluator extends GoalEvaluator {
 
 		if (left != null) {
 			if (helperResult instanceof ClassType) { // TODO: check existance
-														// of the new key
+				// of the new key
 				ClassType classType = (ClassType) helperResult;
 				String modelKey = classType.getModelKey();
 				modelKey += IMixinRequestor.MIXIN_NAME_SEPARATOR
 						+ expr.getName();
-				IMixinElement mixinElement = RubyMixinModel.getRawInstance()
-						.get(modelKey);
+				IMixinElement mixinElement = mixinModel.getRawModel().get(
+						modelKey);
 				if (mixinElement != null) {
 					Object[] objects = mixinElement.getAllObjects();
 					boolean found = false;
@@ -102,11 +100,11 @@ public class ColonExpressionEvaluator extends GoalEvaluator {
 					}
 
 					answer = new RubyClassType(modelKey);
-				} else 
+				} else
 					answer = null;
 			}
 		} else {
-			IMixinElement mixinElement = RubyMixinModel.getRawInstance().get(
+			IMixinElement mixinElement = mixinModel.getRawModel().get(
 					expr.getName());
 			if (mixinElement != null)
 				answer = new RubyClassType(mixinElement.getKey());

@@ -11,19 +11,21 @@ package org.eclipse.dltk.ruby.core;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.dltk.core.DLTKCore;
+import org.eclipse.dltk.core.IShutdownListener;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.core.search.IDLTKSearchConstants;
 import org.eclipse.dltk.core.search.IDLTKSearchScope;
 import org.eclipse.dltk.core.search.SearchEngine;
 import org.eclipse.dltk.core.search.SearchPattern;
 import org.eclipse.dltk.core.search.TypeNameRequestor;
-import org.eclipse.dltk.ruby.internal.parser.mixin.RubyMixinModel;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -50,26 +52,29 @@ public class RubyPlugin extends Plugin {
 	}
 
 	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.core.runtime.Plugins#start(org.osgi.framework.BundleContext)
+	 * @see Plugins#start(BundleContext)
 	 */
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 	}
 
+	private final ListenerList shutdownListeners = new ListenerList();
+
+	public void addShutdownListener(IShutdownListener listener) {
+		shutdownListeners.add(listener);
+	}
+
 	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.core.runtime.Plugin#stop(org.osgi.framework.BundleContext)
+	 * @see Plugin#stop(BundleContext)
 	 */
 	public void stop(BundleContext context) throws Exception {
+		Object[] listeners = shutdownListeners.getListeners();
+		for (int i = 0; i < listeners.length; ++i) {
+			((IShutdownListener) listeners[i]).shutdown();
+		}
+		shutdownListeners.clear();
 		plugin = null;
 		super.stop(context);
-
-		RubyMixinModel.getRawInstance().stop();
 	}
 
 	/**
@@ -88,14 +93,14 @@ public class RubyPlugin extends Plugin {
 		if (message == null)
 			message = "(no message)"; //$NON-NLS-1$
 		getDefault().getLog().log(
-				new Status(Status.ERROR, PLUGIN_ID, 0, message, ex));
+				new Status(IStatus.ERROR, PLUGIN_ID, 0, message, ex));
 	}
 
 	public static void log(String message) {
 		if (DLTKCore.DEBUG || DUMP_EXCEPTIONS_TO_CONSOLE)
 			System.out.println(message);
 		getDefault().getLog().log(
-				new Status(Status.WARNING, PLUGIN_ID, 0, message, null));
+				new Status(IStatus.WARNING, PLUGIN_ID, 0, message, null));
 	}
 
 	/**
@@ -170,17 +175,17 @@ public class RubyPlugin extends Plugin {
 						// dummy search
 						);
 
-				String[] mainClasses = new String[] {
-						"Object", "String", "Fixnum", "Array", "Regexp", "Class", "Kernel" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
-				for (int i = 0; i < mainClasses.length; i++) {
-					RubyMixinModel.getInstance().createRubyElement(
-							mainClasses[i]);
-					RubyMixinModel.getInstance().createRubyElement(
-							mainClasses[i] + "%"); //$NON-NLS-1$
-					monitor.worked(10);
-				}
-				RubyMixinModel.getRawInstance().find("$*"); //$NON-NLS-1$
-				monitor.worked(10);
+				// String[] mainClasses = new String[] {
+				//	"Object", "String", "Fixnum", "Array", "Regexp", "Class", "Kernel" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$ //$NON-NLS-7$
+				// for (int i = 0; i < mainClasses.length; i++) {
+				// RubyMixinModel.getInstance().createRubyElement(
+				// mainClasses[i]);
+				// RubyMixinModel.getInstance().createRubyElement(
+				//	mainClasses[i] + "%"); //$NON-NLS-1$
+				// monitor.worked(10);
+				// }
+				// RubyMixinModel.getRawInstance().find("$*"); //$NON-NLS-1$
+				// monitor.worked(10);
 			} catch (ModelException e) {
 				// /search failed: ignore
 			} catch (OperationCanceledException e) {

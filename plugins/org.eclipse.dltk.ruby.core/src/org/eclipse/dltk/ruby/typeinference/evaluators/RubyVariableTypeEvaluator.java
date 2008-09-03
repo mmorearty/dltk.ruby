@@ -32,11 +32,11 @@ import org.eclipse.dltk.ti.types.IEvaluatedType;
 
 public class RubyVariableTypeEvaluator extends GoalEvaluator {
 
-	private List possibilities = new ArrayList ();
-	private List results = new ArrayList ();
-	
-	private boolean init = false; 
-	
+	private List possibilities = new ArrayList();
+	private List results = new ArrayList();
+
+	private boolean init = false;
+
 	public RubyVariableTypeEvaluator(IGoal goal) {
 		super(goal);
 	}
@@ -46,21 +46,24 @@ public class RubyVariableTypeEvaluator extends GoalEvaluator {
 		VariableTypeGoal goal = (VariableTypeGoal) this.goal;
 		String name = goal.getName();
 		String parent = goal.getParentKey();
-		
-		return new IGoal[] {new FieldReferencesGoal(goal.getContext(), name, parent)};		
+
+		return new IGoal[] { new FieldReferencesGoal(goal.getContext(), name,
+				parent) };
 	}
 
 	public Object produceResult() {
 		IEvaluatedType type = RubyTypeInferencingUtils.combineTypes(results);
 		return type;
 	}
-	
-	private BasicContext buildContext (RubyFieldReference ref) {
-		IModelElement element = DLTKCore.create(ref.getPosition().getResource());
+
+	private BasicContext buildContext(RubyFieldReference ref) {
+		IModelElement element = DLTKCore
+				.create(ref.getPosition().getResource());
 		if (element instanceof ISourceModule) {
 			ISourceModule sourceModule = (ISourceModule) element;
 			ModuleDeclaration module = ASTUtils.getAST(sourceModule);
-			return new BasicContext(sourceModule, module); //XXX: don't forget about options transfer
+			return new BasicContext(sourceModule, module);
+			/* XXX: don't forget about options transfer */
 		}
 		return (BasicContext) this.goal.getContext();
 	}
@@ -74,14 +77,17 @@ public class RubyVariableTypeEvaluator extends GoalEvaluator {
 					if (references[i] instanceof RubyFieldReference) {
 						RubyFieldReference ref = (RubyFieldReference) references[i];
 						if (ref.getNode() instanceof RubyAssignment) {
-							RubyAssignment assignment = (RubyAssignment) ref.getNode();							
-							ExpressionTypeGoal s = new ExpressionTypeGoal(buildContext(ref), assignment.getRight());
+							RubyAssignment assignment = (RubyAssignment) ref
+									.getNode();
+							ExpressionTypeGoal s = new ExpressionTypeGoal(
+									buildContext(ref), assignment.getRight());
 							possibilities.add(s);
 						}
 					}
 				}
 			}
-			return (IGoal[]) possibilities.toArray(new IGoal[possibilities.size()]);
+			return (IGoal[]) possibilities.toArray(new IGoal[possibilities
+					.size()]);
 		} else {
 			if (result != null)
 				results.add(result);

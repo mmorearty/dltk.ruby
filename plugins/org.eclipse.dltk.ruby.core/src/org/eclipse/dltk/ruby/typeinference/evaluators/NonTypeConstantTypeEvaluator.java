@@ -21,8 +21,8 @@ import org.eclipse.dltk.ti.goals.GoalEvaluator;
 import org.eclipse.dltk.ti.goals.IGoal;
 
 public class NonTypeConstantTypeEvaluator extends GoalEvaluator {
-	
-	private HashMap hardcoredTypes = new HashMap ();
+
+	private HashMap hardcoredTypes = new HashMap();
 	private Object result;
 
 	public NonTypeConstantTypeEvaluator(IGoal goal) {
@@ -45,8 +45,8 @@ public class NonTypeConstantTypeEvaluator extends GoalEvaluator {
 		hardcoredTypes.put("ARGF", new RubyClassType("Object%")); //$NON-NLS-1$ //$NON-NLS-2$
 		hardcoredTypes.put("VERSION", new RubyClassType("String%")); //$NON-NLS-1$ //$NON-NLS-2$
 	}
-	
-	private NonTypeConstantTypeGoal getTypedGoal () {
+
+	private NonTypeConstantTypeGoal getTypedGoal() {
 		return (NonTypeConstantTypeGoal) this.goal;
 	}
 
@@ -59,7 +59,8 @@ public class NonTypeConstantTypeEvaluator extends GoalEvaluator {
 
 		for (int i = 0; i < allObjects.length; i++) {
 			RubyMixinElementInfo info = (RubyMixinElementInfo) allObjects[i];
-			if (info != null && info.getKind() == RubyMixinElementInfo.K_VARIABLE) {
+			if (info != null
+					&& info.getKind() == RubyMixinElementInfo.K_VARIABLE) {
 				if (info.getObject() instanceof IField) {
 					IField field = (IField) info.getObject();
 					String name = field.getElementName();
@@ -70,7 +71,7 @@ public class NonTypeConstantTypeEvaluator extends GoalEvaluator {
 				}
 			}
 		}
-		
+
 		return IGoal.NO_GOALS;
 	}
 

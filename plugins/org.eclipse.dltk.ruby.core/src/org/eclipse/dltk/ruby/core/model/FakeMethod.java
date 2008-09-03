@@ -9,6 +9,7 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.core.model;
 
+import org.eclipse.dltk.compiler.CharOperation;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ISourceRange;
 import org.eclipse.dltk.core.ModelException;
@@ -18,13 +19,11 @@ import org.eclipse.dltk.internal.core.SourceRange;
 
 public class FakeMethod extends SourceMethod {
 
-	private static final String[] NO_STRINGS = new String[0];
-
 	private String receiver;
 	
-	private String[] parameters = NO_STRINGS;
+	private String[] parameters = CharOperation.NO_STRINGS;
 	
-	private String[] parameterInitializers = NO_STRINGS;
+	private String[] parameterInitializers = CharOperation.NO_STRINGS;
 	
 	private int flags;
 
@@ -50,7 +49,8 @@ public class FakeMethod extends SourceMethod {
 		super(parent, name);
 	}
 
-	public FakeMethod(ModelElement parent, String name, int offset, int length, int nameOffset, int nameLength) {
+	public FakeMethod(ModelElement parent, String name, int offset, int length,
+			int nameOffset, int nameLength) {
 		super(parent, name);
 		this.offset = offset;
 		this.length = length;

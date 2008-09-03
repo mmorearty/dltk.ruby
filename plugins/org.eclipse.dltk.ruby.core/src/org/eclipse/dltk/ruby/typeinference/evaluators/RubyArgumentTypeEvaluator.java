@@ -18,7 +18,7 @@ import org.eclipse.dltk.ti.goals.IGoal;
 public class RubyArgumentTypeEvaluator extends GoalEvaluator {
 
 	private Object result;
-	
+
 	public RubyArgumentTypeEvaluator(IGoal goal) {
 		super(goal);
 	}
@@ -26,8 +26,9 @@ public class RubyArgumentTypeEvaluator extends GoalEvaluator {
 	public IGoal[] init() {
 		ExpressionTypeGoal goal = (ExpressionTypeGoal) this.getGoal();
 		RubyCallArgument arg = (RubyCallArgument) goal.getExpression();
-		if (arg.getValue() != null)		
-			return new IGoal[] { new ExpressionTypeGoal(goal.getContext(), arg.getValue()) };
+		if (arg.getValue() != null)
+			return new IGoal[] { new ExpressionTypeGoal(goal.getContext(), arg
+					.getValue()) };
 		return IGoal.NO_GOALS;
 	}
 

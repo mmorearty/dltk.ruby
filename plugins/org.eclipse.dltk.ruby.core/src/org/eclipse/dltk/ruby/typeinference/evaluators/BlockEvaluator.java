@@ -27,11 +27,11 @@ public class BlockEvaluator extends GoalEvaluator {
 	public BlockEvaluator(IGoal goal) {
 		super(goal);
 	}
-	
-	private ExpressionTypeGoal getTypedGoal () {
+
+	private ExpressionTypeGoal getTypedGoal() {
 		return (ExpressionTypeGoal) this.getGoal();
 	}
-	
+
 	public Object produceResult() {
 		return this.result;
 	}
@@ -41,9 +41,11 @@ public class BlockEvaluator extends GoalEvaluator {
 		Block block = (Block) typedGoal.getExpression();
 		List statements = block.getStatements();
 		if (statements.size() > 0) {
-			this.lastStatement = (ASTNode) statements.get(statements.size() - 1);
-			ExpressionTypeGoal subgoal = new ExpressionTypeGoal(goal.getContext(),this.lastStatement);
-			return new IGoal[] {subgoal};
+			this.lastStatement = (ASTNode) statements
+					.get(statements.size() - 1);
+			ExpressionTypeGoal subgoal = new ExpressionTypeGoal(goal
+					.getContext(), this.lastStatement);
+			return new IGoal[] { subgoal };
 		}
 		return IGoal.NO_GOALS;
 	}

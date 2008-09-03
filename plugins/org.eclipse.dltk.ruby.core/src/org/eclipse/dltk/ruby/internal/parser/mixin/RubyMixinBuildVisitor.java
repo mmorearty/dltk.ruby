@@ -408,8 +408,9 @@ public class RubyMixinBuildVisitor extends ASTVisitor {
 			Scope scope = peekScope();
 			IField obj = null;
 			if (sourceModule != null) {
-				obj = new FakeField((ModelElement) sourceModule, name, s
-						.sourceStart(), s.sourceEnd() - s.sourceStart());
+				obj = new FakeField(sourceModule, name, s.sourceStart(), s
+						.sourceEnd()
+						- s.sourceStart());
 			}
 			scope.reportVariable(name, obj);
 		} else if (s instanceof RubyAssignment) {
@@ -421,8 +422,8 @@ public class RubyMixinBuildVisitor extends ASTVisitor {
 				Scope scope = peekScope();
 				IField obj = null;
 				if (sourceModule != null)
-					obj = new FakeField((ModelElement) sourceModule, name, ref
-							.sourceStart(), ref.sourceEnd() - ref.sourceStart());
+					obj = new FakeField(sourceModule, name, ref.sourceStart(),
+							ref.sourceEnd() - ref.sourceStart());
 				scope.reportVariable(name, obj);
 			}
 		} else if (s instanceof CallExpression) {
@@ -444,8 +445,9 @@ public class RubyMixinBuildVisitor extends ASTVisitor {
 			Scope scope = peekScope();
 			IField obj = null;
 			if (sourceModule != null)
-				obj = new FakeField((ModelElement) sourceModule, name, name2
-						.sourceStart(), name2.sourceEnd() - name2.sourceStart());
+				obj = new FakeField(sourceModule, name, name2.sourceStart(),
+						name2.sourceEnd() - name2.sourceStart(),
+						Modifiers.AccConstant);
 			scope.reportVariable(name, obj);
 			if (closeScope)
 				this.scopes.pop();
@@ -489,6 +491,12 @@ public class RubyMixinBuildVisitor extends ASTVisitor {
 		} else if (RubyAttributeHandler.isAttributeCreationCall(call)
 				&& sourceModule != null) {
 			Scope scope = peekScope();
+			final Scope metaScope;
+			if (RubyAttributeHandler.isMetaAttributeCreationCall(call)) {
+				metaScope = new MetaClassScope(call, scope.getClassKey());
+			} else {
+				metaScope = null;
+			}
 			RubyAttributeHandler info = new RubyAttributeHandler(call);
 			List readers = info.getReaders();
 			for (Iterator iterator = readers.iterator(); iterator.hasNext();) {
@@ -501,6 +509,11 @@ public class RubyMixinBuildVisitor extends ASTVisitor {
 						attr.length(), n.sourceStart(), attr.length());
 				fakeMethod.setFlags(Modifiers.AccPublic);
 				scope.reportMethod(attr, fakeMethod);
+				if (metaScope != null) {
+					scopes.push(metaScope);
+					metaScope.reportMethod(attr, fakeMethod);
+					scopes.pop();
+			}
 			}
 			List writers = info.getWriters();
 			for (Iterator iterator = writers.iterator(); iterator.hasNext();) {
@@ -515,6 +528,11 @@ public class RubyMixinBuildVisitor extends ASTVisitor {
 				fakeMethod.setFlags(Modifiers.AccPublic);
 				fakeMethod.setParameters(new String[] { attr });
 				scope.reportMethod(attr + "=", fakeMethod); //$NON-NLS-1$
+				if (metaScope != null) {
+					scopes.push(metaScope);
+					metaScope.reportMethod(attr + "=", fakeMethod); //$NON-NLS-1$
+					scopes.pop();
+				}
 			}
 			return false;
 		}
@@ -527,6 +545,11 @@ public class RubyMixinBuildVisitor extends ASTVisitor {
 			IModelElement elementFor = findModelElementFor(decl);
 			if (!(elementFor instanceof IType)) {
 				elementFor = findModelElementFor(decl);
+			}
+			// mhowe - sometimes this the model element is a SourceMethod, so
+			// get it's declaring type
+			if (elementFor instanceof IMethod) {
+				elementFor = ((IMethod) elementFor).getDeclaringType();
 			}
 			obj = (IType) elementFor;
 		}
@@ -602,11 +625,11 @@ public class RubyMixinBuildVisitor extends ASTVisitor {
 	}
 
 	private String report(String key, RubyMixinElementInfo object) {
-		RubyMixinModel.getRawInstance().clearKeysCashe(key);
+		RubyMixinModel.clearKeysCache(key);
+		if (requestor != null) {
 		ElementInfo info = new IMixinRequestor.ElementInfo();
 		info.key = key;
 		info.object = object;
-		if (requestor != null) {
 			requestor.reportElement(info);
 			// System.out.println("Mixin reported: " + key);
 		}
@@ -655,7 +678,7 @@ public class RubyMixinBuildVisitor extends ASTVisitor {
 	}
 
 	public static String[] restoreScopesByNodes(ASTNode[] nodes) {
-		Assert.isLegal(nodes != null);
+		Assert.isNotNull(nodes);
 		Assert.isLegal(nodes.length > 0);
 		String[] keys = new String[nodes.length];
 		RubyMixinBuildVisitor visitor = new RubyMixinBuildVisitor(

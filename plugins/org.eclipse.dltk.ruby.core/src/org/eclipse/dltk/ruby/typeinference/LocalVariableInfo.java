@@ -84,7 +84,7 @@ public class LocalVariableInfo {
 	}
 
 	/**
-	 * Last assignenment (could be null) to this variable, and which will be
+	 * Last assignment (could be null) to this variable, and which will be
 	 * performed in any way
 	 * 
 	 * @return

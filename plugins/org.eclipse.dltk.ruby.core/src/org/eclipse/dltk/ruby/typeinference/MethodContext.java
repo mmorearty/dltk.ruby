@@ -10,19 +10,13 @@
 package org.eclipse.dltk.ruby.typeinference;
 
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
-import org.eclipse.dltk.core.DLTKLanguageManager;
-import org.eclipse.dltk.core.IDLTKLanguageToolkit;
 import org.eclipse.dltk.core.ISourceModule;
+import org.eclipse.dltk.ti.BasicContext;
 import org.eclipse.dltk.ti.IContext;
 import org.eclipse.dltk.ti.IInstanceContext;
-import org.eclipse.dltk.ti.ISourceModuleContext;
 import org.eclipse.dltk.ti.types.IEvaluatedType;
 
-public class MethodContext implements IContext, IArgumentsContext, IInstanceContext, ISourceModuleContext {
-
-	private final ISourceModule sourceModule;
-
-	private final ModuleDeclaration rootNode;
+public class MethodContext extends BasicContext implements IArgumentsContext, IInstanceContext {
 
 	private final String[] argNames;
 
@@ -32,8 +26,8 @@ public class MethodContext implements IContext, IArgumentsContext, IInstanceCont
 
 	public MethodContext(IContext parent, ISourceModule sourceModule, ModuleDeclaration rootNode,
 			String[] argNames, IEvaluatedType[] argTypes) {
-		this.sourceModule = sourceModule;
-		this.rootNode = rootNode;
+		super(sourceModule, rootNode);
+
 		this.argNames = argNames;
 		this.argTypes = argTypes;
 		if (parent instanceof IInstanceContext) {
@@ -55,23 +49,6 @@ public class MethodContext implements IContext, IArgumentsContext, IInstanceCont
 
 	public IEvaluatedType getInstanceType() {
 		return instanceType;
-	}
-
-	public ModuleDeclaration getRootNode() {
-		return rootNode;
-	}
-
-	public ISourceModule getSourceModule() {
-		return sourceModule;
-	}
-	
-	public String getLangNature() {
-		if (sourceModule != null) {
-			IDLTKLanguageToolkit languageToolkit = DLTKLanguageManager.getLanguageToolkit(sourceModule);
-			if (languageToolkit != null)
-				return languageToolkit.getNatureId();
-		}
-		return null;
 	}
 
 }

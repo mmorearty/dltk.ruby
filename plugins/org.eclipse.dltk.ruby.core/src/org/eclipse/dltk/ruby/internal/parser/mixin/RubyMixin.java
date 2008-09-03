@@ -9,6 +9,7 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.internal.parser.mixin;
 
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.SourceParserUtil;
@@ -27,6 +28,7 @@ public class RubyMixin implements IMixinParser {
 
 	public void parserSourceModule(boolean signature, ISourceModule module) {
 		try {
+			module.reconcile(false, module.getOwner(), new NullProgressMonitor());
 			ModuleDeclaration moduleDeclaration = SourceParserUtil
 					.getModuleDeclaration(module, null);
 			RubyMixinBuildVisitor visitor = new RubyMixinBuildVisitor(

@@ -19,7 +19,6 @@ import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.mixin.MixinModel;
 import org.eclipse.dltk.ruby.internal.parser.mixin.RubyMixinClass;
 import org.eclipse.dltk.ruby.internal.parser.mixin.RubyMixinMethod;
-import org.eclipse.dltk.ruby.internal.parser.mixin.RubyMixinModel;
 import org.eclipse.dltk.ruby.internal.parsers.jruby.ASTUtils;
 import org.eclipse.dltk.ruby.typeinference.RubyClassType;
 import org.eclipse.dltk.ruby.typeinference.RubyMethodReference;
@@ -27,13 +26,12 @@ import org.eclipse.dltk.ruby.typeinference.RubyTypeInferencingUtils;
 import org.eclipse.dltk.ti.BasicContext;
 import org.eclipse.dltk.ti.GoalState;
 import org.eclipse.dltk.ti.goals.ExpressionTypeGoal;
-import org.eclipse.dltk.ti.goals.GoalEvaluator;
 import org.eclipse.dltk.ti.goals.IGoal;
 import org.eclipse.dltk.ti.goals.MethodCallVerificationGoal;
 import org.eclipse.dltk.ti.goals.PossiblePosition;
 import org.eclipse.dltk.ti.types.IEvaluatedType;
 
-public class MethodCallVerificator extends GoalEvaluator {
+public class MethodCallVerificator extends RubyMixinGoalEvaluator {
 
 	private static final int INIT = 0;
 	private static final int RECEIVER_WAIT = 1;
@@ -76,10 +74,13 @@ public class MethodCallVerificator extends GoalEvaluator {
 							receiver);
 					state = RECEIVER_WAIT;
 					return new IGoal[] { rgoal };
-				} else {					
-//					ASTNode[] nodes = RubyTypeInferencingUtils.getAllStaticScopes(decl, node.sourceStart());
+				} else {
+					// ASTNode[] nodes =
+					// RubyTypeInferencingUtils.getAllStaticScopes(decl,
+					// node.sourceStart());
 					receiverType = RubyTypeInferencingUtils.determineSelfClass(
-							(ISourceModule) element, decl, node.sourceStart());
+							mixinModel, (ISourceModule) element, decl, node
+									.sourceStart());
 				}
 			}
 		}
@@ -96,27 +97,25 @@ public class MethodCallVerificator extends GoalEvaluator {
 		RubyClassType type = (RubyClassType) receiverType;
 		String parentModelKey = goal2.getGoal().getParentModelKey();
 		String name = goal2.getGoal().getName();
-		String requiredKey = ((parentModelKey != null)?(parentModelKey
-				+ MixinModel.SEPARATOR):"") + name; //$NON-NLS-1$
-		RubyMixinClass rclass = RubyMixinModel.getInstance().createRubyClass(
-				type);
+		String requiredKey = ((parentModelKey != null) ? (parentModelKey + MixinModel.SEPARATOR)
+				: "") + name; //$NON-NLS-1$		
+		RubyMixinClass rclass = mixinModel.createRubyClass(type);
 		RubyMixinMethod method = null;
 		if (topLevelMethod) {
-			method = (RubyMixinMethod) RubyMixinModel.getInstance().createRubyElement(name);
+			method = (RubyMixinMethod) mixinModel.createRubyElement(name);
 		} else if (rclass != null) {
-			method = rclass
-					.getMethod(name);
+			method = rclass.getMethod(name);
 		}
 		if (method != null) {
 			String key = method.getKey();
-			if (key.equals(requiredKey) || (parentModelKey.equals("Object") && key.equals(name))) { //$NON-NLS-1$
-				result = new RubyMethodReference(name,
-						parentModelKey, position,
-						RubyMethodReference.ACCURATE);
+			if (key.equals(requiredKey)
+					|| (parentModelKey.equals("Object") && key.equals(name))) { //$NON-NLS-1$
+				result = new RubyMethodReference(name, parentModelKey,
+						position, RubyMethodReference.ACCURATE);
 				if (position.getNode() instanceof CallExpression) {
 					result.setNode((CallExpression) position.getNode());
 				}
-			} 
+			}
 		}
 
 		return result;

@@ -23,34 +23,34 @@ import org.eclipse.dltk.ti.goals.GoalEvaluator;
 import org.eclipse.dltk.ti.goals.IGoal;
 
 public class CaseStatementTypeEvaluator extends GoalEvaluator {
-	
-	private List types = new ArrayList ();
+
+	private List types = new ArrayList();
 
 	public CaseStatementTypeEvaluator(IGoal goal) {
 		super(goal);
 	}
 
-	private ExpressionTypeGoal getTypedGoal () {
+	private ExpressionTypeGoal getTypedGoal() {
 		return (ExpressionTypeGoal) getGoal();
 	}
-	
+
 	public IGoal[] init() {
 		ExpressionTypeGoal typedGoal = this.getTypedGoal();
 		ASTNode expression = typedGoal.getExpression();
 		if (!(expression instanceof RubyCaseStatement))
 			return IGoal.NO_GOALS;
 		RubyCaseStatement caseSt = (RubyCaseStatement) expression;
-		List subgoals = new ArrayList ();
+		List subgoals = new ArrayList();
 		List whens = caseSt.getWhens();
 		for (Iterator iterator = whens.iterator(); iterator.hasNext();) {
 			RubyWhenStatement when = (RubyWhenStatement) iterator.next();
 			ASTNode body = when.getBody();
-			subgoals.add(new ExpressionTypeGoal(this.goal.getContext(), body));			
+			subgoals.add(new ExpressionTypeGoal(this.goal.getContext(), body));
 		}
 		return (IGoal[]) subgoals.toArray(new IGoal[subgoals.size()]);
 	}
 
-	public Object produceResult() {		
+	public Object produceResult() {
 		return RubyTypeInferencingUtils.combineTypes(types);
 	}
 
