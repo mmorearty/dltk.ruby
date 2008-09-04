@@ -13,9 +13,11 @@ package org.eclipse.dltk.ruby.testing.internal.rspec;
 
 public class RSpecUtils {
 
-	public static final String[] CONTEXT_METHODS = { "describe", //$NON-NLS-1$
-			"context" //$NON-NLS-1$
-	};
+	public static final String DESCRIBE = "describe"; //$NON-NLS-1$
+
+	public static final String CONTEXT = "context"; //$NON-NLS-1$
+
+	public static final String[] CONTEXT_METHODS = { DESCRIBE, CONTEXT };
 
 	public static final String[] TEST_METHODS = { "it", //$NON-NLS-1$
 			"specify" //$NON-NLS-1$

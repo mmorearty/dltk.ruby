@@ -20,6 +20,7 @@ import java.util.Stack;
 import java.util.regex.Matcher;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
 import org.eclipse.dltk.ast.expressions.CallArgumentsList;
@@ -32,6 +33,13 @@ import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ISourceRange;
+import org.eclipse.dltk.core.search.IDLTKSearchConstants;
+import org.eclipse.dltk.core.search.IDLTKSearchScope;
+import org.eclipse.dltk.core.search.SearchEngine;
+import org.eclipse.dltk.core.search.SearchMatch;
+import org.eclipse.dltk.core.search.SearchParticipant;
+import org.eclipse.dltk.core.search.SearchPattern;
+import org.eclipse.dltk.core.search.SearchRequestor;
 import org.eclipse.dltk.corext.SourceRange;
 import org.eclipse.dltk.ruby.ast.RubyCallArgument;
 import org.eclipse.dltk.ruby.ast.RubyColonExpression;
@@ -180,9 +188,20 @@ public class RSpecTestRunnerUI extends AbstractRubyTestRunnerUI {
 			return value.equals(sb.toString());
 		}
 
+		public void process(final ISourceModule module) {
+			final ModuleDeclaration declaration = ResolverUtils.parse(module);
+			if (declaration != null) {
+				try {
+					declaration.traverse(this);
+				} catch (Exception e) {
+					RubyTestingPlugin.error("Error in resolveTestSuite", e); //$NON-NLS-1$
+				}
+			}
+		}
+
 	}
 
-	private static class RSpecContextLocator extends RSpecLocator {
+	static class RSpecContextLocator extends RSpecLocator {
 
 		private final String contextName;
 
@@ -296,6 +315,18 @@ public class RSpecTestRunnerUI extends AbstractRubyTestRunnerUI {
 		}
 	}
 
+	private static class MethodRequestor extends SearchRequestor {
+
+		final Set resources = new HashSet();
+
+		public void acceptSearchMatch(SearchMatch match) throws CoreException {
+			if (match.getResource() != null) {
+				resources.add(match.getResource());
+			}
+		}
+
+	}
+
 	protected TestElementResolution resolveTestSuite(ITestSuiteElement element) {
 		final ITestElement[] children = element.getChildren();
 		final Set locations = new HashSet();
@@ -314,27 +345,73 @@ public class RSpecTestRunnerUI extends AbstractRubyTestRunnerUI {
 				}
 			}
 		}
+		final Set processedResources = new HashSet();
 		final RSpecContextLocator locator = new RSpecContextLocator(element
 				.getSuiteTypeName());
 		for (Iterator i = locations.iterator(); i.hasNext();) {
 			final ISourceModule module = findSourceModule((String) i.next());
 			if (module != null) {
-				final ModuleDeclaration declaration = ResolverUtils
-						.parse(module);
-				if (declaration != null) {
-					try {
-						declaration.traverse(locator);
-						if (locator.range != null) {
-							return new TestElementResolution(module,
-									locator.range);
-						}
-					} catch (Exception e) {
-						RubyTestingPlugin.error("Error in resolveTestSuite", e); //$NON-NLS-1$
-					}
+				if (module.getResource() != null) {
+					processedResources.add(module.getResource());
+				}
+				locator.process(module);
+				if (locator.range != null) {
+					return new TestElementResolution(module, locator.range);
+				}
+			}
+		}
+		final IDLTKSearchScope scope = getSearchScope();
+		TestElementResolution resolution;
+		resolution = searchMethodReferences(scope, locator,
+				RSpecUtils.DESCRIBE, processedResources);
+		if (resolution != null) {
+			return resolution;
+		}
+		resolution = searchMethodReferences(scope, locator, RSpecUtils.CONTEXT,
+				processedResources);
+		if (resolution != null) {
+			return resolution;
+		}
+		return null;
+	}
+
+	private TestElementResolution searchMethodReferences(
+			final IDLTKSearchScope scope, final RSpecContextLocator locator,
+			final String methodName, final Set processedResources) {
+		final Set describeReferences = findMethodReferences(scope, methodName);
+		describeReferences.removeAll(processedResources);
+		for (Iterator i = describeReferences.iterator(); i.hasNext();) {
+			final IFile file = (IFile) i.next();
+			processedResources.add(file);
+			final ISourceModule module = (ISourceModule) DLTKCore.create(file);
+			if (module != null) {
+				locator.process(module);
+				if (locator.range != null) {
+					return new TestElementResolution(module, locator.range);
 				}
 			}
 		}
 		return null;
+	}
+
+	private Set findMethodReferences(final IDLTKSearchScope scope,
+			final String methodName) {
+		final SearchPattern pattern = SearchPattern.createPattern(methodName,
+				IDLTKSearchConstants.METHOD, IDLTKSearchConstants.REFERENCES,
+				SearchPattern.R_EXACT_MATCH | SearchPattern.R_CASE_SENSITIVE,
+				scope.getLanguageToolkit());
+		final MethodRequestor requestor = new MethodRequestor();
+		try {
+			new SearchEngine().search(pattern,
+					new SearchParticipant[] { SearchEngine
+							.getDefaultSearchParticipant() }, scope, requestor,
+					null);
+		} catch (CoreException e) {
+			final String msg = "Error in search method references {0})"; //$NON-NLS-1$
+			RubyTestingPlugin.error(NLS.bind(msg, methodName), e);
+		}
+		final Set resources = requestor.resources;
+		return resources;
 	}
 
 	protected TestElementResolution resolveTestCase(ITestCaseElement element) {

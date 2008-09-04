@@ -396,7 +396,7 @@ public class TestUnitTestRunnerUI extends AbstractRubyTestRunnerUI {
 					null);
 			return requestor.method;
 		} catch (CoreException e) {
-			final String msg = "Error in findMethod({0},{0})"; //$NON-NLS-1$
+			final String msg = "Error in findMethod({0}::{1})"; //$NON-NLS-1$
 			RubyTestingPlugin.error(NLS.bind(msg, className, methodName), e);
 		}
 		return null;
@@ -427,7 +427,4 @@ public class TestUnitTestRunnerUI extends AbstractRubyTestRunnerUI {
 		return null;
 	}
 
-	private IDLTKSearchScope getSearchScope() {
-		return SearchEngine.createSearchScope(project);
-	}
 }
