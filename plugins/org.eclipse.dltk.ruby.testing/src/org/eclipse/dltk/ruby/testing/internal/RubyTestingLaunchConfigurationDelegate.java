@@ -37,7 +37,7 @@ import org.eclipse.dltk.testing.TestingEngineManager;
 public class RubyTestingLaunchConfigurationDelegate extends
 		RubyLaunchConfigurationDelegate implements ILaunchConfigurationDelegate {
 
-	static boolean isContainerMode(ILaunchConfiguration configuration)
+	public static boolean isContainerMode(ILaunchConfiguration configuration)
 			throws CoreException {
 		final String containerHandle = configuration.getAttribute(
 				DLTKTestingConstants.ATTR_TEST_CONTAINER, Util.EMPTY_STRING);
@@ -71,13 +71,13 @@ public class RubyTestingLaunchConfigurationDelegate extends
 
 	protected String getScriptLaunchPath(ILaunchConfiguration configuration,
 			IEnvironment scriptEnvironment) throws CoreException {
-		if (isContainerMode(configuration)) {
-			final ITestingEngine engine = getTestingEngine(configuration);
-			return engine
-					.getContainerLauncher(configuration, scriptEnvironment);
-		} else {
-			return super.getScriptLaunchPath(configuration, scriptEnvironment);
+		final ITestingEngine engine = getTestingEngine(configuration);
+		final String mainScript = engine.getMainScriptPath(configuration,
+				scriptEnvironment);
+		if (mainScript != null) {
+			return mainScript;
 		}
+		return super.getScriptLaunchPath(configuration, scriptEnvironment);
 	}
 
 	protected IPath getDefaultWorkingDirectory(

@@ -13,18 +13,31 @@ package org.eclipse.dltk.ruby.testing.internal.rspec;
 
 import java.util.Stack;
 
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
 import org.eclipse.dltk.ast.expressions.CallExpression;
+import org.eclipse.dltk.compiler.util.Util;
+import org.eclipse.dltk.core.DLTKCore;
+import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ISourceModule;
+import org.eclipse.dltk.core.environment.IEnvironment;
+import org.eclipse.dltk.launching.AbstractScriptLaunchConfigurationDelegate;
+import org.eclipse.dltk.launching.InterpreterConfig;
 import org.eclipse.dltk.ruby.testing.internal.AbstractRubyTestingEngine;
 import org.eclipse.dltk.ruby.testing.internal.AbstractTestingEngineValidateVisitor;
 import org.eclipse.dltk.ruby.testing.internal.Messages;
 import org.eclipse.dltk.ruby.testing.internal.ResolverUtils;
+import org.eclipse.dltk.ruby.testing.internal.RubyTestingLaunchConfigurationDelegate;
+import org.eclipse.dltk.testing.DLTKTestingConstants;
 import org.eclipse.dltk.testing.ITestRunnerUI;
 import org.eclipse.osgi.util.NLS;
 
@@ -93,6 +106,43 @@ public class RspecTestingEngine extends AbstractRubyTestingEngine {
 					Messages.validate_runtimeError, e.getMessage()));
 		}
 		return visitor.getStatus();
+	}
+
+	private static final String RSPEC_RUNNER = "dltk-rspec-runner.rb"; //$NON-NLS-1$
+
+	public String getMainScriptPath(ILaunchConfiguration configuration,
+			IEnvironment scriptEnvironment) throws CoreException {
+		return getRunnerFile(getBundle(), RUNNER_PATH, RSPEC_RUNNER).getPath();
+	}
+
+	public void configureLaunch(InterpreterConfig config,
+			ILaunchConfiguration configuration, ILaunch launch)
+			throws CoreException {
+		// select port number
+		final String strPort = String.valueOf(allocatePort());
+		launch.setAttribute(DLTKTestingConstants.ATTR_PORT, strPort);
+		config.addEnvVar(RUBY_TESTING_PORT, strPort);
+		if (!RubyTestingLaunchConfigurationDelegate
+				.isContainerMode(configuration)) {
+			final String mainScript = AbstractScriptLaunchConfigurationDelegate
+					.getMainScriptName(configuration);
+			config.addScriptArg(mainScript);
+		} else {
+			final String containerHandle = configuration
+					.getAttribute(DLTKTestingConstants.ATTR_TEST_CONTAINER,
+							Util.EMPTY_STRING);
+			Assert.isLegal(containerHandle.length() != 0);
+			IModelElement element = DLTKCore.create(containerHandle);
+			Assert.isNotNull(element);
+			IResource resource = element.getUnderlyingResource();
+			Assert.isNotNull(resource);
+			final IPath path = resource.getProjectRelativePath();
+			if (path.isEmpty()) {
+				config.addScriptArg("."); //$NON-NLS-1$
+			} else {
+				config.addScriptArg(path.toOSString());
+			}
+		}
 	}
 
 	/*
