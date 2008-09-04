@@ -123,7 +123,7 @@ public class RSpecTestRunnerUI extends AbstractRubyTestRunnerUI {
 		 */
 		private String toText(ASTNode value) {
 			if (value instanceof StringLiteral) {
-				return ((StringLiteral) value).getValue();
+				return ((StringLiteral) value).getValue().trim();
 			}
 			if (value instanceof NumericLiteral) {
 				return ((NumericLiteral) value).getValue();
