@@ -246,8 +246,8 @@ end
 
 if __FILE__ == $0
 	ARGV.push 'bowling_spec.rb'
-	ARGV.push '--format'
-	ARGV.push 'DLTK::RSpec::DLTKFormatter'
 end
 
+ARGV.push '--format'
+ARGV.push 'DLTK::RSpec::DLTKFormatter'
 exit ::Spec::Runner::CommandLine.run(rspec_options)
