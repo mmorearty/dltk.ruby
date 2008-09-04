@@ -206,7 +206,7 @@ public class RubyMixinClass implements IRubyMixinElement {
 			}
 			if (info.getKind() == RubyMixinElementInfo.K_EXTEND) {
 				String extKey = (String) info.getObject();
-				if (!names.add(extKey)) {
+				if (names.add(extKey)) {
 					if (/* !this.isMeta() && */!extKey
 							.endsWith(RubyMixin.INSTANCE_SUFFIX))
 						extKey += RubyMixin.INSTANCE_SUFFIX;
