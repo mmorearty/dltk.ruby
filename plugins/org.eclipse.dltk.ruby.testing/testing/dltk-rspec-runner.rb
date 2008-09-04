@@ -244,9 +244,9 @@ module DLTK
 	end
 end
 
-if __FILE__ == $0
-	ARGV.push 'bowling_spec.rb'
-end
+#if __FILE__ == $0
+#	ARGV.push 'bowling_spec.rb'
+#end
 
 ARGV.push '--format'
 ARGV.push 'DLTK::RSpec::DLTKFormatter'
