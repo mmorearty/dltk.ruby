@@ -98,9 +98,15 @@ public class RubyMixinBuildVisitor extends ASTVisitor {
 		public String getClassKey() {
 			return "Object"; //$NON-NLS-1$
 		}
+		
+		private boolean isObjectReported = false;
 
 		public String reportMethod(String name, IMethod object) {
-			return report(getClassKey() + SEPARATOR + name,
+			if (!isObjectReported) {
+				report(getClassKey() + INSTANCE_SUFFIX, null);
+				isObjectReported = true;
+			}
+			return report(getClassKey() + INSTANCE_SUFFIX + SEPARATOR + name,
 					RubyMixinElementInfo.createMethod(object));
 		}
 
