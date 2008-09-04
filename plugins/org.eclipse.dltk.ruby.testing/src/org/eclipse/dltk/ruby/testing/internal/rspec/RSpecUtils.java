@@ -21,4 +21,12 @@ public class RSpecUtils {
 			"specify" //$NON-NLS-1$
 	};
 
+	public static final String[] TEST_SHARED = { "it_should_behave_like" //$NON-NLS-1$
+	};
+
+	public static final String[] SHARED_GROUP = { "shared_examples_for", //$NON-NLS-1$
+			"share_examples_for", //$NON-NLS-1$
+			"share_as" //$NON-NLS-1$
+	};
+
 }
