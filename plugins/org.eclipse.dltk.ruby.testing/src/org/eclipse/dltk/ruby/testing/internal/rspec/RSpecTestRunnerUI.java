@@ -139,20 +139,7 @@ public class RSpecTestRunnerUI extends AbstractRubyTestRunnerUI {
 						final CallArgumentsList args = call.getArgs();
 						if (args.getChilds().size() >= 1) {
 							final List texts = new ArrayList();
-							ASTNode lastArg = null;
-							for (Iterator i = args.getChilds().iterator(); i
-									.hasNext();) {
-								final Object arg = i.next();
-								if (arg instanceof RubyCallArgument) {
-									final ASTNode value = ((RubyCallArgument) arg)
-											.getValue();
-									final String text = toText(value);
-									if (text != null) {
-										texts.add(text);
-										lastArg = value;
-									}
-								}
-							}
+							final ASTNode lastArg = collectArgs(args, texts);
 							if (!texts.isEmpty()
 									&& isMatched(contextName, texts)) {
 								assert (lastArg != null);
@@ -165,6 +152,23 @@ public class RSpecTestRunnerUI extends AbstractRubyTestRunnerUI {
 				}
 			}
 			return super.visitGeneral(node);
+		}
+
+		private ASTNode collectArgs(final CallArgumentsList args,
+				final List texts) {
+			ASTNode lastArg = null;
+			for (Iterator i = args.getChilds().iterator(); i.hasNext();) {
+				final Object arg = i.next();
+				if (arg instanceof RubyCallArgument) {
+					final ASTNode value = ((RubyCallArgument) arg).getValue();
+					final String text = toText(value);
+					if (text != null) {
+						texts.add(text);
+						lastArg = value;
+					}
+				}
+			}
+			return lastArg;
 		}
 
 		/**
