@@ -22,7 +22,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.dltk.ast.ASTNode;
-import org.eclipse.dltk.ast.declarations.FakeModuleDeclaration;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
 import org.eclipse.dltk.ast.declarations.TypeDeclaration;
 import org.eclipse.dltk.ast.expressions.CallExpression;
@@ -34,7 +33,6 @@ import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ISourceRange;
 import org.eclipse.dltk.core.IType;
-import org.eclipse.dltk.core.SourceParserUtil;
 import org.eclipse.dltk.core.search.IDLTKSearchConstants;
 import org.eclipse.dltk.core.search.IDLTKSearchScope;
 import org.eclipse.dltk.core.search.SearchEngine;
@@ -330,10 +328,8 @@ public class TestUnitTestRunnerUI extends AbstractRubyTestRunnerUI {
 	 */
 	private TestElementResolution findShould(ISourceModule module,
 			String className, String shouldName) {
-		final ModuleDeclaration declaration = SourceParserUtil
-				.getModuleDeclaration(module);
-		if (declaration != null
-				&& !(declaration instanceof FakeModuleDeclaration)) {
+		final ModuleDeclaration declaration = ResolverUtils.parse(module);
+		if (declaration != null) {
 			try {
 				final ShouldLocator locator = new ShouldLocator(className,
 						shouldName);

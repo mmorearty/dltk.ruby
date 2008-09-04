@@ -11,9 +11,13 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.testing.internal;
 
+import org.eclipse.dltk.ast.declarations.FakeModuleDeclaration;
+import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
 import org.eclipse.dltk.core.IMember;
+import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ISourceRange;
 import org.eclipse.dltk.core.ModelException;
+import org.eclipse.dltk.core.SourceParserUtil;
 import org.eclipse.dltk.corext.SourceRange;
 
 public class ResolverUtils {
@@ -53,6 +57,15 @@ public class ResolverUtils {
 	public static ISourceRange adjustRange(String source, ISourceRange range) {
 		return adjustRange(source, range.getOffset(), range.getOffset()
 				+ range.getLength());
+	}
+
+	public static ModuleDeclaration parse(ISourceModule module) {
+		final ModuleDeclaration declaration = SourceParserUtil
+				.getModuleDeclaration(module);
+		if (declaration instanceof FakeModuleDeclaration) {
+			return null;
+		}
+		return declaration;
 	}
 
 }

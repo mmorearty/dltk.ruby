@@ -15,17 +15,16 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.dltk.ast.ASTNode;
-import org.eclipse.dltk.ast.declarations.FakeModuleDeclaration;
 import org.eclipse.dltk.ast.declarations.MethodDeclaration;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
 import org.eclipse.dltk.ast.expressions.CallExpression;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ISourceModule;
-import org.eclipse.dltk.core.SourceParserUtil;
 import org.eclipse.dltk.ruby.ast.RubyClassDeclaration;
 import org.eclipse.dltk.ruby.testing.internal.AbstractRubyTestingEngine;
 import org.eclipse.dltk.ruby.testing.internal.AbstractTestingEngineValidateVisitor;
 import org.eclipse.dltk.ruby.testing.internal.Messages;
+import org.eclipse.dltk.ruby.testing.internal.ResolverUtils;
 import org.eclipse.dltk.testing.ITestRunnerUI;
 import org.eclipse.osgi.util.NLS;
 
@@ -84,9 +83,8 @@ public class TestUnitTestingEngine extends AbstractRubyTestingEngine {
 	}
 
 	public IStatus validateSourceModule(ISourceModule module) {
-		final ModuleDeclaration declaration = SourceParserUtil
-				.getModuleDeclaration(module);
-		if (declaration == null || declaration instanceof FakeModuleDeclaration) {
+		final ModuleDeclaration declaration = ResolverUtils.parse(module);
+		if (declaration == null) {
 			return createStatus(IStatus.WARNING, Messages.validate_sourceErrors);
 		}
 		final TestUnitValidateVisitor visitor = new TestUnitValidateVisitor();

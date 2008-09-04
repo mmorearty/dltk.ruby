@@ -20,7 +20,6 @@ import java.util.regex.Matcher;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.dltk.ast.ASTNode;
-import org.eclipse.dltk.ast.declarations.FakeModuleDeclaration;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
 import org.eclipse.dltk.ast.expressions.CallArgumentsList;
 import org.eclipse.dltk.ast.expressions.CallExpression;
@@ -32,13 +31,13 @@ import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ISourceRange;
-import org.eclipse.dltk.core.SourceParserUtil;
 import org.eclipse.dltk.corext.SourceRange;
 import org.eclipse.dltk.ruby.ast.RubyCallArgument;
 import org.eclipse.dltk.ruby.ast.RubyColonExpression;
 import org.eclipse.dltk.ruby.internal.debug.ui.console.RubyFileHyperlink;
 import org.eclipse.dltk.ruby.testing.internal.AbstractRubyTestRunnerUI;
 import org.eclipse.dltk.ruby.testing.internal.AbstractTestingEngineValidateVisitor;
+import org.eclipse.dltk.ruby.testing.internal.ResolverUtils;
 import org.eclipse.dltk.ruby.testing.internal.RubyTestingPlugin;
 import org.eclipse.dltk.testing.DLTKTestingMessages;
 import org.eclipse.dltk.testing.TestElementResolution;
@@ -256,10 +255,9 @@ public class RSpecTestRunnerUI extends AbstractRubyTestRunnerUI {
 		for (Iterator i = locations.iterator(); i.hasNext();) {
 			final ISourceModule module = findSourceModule((String) i.next());
 			if (module != null) {
-				final ModuleDeclaration declaration = SourceParserUtil
-						.getModuleDeclaration(module);
-				if (declaration != null
-						&& !(declaration instanceof FakeModuleDeclaration)) {
+				final ModuleDeclaration declaration = ResolverUtils
+						.parse(module);
+				if (declaration != null) {
 					try {
 						declaration.traverse(locator);
 						if (locator.range != null) {
