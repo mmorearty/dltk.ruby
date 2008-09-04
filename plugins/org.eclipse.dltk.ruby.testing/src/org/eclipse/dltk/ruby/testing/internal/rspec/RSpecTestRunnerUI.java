@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.Stack;
 import java.util.regex.Matcher;
 
 import org.eclipse.core.resources.IFile;
@@ -48,7 +49,7 @@ import org.eclipse.osgi.util.NLS;
 
 public class RSpecTestRunnerUI extends AbstractRubyTestRunnerUI {
 
-	private static final char CLASS_BEGIN = '<';
+	private static final char PATH_BEGIN = '<';
 
 	/**
 	 * @param testingEngine
@@ -69,7 +70,7 @@ public class RSpecTestRunnerUI extends AbstractRubyTestRunnerUI {
 	 */
 	public String getTestCaseLabel(ITestCaseElement caseElement, boolean full) {
 		final String testName = caseElement.getTestName();
-		int index = testName.lastIndexOf(CLASS_BEGIN);
+		int index = testName.lastIndexOf(PATH_BEGIN);
 		if (index >= 0) {
 			if (full) {
 				final String template = DLTKTestingMessages.TestSessionLabelProvider_testMethodName_className;
@@ -87,7 +88,7 @@ public class RSpecTestRunnerUI extends AbstractRubyTestRunnerUI {
 	 */
 	public String getTestStartedMessage(ITestCaseElement caseElement) {
 		final String testName = caseElement.getTestName();
-		int index = testName.lastIndexOf(CLASS_BEGIN);
+		int index = testName.lastIndexOf(PATH_BEGIN);
 		if (index >= 0) {
 			final String template = DLTKTestingMessages.TestRunnerViewPart_message_started;
 			return NLS.bind(template, testName.substring(index + 1), testName
@@ -96,65 +97,10 @@ public class RSpecTestRunnerUI extends AbstractRubyTestRunnerUI {
 		return testName;
 	}
 
-	protected TestElementResolution resolveTestCase(ITestCaseElement element) {
-		final String testName = element.getTestName();
-		final int index = testName.lastIndexOf(CLASS_BEGIN);
-		if (index < 0) {
-			return null;
-		}
-		final String location = testName.substring(index);
-		final Matcher matcher = STACK_FRAME_PATTERN.matcher(location);
-		if (!matcher.matches()) {
-			return null;
-		}
-		final ISourceModule module = findSourceModule(matcher.group(1));
-		if (module == null) {
-			return null;
-		}
-
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	private static class RSpecContextLocator extends
+	private static class RSpecLocator extends
 			AbstractTestingEngineValidateVisitor {
 
-		private final String contextName;
-
-		private ISourceRange range = null;
-
-		/**
-		 * @param className
-		 * @param shouldName
-		 */
-		public RSpecContextLocator(String contextName) {
-			this.contextName = contextName;
-		}
-
-		public boolean visitGeneral(ASTNode node) throws Exception {
-			if (range == null) {
-				if (node instanceof CallExpression) {
-					final CallExpression call = (CallExpression) node;
-					if (isMethodCall(call, RSpecUtils.CONTEXT_METHODS)) {
-						final CallArgumentsList args = call.getArgs();
-						if (args.getChilds().size() >= 1) {
-							final List texts = new ArrayList();
-							final ASTNode lastArg = collectArgs(args, texts);
-							if (!texts.isEmpty()
-									&& isMatched(contextName, texts)) {
-								assert (lastArg != null);
-								range = new SourceRange(call.sourceStart(),
-										lastArg.sourceEnd()
-												- call.sourceStart());
-							}
-						}
-					}
-				}
-			}
-			return super.visitGeneral(node);
-		}
-
-		private ASTNode collectArgs(final CallArgumentsList args,
+		protected ASTNode collectArgs(final CallArgumentsList args,
 				final List texts) {
 			ASTNode lastArg = null;
 			for (Iterator i = args.getChilds().iterator(); i.hasNext();) {
@@ -223,7 +169,7 @@ public class RSpecTestRunnerUI extends AbstractRubyTestRunnerUI {
 		 * @param value
 		 * @return
 		 */
-		private boolean isMatched(String value, List texts) {
+		protected boolean isMatched(String value, List texts) {
 			final StringBuffer sb = new StringBuffer();
 			for (Iterator i = texts.iterator(); i.hasNext();) {
 				if (sb.length() != 0) {
@@ -236,6 +182,120 @@ public class RSpecTestRunnerUI extends AbstractRubyTestRunnerUI {
 
 	}
 
+	private static class RSpecContextLocator extends RSpecLocator {
+
+		private final String contextName;
+
+		private ISourceRange range = null;
+
+		public RSpecContextLocator(String contextName) {
+			this.contextName = contextName;
+		}
+
+		public boolean visitGeneral(ASTNode node) throws Exception {
+			if (range == null) {
+				if (node instanceof CallExpression) {
+					final CallExpression call = (CallExpression) node;
+					if (isMethodCall(call, RSpecUtils.CONTEXT_METHODS)) {
+						final CallArgumentsList args = call.getArgs();
+						if (args.getChilds().size() >= 1) {
+							final List texts = new ArrayList();
+							final ASTNode lastArg = collectArgs(args, texts);
+							if (!texts.isEmpty()
+									&& isMatched(contextName, texts)) {
+								assert (lastArg != null);
+								range = new SourceRange(call.sourceStart(),
+										lastArg.sourceEnd()
+												- call.sourceStart());
+							}
+						}
+					}
+				}
+			}
+			return super.visitGeneral(node);
+		}
+
+	}
+
+	private static class RSpecTestLocator extends RSpecLocator {
+		private final String contextName;
+		private final String testName;
+
+		private ISourceRange range = null;
+
+		public RSpecTestLocator(String contextName, String testName) {
+			this.contextName = contextName;
+			this.testName = testName;
+		}
+
+		private static class State {
+			final ASTNode callNode;
+			final boolean isMatched;
+
+			public State(ASTNode callNode, boolean isMatched) {
+				this.callNode = callNode;
+				this.isMatched = isMatched;
+			}
+
+		}
+
+		private final Stack states = new Stack();
+
+		public boolean visitGeneral(ASTNode node) throws Exception {
+			if (range == null) {
+				if (node instanceof CallExpression) {
+					final CallExpression call = (CallExpression) node;
+					final CallArgumentsList args = call.getArgs();
+					if (args.getChilds().size() >= 1) {
+						if (isMethodCall(call, RSpecUtils.CONTEXT_METHODS)) {
+							boolean matched = false;
+							final List texts = new ArrayList();
+							final ASTNode lastArg = collectArgs(args, texts);
+							if (!texts.isEmpty()
+									&& isMatched(contextName, texts)) {
+								assert (lastArg != null);
+								matched = true;
+								// range = new SourceRange(call.sourceStart(),
+								// lastArg.sourceEnd()
+								// - call.sourceStart());
+							}
+							states.push(new State(node, matched));
+						} else if (isMatchingContext()
+								&& isMethodCall(call, RSpecUtils.TEST_METHODS)) {
+							final List texts = new ArrayList();
+							final ASTNode lastArg = collectArgs(args, texts);
+							if (!texts.isEmpty() && isMatched(testName, texts)) {
+								assert (lastArg != null);
+								range = new SourceRange(call.sourceStart(),
+										lastArg.sourceEnd()
+												- call.sourceStart());
+							}
+						}
+					}
+				}
+			}
+			return super.visitGeneral(node);
+		}
+
+		private boolean isMatchingContext() {
+			if (!states.isEmpty()) {
+				final State state = (State) states.peek();
+				return state.isMatched;
+			}
+			return false;
+		}
+
+		public void endvisitGeneral(ASTNode node) throws Exception {
+			if (!states.isEmpty()) {
+				final State state = (State) states.peek();
+				if (state.callNode == node) {
+					states.pop();
+				}
+			}
+			super.endvisitGeneral(node);
+		}
+	}
+
 	protected TestElementResolution resolveTestSuite(ITestSuiteElement element) {
 		final ITestElement[] children = element.getChildren();
 		final Set locations = new HashSet();
@@ -243,7 +303,7 @@ public class RSpecTestRunnerUI extends AbstractRubyTestRunnerUI {
 			if (children[i] instanceof ITestCaseElement) {
 				final ITestCaseElement caseElement = (ITestCaseElement) children[i];
 				final String testName = caseElement.getTestName();
-				final int index = testName.lastIndexOf(CLASS_BEGIN);
+				final int index = testName.lastIndexOf(PATH_BEGIN);
 				if (index > 0) {
 					final String location = testName.substring(index + 1);
 					final Matcher matcher = STACK_FRAME_PATTERN
@@ -272,6 +332,41 @@ public class RSpecTestRunnerUI extends AbstractRubyTestRunnerUI {
 						RubyTestingPlugin.error("Error in resolveTestSuite", e); //$NON-NLS-1$
 					}
 				}
+			}
+		}
+		return null;
+	}
+
+	protected TestElementResolution resolveTestCase(ITestCaseElement element) {
+		if (!(element.getParentContainer() instanceof ITestSuiteElement)) {
+			return null;
+		}
+		final String testName = element.getTestName();
+		final int index = testName.lastIndexOf(PATH_BEGIN);
+		if (index < 0) {
+			return null;
+		}
+		final String location = testName.substring(index + 1);
+		final Matcher matcher = STACK_FRAME_PATTERN.matcher(location);
+		if (!matcher.matches()) {
+			return null;
+		}
+		final ISourceModule module = findSourceModule(matcher.group(1));
+		if (module == null) {
+			return null;
+		}
+		final RSpecTestLocator locator = new RSpecTestLocator(
+				((ITestSuiteElement) element.getParentContainer())
+						.getSuiteTypeName(), testName.substring(0, index));
+		final ModuleDeclaration declaration = ResolverUtils.parse(module);
+		if (declaration != null) {
+			try {
+				declaration.traverse(locator);
+				if (locator.range != null) {
+					return new TestElementResolution(module, locator.range);
+				}
+			} catch (Exception e) {
+				RubyTestingPlugin.error("Error in resolveTestSuite", e); //$NON-NLS-1$
 			}
 		}
 		return null;

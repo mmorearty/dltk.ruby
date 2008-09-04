@@ -17,17 +17,8 @@ public class RSpecUtils {
 			"context" //$NON-NLS-1$
 	};
 
-	/**
-	 * @param name
-	 * @return
-	 */
-	public static boolean isDecribe(String name) {
-		for (int i = 0; i < CONTEXT_METHODS.length; ++i) {
-			if (CONTEXT_METHODS[i].equals(name)) {
-				return true;
-			}
-		}
-		return false;
-	}
+	public static final String[] TEST_METHODS = { "it", //$NON-NLS-1$
+			"specify" //$NON-NLS-1$
+	};
 
 }
