@@ -100,7 +100,8 @@ public class RubyMixinBuildVisitor extends ASTVisitor {
 		}
 
 		public String reportMethod(String name, IMethod object) {
-			return report(name, RubyMixinElementInfo.createMethod(object));
+			return report(getClassKey() + SEPARATOR + name,
+					RubyMixinElementInfo.createMethod(object));
 		}
 
 		public String reportType(String name, IType object, boolean module) {
