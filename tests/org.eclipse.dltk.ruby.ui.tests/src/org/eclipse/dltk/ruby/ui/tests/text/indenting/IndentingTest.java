@@ -36,10 +36,10 @@ public class IndentingTest extends RubyUITests {
 
 	private void waitWorkbenchCreated() throws InterruptedException {
 		for (int i = 0; i < 40; i++) {
-			Thread.sleep(1000);
 			if (PlatformUI.isWorkbenchRunning()) {
 				return;
 			}
+			Thread.sleep(1000);
 		}
 		throw new RuntimeException(
 				"Workbench did not intitialized during a minute.");
