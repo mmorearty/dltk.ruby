@@ -18,7 +18,6 @@ import java.util.Set;
 import org.eclipse.dltk.core.IType;
 import org.eclipse.dltk.core.mixin.IMixinElement;
 import org.eclipse.dltk.core.mixin.MixinModel;
-import org.eclipse.dltk.ruby.typeinference.IMixinSearchRequestor;
 import org.eclipse.dltk.ruby.typeinference.RubyClassType;
 import org.eclipse.dltk.ti.BasicContext;
 import org.eclipse.dltk.ti.DLTKTypeInferenceEngine;
