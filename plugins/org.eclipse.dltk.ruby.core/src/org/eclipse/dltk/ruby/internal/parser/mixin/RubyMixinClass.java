@@ -161,11 +161,11 @@ public class RubyMixinClass implements IRubyMixinElement {
 	}
 
 	protected RubyMixinClass[] getIncluded() {
-		List result = new ArrayList();
-		HashSet names = new HashSet();
 		IMixinElement mixinElement = model.getRawModel().get(key);
 		if (mixinElement == null)
 			return new RubyMixinClass[0];
+		List result = new ArrayList();
+		HashSet names = new HashSet();
 		Object[] allObjects = mixinElement.getAllObjects();
 		for (int i = 0; i < allObjects.length; i++) {
 			RubyMixinElementInfo info = (RubyMixinElementInfo) allObjects[i];
@@ -192,11 +192,11 @@ public class RubyMixinClass implements IRubyMixinElement {
 	}
 
 	protected RubyMixinClass[] getExtended() {
-		List result = new ArrayList();
-		HashSet names = new HashSet();
 		IMixinElement mixinElement = model.getRawModel().get(key);
 		if (mixinElement == null)
 			return new RubyMixinClass[0];
+		List result = new ArrayList();
+		HashSet names = new HashSet();
 		Object[] allObjects = mixinElement.getAllObjects();
 		for (int i = 0; i < allObjects.length; i++) {
 			RubyMixinElementInfo info = (RubyMixinElementInfo) allObjects[i];
