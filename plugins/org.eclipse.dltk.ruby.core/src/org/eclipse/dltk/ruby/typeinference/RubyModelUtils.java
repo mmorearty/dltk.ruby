@@ -326,8 +326,7 @@ public class RubyModelUtils {
 			RubyMixinClass rubyClass = mixinModel
 					.createRubyClass(rubyClassType);
 			if (rubyClass != null) {
-				RubyMixinMethod[] methods = rubyClass.findMethods(prefix,
-						(prefix.length() > 0));
+				RubyMixinMethod[] methods = rubyClass.findMethods(prefix);
 				result.addAll(getAllSourceMethods(methods, rubyClass));
 			}
 

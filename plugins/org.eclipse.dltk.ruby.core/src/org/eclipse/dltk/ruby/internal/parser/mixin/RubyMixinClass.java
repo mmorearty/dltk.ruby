@@ -220,13 +220,12 @@ public class RubyMixinClass implements IRubyMixinElement {
 				.size()]);
 	}
 
-	public void findMethods(String prefix, boolean includeTopLevel,
-			IMixinSearchRequestor requestor) {
-		findMethods(prefix, includeTopLevel, requestor, new HashSet());
+	public void findMethods(String prefix, IMixinSearchRequestor requestor) {
+		findMethods(prefix, requestor, new HashSet());
 	}
 
-	protected void findMethods(String prefix, boolean includeTopLevel,
-			IMixinSearchRequestor requestor, Set processedKeys) {
+	protected void findMethods(String prefix, IMixinSearchRequestor requestor,
+			Set processedKeys) {
 		if (!processedKeys.add(key)) {
 			return;
 		}
@@ -254,14 +253,12 @@ public class RubyMixinClass implements IRubyMixinElement {
 
 		RubyMixinClass[] included = this.getIncluded();
 		for (int i = 0; i < included.length; i++) {
-			included[i].findMethods(prefix, includeTopLevel, requestor,
-					processedKeys);
+			included[i].findMethods(prefix, requestor, processedKeys);
 		}
 
 		RubyMixinClass[] extended = this.getExtended();
 		for (int i = 0; i < extended.length; i++) {
-			extended[i].findMethods(prefix, includeTopLevel, requestor,
-					processedKeys);
+			extended[i].findMethods(prefix, requestor, processedKeys);
 		}
 
 		if (!this.key.endsWith(RubyMixin.VIRTUAL_SUFFIX)) {
@@ -269,8 +266,7 @@ public class RubyMixinClass implements IRubyMixinElement {
 			if (superclass != null) {
 
 				if (!superclass.getKey().equals(key)) {
-					superclass.findMethods(prefix, includeTopLevel, requestor,
-							processedKeys);
+					superclass.findMethods(prefix, requestor, processedKeys);
 				}
 			}
 		} else {
@@ -279,17 +275,16 @@ public class RubyMixinClass implements IRubyMixinElement {
 			IRubyMixinElement realElement = model.createRubyElement(stdKey);
 			if (realElement instanceof RubyMixinClass) {
 				RubyMixinClass rubyMixinClass = (RubyMixinClass) realElement;
-				rubyMixinClass.findMethods(prefix, includeTopLevel, requestor,
-						processedKeys);
+				rubyMixinClass.findMethods(prefix, requestor, processedKeys);
 			}
 		}
 
 	}
 
-	public RubyMixinMethod[] findMethods(String prefix, boolean includeTopLevel) {
+	public RubyMixinMethod[] findMethods(String prefix) {
 		final List result = new ArrayList();
 		final Set names = new HashSet(); // for overload checks
-		this.findMethods(prefix, includeTopLevel, new IMixinSearchRequestor() {
+		this.findMethods(prefix, new IMixinSearchRequestor() {
 
 			public void acceptResult(IRubyMixinElement element) {
 				if (element instanceof RubyMixinMethod) {
