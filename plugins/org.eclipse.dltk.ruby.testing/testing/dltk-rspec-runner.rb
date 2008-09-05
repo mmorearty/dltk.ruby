@@ -11,14 +11,14 @@ module Spec
 		module ExampleMethods
 			IN_METHOD_RE = /^(.+):in `(.+)'$/
 			def rspecTestName
-				if @DLTK_testName.nil?
+				if @DLTK_backtrace.nil?
 					backtrace = implementation_backtrace[0]
 					if backtrace =~ IN_METHOD_RE 
 						backtrace = $1
 					end
-					@DLTK_testName = description + '<' + backtrace
+					@DLTK_backtrace = backtrace
 				end
-				@DLTK_testName
+				description + '<' + @DLTK_backtrace
 			end
 		end
 	end
