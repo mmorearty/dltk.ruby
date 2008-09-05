@@ -282,8 +282,8 @@ public class RubyMixinClass implements IRubyMixinElement {
 
 	public RubyMixinMethod[] findMethods(String prefix) {
 		final List result = new ArrayList();
-		final Set names = new HashSet(); // for overload checks
 		this.findMethods(prefix, new IMixinSearchRequestor() {
+			final Set names = new HashSet();
 
 			public void acceptResult(IRubyMixinElement element) {
 				if (element instanceof RubyMixinMethod) {
