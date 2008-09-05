@@ -55,6 +55,7 @@ import org.eclipse.dltk.ruby.core.model.FakeField;
 import org.eclipse.dltk.ruby.core.utils.RubySyntaxUtils;
 import org.eclipse.dltk.ruby.internal.parser.mixin.IMixinSearchRequestor;
 import org.eclipse.dltk.ruby.internal.parser.mixin.IRubyMixinElement;
+import org.eclipse.dltk.ruby.internal.parser.mixin.PrefixMixinSearchPattern;
 import org.eclipse.dltk.ruby.internal.parser.mixin.RubyMixinClass;
 import org.eclipse.dltk.ruby.internal.parser.mixin.RubyMixinElementInfo;
 import org.eclipse.dltk.ruby.internal.parser.mixin.RubyMixinMethod;
@@ -532,7 +533,8 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 			RubyMixinClass rubyClass, String prefix, boolean isSelf) {
 		CompletionMixinMethodRequestor mixinSearchRequestor = new CompletionMixinMethodRequestor(
 				rubyClass, isSelf);
-		rubyClass.findMethods(prefix, mixinSearchRequestor);
+		rubyClass.findMethods(new PrefixMixinSearchPattern(prefix),
+				mixinSearchRequestor);
 		mixinSearchRequestor.flush();
 	}
 
