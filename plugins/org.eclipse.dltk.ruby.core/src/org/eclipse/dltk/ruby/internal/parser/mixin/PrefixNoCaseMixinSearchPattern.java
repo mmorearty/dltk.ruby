@@ -22,7 +22,11 @@ public class PrefixNoCaseMixinSearchPattern implements IMixinSearchPattern {
 	}
 
 	public boolean evaluate(String lastSegment) {
-		for (int i = 0, length = chars.length; i < length; ++i) {
+		final int length = chars.length;
+		if (lastSegment.length() < length) {
+			return false;
+		}
+		for (int i = 0; i < length; ++i) {
 			if (Character.toLowerCase(lastSegment.charAt(i)) != chars[i]) {
 				return false;
 			}
