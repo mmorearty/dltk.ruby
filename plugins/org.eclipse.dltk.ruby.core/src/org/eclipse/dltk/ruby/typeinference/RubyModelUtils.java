@@ -45,6 +45,7 @@ import org.eclipse.dltk.internal.core.ModelElement;
 import org.eclipse.dltk.ruby.core.RubyLanguageToolkit;
 import org.eclipse.dltk.ruby.core.RubyPlugin;
 import org.eclipse.dltk.ruby.core.model.FakeMethod;
+import org.eclipse.dltk.ruby.internal.parser.mixin.ExactMixinSearchPattern;
 import org.eclipse.dltk.ruby.internal.parser.mixin.IRubyMixinElement;
 import org.eclipse.dltk.ruby.internal.parser.mixin.PrefixMixinSearchPattern;
 import org.eclipse.dltk.ruby.internal.parser.mixin.RubyMixin;
@@ -358,7 +359,7 @@ public class RubyModelUtils {
 					.createRubyClass(rubyClassType);
 			if (rubyClass != null) {
 				RubyMixinMethod[] methods = rubyClass
-						.findMethodsExact(methodName);
+						.findMethods(new ExactMixinSearchPattern(methodName));
 				result.addAll(getAllSourceMethods(methods, rubyClass));
 			}
 
@@ -416,7 +417,7 @@ public class RubyModelUtils {
 					.createRubyElement(possibleName);
 			if (element instanceof RubyMixinClass) {
 				RubyMixinClass rubyMixinClass = (RubyMixinClass) element;
-				res = RubyModelUtils.searchClassMethods(mixinModel,
+				res = RubyModelUtils.searchClassMethodsExact(mixinModel,
 						modelModule, parsedUnit, new RubyClassType(
 								rubyMixinClass.getKey()), methodName);
 			}
