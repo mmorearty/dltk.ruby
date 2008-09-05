@@ -20,7 +20,8 @@ package org.eclipse.dltk.ruby.internal.parser.mixin;
 public class RubyObjectMixinClass extends RubyMixinClass {
 
 	public RubyObjectMixinClass(RubyMixinModel model, boolean meta) {
-		super(model, "Object" + (meta ? "" : RubyMixin.INSTANCE_SUFFIX), false); //$NON-NLS-1$ //$NON-NLS-2$
+		super(model, meta ? RubyMixinUtils.OBJECT
+				: RubyMixinUtils.OBJECT_INSTANCE, false);
 	}
 
 	public RubyMixinVariable[] getFields() {

@@ -48,6 +48,7 @@ import org.eclipse.dltk.ruby.ast.RubyBlock;
 import org.eclipse.dltk.ruby.ast.RubyColonExpression;
 import org.eclipse.dltk.ruby.ast.RubyDAssgnExpression;
 import org.eclipse.dltk.ruby.ast.RubyDVarExpression;
+import org.eclipse.dltk.ruby.ast.RubySelfReference;
 import org.eclipse.dltk.ruby.core.RubyNature;
 import org.eclipse.dltk.ruby.core.RubyPlugin;
 import org.eclipse.dltk.ruby.core.model.FakeField;
@@ -57,8 +58,8 @@ import org.eclipse.dltk.ruby.internal.parser.mixin.RubyMixinClass;
 import org.eclipse.dltk.ruby.internal.parser.mixin.RubyMixinElementInfo;
 import org.eclipse.dltk.ruby.internal.parser.mixin.RubyMixinMethod;
 import org.eclipse.dltk.ruby.internal.parser.mixin.RubyMixinModel;
+import org.eclipse.dltk.ruby.internal.parser.mixin.RubyMixinUtils;
 import org.eclipse.dltk.ruby.internal.parser.mixin.RubyMixinVariable;
-import org.eclipse.dltk.ruby.internal.parser.mixin.RubyObjectMixinClass;
 import org.eclipse.dltk.ruby.internal.parsers.jruby.ASTUtils;
 import org.eclipse.dltk.ruby.typeinference.IMixinSearchRequestor;
 import org.eclipse.dltk.ruby.typeinference.RubyClassType;
@@ -269,7 +270,7 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 							}
 						}
 						completeClassMethods(moduleDeclaration, self,
-								Util.EMPTY_STRING);
+								Util.EMPTY_STRING, true);
 					} else if (minimalNode instanceof ConstantReference) {
 						completeConstant(moduleDeclaration,
 								(ConstantReference) minimalNode, position);
@@ -308,7 +309,7 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 							}
 						}
 						completeClassMethods(moduleDeclaration, self,
-								wordStarting);
+								wordStarting, true);
 					} else if (minimalNode instanceof ModuleDeclaration) {
 						ExpressionTypeGoal goal = new ExpressionTypeGoal(
 								new BasicContext(currentModule,
@@ -316,7 +317,7 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 						IEvaluatedType self = inferencer.evaluateType(goal,
 								TI_TIMEOUT);
 						completeClassMethods(moduleDeclaration, self,
-								wordStarting);
+								wordStarting, true);
 					} else if (minimalNode instanceof NumericLiteral
 							&& position > 0
 							&& position == minimalNode.sourceEnd()
@@ -395,7 +396,7 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 		if (self == null) {
 			return;
 		}
-		completeClassMethods(moduleDeclaration, self, Util.EMPTY_STRING);
+		completeClassMethods(moduleDeclaration, self, Util.EMPTY_STRING, true);
 		if ("Object".equals(self.getTypeName())) { //$NON-NLS-1$
 			try {
 				final IModelElement[] children = currentModule.getChildren();
@@ -426,71 +427,79 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 	private class CompletionMixinMethodRequestor implements
 			IMixinSearchRequestor {
 		private String lastParent = null;
-		private List group = new ArrayList();
+		private boolean lastParentIsSuperClass = true;
+		private final List group = new ArrayList();
 		private final RubyMixinClass klass;
+		private final boolean isSelf;
 
-		public CompletionMixinMethodRequestor(RubyMixinClass klass) {
-			super();
+		public CompletionMixinMethodRequestor(RubyMixinClass klass,
+				boolean isSelf) {
 			this.klass = klass;
+			this.isSelf = isSelf;
+		}
+
+		/**
+		 * Tests that the specified key identifies superclass of the
+		 * {@link #klass} or the same class.
+		 * 
+		 * @param key
+		 * @return
+		 */
+		private boolean isSuperClass(String key) {
+			if (!RubyMixinUtils.isObjectOrKernel(key)) {
+				if (key.equals(klass.getKey())) {
+					return true;
+				}
+				RubyMixinClass superclass = klass.getSuperclass();
+				while (superclass != null) {
+					final String superClassKey = superclass.getKey();
+					if (RubyMixinUtils.isObjectOrKernel(superClassKey)) {
+						break;
+					}
+					if (key.equals(superClassKey)) {
+						return true;
+					}
+					superclass = superclass.getSuperclass();
+				}
+			}
+			return false;
 		}
 
 		public void acceptResult(IRubyMixinElement element) {
 			if (element instanceof RubyMixinMethod) {
-				RubyMixinMethod method = (RubyMixinMethod) element;
-				RubyMixinClass selfClass = method.getSelfType();
+				final RubyMixinMethod method = (RubyMixinMethod) element;
+				final RubyMixinClass selfClass = method.getSelfType();
 				if (lastParent == null
 						|| !lastParent.equals(selfClass.getKey())) {
-					this.flush();
+					if (lastParent != null) {
+						this.flush();
+					}
 					lastParent = selfClass.getKey();
+					lastParentIsSuperClass = isSuperClass(lastParent);
 				}
-				// ssanders: Method is defined in same Class or Module
-				boolean shouldAdd = selfClass.getKey().equals(klass.getKey());
-
-				if (!shouldAdd) {
-					// ssanders: Method is defined in Object or Kernel
-					shouldAdd = ((selfClass.getKey().startsWith("Object") == true) || //$NON-NLS-1$
-					(selfClass.getKey().startsWith("Kernel") == true)); //$NON-NLS-1$
-				}
-
-				if (!shouldAdd) {
-					// ssanders: Method is defined in included or extended
-					// Module
-					shouldAdd = selfClass.isModule();
-				}
+				// ssanders: Method is defined in Object or Kernel
+				// ssanders: Method is defined in included/extended Module
+				boolean shouldAdd = RubyMixinUtils.isObjectOrKernel(selfClass
+						.getKey())
+						|| selfClass.isModule();
 
 				if (!shouldAdd) {
 					int flags = 0;
-					IMethod[] methods = method.getSourceMethods();
+					final IMethod[] methods = method.getSourceMethods();
 					for (int cnt = 0, max = methods.length; cnt < max; cnt++) {
-						if (methods[cnt] != null) {
+						final IMethod m = methods[cnt];
+						if (m != null) {
 							try {
-								flags = (flags | methods[cnt].getFlags());
+								flags |= m.getFlags();
 							} catch (ModelException mxcn) {
-								// ssanders: Ignore
+								// ignore
 							}
 						}
 					}
 
-					shouldAdd = Flags.isPublic(flags);
-					if (!shouldAdd) {
-						// ssanders: Method is protected and defined in ancestry
-						if (Flags.isProtected(flags)) {
-							boolean isSuperclass = false;
-							RubyMixinClass superclass = klass.getSuperclass();
-							while (superclass != null) {
-								isSuperclass = selfClass.getKey().equals(
-										superclass.getKey());
-
-								if (isSuperclass == true) {
-									break;
-								} else {
-									superclass = superclass.getSuperclass();
-								}
-							}
-
-							shouldAdd = isSuperclass;
-						}
-					}
+					shouldAdd = Flags.isPublic(flags) || lastParentIsSuperClass
+							&& Flags.isProtected(flags)
+							|| Flags.isPrivate(flags) && isSelf;
 				}
 				if (shouldAdd)
 					group.add(method);
@@ -501,41 +510,41 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 			if (group.size() > 0) {
 				RubyMixinMethod[] mixinMethods = (RubyMixinMethod[]) group
 						.toArray(new RubyMixinMethod[group.size()]);
-				int skew = 0;
-				if (klass.getKey().equals(
-						mixinMethods[0].getSelfType().getKey()))
-					skew = 1;
-				List allSourceMethods = RubyModelUtils.getAllSourceMethods(
+				final List methods = RubyModelUtils.getAllSourceMethods(
 						mixinMethods, klass);
-				IMethod[] methods = (IMethod[]) allSourceMethods
-						.toArray(new IMethod[allSourceMethods.size()]);
-				for (int j = 0; j < methods.length; j++) {
-					reportMethod(methods[j], RELEVANCE_METHODS + skew);
+				int skew = 0;
+				if (klass.getKey().equals(lastParent)) {
+					skew = 2;
+				} else if (lastParentIsSuperClass) {
+					// TODO calculate the distance in the hierarchy
+					skew = 1;
+				}
+				for (int j = 0, size = methods.size(); j < size; j++) {
+					reportMethod((IMethod) methods.get(j), RELEVANCE_METHODS
+							+ skew);
 				}
 				group.clear();
 			}
 		}
-
 	}
 
 	private void completeClassMethods(ModuleDeclaration moduleDeclaration,
-			RubyMixinClass rubyClass, String prefix) {
+			RubyMixinClass rubyClass, String prefix, boolean isSelf) {
 		CompletionMixinMethodRequestor mixinSearchRequestor = new CompletionMixinMethodRequestor(
-				rubyClass);
-		rubyClass.findMethods(prefix,
-				(rubyClass instanceof RubyObjectMixinClass),
-				mixinSearchRequestor);
+				rubyClass, isSelf);
+		rubyClass.findMethods(prefix, mixinSearchRequestor);
 		mixinSearchRequestor.flush();
 	}
 
 	private void completeClassMethods(ModuleDeclaration moduleDeclaration,
-			IEvaluatedType type, String prefix) {
+			IEvaluatedType type, String prefix, boolean isSelf) {
 		if (type instanceof RubyClassType) {
 			RubyClassType rubyClassType = (RubyClassType) type;
 			RubyMixinClass rubyClass = mixinModel
 					.createRubyClass(rubyClassType);
 			if (rubyClass != null) {
-				completeClassMethods(moduleDeclaration, rubyClass, prefix);
+				completeClassMethods(moduleDeclaration, rubyClass, prefix,
+						isSelf);
 			}
 
 		} else if (type instanceof AmbiguousType) {
@@ -543,7 +552,7 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 			IEvaluatedType[] possibleTypes = type2.getPossibleTypes();
 			for (int i = 0; i < possibleTypes.length; i++) {
 				completeClassMethods(moduleDeclaration, possibleTypes[i],
-						prefix);
+						prefix, isSelf);
 			}
 		}
 	}
@@ -553,7 +562,8 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 		ExpressionTypeGoal goal = new ExpressionTypeGoal(new BasicContext(
 				currentModule, moduleDeclaration), receiver);
 		IEvaluatedType type = inferencer.evaluateType(goal, TI_TIMEOUT);
-		completeClassMethods(moduleDeclaration, type, pattern);
+		completeClassMethods(moduleDeclaration, type, pattern,
+				receiver instanceof RubySelfReference);
 	}
 
 	private void completeGlobalVar(ModuleDeclaration moduleDeclaration,
@@ -844,7 +854,7 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 					self = self2;
 				}
 			}
-			completeClassMethods(moduleDeclaration, self, starting);
+			completeClassMethods(moduleDeclaration, self, starting, true);
 		}
 
 	}
