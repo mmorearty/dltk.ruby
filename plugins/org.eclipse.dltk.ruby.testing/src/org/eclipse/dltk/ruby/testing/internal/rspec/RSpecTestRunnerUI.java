@@ -33,6 +33,7 @@ import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ISourceRange;
+import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.core.search.IDLTKSearchConstants;
 import org.eclipse.dltk.core.search.IDLTKSearchScope;
 import org.eclipse.dltk.core.search.SearchEngine;
@@ -53,6 +54,9 @@ import org.eclipse.dltk.testing.TestElementResolution;
 import org.eclipse.dltk.testing.model.ITestCaseElement;
 import org.eclipse.dltk.testing.model.ITestElement;
 import org.eclipse.dltk.testing.model.ITestSuiteElement;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.DefaultLineTracker;
+import org.eclipse.jface.text.ILineTracker;
 import org.eclipse.osgi.util.NLS;
 
 public class RSpecTestRunnerUI extends AbstractRubyTestRunnerUI {
@@ -435,18 +439,32 @@ public class RSpecTestRunnerUI extends AbstractRubyTestRunnerUI {
 		final RSpecTestLocator locator = new RSpecTestLocator(
 				((ITestSuiteElement) element.getParentContainer())
 						.getSuiteTypeName(), testName.substring(0, index));
-		final ModuleDeclaration declaration = ResolverUtils.parse(module);
-		if (declaration != null) {
-			try {
-				declaration.traverse(locator);
-				if (locator.range != null) {
-					return new TestElementResolution(module, locator.range);
-				}
-			} catch (Exception e) {
-				RubyTestingPlugin.error("Error in resolveTestSuite", e); //$NON-NLS-1$
-			}
+		locator.process(module);
+		if (locator.range != null) {
+			return new TestElementResolution(module, locator.range);
 		}
-		return null;
+		final String source;
+		try {
+			source = module.getSource();
+		} catch (ModelException e) {
+			return null;
+		}
+		final ILineTracker lineTracker = new DefaultLineTracker();
+		lineTracker.set(source);
+		final int lineNumber;
+		try {
+			lineNumber = Integer.parseInt(matcher.group(2));
+		} catch (NumberFormatException e) {
+			return null;
+		}
+		org.eclipse.jface.text.IRegion line;
+		try {
+			line = lineTracker.getLineInformation(lineNumber - 1);
+		} catch (BadLocationException e) {
+			return null;
+		}
+		return new TestElementResolution(module, ResolverUtils.adjustRange(
+				source, line.getOffset(), line.getOffset() + line.getLength()));
 	}
 
 	private ISourceModule findSourceModule(String path) {

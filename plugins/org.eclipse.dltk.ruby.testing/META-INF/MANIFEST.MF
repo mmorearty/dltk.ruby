@@ -8,6 +8,7 @@ Bundle-Activator: org.eclipse.dltk.ruby.testing.internal.RubyTestingPlugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.debug.ui,
+ org.eclipse.jface.text,
  org.eclipse.dltk.core,
  org.eclipse.dltk.ui,
  org.eclipse.dltk.testing,
