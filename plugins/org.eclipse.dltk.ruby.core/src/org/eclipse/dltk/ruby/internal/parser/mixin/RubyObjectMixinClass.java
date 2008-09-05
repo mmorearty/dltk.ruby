@@ -9,72 +9,22 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.internal.parser.mixin;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
+/**
+ * This class is descendant of RubyMixinClass specified for ruby "Object" class.
+ * The idea was to additionally search for the top-level methods (defined at the
+ * source module scope), but that is not needed anymore since now they are
+ * indexed as part of the "Object" class.
+ * 
+ * @see org.eclipse.dltk.ruby.internal.parser.mixin.RubyMixinBuildVisitor.SourceModuleScope
+ */
 public class RubyObjectMixinClass extends RubyMixinClass {
 
 	public RubyObjectMixinClass(RubyMixinModel model, boolean meta) {
-		super(model, "Object" + (meta?"":RubyMixin.INSTANCE_SUFFIX), false); //$NON-NLS-1$ //$NON-NLS-2$
-	}
-
-	public RubyMixinMethod[] findMethods(String prefix, boolean includeTopLevel) {
-		List mixinResult = new ArrayList ();
-		
-		
-		if (includeTopLevel && prefix.length() > 0) {
-			String[] keys = model.getRawModel().findKeys(prefix + "*"); //$NON-NLS-1$
-			for (int i = 0; i < keys.length; i++) {
-				IRubyMixinElement createdRubyElement = model.createRubyElement(keys[i]);
-				if (createdRubyElement instanceof RubyMixinMethod)
-					mixinResult.add(createdRubyElement);
-			}		
-		}
-		
-		
-		RubyMixinMethod[] methods = super.findMethods(prefix, false);
-		mixinResult.addAll(Arrays.asList(methods));
-		
-//			HashMap result = new HashMap();
-//
-//			IMethod[] topLevelMethods = RubyModelUtils.findTopLevelMethods(
-//					null, prefix + "*");
-//			for (int i = 0; i < topLevelMethods.length; i++) {
-//				String name = topLevelMethods[i].getElementName();
-//				List l = (List) result.get(name);
-//				if (l == null) {
-//					l = new ArrayList();
-//					result.put(name, l);
-//				}
-//				l.add(topLevelMethods[i]);
-//			}
-//
-//			for (Iterator iterator = result.keySet().iterator(); iterator
-//					.hasNext();) {
-//				String name = (String) iterator.next();
-//				List l = (List) result.get(name);
-//				IMethod[] m = (IMethod[]) l.toArray(new IMethod[l.size()]);
-//				mixinResult.add(new RubyMixinMethod(model, getKey()
-//						+ MixinModel.SEPARATOR + name, m));
-//			}
-		
-			
-		return (RubyMixinMethod[]) mixinResult.toArray(new RubyMixinMethod[mixinResult.size()]);
+		super(model, "Object" + (meta ? "" : RubyMixin.INSTANCE_SUFFIX), false); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	public RubyMixinVariable[] getFields() {
 		return new RubyMixinVariable[0];
-	}
-
-	public RubyMixinMethod getMethod(String name) {
-		RubyMixinMethod method = super.getMethod(name);
-		if (method != null)
-			return method;
-		IRubyMixinElement element = model.createRubyElement(name); //check top-level methods
-		if (element instanceof RubyMixinMethod)
-			return (RubyMixinMethod) element;
-		return null;
 	}
 
 }
