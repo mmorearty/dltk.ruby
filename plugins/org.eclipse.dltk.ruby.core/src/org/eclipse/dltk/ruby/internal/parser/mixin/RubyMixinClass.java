@@ -160,7 +160,12 @@ public class RubyMixinClass implements IRubyMixinElement {
 		return s;
 	}
 
-	protected RubyMixinClass[] getIncluded() {
+	/**
+	 * Returns modules included into this class.
+	 * 
+	 * @return
+	 */
+	public RubyMixinClass[] getIncluded() {
 		IMixinElement mixinElement = model.getRawModel().get(key);
 		if (mixinElement == null)
 			return new RubyMixinClass[0];
@@ -191,7 +196,12 @@ public class RubyMixinClass implements IRubyMixinElement {
 				.size()]);
 	}
 
-	protected RubyMixinClass[] getExtended() {
+	/**
+	 * Returns modules this class is extended from.
+	 * 
+	 * @return
+	 */
+	public RubyMixinClass[] getExtended() {
 		IMixinElement mixinElement = model.getRawModel().get(key);
 		if (mixinElement == null)
 			return new RubyMixinClass[0];
