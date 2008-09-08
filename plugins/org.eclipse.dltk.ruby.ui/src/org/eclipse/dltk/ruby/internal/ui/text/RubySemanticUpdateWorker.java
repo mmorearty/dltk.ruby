@@ -97,7 +97,7 @@ public class RubySemanticUpdateWorker extends ASTVisitor {
 	public RubySemanticUpdateWorker(ISemanticHighlightingRequestor requestor,
 			ISourceModule code) throws ModelException {
 		this.requestor = requestor;
-		this.content = code.getSourceContents().toCharArray();
+		this.content = code.getContentsAsCharArray();
 	}
 
 	private static final boolean ACTIVE = true;
