@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.internal.core.search;
 
+import org.eclipse.dltk.compiler.CharOperation;
 import org.eclipse.dltk.core.ISearchPatternProcessor;
 
 public class RubySearchPatternProcessor implements ISearchPatternProcessor {
@@ -68,7 +69,8 @@ public class RubySearchPatternProcessor implements ISearchPatternProcessor {
 		if (pos != -1) {
 			final char[] result = new char[pos];
 			pattern.getChars(0, pos, result, 0);
-			return result;
+			return CharOperation.replace(result, TYPE_DELIMITER.toCharArray(),
+					new char[] { '$' });
 		}
 		return null;
 	}
