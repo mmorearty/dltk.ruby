@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.dltk.ast.references.SimpleReference;
 import org.eclipse.dltk.compiler.ISourceElementRequestor;
-import org.eclipse.dltk.core.DLTKCore;
+import org.eclipse.dltk.compiler.env.MethodSourceCode;
 import org.eclipse.dltk.core.DLTKLanguageManager;
 import org.eclipse.dltk.core.ICalleeProcessor;
 import org.eclipse.dltk.core.IMethod;
@@ -170,30 +170,17 @@ public class RubyCalleeProcessor implements ICalleeProcessor {
 	}
 
 	public Map doOperation() {
-		try {
-			String methodSource = method.getSource();
-			CaleeSourceElementRequestor requestor = new CaleeSourceElementRequestor();
-			ISourceElementParser parser = null;
+		CaleeSourceElementRequestor requestor = new CaleeSourceElementRequestor();
+		ISourceElementParser parser = null;
 
-			parser = DLTKLanguageManager
-					.getSourceElementParser(RubyNature.NATURE_ID);
+		parser = DLTKLanguageManager
+				.getSourceElementParser(RubyNature.NATURE_ID);
 
-			parser.setRequestor(requestor);
+		parser.setRequestor(requestor);
 
-			// parser.parseModule(null, methodSource, null );
-			parser.parseSourceModule(methodSource.toCharArray(), null, method
-					.getSourceModule().getPath().toString().toCharArray());
+		// parser.parseModule(null, methodSource, null );
+		parser.parseSourceModule(new MethodSourceCode(method), null);
 
-			return fSearchResults;
-		} catch (ModelException e) {
-			if (DLTKCore.DEBUG) {
-				e.printStackTrace();
-			}
-		} catch (CoreException e) {
-			if (DLTKCore.DEBUG) {
-				e.printStackTrace();
-			}
-		}
 		return fSearchResults;
 	}
 
@@ -202,8 +189,12 @@ public class RubyCalleeProcessor implements ICalleeProcessor {
 		final List methods = new ArrayList();
 		ISourceModule module = this.method.getSourceModule();
 		try {
-			IModelElement[] elements = module.codeSelect(sourcePosition, /* methodName.length() */
-					1);
+			IModelElement[] elements = module.codeSelect(sourcePosition, /*
+																		 * methodName.
+																		 * length
+																		 * ()
+																		 */
+			1);
 			for (int i = 0; i < elements.length; ++i) {
 				if (elements[i] instanceof IMethod) {
 					methods.add(elements[i]);
