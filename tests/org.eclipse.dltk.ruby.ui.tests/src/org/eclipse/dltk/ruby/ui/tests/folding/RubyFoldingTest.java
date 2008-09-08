@@ -18,6 +18,7 @@ import org.eclipse.dltk.ruby.internal.ui.RubyPreferenceConstants;
 import org.eclipse.dltk.ruby.internal.ui.text.folding.RubyFoldingStructureProvider;
 import org.eclipse.dltk.ruby.ui.tests.internal.RubyUITestsPlugin;
 import org.eclipse.dltk.ruby.ui.tests.internal.TestUtils;
+import org.eclipse.dltk.ui.PreferenceConstants;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
@@ -82,7 +83,7 @@ public class RubyFoldingTest extends TestCase {
 	}
 
 	public void test0() throws Exception {
-		fStore.setValue(RubyPreferenceConstants.EDITOR_FOLDING_LINES_LIMIT, 2);
+		fStore.setValue(PreferenceConstants.EDITOR_FOLDING_LINES_LIMIT, 2);
 		String content = "#ab\n#dc\n";
 		Document document = new Document(content);
 		TestUtils.installStuff(document);
@@ -93,7 +94,7 @@ public class RubyFoldingTest extends TestCase {
 	}
 
 	public void test177924a() throws Exception {
-		fStore.setValue(RubyPreferenceConstants.EDITOR_FOLDING_LINES_LIMIT, 2);
+		fStore.setValue(PreferenceConstants.EDITOR_FOLDING_LINES_LIMIT, 2);
 		String content = TestUtils.getData("resources/folding/b177924.rb");
 		Document document = new Document(content);
 		TestUtils.installStuff(document);
@@ -104,7 +105,7 @@ public class RubyFoldingTest extends TestCase {
 	}
 
 	public void test177924b() throws Exception {
-		fStore.setValue(RubyPreferenceConstants.EDITOR_FOLDING_LINES_LIMIT, 4);
+		fStore.setValue(PreferenceConstants.EDITOR_FOLDING_LINES_LIMIT, 4);
 		String content = TestUtils.getData("resources/folding/b177924.rb");
 		Document document = new Document(content);
 		TestUtils.installStuff(document);
@@ -115,7 +116,7 @@ public class RubyFoldingTest extends TestCase {
 	}
 
 	public void test193174a() throws Exception {
-		fStore.setValue(RubyPreferenceConstants.EDITOR_FOLDING_LINES_LIMIT, 2);
+		fStore.setValue(PreferenceConstants.EDITOR_FOLDING_LINES_LIMIT, 2);
 		String content = TestUtils.getData("resources/folding/b193174.rb");
 		Document document = new Document(content);
 		TestUtils.installStuff(document);
@@ -127,7 +128,7 @@ public class RubyFoldingTest extends TestCase {
 	}
 
 	public void test193174b() throws Exception {
-		fStore.setValue(RubyPreferenceConstants.EDITOR_FOLDING_LINES_LIMIT, 2);
+		fStore.setValue(PreferenceConstants.EDITOR_FOLDING_LINES_LIMIT, 2);
 		String content = TestUtils.getData("resources/folding/b193174.rb");
 		Document document = new Document(content);
 		TestUtils.installStuff(document);
@@ -139,7 +140,7 @@ public class RubyFoldingTest extends TestCase {
 	}
 
 	public void test193174c() throws Exception {
-		fStore.setValue(RubyPreferenceConstants.EDITOR_FOLDING_LINES_LIMIT, 2);
+		fStore.setValue(PreferenceConstants.EDITOR_FOLDING_LINES_LIMIT, 2);
 		String content = TestUtils.getData("resources/folding/b193174.rb");
 		Document document = new Document(content);
 		TestUtils.installStuff(document);
