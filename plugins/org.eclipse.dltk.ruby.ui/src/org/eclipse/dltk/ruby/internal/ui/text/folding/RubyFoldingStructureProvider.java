@@ -9,11 +9,17 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.internal.ui.text.folding;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Stack;
+
 import org.eclipse.core.runtime.ILog;
 import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.declarations.FakeModuleDeclaration;
 import org.eclipse.dltk.ast.declarations.MethodDeclaration;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
+import org.eclipse.dltk.ast.declarations.TypeDeclaration;
 import org.eclipse.dltk.ast.parser.ISourceParser;
 import org.eclipse.dltk.ruby.core.RubyNature;
 import org.eclipse.dltk.ruby.internal.ui.RubyPreferenceConstants;
@@ -45,10 +51,6 @@ public class RubyFoldingStructureProvider extends
 				.getBoolean(RubyPreferenceConstants.EDITOR_FOLDING_INIT_METHODS);
 	}
 
-	/*
-	 * @see org.eclipse.dltk.ui.text.folding.AbstractASTFoldingStructureProvider#initiallyCollapse(org.eclipse.dltk.ast.statements.Statement,
-	 *      org.eclipse.dltk.ui.text.folding.AbstractASTFoldingStructureProvider.FoldingStructureComputationContext)
-	 */
 	protected boolean initiallyCollapse(ASTNode s,
 			FoldingStructureComputationContext ctx) {
 		return ctx.allowCollapsing() && s instanceof MethodDeclaration
@@ -64,53 +66,31 @@ public class RubyFoldingStructureProvider extends
 		return false;
 	}
 
-	/*
-	 * @see org.eclipse.dltk.ui.text.folding.AbstractASTFoldingStructureProvider#mayCollapse(org.eclipse.dltk.ast.statements.Statement,
-	 *      org.eclipse.dltk.ui.text.folding.AbstractASTFoldingStructureProvider.FoldingStructureComputationContext)
-	 */
 	protected boolean mayCollapse(ASTNode s,
 			FoldingStructureComputationContext ctx) {
-		return s instanceof MethodDeclaration;
+		return s instanceof MethodDeclaration || s instanceof TypeDeclaration;
 	}
 
-	/*
-	 * @see org.eclipse.dltk.ui.text.folding.AbstractASTFoldingStructureProvider#getCommentPartitionType()
-	 */
 	protected String getCommentPartition() {
 		return IRubyPartitions.RUBY_COMMENT;
 	}
 
-	/*
-	 * @see org.eclipse.dltk.ui.text.folding.AbstractASTFoldingStructureProvider#getPartition()
-	 */
 	protected String getPartition() {
 		return IRubyPartitions.RUBY_PARTITIONING;
 	}
 
-	/*
-	 * @see org.eclipse.dltk.ui.text.folding.AbstractASTFoldingStructureProvider#getPartitionScanner()
-	 */
 	protected IPartitionTokenScanner getPartitionScanner() {
 		return new RubyPartitionScanner();
 	}
 
-	/*
-	 * @see org.eclipse.dltk.ui.text.folding.AbstractASTFoldingStructureProvider#getPartitionTypes()
-	 */
 	protected String[] getPartitionTypes() {
 		return IRubyPartitions.RUBY_PARTITION_TYPES;
 	}
 
-	/*
-	 * @see org.eclipse.dltk.ui.text.folding.AbstractASTFoldingStructureProvider#getNatureId()
-	 */
 	protected String getNatureId() {
 		return RubyNature.NATURE_ID;
 	}
 
-	/*
-	 * @see org.eclipse.dltk.ui.text.folding.AbstractASTFoldingStructureProvider#getLog()
-	 */
 	protected ILog getLog() {
 		return RubyUI.getDefault().getLog();
 	}
@@ -122,6 +102,60 @@ public class RubyFoldingStructureProvider extends
 			return null;
 		}
 		return buildCodeBlocks(decl, offset);
+	}
+
+	protected static class RubyFoldingASTVisitor extends FoldingASTVisitor {
+
+		static class TypeContainer {
+			final List children = new ArrayList();
+			final TypeDeclaration type;
+
+			public TypeContainer(TypeDeclaration type) {
+				this.type = type;
+			}
+
+		}
+
+		final Stack types = new Stack();
+
+		protected RubyFoldingASTVisitor(int offset) {
+			super(offset);
+			types.push(new TypeContainer(null));
+		}
+
+		public boolean visit(TypeDeclaration s) throws Exception {
+			final TypeContainer child = new TypeContainer(s);
+			((TypeContainer) types.peek()).children.add(child);
+			types.push(child);
+			return visitGeneral(s);
+		}
+
+		public boolean endvisit(TypeDeclaration s) throws Exception {
+			types.pop();
+			return super.endvisit(s);
+		}
+
+		private void processType(TypeContainer container, int level,
+				boolean collapsible) {
+			if (collapsible) {
+				add(container.type);
+			}
+			for (Iterator i = container.children.iterator(); i.hasNext();) {
+				final TypeContainer child = (TypeContainer) i.next();
+				processType(child, level + 1, collapsible
+						|| (level > 0 && container.children.size() > 1));
+			}
+		}
+
+		public boolean endvisit(ModuleDeclaration s) throws Exception {
+			TypeContainer container = (TypeContainer) types.peek();
+			processType(container, 0, false);
+			return super.endvisit(s);
+		}
+	}
+
+	protected FoldingASTVisitor getFoldingVisitor(int offset) {
+		return new RubyFoldingASTVisitor(0);
 	}
 
 }
