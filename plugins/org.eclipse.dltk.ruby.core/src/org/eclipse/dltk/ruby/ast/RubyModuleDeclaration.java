@@ -9,7 +9,6 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.ast;
 
-import org.eclipse.dltk.ast.ASTListNode;
 import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.ASTVisitor;
 import org.eclipse.dltk.ast.declarations.TypeDeclaration;
@@ -22,8 +21,6 @@ public class RubyModuleDeclaration extends TypeDeclaration {
 	public RubyModuleDeclaration(ASTNode name, Block body, int start, int end) {
 		super(RubyASTUtil.resolveClassName(name), name.sourceStart(), name
 				.sourceEnd(), start, end);
-		ASTListNode el = new ASTListNode();
-		this.setSuperClasses(el);
 		this.name = name;
 		this.fBody = body;
 		setStart(start);
