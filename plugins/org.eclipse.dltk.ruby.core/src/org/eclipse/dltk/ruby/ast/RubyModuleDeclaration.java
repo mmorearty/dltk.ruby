@@ -9,10 +9,6 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.ast;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import org.eclipse.dltk.ast.ASTListNode;
 import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.ASTVisitor;
@@ -50,16 +46,8 @@ public class RubyModuleDeclaration extends TypeDeclaration {
 		}
 	}
 
-	public List/* <String> */getSuperClassNames() {
-		List/* < String > */names = new ArrayList/* < String > */();
-		String name;
-		for (Iterator iter = getSuperClasses().getChilds().iterator(); iter
-				.hasNext();) {
-			name = RubyASTUtil.resolveClassName((ASTNode) iter.next());
-			if (name != null && name.length() > 0)
-				names.add(name);
-		}
-		return names;
+	public String resolveSuperClassReference(ASTNode node) {
+		return RubyASTUtil.resolveClassName(node);
 	}
 
 }
