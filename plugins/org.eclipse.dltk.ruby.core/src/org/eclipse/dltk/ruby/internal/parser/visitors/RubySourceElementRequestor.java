@@ -22,7 +22,6 @@ import org.eclipse.dltk.ast.declarations.MethodDeclaration;
 import org.eclipse.dltk.ast.expressions.CallArgumentsList;
 import org.eclipse.dltk.ast.expressions.CallExpression;
 import org.eclipse.dltk.ast.expressions.Expression;
-import org.eclipse.dltk.ast.references.ConstantReference;
 import org.eclipse.dltk.ast.references.SimpleReference;
 import org.eclipse.dltk.ast.references.VariableReference;
 import org.eclipse.dltk.ast.statements.Statement;
@@ -30,6 +29,7 @@ import org.eclipse.dltk.compiler.ISourceElementRequestor;
 import org.eclipse.dltk.compiler.SourceElementRequestVisitor;
 import org.eclipse.dltk.compiler.ISourceElementRequestor.MethodInfo;
 import org.eclipse.dltk.core.DLTKCore;
+import org.eclipse.dltk.ruby.ast.RubyASTUtil;
 import org.eclipse.dltk.ruby.ast.RubyAliasExpression;
 import org.eclipse.dltk.ruby.ast.RubyAssignment;
 import org.eclipse.dltk.ruby.ast.RubyConstantDeclaration;
@@ -282,10 +282,15 @@ public class RubySourceElementRequestor extends SourceElementRequestVisitor {
 			// Accept
 			fRequestor.acceptMethodReference(callExpression.getName()
 					.toCharArray(), argsCount, start, end);
-			if( callExpression.getName().equals(NEW_CALL)) {
-				ASTNode receiver = callExpression.getReceiver();
-				if( receiver instanceof ConstantReference ) {
-					fRequestor.acceptTypeReference(((ConstantReference)receiver).getName().toCharArray(), receiver.sourceStart());
+			if (callExpression.getName().equals(NEW_CALL)) {
+				final ASTNode receiver = callExpression.getReceiver();
+				if (receiver != null) {
+					final String className = RubyASTUtil
+							.resolveReferenceSimpleName(receiver);
+					if (className != null) {
+						fRequestor.acceptTypeReference(className.toCharArray(),
+								receiver.sourceStart());
+					}
 				}
 			}
 		} else if (expression instanceof VariableReference) {
@@ -349,7 +354,8 @@ public class RubySourceElementRequestor extends SourceElementRequestVisitor {
 		return visit((ASTNode) statement);
 	}
 
-	protected void modifyMethodInfo(MethodDeclaration methodDeclaration, MethodInfo mi) {
+	protected void modifyMethodInfo(MethodDeclaration methodDeclaration,
+			MethodInfo mi) {
 		if (fInClass) {
 			mi.isConstructor = methodDeclaration.getName().equals(INITIALIZE);
 		}

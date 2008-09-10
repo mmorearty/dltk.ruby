@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
-*******************************************************************************/
+ *******************************************************************************/
 package org.eclipse.dltk.ruby.internal.core.search;
 
 import org.eclipse.dltk.ast.ASTNode;
@@ -18,6 +18,7 @@ import org.eclipse.dltk.ast.references.VariableReference;
 import org.eclipse.dltk.core.search.matching.MatchLocator;
 import org.eclipse.dltk.core.search.matching.MatchLocatorParser;
 import org.eclipse.dltk.core.search.matching.PatternLocator;
+import org.eclipse.dltk.ruby.ast.RubyASTUtil;
 import org.eclipse.dltk.ruby.ast.RubyAliasExpression;
 import org.eclipse.dltk.ruby.ast.RubyAssignment;
 import org.eclipse.dltk.ruby.ast.RubyConstantDeclaration;
@@ -41,18 +42,20 @@ public class RubyMatchLocatorParser extends MatchLocatorParser {
 			if (end < 0) {
 				end = 1;
 			}
-			locator.match(
+			locator.match(call, this.getNodeSet());
 			/*
 			 * (CallExpression) new CallExpression(start, end,
 			 * call.getReceiver(), call.getName(), call.getArgs())
-			 */call, this.getNodeSet());
+			 */
 			if (call.getName().equals("new")) { //$NON-NLS-1$
-				ASTNode receiver = call.getReceiver();
-				if (receiver instanceof ConstantReference) {
-					TypeReference ref = new TypeReference(receiver
-							.sourceStart(), receiver.sourceEnd(),
-							((ConstantReference) receiver).getName());
-					locator.match(ref, this.getNodeSet());
+				final ASTNode receiver = call.getReceiver();
+				if (receiver != null) {
+					String className = RubyASTUtil
+							.resolveReferenceSimpleName(receiver);
+					if (className != null) {
+						locator.match(new TypeReference(receiver.sourceStart(),
+								receiver.sourceEnd(), className), getNodeSet());
+					}
 				}
 			}
 		} else if (node instanceof RubyAliasExpression) {

@@ -59,6 +59,9 @@ public class RubyASTUtil {
 	}
 
 	/**
+	 * Resolves type name reference (Const or ModuleName::Const). Returns the
+	 * full resolved type name or <code>null</code>.
+	 * 
 	 * @param value
 	 * @return
 	 */
@@ -71,6 +74,23 @@ public class RubyASTUtil {
 			if (collectColonExpression((RubyColonExpression) value, sb)) {
 				return sb.toString();
 			}
+		}
+		return null;
+	}
+
+	/**
+	 * Resolves type name reference (Const or ModuleName::Const). Returns the
+	 * simple resolved type name or <code>null</code>.
+	 * 
+	 * @param value
+	 * @return
+	 */
+	public static String resolveReferenceSimpleName(ASTNode value) {
+		if (value instanceof ConstantReference) {
+			return ((ConstantReference) value).getName();
+		}
+		if (value instanceof RubyColonExpression) {
+			return ((RubyColonExpression) value).getName();
 		}
 		return null;
 	}
