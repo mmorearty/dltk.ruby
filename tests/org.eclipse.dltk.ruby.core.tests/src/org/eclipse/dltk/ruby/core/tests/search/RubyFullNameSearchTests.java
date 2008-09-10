@@ -12,6 +12,7 @@
 package org.eclipse.dltk.ruby.core.tests.search;
 
 import org.eclipse.dltk.core.IMethod;
+import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.IType;
 import org.eclipse.dltk.core.tests.model.AbstractSingleProjectSearchTests;
 import org.eclipse.dltk.core.tests.model.TestSearchResults;
@@ -38,6 +39,12 @@ public class RubyFullNameSearchTests extends AbstractSingleProjectSearchTests {
 		results.assertType(fullTypeName);
 	}
 
+	public void testFullTypeReferenceSearch() throws Exception {
+		final TestSearchResults results = search(fullTypeName, TYPE, REFERENCES);
+		assertEquals(1, results.size());
+		results.assertExists(ISourceModule.class, "Search001.rb");
+	}
+
 	public void testShortTypeNameSearch() throws Exception {
 		final TestSearchResults results = search(shortTypeName, TYPE,
 				DECLARATIONS);
@@ -54,7 +61,7 @@ public class RubyFullNameSearchTests extends AbstractSingleProjectSearchTests {
 		assertNotNull(method);
 		assertNotNull(method.getParent());
 		assertEquals(fullTypeName, ((IType) method.getParent())
-				.getFullyQualifiedName("::"));
+				.getTypeQualifiedName("::"));
 	}
 
 	public void testFullMethodNameSearch() throws Exception {
@@ -66,7 +73,7 @@ public class RubyFullNameSearchTests extends AbstractSingleProjectSearchTests {
 		assertNotNull(method);
 		assertNotNull(method.getParent());
 		assertEquals(fullTypeName, ((IType) method.getParent())
-				.getFullyQualifiedName("::"));
+				.getTypeQualifiedName("::"));
 	}
 
 }

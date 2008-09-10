@@ -15,3 +15,6 @@ module Module001
     end
   end
 end
+
+
+x = Module001::Search002.new
