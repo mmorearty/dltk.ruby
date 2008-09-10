@@ -27,7 +27,6 @@ import org.eclipse.dltk.ast.expressions.CallArgumentsList;
 import org.eclipse.dltk.ast.expressions.CallExpression;
 import org.eclipse.dltk.ast.expressions.NumericLiteral;
 import org.eclipse.dltk.ast.expressions.StringLiteral;
-import org.eclipse.dltk.ast.references.ConstantReference;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.IScriptProject;
@@ -42,8 +41,8 @@ import org.eclipse.dltk.core.search.SearchParticipant;
 import org.eclipse.dltk.core.search.SearchPattern;
 import org.eclipse.dltk.core.search.SearchRequestor;
 import org.eclipse.dltk.corext.SourceRange;
+import org.eclipse.dltk.ruby.ast.RubyASTUtil;
 import org.eclipse.dltk.ruby.ast.RubyCallArgument;
-import org.eclipse.dltk.ruby.ast.RubyColonExpression;
 import org.eclipse.dltk.ruby.internal.debug.ui.console.RubyFileHyperlink;
 import org.eclipse.dltk.ruby.testing.internal.AbstractRubyTestRunnerUI;
 import org.eclipse.dltk.ruby.testing.internal.AbstractTestingEngineValidateVisitor;
@@ -140,41 +139,7 @@ public class RSpecTestRunnerUI extends AbstractRubyTestRunnerUI {
 			if (value instanceof NumericLiteral) {
 				return ((NumericLiteral) value).getValue();
 			}
-			if (value instanceof ConstantReference) {
-				return ((ConstantReference) value).getName();
-			}
-			if (value instanceof RubyColonExpression) {
-				final StringBuffer sb = new StringBuffer();
-				if (collectColonExpression((RubyColonExpression) value, sb)) {
-					return sb.toString();
-				}
-			}
-			return null;
-		}
-
-		/**
-		 * @param value
-		 * @param sb
-		 */
-		private boolean collectColonExpression(RubyColonExpression value,
-				StringBuffer sb) {
-			final ASTNode left = value.getLeft();
-			if (left instanceof RubyColonExpression) {
-				if (!collectColonExpression((RubyColonExpression) left, sb)) {
-					return false;
-				}
-			} else if (left instanceof ConstantReference) {
-				sb.append(((ConstantReference) left).getName());
-			} else if (left != null) {
-				final String msg = "Unexpected node in colon-expression " + left.getClass().getName(); //$NON-NLS-1$
-				RubyTestingPlugin.error(msg, null);
-				return false;
-			}
-			if (sb.length() != 0) {
-				sb.append("::"); //$NON-NLS-1$
-			}
-			sb.append(value.getName());
-			return true;
+			return RubyASTUtil.resolveReference(value);
 		}
 
 		/**
