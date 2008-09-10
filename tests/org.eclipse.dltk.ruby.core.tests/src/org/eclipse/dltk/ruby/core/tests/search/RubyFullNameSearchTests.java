@@ -45,6 +45,18 @@ public class RubyFullNameSearchTests extends AbstractSingleProjectSearchTests {
 		results.assertExists(ISourceModule.class, "Search001.rb");
 	}
 
+	public void testSuperClassReferenceSearch1() throws Exception {
+		final TestSearchResults results = search("Parent001", TYPE, REFERENCES);
+		assertEquals(1, results.size());
+		results.assertExists(IType.class, "Child001");
+	}
+
+	public void testSuperClassReferenceSearch2() throws Exception {
+		final TestSearchResults results = search("Parent002", TYPE, REFERENCES);
+		assertEquals(1, results.size());
+		results.assertExists(IType.class, "Child002");
+	}
+
 	public void testShortTypeNameSearch() throws Exception {
 		final TestSearchResults results = search(shortTypeName, TYPE,
 				DECLARATIONS);
