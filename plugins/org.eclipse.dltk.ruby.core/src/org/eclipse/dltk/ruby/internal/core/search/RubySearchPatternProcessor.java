@@ -33,7 +33,7 @@ public class RubySearchPatternProcessor implements ISearchPatternProcessor {
 		final int pos = pattern.lastIndexOf(METHOD_DELIMITER);
 		if (pos != -1) {
 			final String type = pattern.substring(0, pos);
-			return extractTypeChars(type);
+			return extractTypeChars(type).toCharArray();
 		}
 		return null;
 	}
@@ -51,17 +51,15 @@ public class RubySearchPatternProcessor implements ISearchPatternProcessor {
 		return pattern.toCharArray();
 	}
 
-	public char[] extractTypeChars(String pattern) {
+	public String extractTypeChars(String pattern) {
 		final int pos = pattern.lastIndexOf(TYPE_DELIMITER);
 		if (pos != -1) {
 			final int begin = pos + TYPE_DELIMITER.length();
 			if (begin < pattern.length()) {
-				final char[] result = new char[pattern.length() - begin];
-				pattern.getChars(begin, pattern.length(), result, 0);
-				return result;
+				return pattern.substring(begin);
 			}
 		}
-		return pattern.toCharArray();
+		return pattern;
 	}
 
 	public char[] extractTypeQualification(String pattern) {
