@@ -15,6 +15,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.DLTKLanguageManager;
 import org.eclipse.dltk.core.IDLTKLanguageToolkit;
@@ -83,18 +84,22 @@ public class RubyConsoleSourceModuleLookup {
 		return null;
 	}
 
+	public static boolean isIncluded(IProjectFragment fragment, IPath path) {
+		final ProjectFragment root = (ProjectFragment) fragment;
+		return !Util.isExcluded(path, root.fullInclusionPatternChars(), root
+				.fullExclusionPatternChars(), false);
+	}
+
 	private ISourceModule findInProject(IScriptProject scriptProject,
 			IPath path, boolean isFullPath) throws ModelException {
 		IProjectFragment[] roots = scriptProject.getProjectFragments();
 		for (int j = 0, rootCount = roots.length; j < rootCount; j++) {
-			final ProjectFragment root = (ProjectFragment) roots[j];
+			final IProjectFragment root = roots[j];
 			IPath rootPath = root.getPath();
 			if (!isFullPath) {
 				rootPath = EnvironmentPathUtils.getLocalPath(rootPath);
 			}
-			if (rootPath.isPrefixOf(path)
-					&& !Util.isExcluded(path, root.fullInclusionPatternChars(),
-							root.fullExclusionPatternChars(), false)) {
+			if (rootPath.isPrefixOf(path) && isIncluded(root, path)) {
 				IPath localPath = path.setDevice(null).removeFirstSegments(
 						rootPath.segmentCount());
 				if (localPath.segmentCount() >= 1) {
@@ -103,7 +108,7 @@ public class RubyConsoleSourceModuleLookup {
 						folder = root.getScriptFolder(localPath
 								.removeLastSegments(1));
 					} else {
-						folder = root.getScriptFolder(""); //$NON-NLS-1$
+						folder = root.getScriptFolder(Path.EMPTY);
 					}
 					return folder.getSourceModule(localPath.lastSegment());
 				}
