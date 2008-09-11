@@ -88,5 +88,11 @@
          </contextualLaunch>
       </shortcut>
    </extension>
+   
+	<extension point="org.eclipse.core.runtime.preferences">
+		<initializer
+			class="org.eclipse.dltk.ruby.testing.internal.RubyTestingPreferenceInitializer">
+		</initializer>
+	</extension>
 
 </plugin>
