@@ -10,6 +10,7 @@
 package org.eclipse.dltk.ruby.internal.ui;
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
+import org.eclipse.dltk.compiler.util.Util;
 import org.eclipse.dltk.ui.editor.highlighting.SemanticHighlightingUtils;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.editors.text.EditorsUI;
@@ -24,5 +25,7 @@ public class RubyUIPreferenceInitializer extends AbstractPreferenceInitializer {
 		RubyPreferenceConstants.initializeDefaultValues(store);
 		SemanticHighlightingUtils.initializeDefaultValues(store, RubyUI.getDefault()
 				.getTextTools().getSemanticHighlightings());
+		store.setDefault(RubyPreferenceConstants.FORMATTER_ID,
+				Util.EMPTY_STRING);
 	}
 }
