@@ -67,11 +67,6 @@ public class TestUnitTestRunnerUI extends AbstractRubyTestRunnerUI {
 		super(testingEngine, project);
 	}
 
-	public String filterStackTrace(String trace) {
-		// TODO implement filtering
-		return trace;
-	}
-
 	public String getTestCaseLabel(ITestCaseElement caseElement, boolean full) {
 		final String testName = caseElement.getTestName();
 		int index = testName.lastIndexOf(CLASS_BEGIN);
@@ -425,6 +420,12 @@ public class TestUnitTestRunnerUI extends AbstractRubyTestRunnerUI {
 			RubyTestingPlugin.error(NLS.bind(msg, className), e);
 		}
 		return null;
+	}
+
+	protected boolean selectLine(String line) {
+		final String filename = extractFileName(line);
+		return filename == null
+				|| !filename.endsWith(TestUnitTestingEngine.TEST_UNIT_RUNNER);
 	}
 
 }

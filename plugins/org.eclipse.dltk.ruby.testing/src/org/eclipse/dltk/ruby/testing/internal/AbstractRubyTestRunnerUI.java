@@ -11,6 +11,11 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.testing.internal;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,7 +37,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 public abstract class AbstractRubyTestRunnerUI extends AbstractTestRunnerUI
 		implements ITestRunnerUI, ITestElementResolver {
 
-	private static final Pattern STACK_FRAME_IN_PATTERN = Pattern
+	protected static final Pattern STACK_FRAME_IN_PATTERN = Pattern
 			.compile("(.+):(\\d+):in `(.+)'"); //$NON-NLS-1$
 
 	protected static final Pattern STACK_FRAME_PATTERN = RubyFilenameLinenumberResolver
@@ -131,6 +136,58 @@ public abstract class AbstractRubyTestRunnerUI extends AbstractTestRunnerUI
 	 */
 	public boolean canFilterStack() {
 		return true;
+	}
+
+	public String filterStackTrace(String trace) {
+		BufferedReader reader = new BufferedReader(new StringReader(trace));
+		try {
+			StringWriter stringWriter = new StringWriter();
+			PrintWriter printer = new PrintWriter(stringWriter);
+			String line;
+			// first line contains the thrown exception
+			line = reader.readLine();
+			if (line != null) {
+				printer.println(line);
+				// the stack frames of the trace
+				while ((line = reader.readLine()) != null) {
+					if (isStackFrame(line)) {
+						if (selectLine(line)) {
+							printer.println(line);
+						}
+					} else {
+						printer.println(line);
+					}
+				}
+			}
+			return stringWriter.toString();
+		} catch (IOException e) {
+			// should not happen actually
+			return trace;
+		}
+	}
+
+	/**
+	 * Tests if the specified line should pass thru the filter.
+	 * 
+	 * @param line
+	 * @return
+	 */
+	protected boolean selectLine(String line) {
+		return true;
+	}
+
+	protected String extractFileName(String line) {
+		Matcher matcher = STACK_FRAME_PATTERN.matcher(line);
+		boolean matches = matcher.matches();
+		if (!matches) {
+			matcher = STACK_FRAME_IN_PATTERN.matcher(line);
+			matches = matcher.matches();
+		}
+		if (matches) {
+			return matcher.group(1);
+		} else {
+			return null;
+		}
 	}
 
 }

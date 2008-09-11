@@ -111,7 +111,7 @@ public class TestUnitTestingEngine extends AbstractRubyTestingEngine {
 		return visitor.getStatus();
 	}
 
-	private static final String TEST_UNIT_RUNNER = "dltk-testunit-runner.rb"; //$NON-NLS-1$
+	static final String TEST_UNIT_RUNNER = "dltk-testunit-runner.rb"; //$NON-NLS-1$
 
 	public void configureLaunch(InterpreterConfig config,
 			ILaunchConfiguration configuration, ILaunch launch)
