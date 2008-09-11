@@ -108,7 +108,7 @@ public class RspecTestingEngine extends AbstractRubyTestingEngine {
 		return visitor.getStatus();
 	}
 
-	private static final String RSPEC_RUNNER = "dltk-rspec-runner.rb"; //$NON-NLS-1$
+	static final String RSPEC_RUNNER = "dltk-rspec-runner.rb"; //$NON-NLS-1$
 
 	public String getMainScriptPath(ILaunchConfiguration configuration,
 			IEnvironment scriptEnvironment) throws CoreException {

@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.Stack;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -69,11 +70,6 @@ public class RSpecTestRunnerUI extends AbstractRubyTestRunnerUI {
 	public RSpecTestRunnerUI(RspecTestingEngine testingEngine,
 			IScriptProject project) {
 		super(testingEngine, project);
-	}
-
-	public String filterStackTrace(String trace) {
-		// TODO implement filtering
-		return trace;
 	}
 
 	/*
@@ -444,5 +440,27 @@ public class RSpecTestRunnerUI extends AbstractRubyTestRunnerUI {
 			}
 		}
 		return null;
+	}
+
+	private static String buildRegex() {
+		final String slash = "[\\\\/]"; //$NON-NLS-1$
+		return slash + "gems" + slash + "rspec-[\\w\\.]+" + slash + "lib" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				+ slash;
+	}
+
+	private static final Pattern GEM_RSPEC_LIB = Pattern.compile(buildRegex());
+
+	protected boolean selectLine(String line) {
+		final String filename = extractFileName(line);
+		if (filename == null) {
+			return true;
+		}
+		if (filename.endsWith(RspecTestingEngine.RSPEC_RUNNER)) {
+			return false;
+		}
+		if (GEM_RSPEC_LIB.matcher(filename).find()) {
+			return false;
+		}
+		return true;
 	}
 }
