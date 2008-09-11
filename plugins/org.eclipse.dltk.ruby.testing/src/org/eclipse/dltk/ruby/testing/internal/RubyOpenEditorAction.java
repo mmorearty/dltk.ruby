@@ -13,6 +13,7 @@ package org.eclipse.dltk.ruby.testing.internal;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.dltk.ruby.internal.debug.ui.console.RubyFileHyperlink;
+import org.eclipse.dltk.testing.DLTKTestingMessages;
 import org.eclipse.jface.action.Action;
 
 public class RubyOpenEditorAction extends Action {
@@ -25,6 +26,7 @@ public class RubyOpenEditorAction extends Action {
 	 * @param lineNumber
 	 */
 	public RubyOpenEditorAction(Object element, int lineNumber) {
+		super(DLTKTestingMessages.OpenEditorAction_action_label);
 		this.element = element;
 		this.lineNumber = lineNumber;
 	}
