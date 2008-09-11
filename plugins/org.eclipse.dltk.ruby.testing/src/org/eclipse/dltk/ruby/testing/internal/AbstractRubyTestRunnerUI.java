@@ -27,6 +27,7 @@ import org.eclipse.dltk.testing.model.ITestCaseElement;
 import org.eclipse.dltk.testing.model.ITestElement;
 import org.eclipse.dltk.testing.model.ITestSuiteElement;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.preference.IPreferenceStore;
 
 public abstract class AbstractRubyTestRunnerUI extends AbstractTestRunnerUI
 		implements ITestRunnerUI, ITestElementResolver {
@@ -93,7 +94,7 @@ public abstract class AbstractRubyTestRunnerUI extends AbstractTestRunnerUI
 			return super.getAdapter(adapter);
 		}
 	}
-	
+
 	protected final IDLTKSearchScope getSearchScope() {
 		return SearchEngine.createSearchScope(project);
 	}
@@ -120,5 +121,16 @@ public abstract class AbstractRubyTestRunnerUI extends AbstractTestRunnerUI
 	 */
 	protected abstract TestElementResolution resolveTestCase(
 			ITestCaseElement element);
+
+	protected IPreferenceStore getPreferenceStore() {
+		return RubyTestingPlugin.getDefault().getPreferenceStore();
+	}
+
+	/*
+	 * @see org.eclipse.dltk.testing.AbstractTestRunnerUI#canFilterStack()
+	 */
+	public boolean canFilterStack() {
+		return true;
+	}
 
 }
