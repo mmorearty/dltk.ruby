@@ -21,8 +21,8 @@ public class RubyFormatterPreferenceInitializer extends
 		IPreferenceStore store = RubyFormatterPlugin.getDefault()
 				.getPreferenceStore();
 		store.setDefault(RubyFormatterConstants.FORMATTER_TAB_CHAR,
-				CodeFormatterConstants.TAB);
-		store.setDefault(RubyFormatterConstants.FORMATTER_INDENTATION_SIZE, 1);
+				CodeFormatterConstants.SPACE);
+		store.setDefault(RubyFormatterConstants.FORMATTER_INDENTATION_SIZE, 2);
 		//
 		store.setDefault(RubyFormatterConstants.INDENT_CLASS, true);
 		store.setDefault(RubyFormatterConstants.INDENT_MODULE, true);
