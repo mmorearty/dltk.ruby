@@ -17,10 +17,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.Stack;
+import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
 import org.eclipse.dltk.ast.declarations.TypeDeclaration;
@@ -29,10 +32,13 @@ import org.eclipse.dltk.ast.expressions.StringLiteral;
 import org.eclipse.dltk.compiler.util.Util;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IMethod;
+import org.eclipse.dltk.core.IProjectFragment;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ISourceRange;
 import org.eclipse.dltk.core.IType;
+import org.eclipse.dltk.core.ModelException;
+import org.eclipse.dltk.core.environment.EnvironmentPathUtils;
 import org.eclipse.dltk.core.search.IDLTKSearchConstants;
 import org.eclipse.dltk.core.search.IDLTKSearchScope;
 import org.eclipse.dltk.core.search.SearchEngine;
@@ -43,6 +49,7 @@ import org.eclipse.dltk.core.search.SearchRequestor;
 import org.eclipse.dltk.corext.SourceRange;
 import org.eclipse.dltk.ruby.ast.RubyCallArgument;
 import org.eclipse.dltk.ruby.core.utils.RubySyntaxUtils;
+import org.eclipse.dltk.ruby.internal.debug.ui.console.RubyConsoleSourceModuleLookup;
 import org.eclipse.dltk.ruby.testing.internal.AbstractRubyTestRunnerUI;
 import org.eclipse.dltk.ruby.testing.internal.AbstractRubyTestingEngine;
 import org.eclipse.dltk.ruby.testing.internal.AbstractTestingEngineValidateVisitor;
@@ -422,10 +429,60 @@ public class TestUnitTestRunnerUI extends AbstractRubyTestRunnerUI {
 		return null;
 	}
 
-	protected boolean selectLine(String line) {
-		final String filename = extractFileName(line);
-		return filename == null
-				|| !filename.endsWith(TestUnitTestingEngine.TEST_UNIT_RUNNER);
+	private static final String[] TEST_UNIT = { "test", "unit" }; //$NON-NLS-1$ //$NON-NLS-2$
+
+	private boolean testFragmentPath(IPath fragmentPath, IPath path) {
+		if (pathEquality.isPrefixOf(fragmentPath, path)
+				&& path.segmentCount() > fragmentPath.segmentCount()
+						+ TEST_UNIT.length) {
+			for (int j = 0; j < TEST_UNIT.length; ++j) {
+				if (!TEST_UNIT[j].equals(path.segment(fragmentPath
+						.segmentCount()
+						+ j))) {
+					return false;
+				}
+			}
+			return true;
+		}
+		return false;
 	}
 
+	private static String buildRegex() {
+		final String slash = "[\\\\/]"; //$NON-NLS-1$
+		return slash + "gems" + slash + "Shoulda-[\\w\\.]+" + slash + "lib" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+				+ slash;
+	}
+
+	private static final Pattern GEM_SHOULDA_LIB = Pattern
+			.compile(buildRegex());
+
+	protected boolean selectLine(String line) {
+		final String filename = extractFileName(line);
+		if (filename == null) {
+			return true;
+		}
+		if (filename.endsWith(TestUnitTestingEngine.TEST_UNIT_RUNNER)) {
+			return false;
+		}
+		if (GEM_SHOULDA_LIB.matcher(filename).find()) {
+			return false;
+		}
+		final IPath path = new Path(filename);
+		try {
+			final IProjectFragment[] fragments = project.getProjectFragments();
+			for (int i = 0; i < fragments.length; ++i) {
+				final IProjectFragment fragment = fragments[i];
+				if (fragment.isExternal()
+						&& testFragmentPath(EnvironmentPathUtils
+								.getLocalPath(fragment.getPath()), path)
+						&& RubyConsoleSourceModuleLookup.isIncluded(fragment,
+								path)) {
+					return false;
+				}
+			}
+		} catch (ModelException e) {
+			return true;
+		}
+		return true;
+	}
 }

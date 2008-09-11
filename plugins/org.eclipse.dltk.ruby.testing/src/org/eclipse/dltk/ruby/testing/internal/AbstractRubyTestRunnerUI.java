@@ -22,6 +22,8 @@ import java.util.regex.Pattern;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.search.IDLTKSearchScope;
 import org.eclipse.dltk.core.search.SearchEngine;
+import org.eclipse.dltk.internal.launching.IPathEquality;
+import org.eclipse.dltk.internal.launching.PathEqualityUtils;
 import org.eclipse.dltk.ruby.debug.RubyFilenameLinenumberResolver;
 import org.eclipse.dltk.ruby.internal.debug.ui.console.RubyFileHyperlink;
 import org.eclipse.dltk.testing.AbstractTestRunnerUI;
@@ -45,6 +47,7 @@ public abstract class AbstractRubyTestRunnerUI extends AbstractTestRunnerUI
 
 	protected final IScriptProject project;
 	protected final AbstractRubyTestingEngine testingEngine;
+	protected IPathEquality pathEquality;
 
 	/**
 	 * @param testingEngine
@@ -54,6 +57,8 @@ public abstract class AbstractRubyTestRunnerUI extends AbstractTestRunnerUI
 			IScriptProject project) {
 		this.testingEngine = testingEngine;
 		this.project = project;
+		// TODO use project environment specific entry
+		this.pathEquality = PathEqualityUtils.getInstance();
 	}
 
 	/*
