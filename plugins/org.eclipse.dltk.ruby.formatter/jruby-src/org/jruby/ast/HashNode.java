@@ -35,6 +35,7 @@ import java.util.List;
 import org.jruby.ast.visitor.NodeVisitor;
 import org.jruby.evaluator.Instruction;
 import org.jruby.lexer.yacc.ISourcePosition;
+import org.jruby.lexer.yacc.ISourcePositionHolder;
 
 /**
  * a Literal Hash. this can represent either a {a=&amp;b, c=&amp;d} type
@@ -46,10 +47,19 @@ public class HashNode extends Node {
 	static final long serialVersionUID = -7554050553303344025L;
 
 	private final ListNode listNode;
+	private final ISourcePositionHolder leftBrace;
+	private final ISourcePositionHolder rightBrace;
 
 	public HashNode(ISourcePosition position, ListNode listNode) {
+		this(position, listNode, null, null);
+	}
+
+	public HashNode(ISourcePosition position, ListNode listNode,
+			ISourcePositionHolder leftBrace, ISourcePositionHolder rightBrace) {
 		super(position, NodeTypes.HASHNODE);
 		this.listNode = listNode;
+		this.leftBrace = leftBrace;
+		this.rightBrace = rightBrace;
 	}
 
 	/**
@@ -73,6 +83,20 @@ public class HashNode extends Node {
 
 	public List childNodes() {
 		return createList(listNode);
+	}
+
+	/**
+	 * @return the leftBrace
+	 */
+	public ISourcePositionHolder getLeftBrace() {
+		return leftBrace;
+	}
+
+	/**
+	 * @return the rightBrace
+	 */
+	public ISourcePositionHolder getRightBrace() {
+		return rightBrace;
 	}
 
 }

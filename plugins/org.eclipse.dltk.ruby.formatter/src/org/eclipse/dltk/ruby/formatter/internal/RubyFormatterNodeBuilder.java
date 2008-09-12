@@ -32,6 +32,7 @@ import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterDoNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterElseIfNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterEnsureNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterForNode;
+import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterHashNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterHereDocNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterIfElseNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterIfEndNode;
@@ -64,6 +65,7 @@ import org.jruby.ast.DefsNode;
 import org.jruby.ast.EnsureNode;
 import org.jruby.ast.FCallNode;
 import org.jruby.ast.ForNode;
+import org.jruby.ast.HashNode;
 import org.jruby.ast.IfNode;
 import org.jruby.ast.IterNode;
 import org.jruby.ast.ListNode;
@@ -522,6 +524,24 @@ public class RubyFormatterNodeBuilder extends AbstractFormatterNodeBuilder {
 					return null;
 				} else {
 					return super.visitArrayNode(visited);
+				}
+			}
+
+			public Instruction visitHashNode(HashNode visited) {
+				if (visited.getLeftBrace() != null
+						&& visited.getRightBrace() != null) {
+					final FormatterHashNode hashNode = new FormatterHashNode(
+							document);
+					hashNode.setBegin(createTextNode(document, visited
+							.getLeftBrace()));
+					push(hashNode);
+					final ISourcePosition right = visited.getRightBrace()
+							.getPosition();
+					checkedPop(hashNode, right.getStartOffset());
+					hashNode.setEnd(createTextNode(document, right));
+					return null;
+				} else {
+					return super.visitHashNode(visited);
 				}
 			}
 

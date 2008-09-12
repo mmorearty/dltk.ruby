@@ -1057,7 +1057,7 @@ primary       : literal
                   }
               }
               | tLBRACE assoc_list tRCURLY {
-                  $$ = new HashNode(support.union($1, $3), $2);
+                  $$ = new HashNode(support.union($1, $3), $2, $1, $3);
               }
               | kRETURN {
 		  $$ = new ReturnNode($1.getPosition(), null);

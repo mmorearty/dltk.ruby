@@ -2205,7 +2205,7 @@ case 282:
 case 283:
 					// line 1059 "DefaultRubyParser.y"
   {
-                  yyVal = new HashNode(support.union(((Token)yyVals[-2+yyTop]), ((Token)yyVals[0+yyTop])), ((ListNode)yyVals[-1+yyTop]));
+                  yyVal = new HashNode(support.union(((Token)yyVals[-2+yyTop]), ((Token)yyVals[0+yyTop])), ((ListNode)yyVals[-1+yyTop]), ((Token)yyVals[-2+yyTop]), ((Token)yyVals[0+yyTop]));
               }
   break;
 case 284:
