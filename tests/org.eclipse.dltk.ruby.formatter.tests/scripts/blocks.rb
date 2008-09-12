@@ -266,3 +266,13 @@ list = [
 ]
 list2 = ["apple", "banana",
 	"carrot",]
+==== multi-line-hash
+hash = {
+"a" => 1,
+"c" => 2
+}
+===
+hash = {
+	"a" => 1,
+	"c" => 2
+}
