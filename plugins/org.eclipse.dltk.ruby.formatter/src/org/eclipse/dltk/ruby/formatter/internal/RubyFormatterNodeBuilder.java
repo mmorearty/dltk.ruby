@@ -22,6 +22,7 @@ import org.eclipse.dltk.formatter.nodes.FormatterRootNode;
 import org.eclipse.dltk.formatter.nodes.IFormatterContainerNode;
 import org.eclipse.dltk.formatter.nodes.IFormatterDocument;
 import org.eclipse.dltk.formatter.nodes.IFormatterTextNode;
+import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterArrayNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterAtBeginNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterAtEndNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterBeginNode;
@@ -503,6 +504,24 @@ public class RubyFormatterNodeBuilder extends AbstractFormatterNodeBuilder {
 					return null;
 				} else {
 					return super.visitFCallNode(visited);
+				}
+			}
+
+			public Instruction visitArrayNode(ArrayNode visited) {
+				if (visited.getLeftBracketPosition() != null
+						&& visited.getRightBracketPosition() != null) {
+					final FormatterArrayNode arrayNode = new FormatterArrayNode(
+							document);
+					arrayNode.setBegin(createTextNode(document, visited
+							.getLeftBracketPosition()));
+					push(arrayNode);
+					final ISourcePosition right = visited
+							.getRightBracketPosition().getPosition();
+					checkedPop(arrayNode, right.getStartOffset());
+					arrayNode.setEnd(createTextNode(document, right));
+					return null;
+				} else {
+					return super.visitArrayNode(visited);
 				}
 			}
 

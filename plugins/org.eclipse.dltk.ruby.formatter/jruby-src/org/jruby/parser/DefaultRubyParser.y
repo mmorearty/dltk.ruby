@@ -1049,6 +1049,10 @@ primary       : literal
                       $$ = new ZArrayNode(position); /* zero length array */
                   } else {
                       $$ = $2;
+                      if ($$ instanceof ArrayNode) {
+                          $<ArrayNode>$.setLeftBracketPosition($1);
+                          $<ArrayNode>$.setRightBracketPosition($3);
+                      }
                       $<ISourcePositionHolder>$.setPosition(position);
                   }
               }

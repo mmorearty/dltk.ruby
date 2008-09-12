@@ -34,6 +34,7 @@ import org.jruby.ast.types.ILiteralNode;
 import org.jruby.ast.visitor.NodeVisitor;
 import org.jruby.evaluator.Instruction;
 import org.jruby.lexer.yacc.ISourcePosition;
+import org.jruby.lexer.yacc.ISourcePositionHolder;
 
 /**
  * Represents an array. This could be an array literal, quoted words or some
@@ -47,6 +48,9 @@ public class ArrayNode extends ListNode implements ILiteralNode {
 	// This field is used during argument processing to avoid putting RubyArray
 	// instances that are purely for utility purposes into ObjectSpace.
 	private boolean lightweight = false;
+	private ISourcePositionHolder leftBracketPosition;
+
+	private ISourcePositionHolder rightBracketPosition;
 
 	public ArrayNode(ISourcePosition position, Node firstNode) {
 		super(position, NodeTypes.ARRAYNODE, firstNode);
@@ -73,4 +77,36 @@ public class ArrayNode extends ListNode implements ILiteralNode {
 	public boolean isLightweight() {
 		return lightweight;
 	}
+
+	/**
+	 * @return the leftBracketPosition
+	 */
+	public ISourcePositionHolder getLeftBracketPosition() {
+		return leftBracketPosition;
+	}
+
+	/**
+	 * @param leftBracketPosition
+	 *            the leftBracketPosition to set
+	 */
+	public void setLeftBracketPosition(ISourcePositionHolder leftBracketPosition) {
+		this.leftBracketPosition = leftBracketPosition;
+	}
+
+	/**
+	 * @return the rightBracketPosition
+	 */
+	public ISourcePositionHolder getRightBracketPosition() {
+		return rightBracketPosition;
+	}
+
+	/**
+	 * @param rightBracketPosition
+	 *            the rightBracketPosition to set
+	 */
+	public void setRightBracketPosition(
+			ISourcePositionHolder rightBracketPosition) {
+		this.rightBracketPosition = rightBracketPosition;
+	}
+
 }
