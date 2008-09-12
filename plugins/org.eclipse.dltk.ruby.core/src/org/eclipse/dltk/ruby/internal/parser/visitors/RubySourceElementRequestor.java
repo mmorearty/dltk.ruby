@@ -19,10 +19,20 @@ import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.Modifiers;
 import org.eclipse.dltk.ast.PositionInformation;
 import org.eclipse.dltk.ast.declarations.MethodDeclaration;
+import org.eclipse.dltk.ast.expressions.BigNumericLiteral;
+import org.eclipse.dltk.ast.expressions.BooleanLiteral;
 import org.eclipse.dltk.ast.expressions.CallArgumentsList;
 import org.eclipse.dltk.ast.expressions.CallExpression;
 import org.eclipse.dltk.ast.expressions.Expression;
+import org.eclipse.dltk.ast.expressions.FloatNumericLiteral;
+import org.eclipse.dltk.ast.expressions.Literal;
+import org.eclipse.dltk.ast.expressions.NilLiteral;
+import org.eclipse.dltk.ast.expressions.NumericLiteral;
+import org.eclipse.dltk.ast.expressions.StringLiteral;
+import org.eclipse.dltk.ast.references.ConstantReference;
+import org.eclipse.dltk.ast.references.Reference;
 import org.eclipse.dltk.ast.references.SimpleReference;
+import org.eclipse.dltk.ast.references.TypeReference;
 import org.eclipse.dltk.ast.references.VariableReference;
 import org.eclipse.dltk.ast.statements.Statement;
 import org.eclipse.dltk.compiler.ISourceElementRequestor;
@@ -32,12 +42,16 @@ import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.ruby.ast.RubyASTUtil;
 import org.eclipse.dltk.ruby.ast.RubyAliasExpression;
 import org.eclipse.dltk.ruby.ast.RubyAssignment;
+import org.eclipse.dltk.ruby.ast.RubyColonExpression;
 import org.eclipse.dltk.ruby.ast.RubyConstantDeclaration;
+import org.eclipse.dltk.ruby.ast.RubyModuleDeclaration;
+import org.eclipse.dltk.ruby.ast.RubyRegexpExpression;
+import org.eclipse.dltk.ruby.ast.RubySymbolReference;
 import org.eclipse.dltk.ruby.core.RubyConstants;
+import org.eclipse.dltk.ruby.internal.parsers.jruby.ASTUtils;
 
 public class RubySourceElementRequestor extends SourceElementRequestVisitor {
 
-	private static final String NEW_CALL = "new"; //$NON-NLS-1$
 	private static final String VALUE = "value"; //$NON-NLS-1$
 	private static final String INITIALIZE = "initialize"; //$NON-NLS-1$
 
@@ -201,6 +215,29 @@ public class RubySourceElementRequestor extends SourceElementRequestVisitor {
 		fNotAddedFields.clear();
 	}
 
+	private void reportTypeReferences(ASTNode node) {
+		ASTNode[] wayToNode = ASTUtils.restoreWayToNode(fCurrentModule, node);
+		if (wayToNode.length > 1 && wayToNode[wayToNode.length - 2] instanceof RubyModuleDeclaration) {
+			return;
+		}
+		String typeName;
+		while (node != null) {
+			if (node instanceof RubyColonExpression) {
+				typeName = ((RubyColonExpression) node).getName();
+				fRequestor.acceptTypeReference(typeName.toCharArray(), node
+						.sourceStart());
+				node = ((RubyColonExpression) node).getLeft();
+			} else if (node instanceof ConstantReference) {
+				typeName = ((ConstantReference) node).getName();
+				fRequestor.acceptTypeReference(typeName.toCharArray(), node
+						.sourceStart());
+				node = null;
+			} else {
+				node = null;
+			}
+		}
+	}
+
 	// Visiting expressions
 	public boolean visit(ASTNode expression) throws Exception {
 		if (DLTKCore.DEBUG) {
@@ -282,29 +319,59 @@ public class RubySourceElementRequestor extends SourceElementRequestVisitor {
 			// Accept
 			fRequestor.acceptMethodReference(callExpression.getName()
 					.toCharArray(), argsCount, start, end);
-			if (callExpression.getName().equals(NEW_CALL)) {
-				final ASTNode receiver = callExpression.getReceiver();
-				if (receiver != null) {
-					final String className = RubyASTUtil
-							.resolveReferenceSimpleName(receiver);
-					if (className != null) {
-						fRequestor.acceptTypeReference(className.toCharArray(),
-								receiver.sourceStart());
-					}
+		} else if (expression instanceof Literal) {
+			if (expression instanceof RubyRegexpExpression) {
+				fRequestor.acceptTypeReference(
+						"Regexp".toCharArray(), expression.sourceStart()); //$NON-NLS-1$
+			} else if (expression instanceof StringLiteral) {
+				fRequestor.acceptTypeReference(
+						"String".toCharArray(), expression.sourceStart()); //$NON-NLS-1$
+			} else if (expression instanceof BooleanLiteral) {
+				BooleanLiteral boolLit = (BooleanLiteral) expression;
+				if (boolLit.boolValue()) {
+					fRequestor
+							.acceptTypeReference(
+									"TrueClass".toCharArray(), expression.sourceStart()); //$NON-NLS-1$$
+				} else {
+					fRequestor
+							.acceptTypeReference(
+									"FalseClass".toCharArray(), expression.sourceStart()); //$NON-NLS-1$
 				}
+			} else if (expression instanceof NumericLiteral) {
+				fRequestor.acceptTypeReference(
+						"Fixnum".toCharArray(), expression.sourceStart()); //$NON-NLS-1$
+			} else if (expression instanceof NilLiteral) {
+				fRequestor.acceptTypeReference(
+						"NilClass".toCharArray(), expression.sourceStart()); //$NON-NLS-1$
+			} else if (expression instanceof FloatNumericLiteral) {
+				fRequestor.acceptTypeReference(
+						"Float".toCharArray(), expression.sourceStart()); //$NON-NLS-1$
+			} else if (expression instanceof BigNumericLiteral) {
+				fRequestor.acceptTypeReference(
+						"Bignum".toCharArray(), expression.sourceStart()); //$NON-NLS-1$
 			}
-		} else if (expression instanceof VariableReference) {
-			// VariableReference handling
-			VariableReference variableReference = (VariableReference) expression;
-
-			int pos = variableReference.sourceStart();
-			if (pos < 0) {
-				pos = 0;
+		} else if (expression instanceof Reference) {
+			if (expression instanceof RubySymbolReference) {
+				fRequestor.acceptTypeReference(
+						"Symbol".toCharArray(), expression.sourceStart()); //$NON-NLS-1$
 			}
+			else if (expression instanceof VariableReference) {
+				// VariableReference handling
+				VariableReference variableReference = (VariableReference) expression;
 
-			// Accept
-			fRequestor.acceptFieldReference(variableReference.getName()
-					.toCharArray(), pos);
+				int pos = variableReference.sourceStart();
+				if (pos < 0) {
+					pos = 0;
+				}
+
+				// Accept
+				fRequestor.acceptFieldReference(variableReference.getName()
+						.toCharArray(), pos);
+			} else if (expression instanceof ConstantReference) {
+				reportTypeReferences(expression);
+			}
+		} else if (expression instanceof RubyColonExpression) {
+			reportTypeReferences(expression);
 		} else if (expression instanceof RubyConstantDeclaration) {
 			RubyConstantDeclaration constant = (RubyConstantDeclaration) expression;
 			SimpleReference constName = constant.getName();

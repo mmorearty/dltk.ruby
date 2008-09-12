@@ -9,23 +9,74 @@ package org.eclipse.dltk.ruby.internal.core.search;
 
 import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.declarations.FieldDeclaration;
+import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
+import org.eclipse.dltk.ast.expressions.BigNumericLiteral;
+import org.eclipse.dltk.ast.expressions.BooleanLiteral;
 import org.eclipse.dltk.ast.declarations.MethodDeclaration;
 import org.eclipse.dltk.ast.expressions.CallExpression;
+import org.eclipse.dltk.ast.expressions.FloatNumericLiteral;
+import org.eclipse.dltk.ast.expressions.Literal;
+import org.eclipse.dltk.ast.expressions.NilLiteral;
+import org.eclipse.dltk.ast.expressions.NumericLiteral;
+import org.eclipse.dltk.ast.expressions.StringLiteral;
 import org.eclipse.dltk.ast.references.ConstantReference;
+import org.eclipse.dltk.ast.references.Reference;
 import org.eclipse.dltk.ast.references.SimpleReference;
 import org.eclipse.dltk.ast.references.TypeReference;
 import org.eclipse.dltk.ast.references.VariableReference;
 import org.eclipse.dltk.core.search.matching.MatchLocator;
 import org.eclipse.dltk.core.search.matching.MatchLocatorParser;
 import org.eclipse.dltk.core.search.matching.PatternLocator;
-import org.eclipse.dltk.ruby.ast.RubyASTUtil;
 import org.eclipse.dltk.ruby.ast.RubyAliasExpression;
 import org.eclipse.dltk.ruby.ast.RubyAssignment;
+import org.eclipse.dltk.ruby.ast.RubyColonExpression;
 import org.eclipse.dltk.ruby.ast.RubyConstantDeclaration;
+import org.eclipse.dltk.ruby.ast.RubyModuleDeclaration;
+import org.eclipse.dltk.ruby.ast.RubyRegexpExpression;
+import org.eclipse.dltk.ruby.ast.RubySymbolReference;
+import org.eclipse.dltk.ruby.internal.parsers.jruby.ASTUtils;
 
 public class RubyMatchLocatorParser extends MatchLocatorParser {
+	private ModuleDeclaration moduleDecl;
+
 	public RubyMatchLocatorParser(MatchLocator locator) {
 		super(locator);
+	}
+
+	private void reportTypeReferenceMatch(ASTNode node, PatternLocator locator) {
+		ASTNode[] wayToNode = ASTUtils.restoreWayToNode(moduleDecl, node);
+		if (wayToNode.length > 1 && wayToNode[wayToNode.length - 2] instanceof RubyModuleDeclaration) {
+			return;
+		}
+        String typeName;
+		while (node != null) {
+			if (node instanceof RubyColonExpression) {
+				typeName = ((RubyColonExpression) node).getName();
+				TypeReference ref = new TypeReference(node
+						.sourceStart(), node.sourceEnd(), typeName);
+				locator.match(ref, this.getNodeSet());
+				node = ((RubyColonExpression) node).getLeft();
+			} else if (node instanceof ConstantReference) {
+				typeName = ((ConstantReference) node).getName();
+				TypeReference ref = new TypeReference(node
+						.sourceStart(), node.sourceEnd(), typeName);
+				locator.match(ref, this.getNodeSet());
+				node = null;
+			} else {
+				node = null;
+			}
+		}
+	}
+
+	private void reportSimpleReferenceMatch(SimpleReference simpleRef,
+			PatternLocator locator) {
+		int pos = simpleRef.sourceStart();
+		if (pos < 0) {
+			pos = 0;
+		}
+		locator.match(new SimpleReference(pos, pos
+				+ simpleRef.getName().length(), simpleRef.getName()), this
+				.getNodeSet());
 	}
 
 	protected void processStatement(ASTNode node, PatternLocator locator) {
@@ -47,17 +98,6 @@ public class RubyMatchLocatorParser extends MatchLocatorParser {
 			 * (CallExpression) new CallExpression(start, end,
 			 * call.getReceiver(), call.getName(), call.getArgs())
 			 */
-			if (call.getName().equals("new")) { //$NON-NLS-1$
-				final ASTNode receiver = call.getReceiver();
-				if (receiver != null) {
-					String className = RubyASTUtil
-							.resolveReferenceSimpleName(receiver);
-					if (className != null) {
-						locator.match(new TypeReference(receiver.sourceStart(),
-								receiver.sourceEnd(), className), getNodeSet());
-					}
-				}
-			}
 		} else if (node instanceof RubyAliasExpression) {
 			final RubyAliasExpression alias = (RubyAliasExpression) node;
 			final MethodDeclaration method = new MethodDeclaration(alias
@@ -76,33 +116,65 @@ public class RubyMatchLocatorParser extends MatchLocatorParser {
 								.sourceStart(), var.sourceEnd() - 1);
 				locator.match(field, this.getNodeSet());
 			}
-		} else if (node instanceof VariableReference) {
-			VariableReference variableReference = (VariableReference) node;
-			int pos = variableReference.sourceStart();
-			if (pos < 0) {
-				pos = 0;
+		} else if (node instanceof Literal) {
+			if (node instanceof RubyRegexpExpression) {
+				TypeReference ref = new TypeReference(node.sourceStart(), node
+						.sourceEnd(), "Regexp"); //$NON-NLS-1$
+				locator.match(ref, this.getNodeSet());
+			} else if (node instanceof StringLiteral) {
+				TypeReference ref = new TypeReference(node.sourceStart(), node
+						.sourceEnd(), "String"); //$NON-NLS-1$
+				locator.match(ref, this.getNodeSet());
+			} else if (node instanceof BooleanLiteral) {
+				BooleanLiteral boolLit = (BooleanLiteral) node;
+				TypeReference ref;
+				if (boolLit.boolValue()) {
+					ref = new TypeReference(node.sourceStart(), node
+							.sourceEnd(), "TrueClass"); //$NON-NLS-1$
+				} else {
+					ref = new TypeReference(node.sourceStart(), node
+							.sourceEnd(), "FalseClass"); //$NON-NLS-1$
+				}
+				locator.match(ref, this.getNodeSet());
+			} else if (node instanceof NumericLiteral) {
+				TypeReference ref = new TypeReference(node.sourceStart(), node
+						.sourceEnd(), "Fixnum"); //$NON-NLS-1$
+				locator.match(ref, this.getNodeSet());
+			} else if (node instanceof NilLiteral) {
+				TypeReference ref = new TypeReference(node.sourceStart(), node
+						.sourceEnd(), "NilClass"); //$NON-NLS-1$
+				locator.match(ref, this.getNodeSet());
+			} else if (node instanceof FloatNumericLiteral) {
+				TypeReference ref = new TypeReference(node.sourceStart(), node
+						.sourceEnd(), "Float"); //$NON-NLS-1$
+				locator.match(ref, this.getNodeSet());
+			} else if (node instanceof BigNumericLiteral) {
+				TypeReference ref = new TypeReference(node.sourceStart(), node
+						.sourceEnd(), "Bignum"); //$NON-NLS-1$
+				locator.match(ref, this.getNodeSet());
 			}
-			locator.match(new SimpleReference(pos, pos
-					+ variableReference.getName().length(), variableReference
-					.getName()), this.getNodeSet());
-		} else if (node instanceof ConstantReference) {
-			ConstantReference variableReference = (ConstantReference) node;
-			int pos = variableReference.sourceStart();
-			if (pos < 0) {
-				pos = 0;
+		} else if (node instanceof Reference) {
+			if (node instanceof RubySymbolReference) {
+				TypeReference ref = new TypeReference(node.sourceStart(), node
+						.sourceEnd(), "Symbol"); //$NON-NLS-1$
+				locator.match(ref, this.getNodeSet());
+			} else if (node instanceof VariableReference) {
+				reportSimpleReferenceMatch((SimpleReference) node, locator);
+			} else if (node instanceof ConstantReference) {
+				reportSimpleReferenceMatch((SimpleReference) node, locator);
+				reportTypeReferenceMatch(node, locator);
 			}
-			locator.match(new SimpleReference(pos, pos
-					+ variableReference.getName().length(), variableReference
-					.getName()), this.getNodeSet());
+		} else if (node instanceof RubyColonExpression) {
+			reportTypeReferenceMatch(node, locator);
 		} else if (node instanceof RubyConstantDeclaration) {
-
 			RubyConstantDeclaration var = (RubyConstantDeclaration) node;
 			SimpleReference name = var.getName();
 			FieldDeclaration field = new FieldDeclaration(name.getName(), name
 					.sourceStart(), name.sourceEnd(), name.sourceStart(), name
 					.sourceEnd());
 			locator.match(field, this.getNodeSet());
-
+		} else if (node instanceof ModuleDeclaration) {
+			moduleDecl = (ModuleDeclaration)node;
 		}
 	}
 }

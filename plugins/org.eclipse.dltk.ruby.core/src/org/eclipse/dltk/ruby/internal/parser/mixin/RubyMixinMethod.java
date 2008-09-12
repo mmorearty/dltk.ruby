@@ -48,7 +48,9 @@ public class RubyMixinMethod implements IRubyMixinElement {
 
 	public RubyMixinClass getSelfType() {
 		IMixinElement mixinElement = model.getRawModel().get(key);
-		IMixinElement parent = mixinElement.getParent();
+		IMixinElement parent = null;
+		if (mixinElement != null)
+			parent = mixinElement.getParent();
 		if (parent == null)
 			return new RubyObjectMixinClass(model, true);
 		IRubyMixinElement rubyParent = model.createRubyElement(parent);
