@@ -30,46 +30,47 @@
  ***** END LICENSE BLOCK *****/
 package org.jruby.ast;
 
-
 import org.jruby.ast.types.ILiteralNode;
 import org.jruby.ast.visitor.NodeVisitor;
 import org.jruby.evaluator.Instruction;
 import org.jruby.lexer.yacc.ISourcePosition;
 
 /**
- * Represents an array. This could be an array literal, quoted words or
- * some args stuff.
- *
- * @author  jpetersen
+ * Represents an array. This could be an array literal, quoted words or some
+ * args stuff.
+ * 
+ * @author jpetersen
  */
 public class ArrayNode extends ListNode implements ILiteralNode {
-    static final long serialVersionUID = 6279246130032958596L;
-    
-    // This field is used during argument processing to avoid putting RubyArray
-    // instances that are purely for utility purposes into ObjectSpace.
-    private boolean lightweight = false;
-    
-    public ArrayNode(ISourcePosition position, Node firstNode) {
-        super(position, NodeTypes.ARRAYNODE, firstNode);
-    }
+	static final long serialVersionUID = 6279246130032958596L;
 
-    public ArrayNode(ISourcePosition position) {
-        super(position, NodeTypes.ARRAYNODE);
-    }
+	// This field is used during argument processing to avoid putting RubyArray
+	// instances that are purely for utility purposes into ObjectSpace.
+	private boolean lightweight = false;
 
-    /**
-     * Accept for the visitor pattern.
-     * @param iVisitor the visitor
-     **/
-    public Instruction accept(NodeVisitor iVisitor) {
-        return iVisitor.visitArrayNode(this);
-    }
-    
-    public void setLightweight(boolean lightweight) {
-        this.lightweight = lightweight;
-    }
-    
-    public boolean isLightweight() {
-        return lightweight;
-    }
+	public ArrayNode(ISourcePosition position, Node firstNode) {
+		super(position, NodeTypes.ARRAYNODE, firstNode);
+	}
+
+	public ArrayNode(ISourcePosition position) {
+		super(position, NodeTypes.ARRAYNODE);
+	}
+
+	/**
+	 * Accept for the visitor pattern.
+	 * 
+	 * @param iVisitor
+	 *            the visitor
+	 **/
+	public Instruction accept(NodeVisitor iVisitor) {
+		return iVisitor.visitArrayNode(this);
+	}
+
+	public void setLightweight(boolean lightweight) {
+		this.lightweight = lightweight;
+	}
+
+	public boolean isLightweight() {
+		return lightweight;
+	}
 }
