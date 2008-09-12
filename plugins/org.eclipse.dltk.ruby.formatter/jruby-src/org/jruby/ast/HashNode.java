@@ -37,39 +37,42 @@ import org.jruby.evaluator.Instruction;
 import org.jruby.lexer.yacc.ISourcePosition;
 
 /**
- * a Literal Hash.
- * this can represent either a {a=&amp;b, c=&amp;d} type expression or the list of default 
- * values in a method call.
- * @author  jpetersen
+ * a Literal Hash. this can represent either a {a=&amp;b, c=&amp;d} type
+ * expression or the list of default values in a method call.
+ * 
+ * @author jpetersen
  */
 public class HashNode extends Node {
-    static final long serialVersionUID = -7554050553303344025L;
+	static final long serialVersionUID = -7554050553303344025L;
 
-    private final ListNode listNode;
-    
-    public HashNode(ISourcePosition position, ListNode listNode) {
-        super(position, NodeTypes.HASHNODE);
-        this.listNode = listNode;
-    }
+	private final ListNode listNode;
 
-    /**
-     * Accept for the visitor pattern.
-     * @param iVisitor the visitor
-     **/
-    public Instruction accept(NodeVisitor iVisitor) {
-        return iVisitor.visitHashNode(this);
-    }
+	public HashNode(ISourcePosition position, ListNode listNode) {
+		super(position, NodeTypes.HASHNODE);
+		this.listNode = listNode;
+	}
 
-    /**
-     * Gets the listNode.
-     * @return Returns a IListNode
-     */
-    public ListNode getListNode() {
-        return listNode;
-    }
-    
-    public List childNodes() {
-        return createList(listNode);
-    }
+	/**
+	 * Accept for the visitor pattern.
+	 * 
+	 * @param iVisitor
+	 *            the visitor
+	 **/
+	public Instruction accept(NodeVisitor iVisitor) {
+		return iVisitor.visitHashNode(this);
+	}
+
+	/**
+	 * Gets the listNode.
+	 * 
+	 * @return Returns a IListNode
+	 */
+	public ListNode getListNode() {
+		return listNode;
+	}
+
+	public List childNodes() {
+		return createList(listNode);
+	}
 
 }
