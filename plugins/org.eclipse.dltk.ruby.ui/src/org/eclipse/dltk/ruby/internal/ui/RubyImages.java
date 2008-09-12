@@ -16,7 +16,10 @@ import org.eclipse.jface.resource.ImageDescriptor;
 public class RubyImages {
 	private static final PluginImagesHelper helper = new PluginImagesHelper(
 			RubyUI.getDefault().getBundle(), new Path("/icons")); //$NON-NLS-1$
-	
+
+	public static final ImageDescriptor DESC_OBJ_RUBY_FILE = helper
+			.createUnManaged(PluginImagesHelper.T_OBJ, "ruby_obj.gif"); //$NON-NLS-1$
+
 	public static final ImageDescriptor PROJECT_DECARATOR = helper
 			.createUnManaged(PluginImagesHelper.T_OVR, "ruby_ovr.gif"); //$NON-NLS-1$
 
