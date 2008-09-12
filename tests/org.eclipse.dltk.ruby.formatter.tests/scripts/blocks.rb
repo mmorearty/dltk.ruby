@@ -250,3 +250,19 @@ def func()
 	print "zzzzzzzzzz"
 	#comment
 end
+==== arrays
+list = [
+"apple",
+"banana",
+"carrot",
+]
+list2 = ["apple", "banana",
+"carrot",]
+==
+list = [
+	"apple",
+	"banana",
+	"carrot",
+]
+list2 = ["apple", "banana",
+	"carrot",]
