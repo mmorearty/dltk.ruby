@@ -27,6 +27,8 @@ import org.eclipse.dltk.ruby.internal.ui.RubyUI;
 import org.eclipse.dltk.ruby.internal.ui.text.IRubyPartitions;
 import org.eclipse.dltk.ruby.internal.ui.text.RubyPartitionScanner;
 import org.eclipse.dltk.ui.text.folding.AbstractASTFoldingStructureProvider;
+import org.eclipse.dltk.ui.text.folding.DefaultElementCommentResolver;
+import org.eclipse.dltk.ui.text.folding.IElementCommentResolver;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.rules.IPartitionTokenScanner;
@@ -38,6 +40,7 @@ public class RubyFoldingStructureProvider extends
 	private boolean fInitCollapseComments;
 	private boolean fInitCollapseHeaderComments;
 	private boolean fInitCollapseMethods;
+	private IElementCommentResolver fElementCommentResolver = new DefaultElementCommentResolver();
 
 	protected void initializePreferences(IPreferenceStore store) {
 		super.initializePreferences(store);
@@ -158,4 +161,7 @@ public class RubyFoldingStructureProvider extends
 		return new RubyFoldingASTVisitor(0);
 	}
 
+	public IElementCommentResolver getElementCommentResolver() {
+		return fElementCommentResolver;
+	}
 }
