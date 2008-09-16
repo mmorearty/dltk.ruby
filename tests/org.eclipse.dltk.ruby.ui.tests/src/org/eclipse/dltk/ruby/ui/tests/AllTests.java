@@ -2,6 +2,7 @@ package org.eclipse.dltk.ruby.ui.tests;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+import org.eclipse.dltk.ruby.ui.tests.folding.RubyCommentElementTests;
 import org.eclipse.dltk.ruby.ui.tests.folding.RubyFoldingTest;
 import org.eclipse.dltk.ruby.ui.tests.indenting.RubyAutoIndentStrategyTest;
 import org.eclipse.dltk.ruby.ui.tests.search.MixinCompleteTests;
@@ -22,6 +23,7 @@ public class AllTests {
 		suite.addTestSuite(MixinCompleteTests.class);
 		suite.addTestSuite(ThreadedUIMixinTests.class);
 		suite.addTestSuite(RubyRequireHyperlinkDetectorTest.class);
+		suite.addTest(RubyCommentElementTests.suite());
 		// $JUnit-END$
 		return suite;
 	}
