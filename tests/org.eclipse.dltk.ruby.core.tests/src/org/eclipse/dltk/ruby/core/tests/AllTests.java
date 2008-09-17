@@ -10,9 +10,9 @@ import org.eclipse.dltk.ruby.core.tests.resources.RubyResourcesTests;
 import org.eclipse.dltk.ruby.core.tests.resources.SourceModuleInfoCacheTest;
 import org.eclipse.dltk.ruby.core.tests.search.RubyFullNameSearchTests;
 import org.eclipse.dltk.ruby.core.tests.search.RubySearchTests;
-import org.eclipse.dltk.ruby.core.tests.search.mixin.AutoMixinTests;
 import org.eclipse.dltk.ruby.core.tests.search.mixin.MixinModelManipulationTests;
 import org.eclipse.dltk.ruby.core.tests.search.mixin.MixinProjectIsolationTests;
+import org.eclipse.dltk.ruby.core.tests.search.mixin.MixinTestsSuite;
 import org.eclipse.dltk.ruby.core.tests.text.completion.RubyCompletionTests;
 import org.eclipse.dltk.ruby.core.tests.typeinference.MethodsTest;
 import org.eclipse.dltk.ruby.core.tests.typeinference.SimpleTest;
@@ -25,7 +25,7 @@ public class AllTests {
 		// $JUnit-BEGIN$
 		suite.addTest(RubyResourcesTests.suite());
 		suite.addTest(SourceModuleInfoCacheTest.suite());
-		suite.addTest(AutoMixinTests.suite());
+		suite.addTest(MixinTestsSuite.suite());
 		suite.addTest(MixinModelManipulationTests.suite());
 
 		suite.addTest(RubySelectionTests.suite());
