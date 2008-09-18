@@ -478,30 +478,22 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 					lastParent = selfClass.getKey();
 					lastParentIsSuperClass = isSuperClass(lastParent);
 				}
-				// ssanders: Method is defined in Object or Kernel
-				// ssanders: Method is defined in included/extended Module
-				boolean shouldAdd = RubyMixinUtils.isObjectOrKernel(selfClass
-						.getKey())
-						|| selfClass.isModule();
-
-				if (!shouldAdd) {
-					int flags = 0;
-					final IMethod[] methods = method.getSourceMethods();
-					for (int cnt = 0, max = methods.length; cnt < max; cnt++) {
-						final IMethod m = methods[cnt];
-						if (m != null) {
-							try {
-								flags |= m.getFlags();
-							} catch (ModelException mxcn) {
-								// ignore
-							}
+				int flags = 0;
+				final IMethod[] methods = method.getSourceMethods();
+				for (int cnt = 0, max = methods.length; cnt < max; cnt++) {
+					final IMethod m = methods[cnt];
+					if (m != null) {
+						try {
+							flags |= m.getFlags();
+						} catch (ModelException mxcn) {
+							// ignore
 						}
 					}
-
-					shouldAdd = Flags.isPublic(flags) || lastParentIsSuperClass
-							&& Flags.isProtected(flags)
-							|| Flags.isPrivate(flags) && isSelf;
 				}
+
+				final boolean shouldAdd = Flags.isPublic(flags)
+						|| lastParentIsSuperClass && Flags.isProtected(flags)
+						|| Flags.isPrivate(flags) && isSelf;
 				if (shouldAdd)
 					group.add(method);
 			}
