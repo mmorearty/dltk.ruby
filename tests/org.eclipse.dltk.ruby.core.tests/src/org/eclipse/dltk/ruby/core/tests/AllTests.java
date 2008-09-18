@@ -13,6 +13,7 @@ import org.eclipse.dltk.ruby.core.tests.search.RubySearchTests;
 import org.eclipse.dltk.ruby.core.tests.search.mixin.MixinModelManipulationTests;
 import org.eclipse.dltk.ruby.core.tests.search.mixin.MixinProjectIsolationTests;
 import org.eclipse.dltk.ruby.core.tests.search.mixin.MixinTestsSuite;
+import org.eclipse.dltk.ruby.core.tests.search.mixin.RubyMixinClassTests;
 import org.eclipse.dltk.ruby.core.tests.text.completion.RubyCompletionTests;
 import org.eclipse.dltk.ruby.core.tests.typeinference.MethodsTest;
 import org.eclipse.dltk.ruby.core.tests.typeinference.SimpleTest;
@@ -27,6 +28,7 @@ public class AllTests {
 		suite.addTest(SourceModuleInfoCacheTest.suite());
 		suite.addTest(MixinTestsSuite.suite());
 		suite.addTest(MixinModelManipulationTests.suite());
+		suite.addTest(RubyMixinClassTests.suite());
 
 		suite.addTest(RubySelectionTests.suite());
 		suite.addTest(RubyCompletionTests.suite());
