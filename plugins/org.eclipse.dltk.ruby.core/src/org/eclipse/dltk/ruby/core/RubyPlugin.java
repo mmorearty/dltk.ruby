@@ -73,6 +73,7 @@ public class RubyPlugin extends Plugin {
 			((IShutdownListener) listeners[i]).shutdown();
 		}
 		shutdownListeners.clear();
+		savePluginPreferences();
 		plugin = null;
 		super.stop(context);
 	}
