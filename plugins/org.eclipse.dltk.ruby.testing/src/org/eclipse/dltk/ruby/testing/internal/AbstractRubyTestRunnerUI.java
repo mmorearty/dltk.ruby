@@ -29,6 +29,7 @@ import org.eclipse.dltk.ruby.internal.debug.ui.console.RubyFileHyperlink;
 import org.eclipse.dltk.testing.AbstractTestRunnerUI;
 import org.eclipse.dltk.testing.ITestElementResolver;
 import org.eclipse.dltk.testing.ITestRunnerUI;
+import org.eclipse.dltk.testing.ITestingEngine;
 import org.eclipse.dltk.testing.TestElementResolution;
 import org.eclipse.dltk.testing.model.ITestCaseElement;
 import org.eclipse.dltk.testing.model.ITestElement;
@@ -193,6 +194,20 @@ public abstract class AbstractRubyTestRunnerUI extends AbstractTestRunnerUI
 		} else {
 			return null;
 		}
+	}
+
+	/*
+	 * @see org.eclipse.dltk.testing.ITestRunnerUI#getTestingEngine()
+	 */
+	public ITestingEngine getTestingEngine() {
+		return testingEngine;
+	}
+
+	/*
+	 * @see org.eclipse.dltk.testing.ITestRunnerUI#getProject()
+	 */
+	public IScriptProject getProject() {
+		return project;
 	}
 
 }
