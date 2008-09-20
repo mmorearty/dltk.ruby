@@ -32,25 +32,23 @@ import org.eclipse.dltk.ast.expressions.StringLiteral;
 import org.eclipse.dltk.ast.references.ConstantReference;
 import org.eclipse.dltk.ast.references.Reference;
 import org.eclipse.dltk.ast.references.SimpleReference;
-import org.eclipse.dltk.ast.references.TypeReference;
 import org.eclipse.dltk.ast.references.VariableReference;
 import org.eclipse.dltk.ast.statements.Statement;
 import org.eclipse.dltk.compiler.ISourceElementRequestor;
 import org.eclipse.dltk.compiler.SourceElementRequestVisitor;
 import org.eclipse.dltk.compiler.ISourceElementRequestor.MethodInfo;
 import org.eclipse.dltk.core.DLTKCore;
-import org.eclipse.dltk.ruby.ast.RubyASTUtil;
+import org.eclipse.dltk.ruby.ast.IRubyASTVisitor;
 import org.eclipse.dltk.ruby.ast.RubyAliasExpression;
 import org.eclipse.dltk.ruby.ast.RubyAssignment;
 import org.eclipse.dltk.ruby.ast.RubyColonExpression;
 import org.eclipse.dltk.ruby.ast.RubyConstantDeclaration;
-import org.eclipse.dltk.ruby.ast.RubyModuleDeclaration;
 import org.eclipse.dltk.ruby.ast.RubyRegexpExpression;
 import org.eclipse.dltk.ruby.ast.RubySymbolReference;
 import org.eclipse.dltk.ruby.core.RubyConstants;
-import org.eclipse.dltk.ruby.internal.parsers.jruby.ASTUtils;
 
-public class RubySourceElementRequestor extends SourceElementRequestVisitor {
+public class RubySourceElementRequestor extends SourceElementRequestVisitor
+		implements IRubyASTVisitor {
 
 	private static final String VALUE = "value"; //$NON-NLS-1$
 	private static final String INITIALIZE = "initialize"; //$NON-NLS-1$
@@ -216,10 +214,6 @@ public class RubySourceElementRequestor extends SourceElementRequestVisitor {
 	}
 
 	private void reportTypeReferences(ASTNode node) {
-		ASTNode[] wayToNode = ASTUtils.restoreWayToNode(fCurrentModule, node);
-		if (wayToNode.length > 1 && wayToNode[wayToNode.length - 2] instanceof RubyModuleDeclaration) {
-			return;
-		}
 		String typeName;
 		while (node != null) {
 			if (node instanceof RubyColonExpression) {
@@ -236,6 +230,10 @@ public class RubySourceElementRequestor extends SourceElementRequestVisitor {
 				node = null;
 			}
 		}
+	}
+
+	public void visitTypeName(ASTNode node) {
+		// empty
 	}
 
 	// Visiting expressions
@@ -354,8 +352,7 @@ public class RubySourceElementRequestor extends SourceElementRequestVisitor {
 			if (expression instanceof RubySymbolReference) {
 				fRequestor.acceptTypeReference(
 						"Symbol".toCharArray(), expression.sourceStart()); //$NON-NLS-1$
-			}
-			else if (expression instanceof VariableReference) {
+			} else if (expression instanceof VariableReference) {
 				// VariableReference handling
 				VariableReference variableReference = (VariableReference) expression;
 

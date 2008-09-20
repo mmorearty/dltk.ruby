@@ -9,10 +9,9 @@ package org.eclipse.dltk.ruby.internal.core.search;
 
 import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.declarations.FieldDeclaration;
-import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
+import org.eclipse.dltk.ast.declarations.MethodDeclaration;
 import org.eclipse.dltk.ast.expressions.BigNumericLiteral;
 import org.eclipse.dltk.ast.expressions.BooleanLiteral;
-import org.eclipse.dltk.ast.declarations.MethodDeclaration;
 import org.eclipse.dltk.ast.expressions.CallExpression;
 import org.eclipse.dltk.ast.expressions.FloatNumericLiteral;
 import org.eclipse.dltk.ast.expressions.Literal;
@@ -27,39 +26,46 @@ import org.eclipse.dltk.ast.references.VariableReference;
 import org.eclipse.dltk.core.search.matching.MatchLocator;
 import org.eclipse.dltk.core.search.matching.MatchLocatorParser;
 import org.eclipse.dltk.core.search.matching.PatternLocator;
+import org.eclipse.dltk.ruby.ast.IRubyASTVisitor;
 import org.eclipse.dltk.ruby.ast.RubyAliasExpression;
 import org.eclipse.dltk.ruby.ast.RubyAssignment;
 import org.eclipse.dltk.ruby.ast.RubyColonExpression;
 import org.eclipse.dltk.ruby.ast.RubyConstantDeclaration;
-import org.eclipse.dltk.ruby.ast.RubyModuleDeclaration;
 import org.eclipse.dltk.ruby.ast.RubyRegexpExpression;
 import org.eclipse.dltk.ruby.ast.RubySymbolReference;
-import org.eclipse.dltk.ruby.internal.parsers.jruby.ASTUtils;
 
 public class RubyMatchLocatorParser extends MatchLocatorParser {
-	private ModuleDeclaration moduleDecl;
 
 	public RubyMatchLocatorParser(MatchLocator locator) {
 		super(locator);
 	}
 
-	private void reportTypeReferenceMatch(ASTNode node, PatternLocator locator) {
-		ASTNode[] wayToNode = ASTUtils.restoreWayToNode(moduleDecl, node);
-		if (wayToNode.length > 1 && wayToNode[wayToNode.length - 2] instanceof RubyModuleDeclaration) {
-			return;
+	protected class RubyMatchVisitor extends MatchVisitor implements
+			IRubyASTVisitor {
+
+		public void visitTypeName(ASTNode node) {
+			// empty
 		}
-        String typeName;
+
+	}
+
+	protected MatchVisitor getMatchVisitor() {
+		return new RubyMatchVisitor();
+	}
+
+	private void reportTypeReferenceMatch(ASTNode node, PatternLocator locator) {
+		String typeName;
 		while (node != null) {
 			if (node instanceof RubyColonExpression) {
 				typeName = ((RubyColonExpression) node).getName();
-				TypeReference ref = new TypeReference(node
-						.sourceStart(), node.sourceEnd(), typeName);
+				TypeReference ref = new TypeReference(node.sourceStart(), node
+						.sourceEnd(), typeName);
 				locator.match(ref, this.getNodeSet());
 				node = ((RubyColonExpression) node).getLeft();
 			} else if (node instanceof ConstantReference) {
 				typeName = ((ConstantReference) node).getName();
-				TypeReference ref = new TypeReference(node
-						.sourceStart(), node.sourceEnd(), typeName);
+				TypeReference ref = new TypeReference(node.sourceStart(), node
+						.sourceEnd(), typeName);
 				locator.match(ref, this.getNodeSet());
 				node = null;
 			} else {
@@ -173,8 +179,6 @@ public class RubyMatchLocatorParser extends MatchLocatorParser {
 					.sourceStart(), name.sourceEnd(), name.sourceStart(), name
 					.sourceEnd());
 			locator.match(field, this.getNodeSet());
-		} else if (node instanceof ModuleDeclaration) {
-			moduleDecl = (ModuleDeclaration)node;
 		}
 	}
 }

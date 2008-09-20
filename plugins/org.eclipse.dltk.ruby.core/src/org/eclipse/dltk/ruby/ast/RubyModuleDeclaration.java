@@ -33,8 +33,12 @@ public class RubyModuleDeclaration extends TypeDeclaration {
 
 	public void traverse(ASTVisitor visitor) throws Exception {
 		if (visitor.visit(this)) {
-			if (this.getClassName() != null) {
-				this.getClassName().traverse(visitor);
+			if (name != null) {
+				if (visitor instanceof IRubyASTVisitor) {
+					((IRubyASTVisitor) visitor).visitTypeName(name);
+				} else {
+					name.traverse(visitor);
+				}
 			}
 			if (this.getBody() != null) {
 				getBody().traverse(visitor);
