@@ -359,8 +359,8 @@ public class RubyTestingMainLaunchConfigurationTab extends
 		if (module != null && module.exists()) {
 			final ITestingEngine[] engines = TestingEngineManager
 					.getEngines(getNatureID());
-			final TestingEngineDetectResult result = TestingEngineManager.detect(
-					engines, module);
+			final TestingEngineDetectResult result = TestingEngineManager
+					.detect(engines, module);
 			if (result != null) {
 				engineType.select(Arrays.asList(engines).indexOf(
 						result.getEngine()));
@@ -461,7 +461,7 @@ public class RubyTestingMainLaunchConfigurationTab extends
 				configuration.setAttribute(DLTKTestingConstants.ATTR_ENGINE_ID,
 						detection.getEngine().getId());
 			}
-		} else {
+		} else if (element != null) {
 			configuration.setAttribute(
 					ScriptLaunchConfigurationConstants.ATTR_PROJECT_NAME,
 					element.getScriptProject().getElementName());
