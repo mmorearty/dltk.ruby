@@ -15,6 +15,7 @@ import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.dltk.launching.InterpreterConfig;
 import org.eclipse.dltk.launching.debug.DbgpInterpreterConfig;
 import org.eclipse.dltk.ruby.debug.RubyDebugPlugin;
+import org.eclipse.dltk.ruby.launching.RubyLaunchConfigurationConstants;
 
 /**
  * Debugging engine implementation for ActiveState's ruby debugging engine.
@@ -109,5 +110,9 @@ public class RubyActiveStateDebuggerRunner extends
 	 */
 	protected String getLogFilePathPreferenceKey() {
 		return RubyActiveStateDebuggerConstants.LOG_FILE_PATH;
+	}
+	
+	protected String getProcessType() {
+		return RubyLaunchConfigurationConstants.ID_RUBY_PROCESS_TYPE;
 	}
 }
