@@ -22,6 +22,10 @@ public class RubyMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 	public RubyMainLaunchConfigurationTab(String mode) {
 		super(mode);
 	}
+	
+	protected boolean canSelectDebugConsoleType() {
+		return true;
+	}
 
 	/*
 	 * @see org.eclipse.dltk.debug.ui.launchConfigurations.ScriptLaunchConfigurationTab#breakOnFirstLinePrefEnabled(org.eclipse.dltk.core.PreferencesLookupDelegate)
