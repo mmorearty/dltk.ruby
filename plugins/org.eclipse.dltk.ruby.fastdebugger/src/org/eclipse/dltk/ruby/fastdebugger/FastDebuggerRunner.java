@@ -22,6 +22,7 @@ import org.eclipse.dltk.launching.InterpreterConfig;
 import org.eclipse.dltk.launching.debug.DbgpInterpreterConfig;
 import org.eclipse.dltk.ruby.debug.RubyDebugPlugin;
 import org.eclipse.dltk.ruby.internal.launching.RubyGenericInstallType;
+import org.eclipse.dltk.ruby.launching.RubyLaunchConfigurationConstants;
 
 public class FastDebuggerRunner extends DebuggingEngineRunner {
 	public static final String ENGINE_ID = "org.eclipse.dltk.ruby.fastdebugger"; //$NON-NLS-1$
@@ -227,5 +228,9 @@ public class FastDebuggerRunner extends DebuggingEngineRunner {
 	 */
 	protected String getLogFilePathPreferenceKey() {
 		return FastDebuggerConstants.LOG_FILE_PATH;
+	}
+	
+	protected String getProcessType() {
+		return RubyLaunchConfigurationConstants.ID_RUBY_PROCESS_TYPE;
 	}
 }
