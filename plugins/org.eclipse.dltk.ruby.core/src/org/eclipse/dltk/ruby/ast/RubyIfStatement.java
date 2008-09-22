@@ -11,7 +11,6 @@ package org.eclipse.dltk.ruby.ast;
 
 import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.ASTVisitor;
-import org.eclipse.dltk.ast.DLTKToken;
 import org.eclipse.dltk.ast.statements.Block;
 import org.eclipse.dltk.utils.CorePrinter;
 
@@ -35,14 +34,6 @@ public class RubyIfStatement extends ASTNode {
 	 */
 	private ASTNode fElseStatement;
 
-	public RubyIfStatement(DLTKToken ifToken, ASTNode condition,
-			ASTNode thenStatement) {
-
-		super(ifToken);
-		this.fCondition = condition;
-		this.fThenStatement = thenStatement;
-	}
-	
 	public RubyIfStatement(ASTNode condition, ASTNode thenStatement, ASTNode elseStatement) {
 		this.fCondition = condition;
 		this.fThenStatement = thenStatement;
