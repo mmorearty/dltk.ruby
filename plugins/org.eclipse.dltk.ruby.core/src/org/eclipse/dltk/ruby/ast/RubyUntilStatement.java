@@ -11,7 +11,6 @@ package org.eclipse.dltk.ruby.ast;
 
 import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.ASTVisitor;
-import org.eclipse.dltk.ast.DLTKToken;
 import org.eclipse.dltk.utils.CorePrinter;
 
 /**
@@ -20,10 +19,6 @@ import org.eclipse.dltk.utils.CorePrinter;
 public class RubyUntilStatement extends ASTNode {
 	private ASTNode fCondition;
 	private ASTNode fAction;
-
-	public RubyUntilStatement(DLTKToken token) {
-		super(token);
-	}
 
 	public RubyUntilStatement(ASTNode condition, ASTNode action) {
 		this.fCondition = condition;
