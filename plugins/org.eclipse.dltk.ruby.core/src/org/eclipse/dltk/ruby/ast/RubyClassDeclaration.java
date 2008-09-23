@@ -36,8 +36,13 @@ public class RubyClassDeclaration extends RubyModuleDeclaration {
 			if (this.getSuperClasses() != null) {
 				this.getSuperClasses().traverse(visitor);
 			}
-			if (this.getClassName() != null) {
-				this.getClassName().traverse(visitor);
+			final ASTNode className = this.getClassName();
+			if (className != null) {
+				if (visitor instanceof IRubyASTVisitor) {
+					((IRubyASTVisitor) visitor).visitTypeName(className);
+				} else {
+					className.traverse(visitor);
+				}
 			}
 			if (this.getBody() != null) {
 				getBody().traverse(visitor);
