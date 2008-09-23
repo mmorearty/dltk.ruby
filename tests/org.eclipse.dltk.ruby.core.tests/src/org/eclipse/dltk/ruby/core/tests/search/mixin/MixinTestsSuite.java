@@ -11,7 +11,6 @@ package org.eclipse.dltk.ruby.core.tests.search.mixin;
 
 import java.io.IOException;
 import java.net.URL;
-import java.nio.CharBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -31,6 +30,7 @@ import org.eclipse.dltk.core.tests.model.AbstractModelTests;
 import org.eclipse.dltk.ruby.core.RubyLanguageToolkit;
 import org.eclipse.dltk.ruby.core.tests.Activator;
 import org.eclipse.dltk.ruby.internal.parser.mixin.RubyMixinElementInfo;
+import org.eclipse.dltk.utils.CharArraySequence;
 import org.eclipse.dltk.utils.TextUtils;
 
 public class MixinTestsSuite extends TestSuite {
@@ -81,8 +81,8 @@ public class MixinTestsSuite extends TestSuite {
 		}
 
 		private CharSequence loadContent(String path) throws IOException {
-			return CharBuffer.wrap(Util.getInputStreamAsCharArray(Activator
-					.openResource(path), -1, null));
+			return new CharArraySequence(Util.getInputStreamAsCharArray(
+					Activator.openResource(path), -1, null));
 		}
 	}
 
