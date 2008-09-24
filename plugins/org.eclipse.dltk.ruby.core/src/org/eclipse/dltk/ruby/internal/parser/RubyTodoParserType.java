@@ -14,7 +14,6 @@ package org.eclipse.dltk.ruby.internal.parser;
 import org.eclipse.dltk.compiler.task.ITodoTaskPreferences;
 import org.eclipse.dltk.compiler.task.TodoTaskPreferences;
 import org.eclipse.dltk.core.IScriptProject;
-import org.eclipse.dltk.ruby.core.RubyNature;
 import org.eclipse.dltk.ruby.core.RubyPlugin;
 import org.eclipse.dltk.validators.core.AbstractBuildParticipantType;
 import org.eclipse.dltk.validators.core.IBuildParticipant;
@@ -39,10 +38,6 @@ public class RubyTodoParserType extends AbstractBuildParticipantType {
 			}
 		}
 		return null;
-	}
-
-	public String getNature() {
-		return RubyNature.NATURE_ID;
 	}
 
 }
