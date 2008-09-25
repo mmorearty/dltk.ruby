@@ -1936,8 +1936,8 @@ public class RubyASTBuildVisitor implements NodeVisitor {
 			int startOffset = receiver.getPosition().getStartOffset();
 			int endOffset = receiver.getPosition().getEndOffset();
 			name = "<< " //$NON-NLS-1$
-					+ new String(String.copyValueOf(content, startOffset,
-							endOffset - startOffset)).trim();
+					+ String.copyValueOf(content, startOffset,
+							endOffset - startOffset).trim();
 		}
 		ISourcePosition pos = iVisited.getReceiverNode().getPosition();
 		ISourcePosition cPos = iVisited.getPosition();
