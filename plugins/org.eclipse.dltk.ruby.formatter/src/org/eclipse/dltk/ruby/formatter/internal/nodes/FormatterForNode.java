@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.formatter.internal.nodes;
 
+import org.eclipse.dltk.formatter.nodes.FormatterBlockWithBeginEndNode;
 import org.eclipse.dltk.formatter.nodes.IFormatterDocument;
 import org.eclipse.dltk.ruby.formatter.RubyFormatterConstants;
 

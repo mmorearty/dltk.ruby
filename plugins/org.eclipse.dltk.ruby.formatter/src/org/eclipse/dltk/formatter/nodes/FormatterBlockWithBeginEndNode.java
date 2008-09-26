@@ -9,33 +9,35 @@
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Alex Panchenko)
  *******************************************************************************/
-package org.eclipse.dltk.ruby.formatter.internal.nodes;
+package org.eclipse.dltk.formatter.nodes;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.dltk.formatter.nodes.FormatterBlockNode;
-import org.eclipse.dltk.formatter.nodes.IFormatterContext;
-import org.eclipse.dltk.formatter.nodes.IFormatterDocument;
-import org.eclipse.dltk.formatter.nodes.IFormatterTextNode;
-import org.eclipse.dltk.formatter.nodes.IFormatterVisitor;
+import org.eclipse.dltk.formatter.FormatterUtils;
 
-public abstract class FormatterBlockWithBeginNode extends FormatterBlockNode {
+public abstract class FormatterBlockWithBeginEndNode extends FormatterBlockNode {
 
 	/**
 	 * @param document
 	 */
-	public FormatterBlockWithBeginNode(IFormatterDocument document) {
+	public FormatterBlockWithBeginEndNode(IFormatterDocument document) {
 		super(document);
 	}
 
-	private IFormatterTextNode begin;
+	private List begin = null;
+	private IFormatterTextNode end;
 
 	public void accept(IFormatterContext context, IFormatterVisitor visitor)
 			throws Exception {
+		context.setBlankLines(getBlankLinesBefore(context));
 		if (begin != null) {
-			visitor.visit(context, begin);
+			for (Iterator i = begin.iterator(); i.hasNext();) {
+				visitor.visit(context, (IFormatterTextNode) i.next());
+			}
 		}
+		context.resetBlankLines();
 		final boolean indenting = isIndenting();
 		if (indenting) {
 			context.incIndent();
@@ -44,13 +46,25 @@ public abstract class FormatterBlockWithBeginNode extends FormatterBlockNode {
 		if (indenting) {
 			context.decIndent();
 		}
+		if (end != null) {
+			visitor.visit(context, end);
+		}
+		context.setBlankLines(getBlankLinesAfter(context));
+	}
+
+	protected int getBlankLinesBefore(IFormatterContext context) {
+		return -1;
+	}
+
+	protected int getBlankLinesAfter(IFormatterContext context) {
+		return -1;
 	}
 
 	/**
 	 * @return the begin
 	 */
-	public IFormatterTextNode getBegin() {
-		return begin;
+	public IFormatterTextNode[] getBegin() {
+		return FormatterUtils.toTextNodeArray(begin);
 	}
 
 	/**
@@ -58,7 +72,31 @@ public abstract class FormatterBlockWithBeginNode extends FormatterBlockNode {
 	 *            the begin to set
 	 */
 	public void setBegin(IFormatterTextNode begin) {
-		this.begin = begin;
+		if (this.begin == null) {
+			this.begin = new ArrayList();
+		}
+		this.begin.add(begin);
+	}
+
+	public void insertBefore(List nodes) {
+		if (this.begin == null) {
+			this.begin = new ArrayList();
+		}
+		this.begin.addAll(0, nodes);
+	}
+
+	/**
+	 * @return the end
+	 */
+	public IFormatterTextNode getEnd() {
+		return end;
+	}
+
+	/**
+	 * @param node
+	 */
+	public void setEnd(IFormatterTextNode node) {
+		this.end = node;
 	}
 
 	/*
@@ -67,7 +105,7 @@ public abstract class FormatterBlockWithBeginNode extends FormatterBlockNode {
 	 */
 	public int getStartOffset() {
 		if (begin != null) {
-			return begin.getStartOffset();
+			return ((IFormatterTextNode) begin.get(0)).getStartOffset();
 		}
 		return super.getStartOffset();
 	}
@@ -77,11 +115,15 @@ public abstract class FormatterBlockWithBeginNode extends FormatterBlockNode {
 	 * org.eclipse.dltk.ruby.formatter.node.FormatterBlockNode#getEndOffset()
 	 */
 	public int getEndOffset() {
+		if (end != null) {
+			return end.getEndOffset();
+		}
 		if (!super.isEmpty()) {
 			return super.getEndOffset();
 		}
 		if (begin != null) {
-			return begin.getEndOffset();
+			return ((IFormatterTextNode) begin.get(begin.size() - 1))
+					.getEndOffset();
 		}
 		return DEFAULT_OFFSET;
 	}
@@ -90,21 +132,24 @@ public abstract class FormatterBlockWithBeginNode extends FormatterBlockNode {
 	 * @see org.eclipse.dltk.ruby.formatter.node.FormatterBlockNode#isEmpty()
 	 */
 	public boolean isEmpty() {
-		return begin == null && super.isEmpty();
+		return begin == null && end == null && super.isEmpty();
 	}
 
 	/*
 	 * @see org.eclipse.dltk.formatter.nodes.FormatterBlockNode#getChildren()
 	 */
 	public List getChildren() {
-		if (begin == null) {
+		if (begin == null && end == null) {
 			return super.getChildren();
 		} else {
 			List result = new ArrayList();
 			if (begin != null) {
-				result.add(begin);
+				result.addAll(begin);
 			}
 			result.addAll(super.getChildren());
+			if (end != null) {
+				result.add(end);
+			}
 			return result;
 		}
 	}
@@ -113,7 +158,7 @@ public abstract class FormatterBlockWithBeginNode extends FormatterBlockNode {
 	 * @see org.eclipse.dltk.ruby.formatter.node.FormatterBlockNode#toString()
 	 */
 	public String toString() {
-		return begin + "\n" + super.toString();
+		return begin + "\n" + super.toString() + "\n" + end;
 	}
 
 }
