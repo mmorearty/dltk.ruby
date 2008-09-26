@@ -17,13 +17,13 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.dltk.compiler.util.Util;
+import org.eclipse.dltk.formatter.nodes.FormatterBlockWithBeginEndNode;
 import org.eclipse.dltk.formatter.nodes.FormatterDocument;
 import org.eclipse.dltk.formatter.nodes.IFormatterContainerNode;
 import org.eclipse.dltk.formatter.nodes.IFormatterDocument;
 import org.eclipse.dltk.formatter.nodes.IFormatterNode;
 import org.eclipse.dltk.ruby.formatter.internal.RubyFormatterNodeBuilder;
 import org.eclipse.dltk.ruby.formatter.internal.RubyParser;
-import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterBlockWithBeginEndNode;
 import org.eclipse.dltk.ui.formatter.FormatterException;
 import org.jruby.ast.ArgumentNode;
 import org.jruby.ast.ListNode;
