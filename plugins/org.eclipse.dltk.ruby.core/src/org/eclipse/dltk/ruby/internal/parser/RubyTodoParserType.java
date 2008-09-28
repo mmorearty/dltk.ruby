@@ -11,14 +11,11 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.internal.parser;
 
-import org.eclipse.dltk.compiler.task.ITodoTaskPreferences;
-import org.eclipse.dltk.compiler.task.TodoTaskPreferences;
-import org.eclipse.dltk.core.IScriptProject;
+import org.eclipse.core.runtime.Preferences;
 import org.eclipse.dltk.ruby.core.RubyPlugin;
-import org.eclipse.dltk.validators.core.AbstractBuildParticipantType;
-import org.eclipse.dltk.validators.core.IBuildParticipant;
+import org.eclipse.dltk.validators.core.AbstractTodoTaskBuildParticipantType;
 
-public class RubyTodoParserType extends AbstractBuildParticipantType {
+public class RubyTodoParserType extends AbstractTodoTaskBuildParticipantType {
 
 	private static final String ID = "org.eclipse.dltk.ruby.todo"; //$NON-NLS-1$
 	private static final String NAME = "Ruby TODO task parser"; //$NON-NLS-1$
@@ -27,17 +24,7 @@ public class RubyTodoParserType extends AbstractBuildParticipantType {
 		super(ID, NAME);
 	}
 
-	protected IBuildParticipant createBuildParticipant(IScriptProject project) {
-		final ITodoTaskPreferences prefs = new TodoTaskPreferences(RubyPlugin
-				.getDefault().getPluginPreferences());
-		if (prefs.isEnabled()) {
-			final RubyTodoTaskAstParser parser = new RubyTodoTaskAstParser(
-					prefs);
-			if (parser.isValid()) {
-				return parser;
-			}
-		}
-		return null;
+	protected Preferences getPreferences() {
+		return RubyPlugin.getDefault().getPluginPreferences();
 	}
-
 }
