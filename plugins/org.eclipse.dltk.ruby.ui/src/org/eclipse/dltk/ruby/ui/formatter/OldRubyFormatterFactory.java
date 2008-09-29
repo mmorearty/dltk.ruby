@@ -16,6 +16,7 @@ import java.util.Map;
 import org.eclipse.dltk.ruby.internal.ui.formatting.OldCodeFormatter;
 import org.eclipse.dltk.ui.formatter.AbstractScriptFormatterFactory;
 import org.eclipse.dltk.ui.formatter.IScriptFormatter;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.text.edits.ReplaceEdit;
 import org.eclipse.text.edits.TextEdit;
 
@@ -29,6 +30,10 @@ public class OldRubyFormatterFactory extends AbstractScriptFormatterFactory {
 		 */
 		public OldFormatterWorker(Map options) {
 			super(options);
+		}
+
+		public int detectIndentationLevel(IDocument document, int offset) {
+			return 0;
 		}
 
 		public TextEdit format(String source, int offset, int length,
