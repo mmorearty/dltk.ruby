@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.dltk.formatter.nodes.FormatterContext;
 import org.eclipse.dltk.formatter.nodes.FormatterDocument;
+import org.eclipse.dltk.formatter.nodes.FormatterIndentDetector;
 import org.eclipse.dltk.formatter.nodes.FormatterWriter;
 import org.eclipse.dltk.formatter.nodes.IFormatterContainerNode;
 import org.eclipse.dltk.ruby.formatter.internal.DumpContentException;
@@ -31,6 +32,8 @@ import org.eclipse.dltk.ruby.formatter.internal.RubyFormatterPlugin;
 import org.eclipse.dltk.ruby.formatter.internal.RubyParser;
 import org.eclipse.dltk.ui.formatter.AbstractScriptFormatter;
 import org.eclipse.dltk.ui.formatter.FormatterException;
+import org.eclipse.dltk.ui.formatter.FormatterSyntaxProblemException;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.text.edits.MultiTextEdit;
 import org.eclipse.text.edits.ReplaceEdit;
 import org.eclipse.text.edits.TextEdit;
@@ -64,11 +67,36 @@ public class RubyFormatter extends AbstractScriptFormatter {
 		this.lineDelimiter = lineDelimiter;
 	}
 
+	public int detectIndentationLevel(IDocument document, int offset) {
+		final String input = document.get();
+		final RubyParserResult result;
+		try {
+			result = RubyParser.parse(input);
+			final RubyFormatterNodeBuilder builder = new RubyFormatterNodeBuilder();
+			final FormatterDocument fDocument = createDocument(input);
+			IFormatterContainerNode root = builder.build(result, fDocument);
+			new RubyFormatterNodeRewriter(result, fDocument).rewrite(root);
+			final FormatterContext context = new FormatterContext();
+			FormatterIndentDetector detector = new FormatterIndentDetector(
+					offset);
+			try {
+				root.accept(context, detector);
+				return detector.getLevel();
+			} catch (Exception e) {
+				// ignore
+			}
+		} catch (FormatterSyntaxProblemException e) {
+			// ignore
+		}
+		// TODO keep current indent
+		return 0;
+	}
+
 	public TextEdit format(String source, int offset, int length, int indent)
 			throws FormatterException {
 		final String input = source.substring(offset, offset + length);
 		final RubyParserResult result = RubyParser.parse(input);
-		final String output = format(input, result);
+		final String output = format(input, result, indent);
 		if (output != null) {
 			if (!input.equals(output)) {
 				if (!isValidation()
@@ -97,18 +125,12 @@ public class RubyFormatter extends AbstractScriptFormatter {
 	 * @param result
 	 * @return
 	 */
-	private String format(String input, RubyParserResult result) {
+	private String format(String input, RubyParserResult result, int indent) {
 		final RubyFormatterNodeBuilder builder = new RubyFormatterNodeBuilder();
-		FormatterDocument document = new FormatterDocument(input);
-		for (int i = 0; i < INDENTING.length; ++i) {
-			document.setBoolean(INDENTING[i], getBoolean(INDENTING[i]));
-		}
-		for (int i = 0; i < BLANK_LINES.length; ++i) {
-			document.setInt(BLANK_LINES[i], getInt(BLANK_LINES[i]));
-		}
+		final FormatterDocument document = createDocument(input);
 		IFormatterContainerNode root = builder.build(result, document);
 		new RubyFormatterNodeRewriter(result, document).rewrite(root);
-		FormatterContext context = new FormatterContext();
+		FormatterContext context = new FormatterContext(indent);
 		FormatterWriter writer = new FormatterWriter(lineDelimiter,
 				createIndentGenerator());
 		writer.setLinesPreserve(getInt(RubyFormatterConstants.LINES_PRESERVE));
@@ -120,6 +142,17 @@ public class RubyFormatter extends AbstractScriptFormatter {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	private FormatterDocument createDocument(String input) {
+		FormatterDocument document = new FormatterDocument(input);
+		for (int i = 0; i < INDENTING.length; ++i) {
+			document.setBoolean(INDENTING[i], getBoolean(INDENTING[i]));
+		}
+		for (int i = 0; i < BLANK_LINES.length; ++i) {
+			document.setInt(BLANK_LINES[i], getInt(BLANK_LINES[i]));
+		}
+		return document;
 	}
 
 	private boolean equalsIgnoreBlanks(Reader inputReader, Reader outputReader) {
