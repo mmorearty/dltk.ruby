@@ -29,6 +29,7 @@ public class RubyFormatterModifyDialog extends FormatterModifyDialog {
 	protected void addPages() {
 		addTabPage("Indentation", new RubyFormatterIndentationTabPage(this));
 		addTabPage("Blank Lines", new RubyFormatterBlankLinesPage(this));
+		addTabPage("Comments", new RubyFormatterCommentsPage(this));
 	}
 
 }

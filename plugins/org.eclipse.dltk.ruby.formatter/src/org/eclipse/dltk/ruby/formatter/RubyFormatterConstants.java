@@ -16,7 +16,7 @@ import org.eclipse.dltk.ui.CodeFormatterConstants;
 public class RubyFormatterConstants {
 
 	public static final String FORMATTER_TAB_CHAR = CodeFormatterConstants.FORMATTER_TAB_CHAR;
-
+	public static final String FORMATTER_TAB_SIZE = CodeFormatterConstants.FORMATTER_TAB_SIZE;
 	public static final String FORMATTER_INDENTATION_SIZE = CodeFormatterConstants.FORMATTER_INDENTATION_SIZE;
 
 	public static final String INDENT_CLASS = "indent.class";
@@ -39,5 +39,8 @@ public class RubyFormatterConstants {
 	public static final String LINES_BEFORE_METHOD = "line.method.before";
 
 	public static final String LINES_PRESERVE = "lines.preserve";
+
+	public static final String WRAP_COMMENTS = "wrap.comments";
+	public static final String WRAP_COMMENTS_LENGTH = "wrap.comments.length";
 
 }

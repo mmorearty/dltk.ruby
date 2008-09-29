@@ -22,6 +22,7 @@ public class RubyFormatterPreferenceInitializer extends
 				.getPreferenceStore();
 		store.setDefault(RubyFormatterConstants.FORMATTER_TAB_CHAR,
 				CodeFormatterConstants.SPACE);
+		store.setDefault(RubyFormatterConstants.FORMATTER_TAB_SIZE, 8);
 		store.setDefault(RubyFormatterConstants.FORMATTER_INDENTATION_SIZE, 2);
 		//
 		store.setDefault(RubyFormatterConstants.INDENT_CLASS, true);
@@ -44,5 +45,8 @@ public class RubyFormatterPreferenceInitializer extends
 		store.setDefault(RubyFormatterConstants.LINES_BEFORE_METHOD, 1);
 		//
 		store.setDefault(RubyFormatterConstants.LINES_PRESERVE, 1);
+		//
+		store.setDefault(RubyFormatterConstants.WRAP_COMMENTS, false);
+		store.setDefault(RubyFormatterConstants.WRAP_COMMENTS_LENGTH, 80);
 	}
 }

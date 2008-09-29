@@ -34,7 +34,7 @@ public abstract class FormatterBlockWithBeginEndNode extends FormatterBlockNode 
 		context.setBlankLines(getBlankLinesBefore(context));
 		if (begin != null) {
 			for (Iterator i = begin.iterator(); i.hasNext();) {
-				visitor.visit(context, (IFormatterTextNode) i.next());
+				((IFormatterNode) i.next()).accept(context, visitor);
 			}
 		}
 		context.resetBlankLines();

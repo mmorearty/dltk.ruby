@@ -44,6 +44,8 @@ public class RubyFormatterIndentationTabPage extends FormatterModifyTabPage {
 		manager.createNumber(tabPolicyGroup,
 				RubyFormatterConstants.FORMATTER_INDENTATION_SIZE,
 				"Indentation size");
+		manager.createNumber(tabPolicyGroup,
+				RubyFormatterConstants.FORMATTER_TAB_SIZE, "Tab size");
 		//
 		Group indentGroup = SWTFactory.createGroup(parent,
 				"Indent within definitions", 1, 1, GridData.FILL_HORIZONTAL);

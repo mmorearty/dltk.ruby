@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.dltk.formatter.FormatterUtils;
 import org.eclipse.dltk.ui.formatter.IFormatterIndentGenerator;
 import org.eclipse.dltk.utils.TextUtils;
 import org.eclipse.jface.text.IRegion;
@@ -29,19 +30,22 @@ public class FormatterWriter implements IFormatterVisitor {
 
 	private boolean lineStarted = false;
 	private char lastChar = 0;
+	private int lineNumber = 0;
 	private final List newLineCallbacks = new ArrayList();
 
 	private final String lineDelimiter;
 	private final IFormatterIndentGenerator indentGenerator;
 	private int linesPreserve = -1;
+	private final int wrapLength;
 
 	/**
 	 * @param lineDelimiter
 	 */
 	public FormatterWriter(String lineDelimiter,
-			IFormatterIndentGenerator indentGenerator) {
+			IFormatterIndentGenerator indentGenerator, int wrapLength) {
 		this.lineDelimiter = lineDelimiter;
 		this.indentGenerator = indentGenerator;
+		this.wrapLength = wrapLength;
 	}
 
 	public void preVisit(IFormatterContext context, IFormatterTextNode node)
@@ -67,9 +71,89 @@ public class FormatterWriter implements IFormatterVisitor {
 
 	protected void write(IFormatterContext context, String text)
 			throws IOException {
-		for (int i = 0; i < text.length(); ++i) {
-			write(context, text.charAt(i));
+		if (!context.isWrapping()) {
+			for (int i = 0; i < text.length(); ++i) {
+				write(context, text.charAt(i));
+			}
+		} else {
+			int offset;
+			int start = findLineStart();
+			if (lineStarted) {
+				offset = calculateOffset(start);
+			} else {
+				offset = 0;
+			}
+			int savedLineNumber = lineNumber;
+			for (int i = 0; i < text.length(); ++i) {
+				final char ch = text.charAt(i);
+				if (lineStarted && !FormatterUtils.isSpace(ch)
+						&& !FormatterUtils.isLineSeparator(ch)) {
+					if (savedLineNumber != lineNumber) {
+						start = findLineStart();
+						offset = calculateOffset(start);
+						savedLineNumber = lineNumber;
+					}
+					if (offset > wrapLength) {
+						int begin = start;
+						while (begin < writer.length()
+								&& FormatterUtils.isSpace(writer.charAt(begin))) {
+							++begin;
+						}
+						if (begin < writer.length()
+								&& writer.charAt(begin) == '#') {
+							++begin;
+						}
+						while (begin < writer.length()
+								&& FormatterUtils.isSpace(writer.charAt(begin))) {
+							++begin;
+						}
+						int wordBegin = writer.length();
+						while (wordBegin > begin
+								&& !FormatterUtils.isSpace(writer
+										.charAt(wordBegin - 1))) {
+							--wordBegin;
+						}
+						int prevWordEnd = wordBegin;
+						while (prevWordEnd > begin
+								&& FormatterUtils.isSpace(writer
+										.charAt(prevWordEnd - 1))) {
+							--prevWordEnd;
+						}
+						if (prevWordEnd > begin) {
+							writer.replace(prevWordEnd, wordBegin,
+									lineDelimiter + "# ");
+							start = prevWordEnd + lineDelimiter.length();
+							offset = calculateOffset(start);
+						}
+					}
+				}
+				write(context, ch);
+				++offset;
+			}
 		}
+	}
+
+	private int calculateOffset(int pos) {
+		int offset = 0;
+		while (pos < writer.length()) {
+			char ch = writer.charAt(pos++);
+			if (ch == '\t') {
+				final int tabSize = indentGenerator.getTabSize();
+				offset = (offset + tabSize - 1) / tabSize * tabSize;
+			} else {
+				++offset;
+			}
+		}
+		return offset;
+	}
+
+	private int findLineStart() {
+		int pos = writer.length();
+		while (pos > 0
+				&& !FormatterUtils.isLineSeparator(writer.charAt(pos - 1))) {
+			--pos;
+		}
+		return pos;
 	}
 
 	/**
@@ -152,6 +236,7 @@ public class FormatterWriter implements IFormatterVisitor {
 		}
 		indent.setLength(0);
 		lineStarted = true;
+		++lineNumber;
 	}
 
 	private void writeEmptyLines() {

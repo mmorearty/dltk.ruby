@@ -117,7 +117,7 @@ public class RubyFormatter extends AbstractScriptFormatter {
 	}
 
 	protected boolean isValidation() {
-		return true;
+		return !getBoolean(RubyFormatterConstants.WRAP_COMMENTS);
 	}
 
 	/**
@@ -132,7 +132,8 @@ public class RubyFormatter extends AbstractScriptFormatter {
 		new RubyFormatterNodeRewriter(result, document).rewrite(root);
 		FormatterContext context = new FormatterContext(indent);
 		FormatterWriter writer = new FormatterWriter(lineDelimiter,
-				createIndentGenerator());
+				createIndentGenerator(),
+				getInt(RubyFormatterConstants.WRAP_COMMENTS_LENGTH));
 		writer.setLinesPreserve(getInt(RubyFormatterConstants.LINES_PRESERVE));
 		try {
 			root.accept(context, writer);
@@ -152,6 +153,10 @@ public class RubyFormatter extends AbstractScriptFormatter {
 		for (int i = 0; i < BLANK_LINES.length; ++i) {
 			document.setInt(BLANK_LINES[i], getInt(BLANK_LINES[i]));
 		}
+		document.setInt(RubyFormatterConstants.FORMATTER_TAB_SIZE,
+				getInt(RubyFormatterConstants.FORMATTER_TAB_SIZE));
+		document.setBoolean(RubyFormatterConstants.WRAP_COMMENTS,
+				getBoolean(RubyFormatterConstants.WRAP_COMMENTS));
 		return document;
 	}
 

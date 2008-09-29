@@ -26,6 +26,7 @@ public class RubyFormatterFactory extends AbstractScriptFormatterFactory {
 	private static final String[] KEYS = {
 			RubyFormatterConstants.FORMATTER_TAB_CHAR,
 			RubyFormatterConstants.FORMATTER_INDENTATION_SIZE,
+			RubyFormatterConstants.FORMATTER_TAB_SIZE,
 			RubyFormatterConstants.INDENT_CLASS,
 			RubyFormatterConstants.INDENT_MODULE,
 			RubyFormatterConstants.INDENT_METHOD,
@@ -41,7 +42,9 @@ public class RubyFormatterFactory extends AbstractScriptFormatterFactory {
 			RubyFormatterConstants.LINES_BEFORE_MODULE,
 			RubyFormatterConstants.LINES_BEFORE_CLASS,
 			RubyFormatterConstants.LINES_BEFORE_METHOD,
-			RubyFormatterConstants.LINES_PRESERVE };
+			RubyFormatterConstants.LINES_PRESERVE,
+			RubyFormatterConstants.WRAP_COMMENTS,
+			RubyFormatterConstants.WRAP_COMMENTS_LENGTH };
 
 	public String getPreferenceQualifier() {
 		return RubyFormatterPlugin.PLUGIN_ID;

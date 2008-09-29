@@ -34,6 +34,7 @@ public class FormatterContext implements IFormatterContext, Cloneable {
 
 	private int indent;
 	private boolean indenting = true;
+	private boolean wrapping = false;
 	private int blankLines = 0;
 	private final List path = new ArrayList();
 
@@ -144,6 +145,14 @@ public class FormatterContext implements IFormatterContext, Cloneable {
 		} else {
 			return -1;
 		}
+	}
+
+	public boolean isWrapping() {
+		return wrapping;
+	}
+
+	public void setWrapping(boolean value) {
+		this.wrapping = value;
 	}
 
 }

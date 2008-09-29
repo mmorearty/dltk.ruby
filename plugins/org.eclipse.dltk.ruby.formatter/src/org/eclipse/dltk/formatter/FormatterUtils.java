@@ -23,6 +23,10 @@ public class FormatterUtils {
 		return c == '\t' || c == ' ';
 	}
 
+	public static boolean isLineSeparator(char c) {
+		return c == '\r' || c == '\n';
+	}
+
 	/**
 	 * @param node
 	 * @return

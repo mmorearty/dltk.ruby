@@ -47,4 +47,8 @@ public interface IFormatterContext {
 
 	int getChildIndex();
 
+	boolean isWrapping();
+
+	void setWrapping(boolean value);
+
 }
