@@ -201,8 +201,15 @@ public class RubyBracketInserter extends BracketInserter {
 					.charAt(0)
 					: 0;
 
-			document.replace(offset, length, prefixString + character
-					+ suffixString);
+			if ((character == '\r') || (character == '\n')) {
+				String lineDelimiter = TextUtilities
+						.getDefaultLineDelimiter(document);
+				document.replace(offset, length, prefixString + lineDelimiter
+						+ suffixString);
+			} else {
+				document.replace(offset, length, prefixString + character
+						+ suffixString);
+			}
 
 			BracketLevel level = new ScriptEditor.BracketLevel();
 			fBracketLevelStack.push(level);
