@@ -5,6 +5,7 @@ import java.io.Reader;
 import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.content.IContentDescription;
+import org.eclipse.dltk.core.DLTKContentTypeManager;
 import org.eclipse.dltk.core.ScriptContentDescriber;
 
 public class RubyContentDescriber extends ScriptContentDescriber {
@@ -15,7 +16,8 @@ public class RubyContentDescriber extends ScriptContentDescriber {
 			throws IOException {
 		if (checkPatterns(contents, header_patterns, null)) {
 			if (description != null) {
-				description.setProperty(DLTK_VALID, TRUE);
+				description.setProperty(DLTKContentTypeManager.DLTK_VALID,
+						Boolean.TRUE);
 			}
 			return VALID;
 		}
