@@ -9,8 +9,6 @@ end
 class Class2
 end
 end
-def topLevelMethod
-end
 module Beta
 def moduleMethod
 #There are 3 blank lines below
@@ -18,4 +16,12 @@ def moduleMethod
 
 
 end
+end
+class ClassA
+end
+class ClassB
+end
+def topLevelMethod1
+end
+def topLevelMethod2
 end
