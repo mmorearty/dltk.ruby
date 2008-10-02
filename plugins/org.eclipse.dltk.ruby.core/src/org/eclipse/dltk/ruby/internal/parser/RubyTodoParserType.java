@@ -12,8 +12,8 @@
 package org.eclipse.dltk.ruby.internal.parser;
 
 import org.eclipse.core.runtime.Preferences;
+import org.eclipse.dltk.core.builder.AbstractTodoTaskBuildParticipantType;
 import org.eclipse.dltk.ruby.core.RubyPlugin;
-import org.eclipse.dltk.validators.core.AbstractTodoTaskBuildParticipantType;
 
 public class RubyTodoParserType extends AbstractTodoTaskBuildParticipantType {
 
