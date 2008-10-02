@@ -57,12 +57,17 @@ public class FormatterWriter implements IFormatterVisitor {
 
 	public void visit(IFormatterContext context, IFormatterTextNode node)
 			throws Exception {
-		if (!excludes.isExcluded(node.getStartOffset(), node.getEndOffset())) {
-			write(context, node.getText());
+		write(context, node.getDocument(), node.getStartOffset(), node
+				.getEndOffset());
+	}
+
+	public void write(IFormatterContext context, IFormatterDocument document,
+			int startOffset, int endOffset) throws Exception {
+		if (!excludes.isExcluded(startOffset, endOffset)) {
+			write(context, document.get(startOffset, endOffset));
 		} else {
-			final IRegion[] regions = excludes.selectValidRanges(node
-					.getStartOffset(), node.getEndOffset());
-			IFormatterDocument document = node.getDocument();
+			final IRegion[] regions = excludes.selectValidRanges(startOffset,
+					endOffset);
 			for (int i = 0; i < regions.length; ++i) {
 				write(context, document.get(regions[i]));
 			}
