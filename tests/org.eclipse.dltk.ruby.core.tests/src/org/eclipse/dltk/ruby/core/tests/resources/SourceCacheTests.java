@@ -14,8 +14,10 @@ package org.eclipse.dltk.ruby.core.tests.resources;
 import java.io.ByteArrayInputStream;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
 import org.eclipse.dltk.compiler.util.Util;
 import org.eclipse.dltk.core.ISourceModule;
+import org.eclipse.dltk.core.SourceParserUtil;
 import org.eclipse.dltk.core.tests.model.AbstractModelTests;
 import org.eclipse.dltk.internal.core.ISourceCodeCache;
 import org.eclipse.dltk.internal.core.ModelManager;
@@ -57,9 +59,19 @@ public class SourceCacheTests extends AbstractModelTests {
 			final String className = "Resource001";
 			final String source = module.getSource();
 			assertTrue(source.indexOf(className) >= 0);
+			// validate AST
+			ModuleDeclaration declaration = SourceParserUtil
+					.getModuleDeclaration(module);
+			assertEquals(1, declaration.getTypes().length);
+			assertEquals(className, declaration.getTypes()[0].getName());
+			// validate model
+			assertEquals(1, module.getAllTypes().length);
+			assertEquals(className, module.getAllTypes()[0].getElementName());
+			// getFile
 			final IFile file = getWorkspaceRoot().getProject(PROJECT_NAME)
 					.getFile(fileName);
 			assertNotNull(cache.getContentsIfCached(file));
+			// change content
 			final String otherClassName = "Class001";
 			final String newSource = source.replaceAll(className,
 					otherClassName);
@@ -68,7 +80,17 @@ public class SourceCacheTests extends AbstractModelTests {
 			assertFalse(newSource.indexOf(className) >= 0);
 			file.setContents(new ByteArrayInputStream(newSource.getBytes()),
 					true, false, null);
+			// test source cache reset
 			assertNull(cache.getContentsIfCached(file));
+			// validate AST is updated
+			declaration = SourceParserUtil.getModuleDeclaration(module);
+			assertEquals(1, declaration.getTypes().length);
+			assertEquals(otherClassName, declaration.getTypes()[0].getName());
+			// validate model is updated
+			assertEquals(1, module.getAllTypes().length);
+			assertEquals(otherClassName, module.getAllTypes()[0]
+					.getElementName());
+			// test source
 			assertEquals(newSource, module.getSource());
 		} finally {
 			cache.endOperation();
