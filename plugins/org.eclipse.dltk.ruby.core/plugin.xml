@@ -25,9 +25,6 @@
             name="Ruby parser"
             nature="org.eclipse.dltk.ruby.core.nature">
       </buildParticipant>
-   </extension>
-   <extension
-         point="org.eclipse.dltk.core.buildParticipant">
       <buildParticipant
             class="org.eclipse.dltk.ruby.internal.parser.RubyTodoParserType"
             id="org.eclipse.dltk.ruby.todo"
