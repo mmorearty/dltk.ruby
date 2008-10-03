@@ -20,9 +20,22 @@
    <extension
          point="org.eclipse.dltk.core.buildParticipant">
       <buildParticipant
+            class="org.eclipse.dltk.core.builder.ParserBuildParticipantFactory"
+            id="org.eclipse.dltk.ruby.buildParticipant.parser"
+            name="Ruby parser"
+            nature="org.eclipse.dltk.ruby.core.nature">
+      </buildParticipant>
+   </extension>
+   <extension
+         point="org.eclipse.dltk.core.buildParticipant">
+      <buildParticipant
             class="org.eclipse.dltk.ruby.internal.parser.RubyTodoParserType"
             id="org.eclipse.dltk.ruby.todo"
+            name="Ruby TODO task parser"
             nature="org.eclipse.dltk.ruby.core.nature">
+            <requires
+                  id="org.eclipse.dltk.ruby.buildParticipant.parser">
+            </requires>
       </buildParticipant>
    </extension>
   <extension

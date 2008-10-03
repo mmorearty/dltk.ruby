@@ -212,6 +212,7 @@ public class ASTUtils {
 
 		class Visitor extends ASTVisitor {
 			ASTNode result = null;
+			int offset = Integer.MAX_VALUE;
 
 			public ASTNode getResult() {
 				return result;
@@ -221,10 +222,13 @@ public class ASTUtils {
 				if (s.sourceStart() < 0 || s.sourceEnd() < 0)
 					return true;
 				int sourceEnd = s.sourceEnd();
-				if (Math.abs(sourceEnd - boundaryOffset) <= 0) { // XXX: was
+				int newOffset = Math.abs(sourceEnd - boundaryOffset);
+				if (newOffset==0) {// < offset
+					// XXX: was
 					// ... <= 1
 					result = s;
-					if (DLTKCore.DEBUG_SELECTION)
+					offset = newOffset;
+					//if (DLTKCore.DEBUG_SELECTION)
 						System.out.println("Found " + s.getClass().getName()); //$NON-NLS-1$
 				}
 				return true;

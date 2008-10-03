@@ -11,20 +11,16 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.internal.parser;
 
-import org.eclipse.core.runtime.Preferences;
+import org.eclipse.dltk.compiler.task.ITodoTaskPreferences;
+import org.eclipse.dltk.compiler.task.TodoTaskPreferences;
+import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.builder.AbstractTodoTaskBuildParticipantType;
 import org.eclipse.dltk.ruby.core.RubyPlugin;
 
 public class RubyTodoParserType extends AbstractTodoTaskBuildParticipantType {
 
-	private static final String ID = "org.eclipse.dltk.ruby.todo"; //$NON-NLS-1$
-	private static final String NAME = "Ruby TODO task parser"; //$NON-NLS-1$
-
-	public RubyTodoParserType() {
-		super(ID, NAME);
-	}
-
-	protected Preferences getPreferences() {
-		return RubyPlugin.getDefault().getPluginPreferences();
+	protected ITodoTaskPreferences getPreferences(IScriptProject project) {
+		return new TodoTaskPreferences(RubyPlugin.getDefault()
+				.getPluginPreferences());
 	}
 }
