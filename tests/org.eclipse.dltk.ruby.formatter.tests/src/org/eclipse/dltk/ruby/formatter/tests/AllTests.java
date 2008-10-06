@@ -24,7 +24,6 @@ public class AllTests {
 		// $JUnit-BEGIN$
 		suite.addTestSuite(ParserTest.class);
 		suite.addTestSuite(SimpleTests.class);
-		suite.addTestSuite(ExcludeRegionListTest.class);
 		suite.addTest(ClassesAndMethodsTest.suite());
 		suite.addTest(ModulesTest.suite());
 		suite.addTest(BlocksTest.suite());
