@@ -9,22 +9,22 @@
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Alex Panchenko)
  *******************************************************************************/
-package org.eclipse.dltk.ruby.formatter.internal.nodes;
+package org.eclipse.dltk.ruby.formatter.internal;
 
-import org.eclipse.dltk.formatter.IFormatterDocument;
-import org.eclipse.dltk.ruby.formatter.RubyFormatterConstants;
+import org.eclipse.dltk.formatter.FormatterContext;
+import org.eclipse.dltk.formatter.IFormatterContainerNode;
+import org.eclipse.dltk.formatter.IFormatterNode;
+import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterRequireNode;
 
-public class FormatterForNode extends FormatterBlockWithBeginEndNode {
+public class RubyFormatterContext extends FormatterContext {
 
-	/**
-	 * @param document
-	 */
-	public FormatterForNode(IFormatterDocument document) {
-		super(document);
+	public RubyFormatterContext(int indent) {
+		super(indent);
 	}
 
-	protected boolean isIndenting() {
-		return getDocument().getBoolean(RubyFormatterConstants.INDENT_BLOCKS);
+	protected boolean isCountable(IFormatterNode node) {
+		return node instanceof IFormatterContainerNode
+				|| node instanceof FormatterRequireNode;
 	}
 
 }

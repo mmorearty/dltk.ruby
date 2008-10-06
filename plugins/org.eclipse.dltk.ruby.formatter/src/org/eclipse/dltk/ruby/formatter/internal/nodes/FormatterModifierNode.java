@@ -11,10 +11,10 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.formatter.internal.nodes;
 
-import org.eclipse.dltk.formatter.nodes.FormatterBlockNode;
-import org.eclipse.dltk.formatter.nodes.IFormatterContext;
-import org.eclipse.dltk.formatter.nodes.IFormatterDocument;
-import org.eclipse.dltk.formatter.nodes.IFormatterVisitor;
+import org.eclipse.dltk.formatter.FormatterBlockNode;
+import org.eclipse.dltk.formatter.IFormatterContext;
+import org.eclipse.dltk.formatter.IFormatterDocument;
+import org.eclipse.dltk.formatter.IFormatterWriter;
 import org.eclipse.dltk.ruby.formatter.RubyFormatterConstants;
 
 public class FormatterModifierNode extends FormatterBlockNode {
@@ -26,7 +26,7 @@ public class FormatterModifierNode extends FormatterBlockNode {
 		super(document);
 	}
 
-	public void accept(IFormatterContext context, IFormatterVisitor visitor)
+	public void accept(IFormatterContext context, IFormatterWriter visitor)
 			throws Exception {
 		final boolean indenting = isIndenting();
 		if (indenting) {

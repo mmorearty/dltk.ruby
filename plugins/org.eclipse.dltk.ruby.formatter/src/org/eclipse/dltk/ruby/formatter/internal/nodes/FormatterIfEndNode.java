@@ -11,8 +11,8 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.formatter.internal.nodes;
 
-import org.eclipse.dltk.formatter.nodes.FormatterTextNode;
-import org.eclipse.dltk.formatter.nodes.IFormatterDocument;
+import org.eclipse.dltk.formatter.FormatterTextNode;
+import org.eclipse.dltk.formatter.IFormatterDocument;
 import org.jruby.lexer.yacc.ISourcePosition;
 
 public class FormatterIfEndNode extends FormatterTextNode {

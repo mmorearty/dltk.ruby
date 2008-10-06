@@ -11,9 +11,8 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.formatter.internal.nodes;
 
-import org.eclipse.dltk.formatter.nodes.FormatterBlockWithBeginEndNode;
-import org.eclipse.dltk.formatter.nodes.IFormatterCommentableNode;
-import org.eclipse.dltk.formatter.nodes.IFormatterDocument;
+import org.eclipse.dltk.formatter.IFormatterCommentableNode;
+import org.eclipse.dltk.formatter.IFormatterDocument;
 
 public class FormatterAtBeginNode extends FormatterBlockWithBeginEndNode
 		implements IFormatterCommentableNode {

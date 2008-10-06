@@ -11,10 +11,10 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.formatter.internal.nodes;
 
-import org.eclipse.dltk.formatter.nodes.FormatterTextNode;
-import org.eclipse.dltk.formatter.nodes.IFormatterContext;
-import org.eclipse.dltk.formatter.nodes.IFormatterDocument;
-import org.eclipse.dltk.formatter.nodes.IFormatterVisitor;
+import org.eclipse.dltk.formatter.FormatterTextNode;
+import org.eclipse.dltk.formatter.IFormatterContext;
+import org.eclipse.dltk.formatter.IFormatterDocument;
+import org.eclipse.dltk.formatter.IFormatterWriter;
 
 public class FormatterStringNode extends FormatterTextNode {
 
@@ -28,12 +28,12 @@ public class FormatterStringNode extends FormatterTextNode {
 		super(document, startOffset, endOffset);
 	}
 
-	public void accept(IFormatterContext context, IFormatterVisitor visitor)
+	public void accept(IFormatterContext context, IFormatterWriter visitor)
 			throws Exception {
-		visitor.preVisit(context, this);
+		visitor.ensureLineStarted(context);
 		IFormatterContext strContext = context.copy();
 		strContext.setIndenting(false);
-		visitor.visit(strContext, this);
+		visitor.write(strContext, getStartOffset(), getEndOffset());
 	}
 
 }

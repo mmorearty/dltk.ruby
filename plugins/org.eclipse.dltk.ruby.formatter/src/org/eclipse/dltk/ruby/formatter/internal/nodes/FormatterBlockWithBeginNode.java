@@ -9,11 +9,16 @@
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Alex Panchenko)
  *******************************************************************************/
-package org.eclipse.dltk.formatter.nodes;
+package org.eclipse.dltk.ruby.formatter.internal.nodes;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.dltk.formatter.FormatterBlockNode;
+import org.eclipse.dltk.formatter.IFormatterContext;
+import org.eclipse.dltk.formatter.IFormatterDocument;
+import org.eclipse.dltk.formatter.IFormatterTextNode;
+import org.eclipse.dltk.formatter.IFormatterWriter;
 
 public abstract class FormatterBlockWithBeginNode extends FormatterBlockNode {
 
@@ -26,10 +31,12 @@ public abstract class FormatterBlockWithBeginNode extends FormatterBlockNode {
 
 	private IFormatterTextNode begin;
 
-	public void accept(IFormatterContext context, IFormatterVisitor visitor)
+	public void accept(IFormatterContext context, IFormatterWriter visitor)
 			throws Exception {
 		if (begin != null) {
-			visitor.visit(context, begin);
+			visitor
+					.write(context, begin.getStartOffset(), begin
+							.getEndOffset());
 		}
 		final boolean indenting = isIndenting();
 		if (indenting) {

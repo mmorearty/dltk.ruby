@@ -19,13 +19,14 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.dltk.formatter.nodes.FormatterContext;
-import org.eclipse.dltk.formatter.nodes.FormatterDocument;
-import org.eclipse.dltk.formatter.nodes.FormatterIndentDetector;
-import org.eclipse.dltk.formatter.nodes.FormatterWriter;
-import org.eclipse.dltk.formatter.nodes.IFormatterContainerNode;
+import org.eclipse.dltk.formatter.FormatterDocument;
+import org.eclipse.dltk.formatter.FormatterIndentDetector;
+import org.eclipse.dltk.formatter.FormatterWriter;
+import org.eclipse.dltk.formatter.IFormatterContainerNode;
+import org.eclipse.dltk.formatter.IFormatterContext;
 import org.eclipse.dltk.ruby.formatter.internal.DumpContentException;
 import org.eclipse.dltk.ruby.formatter.internal.Messages;
+import org.eclipse.dltk.ruby.formatter.internal.RubyFormatterContext;
 import org.eclipse.dltk.ruby.formatter.internal.RubyFormatterNodeBuilder;
 import org.eclipse.dltk.ruby.formatter.internal.RubyFormatterNodeRewriter;
 import org.eclipse.dltk.ruby.formatter.internal.RubyFormatterPlugin;
@@ -76,7 +77,7 @@ public class RubyFormatter extends AbstractScriptFormatter {
 			final FormatterDocument fDocument = createDocument(input);
 			IFormatterContainerNode root = builder.build(result, fDocument);
 			new RubyFormatterNodeRewriter(result, fDocument).rewrite(root);
-			final FormatterContext context = new FormatterContext();
+			final IFormatterContext context = new RubyFormatterContext(0);
 			FormatterIndentDetector detector = new FormatterIndentDetector(
 					offset);
 			try {
@@ -130,7 +131,7 @@ public class RubyFormatter extends AbstractScriptFormatter {
 		final FormatterDocument document = createDocument(input);
 		IFormatterContainerNode root = builder.build(result, document);
 		new RubyFormatterNodeRewriter(result, document).rewrite(root);
-		FormatterContext context = new FormatterContext(indent);
+		IFormatterContext context = new RubyFormatterContext(indent);
 		FormatterWriter writer = new FormatterWriter(document, lineDelimiter,
 				createIndentGenerator(),
 				getInt(RubyFormatterConstants.WRAP_COMMENTS_LENGTH));

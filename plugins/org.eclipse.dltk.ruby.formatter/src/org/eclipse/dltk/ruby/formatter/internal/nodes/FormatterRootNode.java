@@ -9,14 +9,19 @@
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Alex Panchenko)
  *******************************************************************************/
-package org.eclipse.dltk.formatter.nodes;
+package org.eclipse.dltk.ruby.formatter.internal.nodes;
 
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.dltk.formatter.FormatterBlockNode;
 import org.eclipse.dltk.formatter.FormatterUtils;
+import org.eclipse.dltk.formatter.IFormatterContainerNode;
+import org.eclipse.dltk.formatter.IFormatterContext;
+import org.eclipse.dltk.formatter.IFormatterDocument;
+import org.eclipse.dltk.formatter.IFormatterNode;
+import org.eclipse.dltk.formatter.IFormatterWriter;
 import org.eclipse.dltk.ruby.formatter.RubyFormatterConstants;
-import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterRequireNode;
 
 public class FormatterRootNode extends FormatterBlockNode {
 
@@ -28,7 +33,7 @@ public class FormatterRootNode extends FormatterBlockNode {
 	}
 
 	protected void acceptNodes(final List nodes, IFormatterContext context,
-			IFormatterVisitor visitor) throws Exception {
+			IFormatterWriter visitor) throws Exception {
 		boolean wasRequire = false;
 		for (Iterator i = nodes.iterator(); i.hasNext();) {
 			IFormatterNode node = (IFormatterNode) i.next();

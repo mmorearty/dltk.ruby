@@ -1,9 +1,9 @@
 package org.eclipse.dltk.ruby.formatter.internal.nodes;
 
-import org.eclipse.dltk.formatter.nodes.FormatterTextNode;
-import org.eclipse.dltk.formatter.nodes.IFormatterContext;
-import org.eclipse.dltk.formatter.nodes.IFormatterDocument;
-import org.eclipse.dltk.formatter.nodes.IFormatterVisitor;
+import org.eclipse.dltk.formatter.FormatterTextNode;
+import org.eclipse.dltk.formatter.IFormatterContext;
+import org.eclipse.dltk.formatter.IFormatterDocument;
+import org.eclipse.dltk.formatter.IFormatterWriter;
 
 public class FormatterRDocNode extends FormatterTextNode {
 
@@ -12,11 +12,11 @@ public class FormatterRDocNode extends FormatterTextNode {
 		super(document, startOffset, endOffset);
 	}
 
-	public void accept(IFormatterContext context, IFormatterVisitor visitor)
+	public void accept(IFormatterContext context, IFormatterWriter visitor)
 			throws Exception {
 		IFormatterContext commentContext = context.copy();
 		commentContext.setIndenting(false);
-		visitor.visit(commentContext, this);
+		visitor.write(commentContext, getStartOffset(), getEndOffset());
 	}
 
 }

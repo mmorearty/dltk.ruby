@@ -9,13 +9,19 @@
  * Contributors:
  *     xored software, Inc. - initial API and Implementation (Alex Panchenko)
  *******************************************************************************/
-package org.eclipse.dltk.formatter.nodes;
+package org.eclipse.dltk.ruby.formatter.internal.nodes;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.dltk.formatter.FormatterBlockNode;
 import org.eclipse.dltk.formatter.FormatterUtils;
+import org.eclipse.dltk.formatter.IFormatterContext;
+import org.eclipse.dltk.formatter.IFormatterDocument;
+import org.eclipse.dltk.formatter.IFormatterNode;
+import org.eclipse.dltk.formatter.IFormatterTextNode;
+import org.eclipse.dltk.formatter.IFormatterWriter;
 
 public abstract class FormatterBlockWithBeginEndNode extends FormatterBlockNode {
 
@@ -29,7 +35,7 @@ public abstract class FormatterBlockWithBeginEndNode extends FormatterBlockNode 
 	private List begin = null;
 	private IFormatterTextNode end;
 
-	public void accept(IFormatterContext context, IFormatterVisitor visitor)
+	public void accept(IFormatterContext context, IFormatterWriter visitor)
 			throws Exception {
 		context.setBlankLines(getBlankLinesBefore(context));
 		if (begin != null) {
@@ -47,7 +53,7 @@ public abstract class FormatterBlockWithBeginEndNode extends FormatterBlockNode 
 			context.decIndent();
 		}
 		if (end != null) {
-			visitor.visit(context, end);
+			visitor.write(context, end.getStartOffset(), end.getEndOffset());
 		}
 		context.setBlankLines(getBlankLinesAfter(context));
 	}

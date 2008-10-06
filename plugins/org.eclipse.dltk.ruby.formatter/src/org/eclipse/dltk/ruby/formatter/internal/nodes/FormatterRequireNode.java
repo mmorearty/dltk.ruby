@@ -11,8 +11,8 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.formatter.internal.nodes;
 
-import org.eclipse.dltk.formatter.nodes.FormatterTextNode;
-import org.eclipse.dltk.formatter.nodes.IFormatterDocument;
+import org.eclipse.dltk.formatter.FormatterTextNode;
+import org.eclipse.dltk.formatter.IFormatterDocument;
 
 public class FormatterRequireNode extends FormatterTextNode {
 

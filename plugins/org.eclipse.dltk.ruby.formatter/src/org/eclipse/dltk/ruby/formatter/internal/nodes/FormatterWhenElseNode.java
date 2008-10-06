@@ -11,8 +11,7 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.formatter.internal.nodes;
 
-import org.eclipse.dltk.formatter.nodes.FormatterBlockWithBeginNode;
-import org.eclipse.dltk.formatter.nodes.IFormatterDocument;
+import org.eclipse.dltk.formatter.IFormatterDocument;
 import org.eclipse.dltk.ruby.formatter.RubyFormatterConstants;
 
 public class FormatterWhenElseNode extends FormatterBlockWithBeginNode {

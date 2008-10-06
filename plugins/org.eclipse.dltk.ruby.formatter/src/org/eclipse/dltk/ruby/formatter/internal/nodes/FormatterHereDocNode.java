@@ -11,13 +11,13 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.formatter.internal.nodes;
 
+import org.eclipse.dltk.formatter.FormatterTextNode;
 import org.eclipse.dltk.formatter.FormatterUtils;
-import org.eclipse.dltk.formatter.nodes.FormatterTextNode;
-import org.eclipse.dltk.formatter.nodes.IFormatterCallback;
-import org.eclipse.dltk.formatter.nodes.IFormatterContext;
-import org.eclipse.dltk.formatter.nodes.IFormatterDocument;
-import org.eclipse.dltk.formatter.nodes.IFormatterVisitor;
-import org.eclipse.dltk.formatter.nodes.IFormatterWriter;
+import org.eclipse.dltk.formatter.IFormatterCallback;
+import org.eclipse.dltk.formatter.IFormatterContext;
+import org.eclipse.dltk.formatter.IFormatterDocument;
+import org.eclipse.dltk.formatter.IFormatterWriter;
+import org.eclipse.dltk.formatter.IFormatterRawWriter;
 import org.eclipse.jface.text.IRegion;
 
 public class FormatterHereDocNode extends FormatterTextNode implements
@@ -68,11 +68,11 @@ public class FormatterHereDocNode extends FormatterTextNode implements
 		this.endMarkerRegion = endMarkerRegion;
 	}
 
-	public void accept(IFormatterContext context, IFormatterVisitor visitor)
+	public void accept(IFormatterContext context, IFormatterWriter visitor)
 			throws Exception {
 		IFormatterContext heredocContext = context.copy();
 		heredocContext.setIndenting(false);
-		visitor.visit(heredocContext, this);
+		visitor.write(heredocContext, getStartOffset(), getEndOffset());
 		if (contentRegion != null) {
 			visitor.excludeRegion(contentRegion);
 		}
@@ -82,7 +82,7 @@ public class FormatterHereDocNode extends FormatterTextNode implements
 		visitor.addNewLineCallback(this);
 	}
 
-	public void call(IFormatterContext context, IFormatterWriter writer) {
+	public void call(IFormatterContext context, IFormatterRawWriter writer) {
 		final IFormatterDocument doc = getDocument();
 		if (contentRegion != null && contentRegion.getLength() > 0) {
 			writer.writeText(context, doc.get(contentRegion));
