@@ -36,4 +36,8 @@ public class RubyLanguageToolkit extends AbstractLanguageToolkit {
 	public String getLanguageContentType() {
 		return "org.eclipse.dltk.rubyContentType"; //$NON-NLS-1$
 	}
+	
+	public String getPreferenceQualifier() {
+		return RubyPlugin.PLUGIN_ID;
+	}
 }
