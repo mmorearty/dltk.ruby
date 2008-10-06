@@ -34,6 +34,7 @@ public class FormatterWriter implements IFormatterVisitor {
 	private final List newLineCallbacks = new ArrayList();
 
 	private final String lineDelimiter;
+	private final IFormatterDocument document;
 	private final IFormatterIndentGenerator indentGenerator;
 	private int linesPreserve = -1;
 	private final int wrapLength;
@@ -41,8 +42,9 @@ public class FormatterWriter implements IFormatterVisitor {
 	/**
 	 * @param lineDelimiter
 	 */
-	public FormatterWriter(String lineDelimiter,
+	public FormatterWriter(IFormatterDocument document, String lineDelimiter,
 			IFormatterIndentGenerator indentGenerator, int wrapLength) {
+		this.document = document;
 		this.lineDelimiter = lineDelimiter;
 		this.indentGenerator = indentGenerator;
 		this.wrapLength = wrapLength;
@@ -57,12 +59,11 @@ public class FormatterWriter implements IFormatterVisitor {
 
 	public void visit(IFormatterContext context, IFormatterTextNode node)
 			throws Exception {
-		write(context, node.getDocument(), node.getStartOffset(), node
-				.getEndOffset());
+		write(context, node.getStartOffset(), node.getEndOffset());
 	}
 
-	public void write(IFormatterContext context, IFormatterDocument document,
-			int startOffset, int endOffset) throws Exception {
+	public void write(IFormatterContext context, int startOffset, int endOffset)
+			throws Exception {
 		if (!excludes.isExcluded(startOffset, endOffset)) {
 			write(context, document.get(startOffset, endOffset));
 		} else {
