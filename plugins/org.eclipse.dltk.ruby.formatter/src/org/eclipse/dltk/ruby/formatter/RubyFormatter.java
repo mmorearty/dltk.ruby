@@ -133,8 +133,9 @@ public class RubyFormatter extends AbstractScriptFormatter {
 		new RubyFormatterNodeRewriter(result, document).rewrite(root);
 		IFormatterContext context = new RubyFormatterContext(indent);
 		FormatterWriter writer = new FormatterWriter(document, lineDelimiter,
-				createIndentGenerator(),
-				getInt(RubyFormatterConstants.WRAP_COMMENTS_LENGTH));
+				createIndentGenerator());
+		writer
+				.setWrapLength(getInt(RubyFormatterConstants.WRAP_COMMENTS_LENGTH));
 		writer.setLinesPreserve(getInt(RubyFormatterConstants.LINES_PRESERVE));
 		try {
 			root.accept(context, writer);
