@@ -1,13 +1,17 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Tests Plug-in
-Bundle-SymbolicName: org.eclipse.dltk.ruby.formatter.tests
+Bundle-SymbolicName: org.eclipse.dltk.ruby.formatter.tests;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Require-Bundle: org.eclipse.core.runtime,
  org.junit,
  org.eclipse.jface.text,
  org.eclipse.dltk.core,
- org.eclipse.dltk.ui
-Eclipse-LazyStart: true
+ org.eclipse.dltk.ui,
+ org.eclipse.dltk.ruby.formatter,
+ org.eclipse.core.resources,
+ org.eclipse.ui,
+ org.eclipse.dltk.formatter
+Eclipse-LazyStart: false
 Bundle-RequiredExecutionEnvironment: J2SE-1.4
-Fragment-Host: org.eclipse.dltk.ruby.formatter
+Export-Package: org.eclipse.dltk.ruby.formatter.tests
