@@ -19,7 +19,7 @@ import org.eclipse.dltk.compiler.util.Util;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.SourceParserUtil;
 import org.eclipse.dltk.core.tests.model.AbstractModelTests;
-import org.eclipse.dltk.internal.core.ISourceCodeCache;
+import org.eclipse.dltk.internal.core.IFileCache;
 import org.eclipse.dltk.internal.core.ModelManager;
 import org.eclipse.dltk.ruby.core.tests.Activator;
 
@@ -49,8 +49,8 @@ public class SourceCacheTests extends AbstractModelTests {
 	}
 
 	public void testResourceChange() throws Exception {
-		final ISourceCodeCache cache = ModelManager.getModelManager()
-				.getSourceCodeCache();
+		final IFileCache cache = ModelManager.getModelManager()
+				.getFileCache();
 		cache.beginOperation();
 		try {
 			final String fileName = "resource002.rb";
@@ -98,8 +98,8 @@ public class SourceCacheTests extends AbstractModelTests {
 	}
 
 	public void testResourceDelete() throws Exception {
-		final ISourceCodeCache cache = ModelManager.getModelManager()
-				.getSourceCodeCache();
+		final IFileCache cache = ModelManager.getModelManager()
+				.getFileCache();
 		cache.beginOperation();
 		try {
 			final String fileName = "resource002.rb";
