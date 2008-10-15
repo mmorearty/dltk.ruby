@@ -18,7 +18,6 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.eclipse.dltk.compiler.util.Util;
-import org.eclipse.dltk.ruby.formatter.internal.RubyFormatterPlugin;
 import org.eclipse.dltk.utils.TextUtils;
 import org.osgi.framework.Bundle;
 
@@ -33,7 +32,7 @@ public class ScriptedTest extends AbstractFormatterTest {
 	}
 
 	protected static Bundle getResourceBundle() {
-		return RubyFormatterPlugin.getDefault().getBundle();
+		return RubyFormatterTestsPlugin.getDefault().getBundle();
 	}
 
 	protected static char[] readResource(String resourceName)
