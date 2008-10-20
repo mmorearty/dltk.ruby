@@ -57,7 +57,7 @@ public class RubyEditor extends ScriptEditor {
 	protected void initializeEditor() {
 		super.initializeEditor();
 		setEditorContextMenuId(EDITOR_CONTEXT);
-		setRulerContextMenuId(RULER_CONTEXT);		
+		setRulerContextMenuId(RULER_CONTEXT);
 	}
 
 	protected IPreferenceStore getScriptPreferenceStore() {
@@ -98,7 +98,6 @@ public class RubyEditor extends ScriptEditor {
 		return new FoldingActionGroup(this, getViewer(), RubyUI.getDefault()
 				.getPreferenceStore());
 	}
-	
 
 	public String getEditorId() {
 		return EDITOR_ID;
@@ -145,7 +144,7 @@ public class RubyEditor extends ScriptEditor {
 		SourceViewerConfiguration configuration = getSourceViewerConfiguration();
 		((ToggleCommentAction) action).configure(sourceViewer, configuration);
 	}
-	
+
 	public void createPartControl(Composite parent) {
 		super.createPartControl(parent);
 
@@ -190,7 +189,7 @@ public class RubyEditor extends ScriptEditor {
 			notifyDoSetInput(element);
 		}
 	}
-	
+
 	public void dispose() {
 		ISourceViewer sourceViewer = getSourceViewer();
 		if (sourceViewer instanceof ITextViewerExtension)
@@ -198,7 +197,7 @@ public class RubyEditor extends ScriptEditor {
 					.removeVerifyKeyListener(fBracketInserter);
 		super.dispose();
 	}
-	
+
 	protected void configureSourceViewerDecorationSupport(
 			SourceViewerDecorationSupport support) {
 		support.setCharacterPairMatcher(bracketMatcher);
@@ -207,7 +206,7 @@ public class RubyEditor extends ScriptEditor {
 
 		super.configureSourceViewerDecorationSupport(support);
 	}
-	
+
 	/**
 	 * Jumps to the matching bracket.
 	 */
@@ -230,7 +229,7 @@ public class RubyEditor extends ScriptEditor {
 		int sourceCaretOffset = selection.getOffset() + selection.getLength();
 		if (isSurroundedByBrackets(document, sourceCaretOffset))
 			sourceCaretOffset -= selection.getLength();
-		
+
 		IRegion region = bracketMatcher.match(document, sourceCaretOffset);
 		if (region == null) {
 			setStatusLineErrorMessage(Messages.RubyEditor_noMatchingBracketFound);
@@ -273,5 +272,5 @@ public class RubyEditor extends ScriptEditor {
 		sourceViewer.setSelectedRange(targetOffset, selection.getLength());
 		sourceViewer.revealRange(targetOffset, selection.getLength());
 	}
-	
+
 }
