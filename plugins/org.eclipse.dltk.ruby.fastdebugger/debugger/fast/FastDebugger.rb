@@ -19,9 +19,8 @@ require 'fast/FastBreakpointManager'
 require 'fast/FastContext'
 
 module XoredDebugger
-
     class FastDebugger < AbstractDebugger
-		include Logger
+        include Logger
 
         def initialize()
             super
@@ -37,21 +36,21 @@ module XoredDebugger
             #Debugger.tracing = true
             Debugger.start
             if checkDebuggerMethod('catchpoint=') then
-              Debugger.catchpoint = 'Object'
+                Debugger.catchpoint = 'Object'
             elsif checkDebuggerMethod('add_catchpoint') then
-              Debugger.add_catchpoint 'Object'
+                Debugger.add_catchpoint 'Object'
             else
-              log('WARNING: catchpoint not set, available Debugger methods: ' + Debugger.singleton_methods(false).join(', '))
+                log('WARNING: catchpoint not set, available Debugger methods: ' + Debugger.singleton_methods(false).join(', '))
             end
         end
 
         def checkDebuggerMethod(methodName)
-          for m in Debugger.singleton_methods(false)
-            if m == methodName then
-              return true
+            for m in Debugger.singleton_methods(false)
+                if m == methodName then
+                    return true
+                end
             end
-          end
-          return false
+            return false
         end
 
         private :checkDebuggerMethod
@@ -74,7 +73,6 @@ module XoredDebugger
             return FastContext.new(thread)
         end
 
-
         def create_debug_thread(*args, &block)
             Debugger::DebugThread.new(*args, &block)
         end
@@ -87,10 +85,10 @@ module XoredDebugger
         def at_breakpoint(context, breakpoint)
             bp = @breakpoint_manager.check_line_breakpoint(breakpoint.id) 
             if bp
-            	if bp.state
-                	handler.at_breakpoint(current_context) unless handler.nil?
+                if bp.state
+                    handler.at_breakpoint(current_context) unless handler.nil?
                 else
-                	current_context.skip_line = true
+                    current_context.skip_line = true
                 end
             else
                 log('Line breakpoint doesn''t exist (raw id: ' + breakpoint.id.to_s + ')')
