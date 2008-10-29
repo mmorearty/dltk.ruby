@@ -89,7 +89,11 @@ public class RubyNewProjectWizard extends NewElementWizard implements
 			}
 
 			protected boolean interpeterRequired() {
-				return false;
+				/*
+				 * It is not allowed to create Ruby project without interpreter
+				 * to minimize further user's problems.
+				 */
+				return true;
 			}
 		};
 
