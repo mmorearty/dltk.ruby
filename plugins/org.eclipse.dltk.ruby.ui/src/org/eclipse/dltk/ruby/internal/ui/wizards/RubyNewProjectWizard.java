@@ -89,7 +89,7 @@ public class RubyNewProjectWizard extends NewElementWizard implements
 			}
 
 			protected boolean interpeterRequired() {
-				return true;
+				return false;
 			}
 		};
 
