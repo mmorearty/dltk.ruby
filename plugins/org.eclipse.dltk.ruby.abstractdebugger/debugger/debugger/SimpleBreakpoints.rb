@@ -56,17 +56,32 @@ module XoredDebugger
 	    end        
 	end
 	
-	class ExceptionBreakpoint < Breakpoint
-	    include ExceptionBreakpointContract
-	    attr_reader :exception
-	    
-	    def initialize(id, exception, temporary)
-	        super(id, temporary)
-	        @exception = exception
-	    end
-	    
-	    def hit(context, expt)
-	        expt.is_a? exception and super(context)
-	    end        
-	end
+    class ExceptionBreakpoint < Breakpoint
+        include ExceptionBreakpointContract
+
+        def initialize(id, exception, temporary)
+            super(id, temporary)
+            @exception = exception
+            @exceptionClass = nil
+            @permanentError = false
+        end
+
+        def hit(context, expt)
+            if @permanentError
+                return false
+            end
+            if @exceptionClass.nil?
+                begin
+                    @exceptionClass = Kernel.eval(@exception)
+                    if !@exceptionClass.ancestors.include?(Exception)
+                        @permanentError = true
+                        return false
+                    end
+                rescue Exception
+                    return false
+                end 
+            end
+            return expt.is_a?(@exceptionClass) and super(context)
+        end
+    end
 end

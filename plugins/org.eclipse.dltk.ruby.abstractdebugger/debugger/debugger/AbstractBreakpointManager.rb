@@ -37,7 +37,7 @@ module XoredDebugger
         def add_exception_breakpoint(exceptionClazz, temporary = false)
             @monitor.synchronize do
 	            id = AbstractBreakpointManager.next_id
-	            bp = ExceptionBreakpoint.new(id, eval_class(exceptionClazz), temporary)
+	            bp = ExceptionBreakpoint.new(id, exceptionClazz, temporary)
 	            @breakpoints[id] = bp
 	            return bp
             end
@@ -104,19 +104,5 @@ module XoredDebugger
 	        raise NotImplementedError, 'This method MUST be implemented in ancessors'            
 	    end     
         
-    private    
-        def eval_class(exceptionClazz)
-            failed = false
-            begin
-                clazz = Kernel.eval(exceptionClazz)
-            rescue Exception
-                failed = true
-            end 
-            
-            if (failed || !(clazz.ancestors.include?(Exception)))
-                raise BreakpointCouldNotBeSetError
-            end
-            return clazz           
-        end
     end # class AbstractBreakpointManager
 end # module XoredDebugger

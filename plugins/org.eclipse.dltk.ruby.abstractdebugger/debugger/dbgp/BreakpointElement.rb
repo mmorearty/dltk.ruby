@@ -20,7 +20,7 @@ module XoredDebugger
                 add_attribute('lineno', bp.lineno)
             elsif bp.is_a? ExceptionBreakpointContract
                 add_attribute('type', 'exception')
-                add_attribute('exception', bp.exception.name)
+                add_attribute('exception', bp.exception)
             end                        
         end
     end
