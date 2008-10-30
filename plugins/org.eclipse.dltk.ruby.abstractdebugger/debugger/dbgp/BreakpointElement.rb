@@ -1,7 +1,7 @@
 require 'dbgp/XmlElement'
 require 'debugger/BreakpointContracts'
 
-module XoredDebugger    
+module XoredDebugger
     class BreakpointElement < XmlElement
         def initialize(bp)
             super('breakpoint')
@@ -11,7 +11,7 @@ module XoredDebugger
             add_attribute('hit_condition',bp.hit_condition)
             add_attribute('hit_count',bp.hit_count)
             set_data(bp.expression, true)
-            
+
             # Type specific information
             # TODO: Add other brealpoin types handling
             if bp.is_a? LineBreakpointContract
@@ -21,7 +21,7 @@ module XoredDebugger
             elsif bp.is_a? ExceptionBreakpointContract
                 add_attribute('type', 'exception')
                 add_attribute('exception', bp.exception)
-            end                        
+            end
         end
     end
 end
