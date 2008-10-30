@@ -374,6 +374,7 @@ module XoredDebugger
             # Class variables
             when CLASS_CONTEXT_ID:
                 properties += make_props('instance_variables', depth)
+                properties += make_props('self.class.class_variables', depth)
             
             else
                 raise InvalidContextError
