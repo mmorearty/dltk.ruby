@@ -59,6 +59,8 @@ module XoredDebugger
     class ExceptionBreakpoint < Breakpoint
         include ExceptionBreakpointContract
 
+        attr_reader :exception
+
         def initialize(id, exception, temporary)
             super(id, temporary)
             @exception = exception
