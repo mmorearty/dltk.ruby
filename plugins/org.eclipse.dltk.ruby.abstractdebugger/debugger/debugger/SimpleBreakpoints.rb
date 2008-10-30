@@ -81,7 +81,7 @@ module XoredDebugger
                     return false
                 end 
             end
-            return expt.is_a?(@exceptionClass) and super(context)
+            return (expt.is_a?(@exceptionClass) and super(context))
         end
     end
 end
