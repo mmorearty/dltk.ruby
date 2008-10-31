@@ -20,6 +20,7 @@ import org.eclipse.dltk.ui.formatter.AbstractScriptFormatterFactory;
 import org.eclipse.dltk.ui.formatter.IFormatterModifyDialog;
 import org.eclipse.dltk.ui.formatter.IFormatterModifyDialogOwner;
 import org.eclipse.dltk.ui.formatter.IScriptFormatter;
+import org.eclipse.dltk.ui.preferences.PreferenceKey;
 
 public class RubyFormatterFactory extends AbstractScriptFormatterFactory {
 
@@ -46,12 +47,13 @@ public class RubyFormatterFactory extends AbstractScriptFormatterFactory {
 			RubyFormatterConstants.WRAP_COMMENTS,
 			RubyFormatterConstants.WRAP_COMMENTS_LENGTH };
 
-	public String getPreferenceQualifier() {
-		return RubyFormatterPlugin.PLUGIN_ID;
-	}
-
-	public String[] getPreferenceKeys() {
-		return KEYS;
+	public PreferenceKey[] getPreferenceKeys() {
+		final PreferenceKey[] result = new PreferenceKey[KEYS.length];
+		for (int i = 0; i < KEYS.length; ++i) {
+			result[i] = new PreferenceKey(RubyFormatterPlugin.PLUGIN_ID,
+					KEYS[i]);
+		}
+		return result;
 	}
 
 	public IScriptFormatter createFormatter(String lineDelimiter,
