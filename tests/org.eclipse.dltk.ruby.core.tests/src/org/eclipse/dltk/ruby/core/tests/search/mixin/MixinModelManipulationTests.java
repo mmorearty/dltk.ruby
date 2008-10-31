@@ -9,9 +9,11 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.core.tests.search.mixin;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IBuildpathEntry;
+import org.eclipse.dltk.core.IProjectFragment;
 import org.eclipse.dltk.core.IScriptFolder;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.mixin.IMixinElement;
@@ -86,6 +88,50 @@ public class MixinModelManipulationTests extends AbstractDLTKSearchTests
 
 		Object objs2[] = mixinElement.getAllObjects();
 		assertEquals(1, objs2.length);
+	}
+
+	public void testProjectFragmentDeletion() throws Exception {
+		MixinModel model = new MixinModel(RubyLanguageToolkit.getDefault());
+
+		assertEquals(1, model.find("Foo").length);
+		IMixinElement mixinElement = model.get("Foo");
+		assertNotNull(mixinElement);
+		Object[] objs = mixinElement.getAllObjects();
+		assertNotNull(objs);
+		assertEquals(2, objs.length);
+
+		getProjectFragment(PROJECT_NAME, "src").delete(
+				IResource.KEEP_HISTORY,
+				IProjectFragment.ORIGINATING_PROJECT_BUILDPATH
+						| IProjectFragment.OTHER_REFERRING_PROJECTS_BUILDPATH,
+				null);
+		waitUntilIndexesReady();
+
+		assertEquals(0, model.find("Foo").length);
+		mixinElement = model.get("Foo");
+		assertNull(mixinElement);
+	}
+
+	public void testSourceFolderDeletion() throws Exception {
+		MixinModel model = new MixinModel(RubyLanguageToolkit.getDefault());
+
+		assertEquals(1, model.find("Folder").length);
+		IMixinElement mixinElement = model.get("Folder");
+		assertNotNull(mixinElement);
+		Object[] objs = mixinElement.getAllObjects();
+		assertNotNull(objs);
+		assertEquals(2, objs.length);
+
+		getScriptFolder(PROJECT_NAME, "src", new Path("folder1")).delete(true,
+				null);
+		waitUntilIndexesReady();
+		getScriptFolder(PROJECT_NAME, "src", new Path("folder2")).delete(true,
+				null);
+		waitUntilIndexesReady();
+
+		assertEquals(0, model.find("Folder").length);
+		mixinElement = model.get("Folder");
+		assertNull(mixinElement);
 	}
 
 	public void testFatalModuleDeletion() throws Exception {
