@@ -16,6 +16,7 @@ import java.util.Map;
 import org.eclipse.dltk.ruby.internal.ui.formatting.OldCodeFormatter;
 import org.eclipse.dltk.ui.formatter.AbstractScriptFormatterFactory;
 import org.eclipse.dltk.ui.formatter.IScriptFormatter;
+import org.eclipse.dltk.ui.preferences.PreferenceKey;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.text.edits.ReplaceEdit;
 import org.eclipse.text.edits.TextEdit;
@@ -53,11 +54,7 @@ public class OldRubyFormatterFactory extends AbstractScriptFormatterFactory {
 		return OldCodeFormatter.DEBUG;
 	}
 
-	public String getPreferenceQualifier() {
-		return null;
-	}
-
-	public String[] getPreferenceKeys() {
+	public PreferenceKey[] getPreferenceKeys() {
 		return null;
 	}
 
