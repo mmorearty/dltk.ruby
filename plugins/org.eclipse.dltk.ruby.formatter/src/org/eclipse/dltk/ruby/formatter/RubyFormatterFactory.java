@@ -16,6 +16,7 @@ import java.util.Map;
 
 import org.eclipse.dltk.ruby.formatter.internal.RubyFormatterPlugin;
 import org.eclipse.dltk.ruby.formatter.preferences.RubyFormatterModifyDialog;
+import org.eclipse.dltk.ruby.internal.ui.RubyUI;
 import org.eclipse.dltk.ui.formatter.AbstractScriptFormatterFactory;
 import org.eclipse.dltk.ui.formatter.IFormatterModifyDialog;
 import org.eclipse.dltk.ui.formatter.IFormatterModifyDialogOwner;
@@ -50,8 +51,17 @@ public class RubyFormatterFactory extends AbstractScriptFormatterFactory {
 	public PreferenceKey[] getPreferenceKeys() {
 		final PreferenceKey[] result = new PreferenceKey[KEYS.length];
 		for (int i = 0; i < KEYS.length; ++i) {
-			result[i] = new PreferenceKey(RubyFormatterPlugin.PLUGIN_ID,
-					KEYS[i]);
+			final String key = KEYS[i];
+			final String qualifier;
+			if (RubyFormatterConstants.FORMATTER_TAB_CHAR.equals(key)
+					|| RubyFormatterConstants.FORMATTER_INDENTATION_SIZE
+							.equals(key)
+					|| RubyFormatterConstants.FORMATTER_TAB_SIZE.equals(key)) {
+				qualifier = RubyUI.PLUGIN_ID;
+			} else {
+				qualifier = RubyFormatterPlugin.PLUGIN_ID;
+			}
+			result[i] = new PreferenceKey(qualifier, key);
 		}
 		return result;
 	}

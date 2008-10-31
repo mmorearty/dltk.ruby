@@ -11,7 +11,6 @@ package org.eclipse.dltk.ruby.formatter.internal;
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.dltk.ruby.formatter.RubyFormatterConstants;
-import org.eclipse.dltk.ui.CodeFormatterConstants;
 import org.eclipse.jface.preference.IPreferenceStore;
 
 public class RubyFormatterPreferenceInitializer extends
@@ -20,10 +19,6 @@ public class RubyFormatterPreferenceInitializer extends
 	public void initializeDefaultPreferences() {
 		IPreferenceStore store = RubyFormatterPlugin.getDefault()
 				.getPreferenceStore();
-		store.setDefault(RubyFormatterConstants.FORMATTER_TAB_CHAR,
-				CodeFormatterConstants.SPACE);
-		store.setDefault(RubyFormatterConstants.FORMATTER_TAB_SIZE, 8);
-		store.setDefault(RubyFormatterConstants.FORMATTER_INDENTATION_SIZE, 2);
 		//
 		store.setDefault(RubyFormatterConstants.INDENT_CLASS, true);
 		store.setDefault(RubyFormatterConstants.INDENT_MODULE, true);

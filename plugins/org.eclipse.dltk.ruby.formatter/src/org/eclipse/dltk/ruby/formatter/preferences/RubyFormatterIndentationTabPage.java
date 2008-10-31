@@ -19,9 +19,13 @@ import org.eclipse.dltk.ui.formatter.FormatterModifyTabPage;
 import org.eclipse.dltk.ui.formatter.IFormatterControlManager;
 import org.eclipse.dltk.ui.formatter.IFormatterModifyDialog;
 import org.eclipse.dltk.ui.util.SWTFactory;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Text;
 
 public class RubyFormatterIndentationTabPage extends FormatterModifyTabPage {
 
@@ -32,19 +36,35 @@ public class RubyFormatterIndentationTabPage extends FormatterModifyTabPage {
 		super(dialog);
 	}
 
-	protected void createOptions(IFormatterControlManager manager,
+	private Combo tabPolicy;
+	private Text indentSize;
+	private Text tabSize;
+
+	private final String[] tabPolicyItems = new String[] {
+			CodeFormatterConstants.SPACE, CodeFormatterConstants.TAB,
+			CodeFormatterConstants.MIXED };
+
+	protected void createOptions(final IFormatterControlManager manager,
 			Composite parent) {
 		Group tabPolicyGroup = SWTFactory.createGroup(parent,
 				"General Settings", 2, 1, GridData.FILL_HORIZONTAL);
-		manager.createCombo(tabPolicyGroup,
+		tabPolicy = manager.createCombo(tabPolicyGroup,
 				RubyFormatterConstants.FORMATTER_TAB_CHAR,
-				"Indentation character", new String[] {
-						CodeFormatterConstants.TAB,
-						CodeFormatterConstants.SPACE });
-		manager.createNumber(tabPolicyGroup,
+				"Indentation character", tabPolicyItems);
+		tabPolicy.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				int index = tabPolicy.getSelectionIndex();
+				if (index >= 0) {
+					boolean indentSizeEnabled = CodeFormatterConstants.TAB
+							.equals(tabPolicyItems[index]);
+					manager.enableControl(indentSize, !indentSizeEnabled);
+				}
+			}
+		});
+		indentSize = manager.createNumber(tabPolicyGroup,
 				RubyFormatterConstants.FORMATTER_INDENTATION_SIZE,
 				"Indentation size");
-		manager.createNumber(tabPolicyGroup,
+		tabSize = manager.createNumber(tabPolicyGroup,
 				RubyFormatterConstants.FORMATTER_TAB_SIZE, "Tab size");
 		//
 		Group indentGroup = SWTFactory.createGroup(parent,
