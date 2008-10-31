@@ -33,7 +33,6 @@ public class RubyEditorPreferencesPage extends
 	protected IPreferenceConfigurationBlock createConfigurationBlock(
 			OverlayPreferenceStore overlayPreferenceStore) {
 		return new EditorConfigurationBlock(this, overlayPreferenceStore,
-				EditorConfigurationBlock.FLAG_TAB_POLICY
-						| EditorConfigurationBlock.FLAG_TAB_ALWAYS_INDENT);
+				EditorConfigurationBlock.FLAG_TAB_ALWAYS_INDENT);
 	}
 }
