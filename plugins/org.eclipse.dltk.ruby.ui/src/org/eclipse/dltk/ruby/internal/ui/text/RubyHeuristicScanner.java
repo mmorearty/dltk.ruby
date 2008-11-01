@@ -16,12 +16,14 @@ public class RubyHeuristicScanner extends ScriptHeuristicScanner implements
 			TokenDEF, TokenCASE, TokenCATCH, TokenCLASS, TokenWHILE,
 			TokenBEGIN, TokenUNTIL, TokenUNLESS, TokenMODULE, TokenDO };
 
-	private static final int[] BLOCK_BEGINNING_SYMBOLS = { TokenLBRACE };
+	private static final int[] BLOCK_BEGINNING_SYMBOLS = { TokenLBRACE,
+			TokenLBRACKET };
 
 	private static final int[] BLOCK_MIDDLES = { TokenELSE, TokenELSIF,
 			TokenENSURE, TokenRESCUE, TokenWHEN };
 
-	private static final int[] BLOCK_ENDINGS = { TokenEND, TokenRBRACE };
+	private static final int[] BLOCK_ENDINGS = { TokenEND, TokenRBRACE,
+			TokenRBRACKET };
 
 	static {
 		Arrays.sort(BLOCK_BEGINNING_KEYWORDS);
@@ -32,7 +34,8 @@ public class RubyHeuristicScanner extends ScriptHeuristicScanner implements
 
 	/**
 	 * Calls
-	 * <code>super(document, IRubyPartitions.RUBY_PARTITIONING, IDocument.DEFAULT_CONTENT_TYPE)</code>.
+	 * <code>super(document, IRubyPartitions.RUBY_PARTITIONING, IDocument.DEFAULT_CONTENT_TYPE)</code>
+	 * .
 	 * 
 	 * @param document
 	 *            the document to scan.
@@ -171,12 +174,13 @@ public class RubyHeuristicScanner extends ScriptHeuristicScanner implements
 				int pos = getPosition();
 				int prevToken = token;
 				token = previousToken(getPosition(), offset);
-				if (token == NOT_FOUND || token == TokenEQUAL || prevToken == TokenDO) {
+				if (token == NOT_FOUND || token == TokenEQUAL
+						|| prevToken == TokenDO) {
 					setPosition(pos + 1);
 					return true;
 				}
 			}
-			
+
 			token = previousToken(getPosition(), offset);
 		}
 
@@ -284,7 +288,7 @@ public class RubyHeuristicScanner extends ScriptHeuristicScanner implements
 		try {
 			if (getPartition(offset).getType() != IDocument.DEFAULT_CONTENT_TYPE)
 				return NOT_FOUND;
-			
+
 			if (appended.length() == 1) {
 				int token = getGenericToken(appended.charAt(0));
 				if (token != TokenOTHER)
