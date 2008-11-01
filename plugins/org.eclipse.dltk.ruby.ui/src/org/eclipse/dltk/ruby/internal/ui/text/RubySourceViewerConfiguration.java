@@ -338,7 +338,8 @@ public class RubySourceViewerConfiguration extends
 				.setInformationProvider(provider, IRubyPartitions.RUBY_COMMENT);
 		presenter.setInformationProvider(provider, IRubyPartitions.RUBY_DOC);
 		presenter.setInformationProvider(provider, IRubyPartitions.RUBY_STRING);
-		presenter.setInformationProvider(provider, IRubyPartitions.RUBY_PERCENT_STRING);
+		presenter.setInformationProvider(provider,
+				IRubyPartitions.RUBY_PERCENT_STRING);
 		presenter.setInformationProvider(provider,
 				IRubyPartitions.RUBY_SINGLE_QUOTE_STRING);
 	}
