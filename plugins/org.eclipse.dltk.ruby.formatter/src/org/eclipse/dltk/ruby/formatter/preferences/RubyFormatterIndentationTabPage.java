@@ -18,7 +18,10 @@ import org.eclipse.dltk.ui.CodeFormatterConstants;
 import org.eclipse.dltk.ui.formatter.FormatterModifyTabPage;
 import org.eclipse.dltk.ui.formatter.IFormatterControlManager;
 import org.eclipse.dltk.ui.formatter.IFormatterModifyDialog;
+import org.eclipse.dltk.ui.preferences.FormatterMessages;
 import org.eclipse.dltk.ui.util.SWTFactory;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -44,28 +47,69 @@ public class RubyFormatterIndentationTabPage extends FormatterModifyTabPage {
 			CodeFormatterConstants.SPACE, CodeFormatterConstants.TAB,
 			CodeFormatterConstants.MIXED };
 
+	private class TabPolicyListener extends SelectionAdapter implements
+			IFormatterControlManager.IInitializeListener {
+
+		private final IFormatterControlManager manager;
+
+		public TabPolicyListener(IFormatterControlManager manager) {
+			this.manager = manager;
+		}
+
+		public void widgetSelected(SelectionEvent e) {
+			int index = tabPolicy.getSelectionIndex();
+			if (index >= 0) {
+				final boolean tabMode = CodeFormatterConstants.TAB
+						.equals(tabPolicyItems[index]);
+				manager.enableControl(indentSize, !tabMode);
+			}
+		}
+
+		public void initialize() {
+			final boolean tabMode = CodeFormatterConstants.TAB.equals(manager
+					.getString(RubyFormatterConstants.FORMATTER_TAB_CHAR));
+			manager.enableControl(indentSize, !tabMode);
+		}
+
+	}
+
+	private TabPolicyListener tabPolicyListener;
+
 	protected void createOptions(final IFormatterControlManager manager,
 			Composite parent) {
 		Group tabPolicyGroup = SWTFactory.createGroup(parent,
 				"General Settings", 2, 1, GridData.FILL_HORIZONTAL);
-		tabPolicy = manager.createCombo(tabPolicyGroup,
-				RubyFormatterConstants.FORMATTER_TAB_CHAR,
-				"Indentation character", tabPolicyItems);
-		tabPolicy.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
+		tabPolicy = manager
+				.createCombo(
+						tabPolicyGroup,
+						RubyFormatterConstants.FORMATTER_TAB_CHAR,
+						FormatterMessages.IndentationTabPage_general_group_option_tab_policy,
+						tabPolicyItems);
+		tabPolicyListener = new TabPolicyListener(manager);
+		tabPolicy.addSelectionListener(tabPolicyListener);
+		manager.addInitializeListener(tabPolicyListener);
+		indentSize = manager
+				.createNumber(
+						tabPolicyGroup,
+						RubyFormatterConstants.FORMATTER_INDENTATION_SIZE,
+						FormatterMessages.IndentationTabPage_general_group_option_indent_size);
+		tabSize = manager
+				.createNumber(
+						tabPolicyGroup,
+						RubyFormatterConstants.FORMATTER_TAB_SIZE,
+						FormatterMessages.IndentationTabPage_general_group_option_tab_size);
+		tabSize.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
 				int index = tabPolicy.getSelectionIndex();
 				if (index >= 0) {
-					boolean indentSizeEnabled = CodeFormatterConstants.TAB
+					final boolean tabMode = CodeFormatterConstants.TAB
 							.equals(tabPolicyItems[index]);
-					manager.enableControl(indentSize, !indentSizeEnabled);
+					if (tabMode) {
+						indentSize.setText(tabSize.getText());
+					}
 				}
 			}
 		});
-		indentSize = manager.createNumber(tabPolicyGroup,
-				RubyFormatterConstants.FORMATTER_INDENTATION_SIZE,
-				"Indentation size");
-		tabSize = manager.createNumber(tabPolicyGroup,
-				RubyFormatterConstants.FORMATTER_TAB_SIZE, "Tab size");
 		//
 		Group indentGroup = SWTFactory.createGroup(parent,
 				"Indent within definitions", 1, 1, GridData.FILL_HORIZONTAL);
