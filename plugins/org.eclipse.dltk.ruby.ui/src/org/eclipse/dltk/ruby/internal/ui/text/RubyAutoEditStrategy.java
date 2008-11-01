@@ -110,6 +110,8 @@ public class RubyAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 		try {
 			if (c.length == 0 && c.text != null && isLineDelimiter(d, c.text))
 				smartIndentAfterNewLine(d, c);
+			else if (c.length == 0 && c.text != null && isSpace(c.text))
+				smartInsertEndOnSpace(d, c);
 			else if (c.text.length() == 1 && c.text.charAt(0) == '\t')
 				smartTab(d, c);
 			else if (c.text.length() == 1)
@@ -121,6 +123,59 @@ public class RubyAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 		} catch (BadLocationException e) {
 			DLTKUIPlugin.log(e);
 		}
+	}
+
+	/**
+	 * @param document
+	 * @param c
+	 * @throws BadLocationException
+	 */
+	private void smartInsertEndOnSpace(IDocument document, DocumentCommand c)
+			throws BadLocationException {
+		IRegion line = document.getLineInformationOfOffset(c.offset);
+		RubyHeuristicScanner scanner = new RubyHeuristicScanner(document);
+		int prevToken = scanner.previousToken(c.offset - 1, line.getOffset());
+		if (c.offset > 1 && prevToken == ISymbols.TokenEOF) {
+			return;
+		}
+		int prevTokenOffset = scanner.getPosition();
+		if (prevTokenOffset < 0)
+			prevTokenOffset = 0;
+		String previous = document.get(prevTokenOffset,
+				c.offset - prevTokenOffset).trim();
+
+		int hasOffset = line.getOffset();
+		int hasLength = (prevTokenOffset - line.getOffset());
+		boolean hasPrefixContent = ((hasLength > 0) && (document.get(hasOffset,
+				hasLength).trim().length() > 0));
+
+		hasOffset = (prevTokenOffset + previous.length() + 1);
+		hasLength = (line.getLength() - (hasOffset - line.getOffset()));
+		boolean hasSuffixContent = ((hasLength > 0)
+				&& ((hasOffset + hasLength) <= document.getLength()) && (document
+				.get(hasOffset, hasLength).trim().length() > 0));
+
+		if (!"case".equals(previous) && !"class".equals(previous) //$NON-NLS-1$ //$NON-NLS-2$
+				&& !"def".equals(previous) && !"do".equals(previous) //$NON-NLS-1$ //$NON-NLS-2$
+				&& !"if".equals(previous) && !"module".equals(previous) //$NON-NLS-1$ //$NON-NLS-2$
+				&& !"unless".equals(previous) //$NON-NLS-1$
+				&& !"while".equals(previous)) //$NON-NLS-1$
+			return;
+		if ((hasPrefixContent && !"do".equals(previous)) //$NON-NLS-1$
+				|| hasSuffixContent)
+			return;
+		if ((prevTokenOffset + previous.length()) < (c.offset - 1))
+			return;
+		if (fCloseBlocks && !isBlockClosed(document, c.offset)) {
+			c.caretOffset = c.offset + 1;
+			c.shiftsCaret = false;
+			c.text = c.text + TextUtilities.getDefaultLineDelimiter(document)
+					+ getBlockIndent(document, c.offset, scanner) + "end"; //$NON-NLS-1$
+		}
+	}
+
+	private boolean isSpace(String text) {
+		return text.length() == 1 && text.charAt(0) == ' ';
 	}
 
 	private boolean isLineDelimiter(IDocument document, String text) {
