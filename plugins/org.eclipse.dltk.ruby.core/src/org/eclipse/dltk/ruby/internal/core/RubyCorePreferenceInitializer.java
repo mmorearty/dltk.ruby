@@ -16,11 +16,8 @@ import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.dltk.compiler.task.TodoTaskPreferences;
 import org.eclipse.dltk.ruby.core.RubyPlugin;
 
-public class RubyTodoPreferenceInitializer extends
+public class RubyCorePreferenceInitializer extends
 		AbstractPreferenceInitializer {
-
-	public RubyTodoPreferenceInitializer() {
-	}
 
 	public void initializeDefaultPreferences() {
 		Preferences store = RubyPlugin.getDefault().getPluginPreferences();
