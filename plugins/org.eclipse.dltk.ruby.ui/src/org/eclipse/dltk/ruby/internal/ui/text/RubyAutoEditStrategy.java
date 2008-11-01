@@ -125,9 +125,8 @@ public class RubyAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 
 	private boolean isLineDelimiter(IDocument document, String text) {
 		String[] delimiters = document.getLegalLineDelimiters();
-		if (delimiters != null)
-			return TextUtilities.equals(delimiters, text) > -1;
-		return false;
+		return delimiters != null
+				&& TextUtilities.equals(delimiters, text) > -1;
 	}
 
 	private void smartTab(IDocument d, DocumentCommand c)
@@ -174,7 +173,8 @@ public class RubyAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 
 			// ssanders: If Block was opened on same line, add extra indent
 			int blockStart = scanner.findBlockBeginningOffset(c.offset);
-			int prevBlockStart = scanner.findBlockBeginningOffset(info.getOffset());
+			int prevBlockStart = scanner.findBlockBeginningOffset(info
+					.getOffset());
 			if (blockStart >= info.getOffset() && prevBlockStart != -1)
 				indent += fPreferences.getIndent();
 
@@ -405,9 +405,9 @@ public class RubyAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 	}
 
 	/**
-	 * Computes the length of a <code>CharacterSequence</code>, counting a
-	 * tab character as the size until the next tab stop and every other
-	 * character as one.
+	 * Computes the length of a <code>CharacterSequence</code>, counting a tab
+	 * character as the size until the next tab stop and every other character
+	 * as one.
 	 * 
 	 * @param indent
 	 *            the string to measure
