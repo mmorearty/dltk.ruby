@@ -14,7 +14,10 @@ package org.eclipse.dltk.ruby.internal.ui.text;
 
 import java.util.Arrays;
 
+import org.eclipse.dltk.core.IScriptProject;
+import org.eclipse.dltk.core.PreferencesLookupDelegate;
 import org.eclipse.dltk.ruby.internal.ui.RubyUI;
+import org.eclipse.dltk.ui.CodeFormatterConstants;
 import org.eclipse.dltk.ui.DLTKUIPlugin;
 import org.eclipse.dltk.ui.text.util.AutoEditUtils;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -112,7 +115,7 @@ public class RubyAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 				smartIndentAfterNewLine(d, c);
 			else if (c.length == 0 && c.text != null && isSpace(c.text))
 				smartInsertEndOnSpace(d, c);
-			else if (c.text.length() == 1 && c.text.charAt(0) == '\t')
+			else if (isRepresentingTab(c.text))
 				smartTab(d, c);
 			else if (c.text.length() == 1)
 				smartIndentOnKeypress(d, c);
@@ -172,6 +175,76 @@ public class RubyAutoEditStrategy extends DefaultIndentLineAutoEditStrategy {
 			c.text = c.text + TextUtilities.getDefaultLineDelimiter(document)
 					+ getBlockIndent(document, c.offset, scanner) + "end"; //$NON-NLS-1$
 		}
+	}
+
+	/**
+	 * Tells whether the given inserted string represents hitting the Tab key.
+	 * 
+	 * @param text
+	 *            the text to check
+	 * @return <code>true</code> if the text represents hitting the Tab key
+	 * @since 3.5
+	 */
+	private boolean isRepresentingTab(String text) {
+		if (text == null)
+			return false;
+
+		if (isInsertingSpacesForTab()) {
+			if (text.length() == 0
+					|| text.length() > getVisualTabLengthPreference())
+				return false;
+			for (int i = 0; i < text.length(); i++) {
+				if (text.charAt(i) != ' ')
+					return false;
+			}
+			return true;
+		} else
+			return text.length() == 1 && text.charAt(0) == '\t';
+	}
+
+	/**
+	 * The preference setting that tells whether to insert spaces when pressing
+	 * the Tab key.
+	 * 
+	 * @return <code>true</code> if spaces are inserted when pressing the Tab
+	 *         key
+	 * @since 3.5
+	 */
+	private boolean isInsertingSpacesForTab() {
+		return CodeFormatterConstants.SPACE.equals(getOption(RubyUI.PLUGIN_ID,
+				CodeFormatterConstants.FORMATTER_TAB_CHAR));
+	}
+
+	private IScriptProject getProject() {
+		// TODO implement getProject()
+		return null;
+	}
+
+	/**
+	 * @param project
+	 * @param qualifier
+	 * @param key
+	 * @return
+	 */
+	private String getOption(String qualifier, String key) {
+		return new PreferencesLookupDelegate(getProject()).getString(qualifier,
+				key);
+	}
+
+	/**
+	 * @param project
+	 * @param qualifier
+	 * @param key
+	 * @return
+	 */
+	private int getIntOption(String qualifier, String key) {
+		return new PreferencesLookupDelegate(getProject()).getInt(qualifier,
+				key);
+	}
+
+	private int getVisualTabLengthPreference() {
+		return getIntOption(RubyUI.PLUGIN_ID,
+				CodeFormatterConstants.FORMATTER_TAB_SIZE);
 	}
 
 	private boolean isSpace(String text) {
