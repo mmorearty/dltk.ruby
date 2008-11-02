@@ -12,6 +12,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.dltk.debug.ui.preferences.DebuggingEngineConfigOptionsBlock;
 import org.eclipse.dltk.ruby.basicdebugger.RubyBasicDebuggerConstants;
 import org.eclipse.dltk.ruby.basicdebugger.RubyBasicDebuggerPlugin;
+import org.eclipse.dltk.ruby.core.RubyNature;
 import org.eclipse.dltk.ui.preferences.AbstractConfigurationBlockPropertyAndPreferencePage;
 import org.eclipse.dltk.ui.preferences.AbstractOptionsBlock;
 import org.eclipse.dltk.ui.preferences.PreferenceKey;
@@ -74,6 +75,10 @@ public class RubyBasicDebuggerPreferencePage extends
 		return null;
 	}
 
+	protected String getNatureId() {
+		return RubyNature.NATURE_ID;
+	}
+	
 	/*
 	 * @see org.eclipse.dltk.internal.ui.preferences.PropertyAndPreferencePage#getPreferencePageId()
 	 */
