@@ -13,7 +13,7 @@ package org.eclipse.dltk.ruby.internal.core;
 
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
-import org.eclipse.dltk.compiler.task.TodoTaskPreferences;
+import org.eclipse.dltk.compiler.task.TaskTagUtils;
 import org.eclipse.dltk.ruby.core.RubyPlugin;
 
 public class RubyCorePreferenceInitializer extends
@@ -21,6 +21,6 @@ public class RubyCorePreferenceInitializer extends
 
 	public void initializeDefaultPreferences() {
 		Preferences store = RubyPlugin.getDefault().getPluginPreferences();
-		TodoTaskPreferences.initializeDefaultValues(store);
+		TaskTagUtils.initializeDefaultValues(store);
 	}
 }
