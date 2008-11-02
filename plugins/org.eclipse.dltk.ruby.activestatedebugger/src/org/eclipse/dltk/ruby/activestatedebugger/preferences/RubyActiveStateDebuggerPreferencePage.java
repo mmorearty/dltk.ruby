@@ -14,6 +14,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.dltk.debug.ui.preferences.ExternalDebuggingEngineOptionsBlock;
 import org.eclipse.dltk.ruby.activestatedebugger.RubyActiveStateDebuggerConstants;
 import org.eclipse.dltk.ruby.activestatedebugger.RubyActiveStateDebuggerPlugin;
+import org.eclipse.dltk.ruby.core.RubyNature;
 import org.eclipse.dltk.ui.preferences.AbstractConfigurationBlockPropertyAndPreferencePage;
 import org.eclipse.dltk.ui.preferences.AbstractOptionsBlock;
 import org.eclipse.dltk.ui.preferences.PreferenceKey;
@@ -89,6 +90,10 @@ public class RubyActiveStateDebuggerPreferencePage extends
 		return null;
 	}
 
+	protected String getNatureId() {
+		return RubyNature.NATURE_ID;
+	}
+	
 	/*
 	 * @see org.eclipse.dltk.ui.preferences.AbstractConfigurationBlockPropertyAndPreferencePage#getProjectHelpId()
 	 */
