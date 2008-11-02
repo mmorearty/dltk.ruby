@@ -1,6 +1,7 @@
 package org.eclipse.dltk.ruby.fastdebugger.preferences;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.dltk.ruby.core.RubyNature;
 import org.eclipse.dltk.ruby.fastdebugger.FastDebuggerPlugin;
 import org.eclipse.dltk.ui.preferences.AbstractConfigurationBlockPropertyAndPreferencePage;
 import org.eclipse.dltk.ui.preferences.AbstractOptionsBlock;
@@ -54,6 +55,10 @@ public class FastDebuggerPreferencePage extends
 		return PROPERTY_PAGE_ID;
 	}
 
+	protected String getNatureId() {
+		return RubyNature.NATURE_ID;
+	}
+	
 	/*
 	 * @see org.eclipse.dltk.ui.preferences.AbstractConfigurationBlockPropertyAndPreferencePage#setDescription()
 	 */
