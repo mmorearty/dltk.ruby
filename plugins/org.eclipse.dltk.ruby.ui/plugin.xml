@@ -361,7 +361,17 @@
       </enabledWhen>
       <keywordReference id="org.eclipse.dltk.ui.buildpath" />
     </page>    
-    
+    <page
+          category="org.eclipse.dltk.ruby.propertyPage"
+          class="org.eclipse.dltk.ruby.internal.ui.preferences.RubyTodoTaskPreferencePage"
+          id="org.eclipse.dltk.ruby.ui.propertyPage.todo"
+          name="%RubyTodoPropertyPage.name">
+      <enabledWhen>
+        <adapt type="org.eclipse.core.resources.IProject">
+          <test property="org.eclipse.core.resources.projectNature" value="org.eclipse.dltk.ruby.core.nature"/>
+        </adapt>         
+      </enabledWhen>
+    </page>    
     <page
       name="%RubyPropertyPage.name"
       class="org.eclipse.dltk.ruby.internal.ui.preferences.RubyPropertyPage"

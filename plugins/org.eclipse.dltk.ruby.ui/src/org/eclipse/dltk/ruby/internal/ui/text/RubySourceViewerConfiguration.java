@@ -15,19 +15,16 @@ package org.eclipse.dltk.ruby.internal.ui.text;
 import java.util.Map;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.dltk.compiler.task.TodoTaskPreferences;
 import org.eclipse.dltk.internal.ui.editor.EditorUtility;
 import org.eclipse.dltk.internal.ui.editor.ScriptSourceViewer;
 import org.eclipse.dltk.internal.ui.text.HTMLTextPresenter;
 import org.eclipse.dltk.internal.ui.text.ScriptElementProvider;
-import org.eclipse.dltk.ruby.core.RubyPlugin;
 import org.eclipse.dltk.ruby.internal.ui.text.completion.RubyCompletionProcessor;
 import org.eclipse.dltk.ruby.internal.ui.text.completion.RubyContentAssistPreference;
 import org.eclipse.dltk.ruby.internal.ui.typehierarchy.RubyHierarchyInformationControl;
 import org.eclipse.dltk.ui.CodeFormatterConstants;
 import org.eclipse.dltk.ui.text.AbstractScriptScanner;
 import org.eclipse.dltk.ui.text.IColorManager;
-import org.eclipse.dltk.ui.text.ScriptCommentScanner;
 import org.eclipse.dltk.ui.text.ScriptPresentationReconciler;
 import org.eclipse.dltk.ui.text.ScriptSourceViewerConfiguration;
 import org.eclipse.dltk.ui.text.completion.ContentAssistPreference;
@@ -135,10 +132,10 @@ public class RubySourceViewerConfiguration extends
 				fPreferenceStore);
 		fSingleQuoteStringScanner = new RubySingleQuoteStringScanner(
 				getColorManager(), fPreferenceStore);
-		fCommentScanner = new ScriptCommentScanner(getColorManager(),
-				fPreferenceStore, IRubyColorConstants.RUBY_SINGLE_LINE_COMMENT,
-				IRubyColorConstants.RUBY_TODO_COMMENT, new TodoTaskPreferences(
-						RubyPlugin.getDefault().getPluginPreferences()));
+		
+		fCommentScanner = createCommentScanner(
+				IRubyColorConstants.RUBY_SINGLE_LINE_COMMENT,
+				IRubyColorConstants.RUBY_TODO_COMMENT);
 
 		fDocScanner = new RubyDocScanner(getColorManager(), fPreferenceStore);
 	}
