@@ -3,6 +3,7 @@ package org.eclipse.dltk.ruby.internal.debug.ui.preferences;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.dltk.debug.core.DLTKDebugPreferenceConstants;
 import org.eclipse.dltk.debug.ui.preferences.AbstractDebuggingOptionsBlock;
+import org.eclipse.dltk.ruby.core.RubyNature;
 import org.eclipse.dltk.ruby.debug.RubyDebugPlugin;
 import org.eclipse.dltk.ui.PreferencesAdapter;
 import org.eclipse.dltk.ui.preferences.AbstractConfigurationBlockPropertyAndPreferencePage;
@@ -55,6 +56,10 @@ public class RubyDebugPreferencePage extends
 		return null;
 	}
 
+	protected String getNatureId() {
+		return RubyNature.NATURE_ID;
+	}
+	
 	/*
 	 * @see org.eclipse.dltk.internal.ui.preferences.PropertyAndPreferencePage#getPreferencePageId()
 	 */
