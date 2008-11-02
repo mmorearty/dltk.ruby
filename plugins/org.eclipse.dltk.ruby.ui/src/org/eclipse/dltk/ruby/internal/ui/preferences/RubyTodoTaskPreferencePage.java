@@ -13,6 +13,7 @@ package org.eclipse.dltk.ruby.internal.ui.preferences;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.Preferences;
+import org.eclipse.dltk.ruby.core.RubyNature;
 import org.eclipse.dltk.ruby.core.RubyPlugin;
 import org.eclipse.dltk.ui.PreferencesAdapter;
 import org.eclipse.dltk.ui.preferences.AbstractConfigurationBlockPropertyAndPreferencePage;
@@ -65,6 +66,10 @@ public class RubyTodoTaskPreferencePage extends
 		};
 	}
 
+	protected String getNatureId() {
+		return RubyNature.NATURE_ID;
+	}
+	
 	protected String getProjectHelpId() {
 		return null;
 	}

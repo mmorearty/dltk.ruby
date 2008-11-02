@@ -22,7 +22,7 @@ public class RubyEditorSyntaxColoringPreferencePage extends
 	}
 
 	protected void setDescription() {
-		setDescription(RubyPreferencesMessages.EditorSyntaxColoringPreferencePageDescription);
+		// leave blank
 	}
 
 	protected void setPreferenceStore() {
