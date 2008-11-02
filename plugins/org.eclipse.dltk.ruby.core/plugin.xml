@@ -22,13 +22,13 @@
       <buildParticipant
             class="org.eclipse.dltk.core.builder.ParserBuildParticipantFactory"
             id="org.eclipse.dltk.ruby.buildParticipant.parser"
-            name="Ruby parser"
+            name="%parserBuildParticipant.name"
             nature="org.eclipse.dltk.ruby.core.nature">
       </buildParticipant>
       <buildParticipant
             class="org.eclipse.dltk.ruby.internal.parser.RubyTodoParserType"
             id="org.eclipse.dltk.ruby.todo"
-            name="Ruby TODO task parser"
+            name="%taskTagsBuildParticipant.name"
             nature="org.eclipse.dltk.ruby.core.nature">
             <requires
                   id="org.eclipse.dltk.ruby.buildParticipant.parser">
