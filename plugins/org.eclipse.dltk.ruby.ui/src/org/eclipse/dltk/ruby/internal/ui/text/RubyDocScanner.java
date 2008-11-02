@@ -13,12 +13,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.dltk.compiler.task.ITodoTaskPreferences;
-import org.eclipse.dltk.compiler.task.TodoTaskPreferences;
-import org.eclipse.dltk.ruby.core.RubyPlugin;
 import org.eclipse.dltk.ruby.internal.ui.text.rules.BeginOfLineRule;
 import org.eclipse.dltk.ui.text.AbstractScriptScanner;
 import org.eclipse.dltk.ui.text.IColorManager;
 import org.eclipse.dltk.ui.text.TodoTagRule;
+import org.eclipse.dltk.ui.text.TodoTaskPreferencesOnPreferenceStore;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.WhitespaceRule;
@@ -55,8 +54,8 @@ public class RubyDocScanner extends AbstractScriptScanner {
 	}
 
 	private TodoTagRule createTodoTagRule(final IToken token) {
-		final ITodoTaskPreferences prefs = new TodoTaskPreferences(RubyPlugin
-				.getDefault().getPluginPreferences());
+		final ITodoTaskPreferences prefs = new TodoTaskPreferencesOnPreferenceStore(
+				getPreferenceStore());
 		return new TodoTagRule(token, prefs.getTagNames(), prefs
 				.isCaseSensitive());
 	}
