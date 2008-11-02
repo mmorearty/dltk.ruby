@@ -12,10 +12,8 @@
 package org.eclipse.dltk.ruby.internal.parser;
 
 import org.eclipse.dltk.compiler.task.ITodoTaskPreferences;
-import org.eclipse.dltk.compiler.task.TodoTaskPreferences;
-import org.eclipse.dltk.core.IPreferencesLookupDelegate;
+import org.eclipse.dltk.compiler.task.TodoTaskPreferencesOnPrefernceLookupDelegate;
 import org.eclipse.dltk.core.IScriptProject;
-import org.eclipse.dltk.core.PreferencesLookupDelegate;
 import org.eclipse.dltk.core.builder.AbstractTodoTaskBuildParticipantType;
 import org.eclipse.dltk.core.builder.IBuildParticipant;
 import org.eclipse.dltk.ruby.core.RubyPlugin;
@@ -23,8 +21,8 @@ import org.eclipse.dltk.ruby.core.RubyPlugin;
 public class RubyTodoParserType extends AbstractTodoTaskBuildParticipantType {
 
 	protected ITodoTaskPreferences getPreferences(IScriptProject project) {
-		IPreferencesLookupDelegate delegate = new PreferencesLookupDelegate(project);
-		return new TodoTaskPreferences(RubyPlugin.PLUGIN_ID, delegate);
+		return new TodoTaskPreferencesOnPrefernceLookupDelegate(
+				RubyPlugin.PLUGIN_ID, project);
 	}
 
 	private static class RubyTodoTaskParser extends TodoTaskBuildParticipant {
