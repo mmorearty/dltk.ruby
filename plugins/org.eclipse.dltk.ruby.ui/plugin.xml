@@ -247,7 +247,7 @@
             class="org.eclipse.dltk.ruby.internal.ui.actions.RubyOpenMethodAction"
             definitionId="org.eclipse.dltk.ruby.ui.navigate.open.method"
             icon="icons/etool16/openmethod.gif"
-            id="openType"
+            id="openMethod"
             label="%OpenMethodAction.label"
             menubarPath="navigate/open.ext2"
             tooltip="%OpenMethodAction.tooltip">
@@ -517,11 +517,6 @@
 				<parameter name="qualifier" value="org.eclipse.dltk.ruby.ui"/>
 				<parameter name="key" value="formatterId"/>
 			</selector>
-			<formatterFactory
-				class="org.eclipse.dltk.ruby.ui.formatter.OldRubyFormatterFactory"
-				id="org.eclipse.dltk.ruby.ui.formatter.OldFormatterFactory"
-				priority="0">
-			</formatterFactory>
 		</engineContribution>
 	</extension>
 
