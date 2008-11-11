@@ -316,6 +316,10 @@ public class RubyTestingMainLaunchConfigurationTab extends
 		setEnableScriptField(enabled);
 	}
 
+	protected void projectChanged() {
+		testModeChanged();
+	}
+
 	private void setEnableContainerTestGroup(boolean enabled) {
 		fContainerSearchButton.setEnabled(enabled);
 		fContainerText.setEnabled(enabled);
