@@ -9,18 +9,16 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.internal.debug.ui.interpreters;
 
-
 import org.eclipse.dltk.internal.debug.ui.interpreters.AbstractInterpreterLibraryBlock;
 import org.eclipse.dltk.internal.debug.ui.interpreters.AddScriptInterpreterDialog;
 import org.eclipse.dltk.internal.debug.ui.interpreters.LibraryLabelProvider;
-import org.eclipse.dltk.ruby.internal.debug.ui.RubyDebugUIPlugin;
-import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.IBaseLabelProvider;
 
 /**
  * Control used to edit the libraries associated with a Interpreter install
  */
-public class RubyInterpreterLibraryBlock extends AbstractInterpreterLibraryBlock {
+public class RubyInterpreterLibraryBlock extends
+		AbstractInterpreterLibraryBlock {
 
 	/**
 	 * the prefix for dialog setting pertaining to this block
@@ -28,12 +26,10 @@ public class RubyInterpreterLibraryBlock extends AbstractInterpreterLibraryBlock
 	protected static final String DIALOG_SETTINGS_PREFIX = "RubyInterpreterLibraryBlock"; //$NON-NLS-1$
 
 	public RubyInterpreterLibraryBlock(AddScriptInterpreterDialog d) {
-	    super(d);
+		super(d);
 	}
+
 	protected IBaseLabelProvider getLabelProvider() {
 		return new LibraryLabelProvider();
-	}
-	protected IDialogSettings getDialogSettions() {
-		return RubyDebugUIPlugin.getDefault().getDialogSettings();
 	}
 }
