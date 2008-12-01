@@ -18,6 +18,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import junit.framework.Assert;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 import org.eclipse.dltk.compiler.util.Util;
 import org.eclipse.dltk.ruby.formatter.RubyFormatter;
@@ -31,6 +33,29 @@ import org.eclipse.text.edits.TextEdit;
 
 public class FormatRubyLibTest extends AbstractFormatterTest {
 
+	private static final String FILENAME = "/home/dltk/apps/ruby-lib.zip";
+
+	/**
+	 * @return
+	 */
+	public static TestSuite suite() {
+		final File path = new File(FILENAME);
+		if (path.isFile()) {
+			return new TestSuite(FormatRubyLibTest.class);
+		} else {
+			final TestSuite suite = new TestSuite(FormatRubyLibTest.class
+					.getName());
+			suite.addTest(new TestCase("testRubyLib-NOT-FOUND") {
+
+				protected void runTest() throws Throwable {
+					System.out.println(FILENAME + " not found");
+				}
+
+			});
+			return suite;
+		}
+	}
+
 	static final String CHARSET = "ISO-8859-1"; //$NON-NLS-1$
 
 	/**
@@ -43,7 +68,7 @@ public class FormatRubyLibTest extends AbstractFormatterTest {
 
 	public void testRubyLib() throws IOException {
 		int errorCount = 0;
-		final File path = new File("/home/dltk/apps/ruby-lib.zip");
+		final File path = new File(FILENAME);
 		if (!path.isFile()) {
 			fail(path + " is not found"); //$NON-NLS-1$
 		}
