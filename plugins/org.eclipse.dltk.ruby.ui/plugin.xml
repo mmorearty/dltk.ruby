@@ -327,25 +327,28 @@
               sequence="ESC CTRL+F">
         </key> 
  </extension>
- 
-   <extension
+  
+<extension
          point="org.eclipse.ui.decorators">
-      <decorator
-            adaptable="false"
+   <decorator
+            adaptable="true"
             location="TOP_LEFT"
             lightweight="true"
             label="%RubyProjectDecorator.name"
             state="true"
-            class="org.eclipse.dltk.ruby.internal.ui.RubyProjectDecorator"
-            id="org.eclipse.dltk.ruby.projectdecorator">
+            class="org.eclipse.dltk.ui.DeclarativeLightweightLabelDecorator:/icons/ovr16/ruby_ovr.gif"
+            id="org.eclipse.dltk.ruby.decorators.projectdecorator">
          <enablement>
-           <or>
-            <objectClass name="org.eclipse.core.resources.IProject"/>
-            <objectClass name="org.eclipse.dltk.core.IScriptProject"/>
-           </or>
+            <and>
+            	<objectClass name="org.eclipse.core.resources.IProject"/>
+             <objectState
+                   name="nature"
+                   value="org.eclipse.dltk.ruby.core.nature">
+             </objectState>
+            </and>
          </enablement>
       </decorator>
-   </extension>
+ </extension>
  
  <extension
        point="org.eclipse.ui.propertyPages">

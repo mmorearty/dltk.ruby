@@ -20,9 +20,6 @@ public class RubyImages {
 	public static final ImageDescriptor DESC_OBJ_RUBY_FILE = helper
 			.createUnManaged(PluginImagesHelper.T_OBJ, "ruby_obj.gif"); //$NON-NLS-1$
 
-	public static final ImageDescriptor PROJECT_DECARATOR = helper
-			.createUnManaged(PluginImagesHelper.T_OVR, "ruby_ovr.gif"); //$NON-NLS-1$
-
 	public static final ImageDescriptor DESC_WIZBAN_PROJECT_CREATION = helper
 			.createUnManaged(PluginImagesHelper.T_WIZBAN,
 					"projectcreate_wiz.png"); //$NON-NLS-1$
