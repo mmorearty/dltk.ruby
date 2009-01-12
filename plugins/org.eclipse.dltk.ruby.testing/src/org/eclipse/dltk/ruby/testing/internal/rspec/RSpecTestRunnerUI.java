@@ -11,6 +11,10 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.testing.internal.rspec;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -22,6 +26,8 @@ import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
 import org.eclipse.dltk.ast.expressions.CallArgumentsList;
@@ -50,9 +56,12 @@ import org.eclipse.dltk.ruby.testing.internal.AbstractTestingEngineValidateVisit
 import org.eclipse.dltk.ruby.testing.internal.ResolverUtils;
 import org.eclipse.dltk.ruby.testing.internal.RubyTestingPlugin;
 import org.eclipse.dltk.testing.DLTKTestingMessages;
+import org.eclipse.dltk.testing.DLTKTestingPlugin;
 import org.eclipse.dltk.testing.TestElementResolution;
 import org.eclipse.dltk.testing.model.ITestCaseElement;
 import org.eclipse.dltk.testing.model.ITestElement;
+import org.eclipse.dltk.testing.model.ITestElementPredicate;
+import org.eclipse.dltk.testing.model.ITestRunSession;
 import org.eclipse.dltk.testing.model.ITestSuiteElement;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DefaultLineTracker;
@@ -462,5 +471,56 @@ public class RSpecTestRunnerUI extends AbstractRubyTestRunnerUI {
 			return false;
 		}
 		return true;
+	}
+
+	/*
+	 * @see org.eclipse.dltk.testing.AbstractTestRunnerUI#canRerunFailures()
+	 */
+	public boolean canRerunFailures() {
+		return true;
+	}
+
+	/*
+	 * @see AbstractTestRunnerUI#collectFailures(ITestElement[])
+	 */
+	public String collectFailures(ITestRunSession testRunSession)
+			throws CoreException {
+		try {
+			final File file = File.createTempFile("rspecTestFailures", ".txt"); //$NON-NLS-1$ //$NON-NLS-2$
+			file.deleteOnExit();
+			BufferedWriter bw = null;
+			try {
+				bw = new BufferedWriter(new FileWriter(file));
+				final ITestElement[] failures = testRunSession
+						.getFailedTestElements(new ITestElementPredicate() {
+							public boolean matches(ITestElement testElement) {
+								return testElement instanceof ITestCaseElement;
+							}
+						});
+				for (int i = 0; i < failures.length; i++) {
+					final ITestElement failure = failures[i];
+					if (failure instanceof ITestCaseElement
+							&& failure.getParentContainer() instanceof ITestSuiteElement) {
+						final ITestSuiteElement suite = (ITestSuiteElement) failure
+								.getParentContainer();
+						final String exampleName = suite.getSuiteTypeName()
+								+ " " //$NON-NLS-1$
+								+ getTestCaseLabel((ITestCaseElement) failure,
+										false);
+						bw.write(exampleName);
+						bw.newLine();
+						// TODO handle "automatic" example names
+					}
+				}
+			} finally {
+				if (bw != null) {
+					bw.close();
+				}
+			}
+			return file.getAbsolutePath();
+		} catch (IOException e) {
+			throw new CoreException(new Status(IStatus.ERROR,
+					DLTKTestingPlugin.PLUGIN_ID, IStatus.ERROR, "", e)); //$NON-NLS-1$
+		}
 	}
 }

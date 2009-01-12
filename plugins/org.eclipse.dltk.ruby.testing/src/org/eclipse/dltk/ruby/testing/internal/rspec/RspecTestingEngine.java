@@ -122,6 +122,12 @@ public class RspecTestingEngine extends AbstractRubyTestingEngine {
 		final String strPort = String.valueOf(allocatePort());
 		launch.setAttribute(DLTKTestingConstants.ATTR_PORT, strPort);
 		config.addEnvVar(RUBY_TESTING_PORT, strPort);
+		final String failureNames = configuration.getAttribute(
+				DLTKTestingConstants.ATTR_FAILURES_NAMES, Util.EMPTY_STRING);
+		if (failureNames.length() != 0) {
+			config.addScriptArg("-e"); //$NON-NLS-1$
+			config.addScriptArg(failureNames);
+		}
 		if (!RubyTestingLaunchConfigurationDelegate
 				.isContainerMode(configuration)) {
 			final String mainScript = AbstractScriptLaunchConfigurationDelegate
