@@ -175,7 +175,7 @@ module DLTK
 			end
 
 			def add_example_group(example_group)
-				examples = example_group.examples
+				examples = example_group.examples_to_run
 				@connection.notifyTestTreeEntry getTestId(example_group), example_group.description_text, true, examples.size
 				examples.each do |e|
 					@connection.notifyTestTreeEntry getTestId(e), getTestName(e), false, 1
