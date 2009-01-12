@@ -24,6 +24,16 @@ module Spec
 	end
 end
 
+module Spec
+	module Example
+		module ExampleGroupMethods
+			def DLTK_examples_to_run
+				examples_to_run
+			end
+		end
+	end
+end		
+
 module DLTK
 	module RSpec
 		module EnvVars
@@ -175,10 +185,12 @@ module DLTK
 			end
 
 			def add_example_group(example_group)
-				examples = example_group.examples_to_run
-				@connection.notifyTestTreeEntry getTestId(example_group), example_group.description_text, true, examples.size
-				examples.each do |e|
-					@connection.notifyTestTreeEntry getTestId(e), getTestName(e), false, 1
+				examples = example_group.respond_to?(:DLTK_examples_to_run) ? example_group.DLTK_examples_to_run : example_group.examples
+				if examples.size > 0 then
+					@connection.notifyTestTreeEntry getTestId(example_group), example_group.description_text, true, examples.size
+					examples.each do |e|
+						@connection.notifyTestTreeEntry getTestId(e), getTestName(e), false, 1
+					end
 				end
 				super
 			end
