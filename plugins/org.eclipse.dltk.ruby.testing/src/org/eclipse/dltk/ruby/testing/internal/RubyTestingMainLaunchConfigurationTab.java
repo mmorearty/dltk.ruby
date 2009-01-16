@@ -456,14 +456,18 @@ public class RubyTestingMainLaunchConfigurationTab extends
 
 	protected void setDefaults(ILaunchConfigurationWorkingCopy configuration,
 			IModelElement element) {
-		if (element instanceof ISourceModule) {
-			super.setDefaults(configuration, element);
-			TestingEngineDetectResult detection = TestingEngineManager.detect(
-					TestingEngineManager.getEngines(getNatureID()),
-					(ISourceModule) element);
-			if (detection != null) {
-				configuration.setAttribute(DLTKTestingConstants.ATTR_ENGINE_ID,
-						detection.getEngine().getId());
+		if (element.getElementType() >= IModelElement.SOURCE_MODULE) {
+			element = element.getAncestor(IModelElement.SOURCE_MODULE);
+			if (element != null) {
+				super.setDefaults(configuration, element);
+				TestingEngineDetectResult detection = TestingEngineManager
+						.detect(TestingEngineManager.getEngines(getNatureID()),
+								(ISourceModule) element);
+				if (detection != null) {
+					configuration.setAttribute(
+							DLTKTestingConstants.ATTR_ENGINE_ID, detection
+									.getEngine().getId());
+				}
 			}
 		} else if (element != null) {
 			configuration.setAttribute(
