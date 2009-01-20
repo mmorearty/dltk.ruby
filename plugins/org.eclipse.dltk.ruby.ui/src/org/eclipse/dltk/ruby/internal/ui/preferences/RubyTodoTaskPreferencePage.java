@@ -80,11 +80,11 @@ public class RubyTodoTaskPreferencePage extends
 	}
 
 	protected String getPreferencePageId() {
-		return "org.eclipse.dltk.ruby.preferences.todo";
+		return "org.eclipse.dltk.ruby.preferences.todo"; //$NON-NLS-1$
 	}
 
 	protected String getPropertyPageId() {
-		return "org.eclipse.dltk.ruby.propertyPage.todo";
+		return "org.eclipse.dltk.ruby.propertyPage.todo"; //$NON-NLS-1$
 	}
 
 	protected PreferenceKey[] getPreferenceKeys() {
