@@ -24,7 +24,7 @@ public class RubyFilenameLinenumberResolver implements IDynamicVariableResolver 
 
 	private static final String DEVICE = "(?:[a-zA-Z]:)?"; //$NON-NLS-1$
 	private static final String SEPARATOR = "[/\\\\]"; //$NON-NLS-1$
-	private static final String SEGMENT = "[_\\w\\.\\-]+"; //$NON-NLS-1$
+	private static final String SEGMENT = "[ _\\p{L}\\p{N}\\p{M}\\p{S}\\.\\-]+"; //$NON-NLS-1$
 	private static final String LINE_NUMBER = "(\\d+)"; //$NON-NLS-1$
 
 	public String resolveValue(IDynamicVariable variable, String argument) {
