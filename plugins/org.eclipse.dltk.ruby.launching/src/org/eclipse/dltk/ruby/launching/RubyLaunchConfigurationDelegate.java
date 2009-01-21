@@ -31,10 +31,11 @@ public class RubyLaunchConfigurationDelegate extends
 	public String getLanguageId() {
 		return RubyNature.NATURE_ID;
 	}
+
 	protected InterpreterConfig createInterpreterConfig(
 			ILaunchConfiguration configuration, ILaunch launch)
-	throws CoreException {
-		
+			throws CoreException {
+
 		final InterpreterConfig config = super.createInterpreterConfig(
 				configuration, launch);
 		if (config != null) {
@@ -42,9 +43,10 @@ public class RubyLaunchConfigurationDelegate extends
 			addIncludePathInterpreterArg(config, configuration);
 			addStreamSync(config, configuration, launch);
 		}
-		
+
 		return config;
 	}
+
 	protected String getCharset(ILaunchConfiguration configuration)
 			throws CoreException {
 		IProject project = getScriptProject(configuration).getProject();
@@ -93,10 +95,12 @@ public class RubyLaunchConfigurationDelegate extends
 		final StringBuffer sb = new StringBuffer();
 		if (paths.length > 0) {
 			sb.append("-I"); //$NON-NLS-1$
-			sb.append(EnvironmentPathUtils.getLocalPath(paths[0]).toString());
-			for (int i = 1; i < paths.length; ++i) {
-				sb.append(separator);
-				sb.append(EnvironmentPathUtils.getLocalPath(paths[i]).toString());
+			for (int i = 0; i < paths.length; ++i) {
+				if (i != 0) {
+					sb.append(separator);
+				}
+				sb.append(EnvironmentPathUtils.getLocalPath(paths[i])
+						.toString());
 			}
 		}
 
@@ -106,15 +110,15 @@ public class RubyLaunchConfigurationDelegate extends
 	protected void addStreamSync(InterpreterConfig config,
 			ILaunchConfiguration configuration, ILaunch launch) {
 		try {
-			IDeployment deployment = config.getExecutionEnvironment().createDeployment();
-			final IPath path = deployment.add(RubyLaunchingPlugin
-					.getDefault().getBundle(), "scripts/sync.rb"); //$NON-NLS-1$
+			IDeployment deployment = config.getExecutionEnvironment()
+					.createDeployment();
+			final IPath path = deployment.add(RubyLaunchingPlugin.getDefault()
+					.getBundle(), "scripts/sync.rb"); //$NON-NLS-1$
 			config.addInterpreterArg("-r"); //$NON-NLS-1$
 			config.addInterpreterArg(deployment.getFile(path).toString());
 		} catch (IOException e) {
 			RubyLaunchingPlugin.log(e);
 		}
 	}
-
 
 }
