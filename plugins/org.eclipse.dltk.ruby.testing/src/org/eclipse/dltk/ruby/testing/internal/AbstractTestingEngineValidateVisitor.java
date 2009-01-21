@@ -11,6 +11,9 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.testing.internal;
 
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.Stack;
 
 import org.eclipse.dltk.ast.ASTNode;
@@ -18,8 +21,13 @@ import org.eclipse.dltk.ast.ASTVisitor;
 import org.eclipse.dltk.ast.declarations.MethodDeclaration;
 import org.eclipse.dltk.ast.expressions.CallExpression;
 import org.eclipse.dltk.ast.expressions.StringLiteral;
+import org.eclipse.dltk.core.ISourceModule;
+import org.eclipse.dltk.core.search.indexing.IIndexConstants;
 import org.eclipse.dltk.ruby.ast.RubyCallArgument;
 import org.eclipse.dltk.ruby.ast.RubyClassDeclaration;
+import org.eclipse.dltk.ruby.internal.parser.mixin.RubyMixinClass;
+import org.eclipse.dltk.ruby.internal.parser.mixin.RubyMixinModel;
+import org.eclipse.dltk.ruby.typeinference.RubyClassType;
 
 public class AbstractTestingEngineValidateVisitor extends ASTVisitor {
 
@@ -75,9 +83,40 @@ public class AbstractTestingEngineValidateVisitor extends ASTVisitor {
 				&& methodName.length() > prefix.length();
 	}
 
-	protected boolean isSuperClassOf(RubyClassDeclaration declaration,
-			final String className) {
-		return declaration.getSuperClassNames().contains(className);
+	protected boolean isSuperClassOf(ISourceModule module,
+			RubyClassDeclaration declaration, final String className) {
+		if (declaration.getSuperClassNames().contains(className))
+			return true;
+		else {
+			String classKey = className.replaceAll("::", //$NON-NLS-1$
+					String.valueOf(IIndexConstants.SEPARATOR));
+			Set processedKeys = new HashSet();
+			for (Iterator iter = declaration.getSuperClassNames().iterator(); iter
+					.hasNext();) {
+				String superClass = (String) iter.next();
+				RubyMixinModel model = RubyMixinModel.getInstance(module
+						.getScriptProject());
+				RubyMixinClass mixinClass = model
+						.createRubyClass(new RubyClassType(superClass
+								.replaceAll("::", String //$NON-NLS-1$
+										.valueOf(IIndexConstants.SEPARATOR))));
+				if (mixinClass != null)
+					// ssanders - Already know that it's indirect, because of
+					// contains() above
+					mixinClass = mixinClass.getSuperclass();
+				while (mixinClass != null) {
+				  if (processedKeys.add(mixinClass.getKey()) == true) {
+					  if (mixinClass.getKey().equals(classKey))
+						  return true;
+					  mixinClass = mixinClass.getSuperclass();
+				  }
+				  else {
+					  mixinClass = null;
+				  }
+				}
+			}
+		}
+		return false;
 	}
 
 	private boolean isRequire(CallExpression call) {
