@@ -132,7 +132,14 @@ public class RspecTestingEngine extends AbstractRubyTestingEngine {
 				.isContainerMode(configuration)) {
 			final String mainScript = AbstractScriptLaunchConfigurationDelegate
 					.getMainScriptName(configuration);
-			config.addScriptArg(mainScript);
+			// ssanders - Fully qualify the script path, otherwise it won't be
+			// found for nested folders
+			final IScriptProject scriptProject = AbstractScriptLaunchConfigurationDelegate
+					.getScriptProject(configuration);
+			final IPath scriptPath = scriptProject.getProject().getLocation()
+					.append(mainScript);
+			config.addScriptArg(config.getEnvironment().getFile(scriptPath)
+					.toOSString());
 		} else {
 			final String containerHandle = configuration
 					.getAttribute(DLTKTestingConstants.ATTR_TEST_CONTAINER,
@@ -142,12 +149,7 @@ public class RspecTestingEngine extends AbstractRubyTestingEngine {
 			Assert.isNotNull(element);
 			IResource resource = element.getUnderlyingResource();
 			Assert.isNotNull(resource);
-			final IPath path = resource.getProjectRelativePath();
-			if (path.isEmpty()) {
-				config.addScriptArg("."); //$NON-NLS-1$
-			} else {
-				config.addScriptArg(path.toOSString());
-			}
+			config.addScriptArg(resource.getLocation().toOSString());
 		}
 	}
 
