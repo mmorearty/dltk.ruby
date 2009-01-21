@@ -130,6 +130,14 @@ public class RubyPercentStringRule implements IPredicateRule {
 
 			int c= scanner.read();
 			if (c == '%') {
+				if (scanner.getColumn() > 1) {
+					scanner.unread();
+					scanner.unread();
+					int b = scanner.read();
+					scanner.read();
+					if (b == '<')
+						return Token.UNDEFINED;
+				}
 				char leader = startSequenceDetected(scanner);
 				char term = RubySyntaxUtils.getPercentStringTerminator((char) leader);
 				if (term != (char) 0) {
@@ -168,7 +176,9 @@ public class RubyPercentStringRule implements IPredicateRule {
 
 		int c;
 		int nestCount = 1;
+		int d = 0;
 		while ((c= scanner.read()) != ICharacterScanner.EOF) {
+			d++;
 			if (c == ESCAPE) {
 //				System.out.println("ESCAPE " + (char) c);
 				// Skip escaped character(s)
@@ -186,6 +196,10 @@ public class RubyPercentStringRule implements IPredicateRule {
 			} else if (c == (int) term) {
 				if (--nestCount <= 0)
 					return true;
+			} else if (c == '%') {
+				while (d-- > 0)
+					scanner.unread();
+				return false;
 			} else if (fBreaksOnEOL) {
 //				System.out.println((char) c);
 				// Check for end of line since it can be used to terminate the pattern.
