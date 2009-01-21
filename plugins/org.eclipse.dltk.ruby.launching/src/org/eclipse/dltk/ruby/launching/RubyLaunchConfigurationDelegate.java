@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.dltk.core.environment.EnvironmentPathUtils;
 import org.eclipse.dltk.core.environment.IDeployment;
 import org.eclipse.dltk.core.environment.IEnvironment;
 import org.eclipse.dltk.launching.AbstractScriptLaunchConfigurationDelegate;
@@ -47,8 +48,10 @@ public class RubyLaunchConfigurationDelegate extends
 	protected String getCharset(ILaunchConfiguration configuration)
 			throws CoreException {
 		IProject project = getScriptProject(configuration).getProject();
-		IResource resource = project
-				.findMember(getMainScriptName(configuration));
+		String scriptName = getMainScriptName(configuration);
+		IResource resource = null;
+		if (scriptName != null)
+			resource = project.findMember(scriptName);
 
 		if (resource instanceof IFile) {
 			IFile file = (IFile) resource;
@@ -90,10 +93,10 @@ public class RubyLaunchConfigurationDelegate extends
 		final StringBuffer sb = new StringBuffer();
 		if (paths.length > 0) {
 			sb.append("-I"); //$NON-NLS-1$
-			sb.append(env.convertPathToString(paths[0]));
+			sb.append(EnvironmentPathUtils.getLocalPath(paths[0]).toString());
 			for (int i = 1; i < paths.length; ++i) {
 				sb.append(separator);
-				sb.append(env.convertPathToString(paths[i]));
+				sb.append(EnvironmentPathUtils.getLocalPath(paths[i]).toString());
 			}
 		}
 
