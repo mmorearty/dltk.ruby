@@ -19,6 +19,16 @@ public class Messages extends NLS {
 	public static String Delegate_internalErrorExtractingRunner;
 	public static String Delegate_runnerNotFound;
 	public static String openEditorError;
+	public static String RubyTestingLaunchShortcut_selectConfigurationToDebug;
+	public static String RubyTestingLaunchShortcut_selectConfigurationToRun;
+	public static String RubyTestingLaunchShortcut_selectTestConfiguration;
+	public static String RubyTestingLaunchShortcut_selectTestToDebug;
+	public static String RubyTestingLaunchShortcut_selectTestToRun;
+	public static String RubyTestingLaunchShortcut_testLaunch;
+	public static String RubyTestingLaunchShortcut_testLaunchUnexpectedlyFailed;
+	public static String RubyTestingLaunchShortcut_testSelection;
+	public static String RubyTestingLaunchShortcut_theSelectedLaunchConfigurationDoesntHaveATestingEngineConfigured;
+	public static String RubyTestingLaunchShortcut_unableToLocateAnyTestsInTheSpecifiedSelection;
 	public static String RubyTestingMainLaunchConfigurationTab_rubyTestingEngine;
 	public static String validate_notTestUnit;
 	public static String validate_probablyTestUnit;

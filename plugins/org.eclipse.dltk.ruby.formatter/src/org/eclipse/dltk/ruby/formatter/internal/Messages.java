@@ -16,6 +16,8 @@ import org.eclipse.osgi.util.NLS;
 public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.eclipse.dltk.ruby.formatter.internal.messages"; //$NON-NLS-1$
 	public static String RubyFormatter_contentCorrupted;
+	public static String RubyFormatterNodeBuilder_unexpectedClassInCaseWhenExpression;
+	public static String RubyFormatterNodeBuilder_unexpectedClassInIfExpression;
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);

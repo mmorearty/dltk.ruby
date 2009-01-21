@@ -34,17 +34,17 @@ public class RubyFormatterCommentsPage extends FormatterModifyTabPage {
 	protected void createOptions(IFormatterControlManager manager,
 			Composite parent) {
 		Group commentWrappingGroup = SWTFactory.createGroup(parent,
-				"Comment formatting", 2, 1, GridData.FILL_HORIZONTAL);
+				Messages.RubyFormatterCommentsPage_commentFormatting, 2, 1, GridData.FILL_HORIZONTAL);
 		manager.createCheckbox(commentWrappingGroup,
 				RubyFormatterConstants.WRAP_COMMENTS,
-				"Enable comment wrapping", 2);
+				Messages.RubyFormatterCommentsPage_enableCommentWrapping, 2);
 		manager.createNumber(commentWrappingGroup,
 				RubyFormatterConstants.WRAP_COMMENTS_LENGTH,
-				"Maximum line width for comments");
+				Messages.RubyFormatterCommentsPage_maximumLineWidthForComments);
 	}
 
 	protected URL getPreviewContent() {
-		return getClass().getResource("wrapping-preview.rb");
+		return getClass().getResource("wrapping-preview.rb"); //$NON-NLS-1$
 	}
 
 }

@@ -34,45 +34,45 @@ public class RubyFormatterBlankLinesPage extends FormatterModifyTabPage {
 	protected void createOptions(IFormatterControlManager manager,
 			Composite parent) {
 		Group emptyLinesGroup = SWTFactory.createGroup(parent,
-				"Blank lines in source file", 2, 1, GridData.FILL_HORIZONTAL);
+				Messages.RubyFormatterBlankLinesPage_blankLinesInSourceFile, 2, 1, GridData.FILL_HORIZONTAL);
 		manager.createNumber(emptyLinesGroup,
 				RubyFormatterConstants.LINES_FILE_AFTER_REQUIRE,
-				"After require directives");
+				Messages.RubyFormatterBlankLinesPage_afterRequireDirectives);
 		manager.createNumber(emptyLinesGroup,
 				RubyFormatterConstants.LINES_FILE_BETWEEN_MODULE,
-				"Between modules");
+				Messages.RubyFormatterBlankLinesPage_betweenModules);
 		manager.createNumber(emptyLinesGroup,
 				RubyFormatterConstants.LINES_FILE_BETWEEN_CLASS,
-				"Between classes");
+				Messages.RubyFormatterBlankLinesPage_betweenClasses);
 		manager.createNumber(emptyLinesGroup,
 				RubyFormatterConstants.LINES_FILE_BETWEEN_METHOD,
-				"Between methods");
+				Messages.RubyFormatterBlankLinesPage_betweenMethods);
 		//
 		Group emptyLinesInternalGroup = SWTFactory.createGroup(parent,
-				"Blank lines within class/module declarations", 2, 1,
+				Messages.RubyFormatterBlankLinesPage_blankLinesWithingClassModuleDeclarations, 2, 1,
 				GridData.FILL_HORIZONTAL);
 		manager.createNumber(emptyLinesInternalGroup,
 				RubyFormatterConstants.LINES_BEFORE_FIRST,
-				"Before first declaration");
+				Messages.RubyFormatterBlankLinesPage_befireFirstDeclaration);
 		manager.createNumber(emptyLinesInternalGroup,
 				RubyFormatterConstants.LINES_BEFORE_MODULE,
-				"Before nested module declarations");
+				Messages.RubyFormatterBlankLinesPage_beforeNestedModuleDeclarations);
 		manager.createNumber(emptyLinesInternalGroup,
 				RubyFormatterConstants.LINES_BEFORE_CLASS,
-				"Before nested class declarations");
+				Messages.RubyFormatterBlankLinesPage_beforeNestedClassDeclarations);
 		manager.createNumber(emptyLinesInternalGroup,
 				RubyFormatterConstants.LINES_BEFORE_METHOD,
-				"Before method declarations");
+				Messages.RubyFormatterBlankLinesPage_beforeMethodDeclarations);
 		//
 		Group preserveGroup = SWTFactory.createGroup(parent,
-				"Existing blank lines", 2, 1, GridData.FILL_HORIZONTAL);
+				Messages.RubyFormatterBlankLinesPage_existingBlankLines, 2, 1, GridData.FILL_HORIZONTAL);
 		manager.createNumber(preserveGroup,
 				RubyFormatterConstants.LINES_PRESERVE,
-				"Number of empty lines to preserve");
+				Messages.RubyFormatterBlankLinesPage_numberOfEmptyLinesToPreserve);
 	}
 
 	protected URL getPreviewContent() {
-		return getClass().getResource("blank-lines-preview.rb");
+		return getClass().getResource("blank-lines-preview.rb"); //$NON-NLS-1$
 	}
 
 }

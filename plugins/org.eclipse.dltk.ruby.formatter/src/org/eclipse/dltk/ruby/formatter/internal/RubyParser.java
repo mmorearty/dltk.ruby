@@ -38,6 +38,6 @@ public class RubyParser {
 		}
 	}
 
-	private static final String FILENAME = "";
+	private static final String FILENAME = ""; //$NON-NLS-1$
 
 }

@@ -72,7 +72,7 @@ public class RubyFormatterFactory extends AbstractScriptFormatterFactory {
 	}
 
 	public URL getPreviewContent() {
-		return getClass().getResource("formatterPreview.rb");
+		return getClass().getResource("formatterPreview.rb"); //$NON-NLS-1$
 	}
 
 	public IFormatterModifyDialog createDialog(

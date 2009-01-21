@@ -456,6 +456,7 @@ public class RubyTestingMainLaunchConfigurationTab extends
 
 	protected void setDefaults(ILaunchConfigurationWorkingCopy configuration,
 			IModelElement element) {
+		element = ensureValid(element);
 		if (element.getElementType() >= IModelElement.SOURCE_MODULE) {
 			element = element.getAncestor(IModelElement.SOURCE_MODULE);
 			if (element != null) {

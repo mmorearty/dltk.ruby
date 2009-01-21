@@ -262,7 +262,7 @@ public class RubyFormatterNodeBuilder extends AbstractFormatterNodeBuilder {
 						branch = null;
 					} else {
 						RubyFormatterPlugin.warn(NLS.bind(
-								"Unexpected {0} class in case/when expression",
+								Messages.RubyFormatterNodeBuilder_unexpectedClassInCaseWhenExpression,
 								branch.getClass().getName()),
 								new DumpStackOnly());
 						break;
@@ -336,7 +336,7 @@ public class RubyFormatterNodeBuilder extends AbstractFormatterNodeBuilder {
 						branch = null;
 					} else {
 						RubyFormatterPlugin.warn(NLS.bind(
-								"Unexpected {0} class in if expression", branch
+								Messages.RubyFormatterNodeBuilder_unexpectedClassInIfExpression, branch
 										.getClass().getName()),
 								new DumpStackOnly());
 						break;
@@ -546,7 +546,7 @@ public class RubyFormatterNodeBuilder extends AbstractFormatterNodeBuilder {
 			}
 
 			private boolean isRequireMethod(FCallNode call) {
-				if ("require".equals(call.getName())) {
+				if ("require".equals(call.getName())) { //$NON-NLS-1$
 					if (call.getArgsNode() instanceof ArrayNode) {
 						return true;
 					}

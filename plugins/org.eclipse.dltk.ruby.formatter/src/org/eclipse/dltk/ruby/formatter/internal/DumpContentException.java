@@ -25,17 +25,17 @@ public class DumpContentException extends Exception {
 
 	public void printStackTrace(PrintStream s) {
 		synchronized (s) {
-			s.println("========");
+			s.println("========"); //$NON-NLS-1$
 			s.println(getMessage());
-			s.println("========");
+			s.println("========"); //$NON-NLS-1$
 		}
 	}
 
 	public void printStackTrace(PrintWriter s) {
 		synchronized (s) {
-			s.println("========");
+			s.println("========"); //$NON-NLS-1$
 			s.println(getMessage());
-			s.println("========");
+			s.println("========"); //$NON-NLS-1$
 		}
 	}
 

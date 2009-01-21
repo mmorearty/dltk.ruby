@@ -1,8 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Tests Fragment
+Bundle-Localization: plugin
+Bundle-Name: %pluginName
 Bundle-SymbolicName: org.eclipse.dltk.ruby.testing.tests
 Bundle-Version: 1.0.0
+Bundle-Vendor: %pluginProvider
 Fragment-Host: org.eclipse.dltk.ruby.testing
 Bundle-RequiredExecutionEnvironment: J2SE-1.4
 Require-Bundle: org.eclipse.dltk.core.tests,

@@ -78,7 +78,7 @@ public class RubyFormatterIndentationTabPage extends FormatterModifyTabPage {
 	protected void createOptions(final IFormatterControlManager manager,
 			Composite parent) {
 		Group tabPolicyGroup = SWTFactory.createGroup(parent,
-				"General Settings", 2, 1, GridData.FILL_HORIZONTAL);
+				Messages.RubyFormatterIndentationTabPage_generalSettings, 2, 1, GridData.FILL_HORIZONTAL);
 		tabPolicy = manager
 				.createCombo(
 						tabPolicyGroup,
@@ -112,32 +112,32 @@ public class RubyFormatterIndentationTabPage extends FormatterModifyTabPage {
 		});
 		//
 		Group indentGroup = SWTFactory.createGroup(parent,
-				"Indent within definitions", 1, 1, GridData.FILL_HORIZONTAL);
+				Messages.RubyFormatterIndentationTabPage_indentWithinDefinitions, 1, 1, GridData.FILL_HORIZONTAL);
 		manager.createCheckbox(indentGroup,
 				RubyFormatterConstants.INDENT_CLASS,
-				"Declarations within class body");
+				Messages.RubyFormatterIndentationTabPage_declarationsWithinClassBody);
 		manager.createCheckbox(indentGroup,
 				RubyFormatterConstants.INDENT_MODULE,
-				"Declarations within module body");
+				Messages.RubyFormatterIndentationTabPage_declarationsWithinModuleBody);
 		manager.createCheckbox(indentGroup,
 				RubyFormatterConstants.INDENT_METHOD,
-				"Statements within method body");
+				Messages.RubyFormatterIndentationTabPage_statementsWithinMethodBody);
 		Group indentBlocks = SWTFactory.createGroup(parent,
-				"Indent within blocks", 1, 1, GridData.FILL_HORIZONTAL);
+				Messages.RubyFormatterIndentationTabPage_indentWithinBlocks, 1, 1, GridData.FILL_HORIZONTAL);
 		manager.createCheckbox(indentBlocks,
 				RubyFormatterConstants.INDENT_BLOCKS,
-				"Statements within blocks body");
+				Messages.RubyFormatterIndentationTabPage_statementsWithinBlockBody);
 		manager.createCheckbox(indentBlocks, RubyFormatterConstants.INDENT_IF,
-				"Statements within 'if' body");
+				Messages.RubyFormatterIndentationTabPage_statementsWithinIfBody);
 		manager.createCheckbox(indentBlocks,
 				RubyFormatterConstants.INDENT_CASE,
-				"Statements within 'case' body");
+				Messages.RubyFormatterIndentationTabPage_statementsWithinCaseBody);
 		manager.createCheckbox(indentBlocks,
 				RubyFormatterConstants.INDENT_WHEN,
-				"Statements within 'when' body");
+				Messages.RubyFormatterIndentationTabPage_StatementsWithinWhenBody);
 	}
 
 	protected URL getPreviewContent() {
-		return getClass().getResource("indentation-preview.rb");
+		return getClass().getResource("indentation-preview.rb"); //$NON-NLS-1$
 	}
 }
