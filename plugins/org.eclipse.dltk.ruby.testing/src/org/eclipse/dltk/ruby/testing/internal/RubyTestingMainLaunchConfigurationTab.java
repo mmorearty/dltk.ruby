@@ -144,7 +144,7 @@ public class RubyTestingMainLaunchConfigurationTab extends
 		//
 		// Testing engine
 		//
-		createTestEngineEditor(comp, "Ruby Testing engine");
+		createTestEngineEditor(comp, Messages.RubyTestingMainLaunchConfigurationTab_rubyTestingEngine);
 		createVerticalSpacer(comp, 1);
 
 		createDebugOptionsGroup(comp);

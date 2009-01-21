@@ -19,6 +19,7 @@ public class Messages extends NLS {
 	public static String Delegate_internalErrorExtractingRunner;
 	public static String Delegate_runnerNotFound;
 	public static String openEditorError;
+	public static String RubyTestingMainLaunchConfigurationTab_rubyTestingEngine;
 	public static String validate_notTestUnit;
 	public static String validate_probablyTestUnit;
 	public static String validate_notRSpec;
