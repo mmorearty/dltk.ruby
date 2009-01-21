@@ -47,7 +47,7 @@
           name="%RubyPerspective.name"/>
     <perspective
           class="org.eclipse.dltk.ruby.internal.ui.RubyBrowsingPerspectiveFactory"
-          icon="icons/eview16/ruby_persp.gif"
+          icon="icons/eview16/ruby_browse_persp.gif"
           id="org.eclipse.dltk.ruby.ui.RubyBrowsingPerspective"
           name="%RubyBrowsingPerspective.name">
     </perspective>
@@ -165,7 +165,7 @@
               name="%RubyCodeTemplatesPreferencePage.name">
      </page>	          
      <page
-            name="Libraries"
+            name="%RubyLibraryPreferencePage.name"
             category="org.eclipse.dltk.ruby.preferences"
             class="org.eclipse.dltk.ruby.internal.ui.preferences.RubyLibraryPreferencePage"
             id="org.eclipse.dltk.ruby.preferences.UserLibraryPreferencePage">
@@ -198,21 +198,21 @@
 		<view
 			category="org.eclipse.dltk.ruby.ui"
 			class="org.eclipse.dltk.ui.browsing.ProjectsView:org.eclipse.dltk.ruby.core.nature"
-			icon="icons/eview16/ruby_persp.gif"
+			icon="icons/eview16/ruby_projects.gif"
 			id="org.eclipse.dltk.ruby.ui.Projects"
 			name="%RubyProjects.name">
 		</view>   
 		<view
 			category="org.eclipse.dltk.ruby.ui"
 			class="org.eclipse.dltk.ui.browsing.ext.ExtendedClassesView:org.eclipse.dltk.ruby.core.nature"
-			icon="icons/eview16/ruby_persp.gif"
+			icon="icons/eview16/ruby_types.gif"
 			id="org.eclipse.dltk.ruby.ui.extbrowsing"
 			name="%RubyExtendedClasses.name">
 		</view>
 		<view
 			category="org.eclipse.dltk.ruby.ui"
 			class="org.eclipse.dltk.ui.browsing.MembersView:org.eclipse.dltk.ruby.core.nature"
-			icon="icons/eview16/ruby_persp.gif"
+			icon="icons/eview16/ruby_members.gif"
 			id="org.eclipse.dltk.ruby.ui.Members"
 			name="%RubyMembers.name">
 		</view> 
@@ -475,13 +475,13 @@
    		id="org.eclipse.dltk.ruby.RequireHyperlinkDetector"
    		targetId="org.eclipse.dltk.ruby.code"
    		class="org.eclipse.dltk.ruby.internal.ui.text.hyperlink.RubyRequireHyperlinkDetector"
-   		name="Ruby Require Hyperlink Detector">
+   		name="%hyperlinkDetector.name.rubyRequire">
    	</hyperlinkDetector>
  </extension>
 
  <extension
    	point="org.eclipse.ui.workbench.texteditor.hyperlinkDetectorTargets">
-   	<target id="org.eclipse.dltk.ruby.code" name="Ruby Editor">
+   	<target id="org.eclipse.dltk.ruby.code" name="%target.name.rubyEditor">
    		<context type="org.eclipse.ui.texteditor.ITextEditor" />
    	</target>
  </extension>
