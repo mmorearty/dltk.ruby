@@ -52,12 +52,17 @@ public class TestUnitTestingEngine extends AbstractRubyTestingEngine {
 		private static final String TEST_UNIT_TEST_CASE = "Test::Unit::TestCase"; //$NON-NLS-1$
 		private static final String TEST = "test"; //$NON-NLS-1$
 
+		private ISourceModule module;
 		private int testUnitWeight = 0;
 		private int shouldaWeight = 0;
 
 		static final int REQUIRE_WEIGHT = 10;
 		static final int TESTCASE_WEIGHT = 10;
 		static final int METHOD_WEIGHT = 1;
+
+		public TestUnitValidateVisitor(ISourceModule module) {
+			this.module = module;
+		}
 
 		public boolean visitGeneral(ASTNode node) throws Exception {
 			if (node instanceof CallExpression) {
@@ -70,7 +75,7 @@ public class TestUnitTestingEngine extends AbstractRubyTestingEngine {
 					shouldaWeight += METHOD_WEIGHT;
 				}
 			} else if (node instanceof RubyClassDeclaration) {
-				if (isSuperClassOf((RubyClassDeclaration) node,
+				if (isSuperClassOf(module, (RubyClassDeclaration) node,
 						TEST_UNIT_TEST_CASE)) {
 					testUnitWeight += TESTCASE_WEIGHT;
 				}
@@ -101,7 +106,7 @@ public class TestUnitTestingEngine extends AbstractRubyTestingEngine {
 		if (declaration == null) {
 			return createStatus(IStatus.WARNING, Messages.validate_sourceErrors);
 		}
-		final TestUnitValidateVisitor visitor = new TestUnitValidateVisitor();
+		final TestUnitValidateVisitor visitor = new TestUnitValidateVisitor(module);
 		try {
 			declaration.traverse(visitor);
 		} catch (Exception e) {
