@@ -1,13 +1,44 @@
-require 'rubygems'
 require 'socket'
 
-gem 'rspec'
+begin
+  # ssanders: Try to load RSpec based on the LOADPATH, this allows
+  #           projects (e.g. Rails) to provide alternate versions via the buildpath
+  require 'spec'
+rescue LoadError
+  # ssanders: Fallback to loading from the Gem
+  require 'rubygems'
 
-require 'spec'
+  gem 'rspec'
+  require 'spec'
+end
 require 'spec/runner/formatter/base_formatter'
 
 module Spec
 	module Example
+		class ExampleGroup
+			alias_method :initialize_old, :initialize
+			def initialize(*args, &block)
+				result = initialize_old(*args, &block)
+				# ssanders: Override for "pending" examples
+				unless block
+					@from = caller
+					while !@from.empty? && /.*`it'/ !~ @from.first
+						@from.shift
+					end
+					@from.shift
+				end
+				result
+			end
+
+			def implementation_backtrace
+				if @from
+					@from
+				else
+					super
+				end
+			end
+		end
+
 		module ExampleMethods
 			IN_METHOD_RE = /^(.+):in `(.+)'$/
 			def rspecTestName
@@ -33,6 +64,55 @@ module Spec
 		end
 	end
 end		
+
+unless ::Spec::VERSION::MAJOR > 1 || ::Spec::VERSION::MINOR > 0
+	module Spec
+		module DSL
+			class Example
+				alias_method :initialize_old, :initialize
+				def initialize(*args, &block)
+					result = initialize_old(*args, &block)
+					@from = caller(0)[3]
+					Description.description.examples << self
+					result
+				end
+				IN_METHOD_RE = /^(.+):in `(.+)'$/
+				def rspecTestName
+					if @DLTK_backtrace.nil?
+						backtrace = @from
+						if backtrace =~ IN_METHOD_RE 
+							backtrace = $1
+						end
+						@DLTK_backtrace = backtrace
+					end
+					description + '<' + @DLTK_backtrace
+				end
+			end
+		end
+	end
+
+	module Spec
+		module DSL
+			class Description
+				def self.description
+					@@description
+				end
+				alias_method :initialize_old, :initialize
+				def initialize(*args, &block)
+					result = initialize_old(*args, &block)
+					@@description = self
+					result
+				end
+				def description_text
+					description
+				end
+				def examples
+					@examples ||= []
+				end
+			end
+		end
+	end
+end
 
 module DLTK
 	module RSpec
@@ -174,7 +254,7 @@ module DLTK
 		end
 
 		class DLTKFormatter < Spec::Runner::Formatter::BaseFormatter
-			def initialize(options, where)
+			def initialize(*args)
 				super
 				@connection = SocketConnection.new()
 			end
@@ -185,14 +265,23 @@ module DLTK
 			end
 
 			def add_example_group(example_group)
-				examples = example_group.respond_to?(:DLTK_examples_to_run) ? example_group.DLTK_examples_to_run : example_group.examples
-				if examples.size > 0 then
-					@connection.notifyTestTreeEntry getTestId(example_group), example_group.description_text, true, examples.size
-					examples.each do |e|
-						@connection.notifyTestTreeEntry getTestId(e), getTestName(e), false, 1
-					end
+				examples = example_group.examples
+				description = example_group.description_text
+				# ssanders: Ensure that description is never blank
+				description ||= example_group.to_s
+				@connection.notifyTestTreeEntry getTestId(example_group), description, true, examples.size
+				examples.each do |e|
+					@connection.notifyTestTreeEntry getTestId(e), getTestName(e), false, 1
 				end
-				super
+				if ::Spec::VERSION::MAJOR > 1 || ::Spec::VERSION::MINOR > 0
+					super
+				end
+			end
+
+			unless ::Spec::VERSION::MAJOR > 1 || ::Spec::VERSION::MINOR > 0
+				def add_behaviour(description)
+					add_example_group(description)
+				end
 			end
 
 			def example_started(example)
@@ -203,7 +292,9 @@ module DLTK
 				@connection.notifyTestEnded getTestId(example), getTestName(example)
 			end
 
-			def example_pending(example, message)
+			def example_pending(behaviour, example, message = nil)
+				# ssanders: In older versions and for "pending" the example is actually passed as behaviour
+				example = behaviour if example.is_a?(String)
 				@connection.notifyTestEnded getTestId(example), MessageIds::IGNORED_TEST_PREFIX + getTestName(example)
 			end
 
@@ -249,7 +340,11 @@ module DLTK
 			end
 
 			def getTestName(example)
-				return example.rspecTestName
+				if example.respond_to?(:rspecTestName)
+					return example.rspecTestName
+				else
+					return example.description
+				end
 			end
 
 		end
@@ -262,4 +357,15 @@ end
 
 ARGV.push '--format'
 ARGV.push 'DLTK::RSpec::DLTKFormatter'
-exit ::Spec::Runner::CommandLine.run(rspec_options)
+
+
+if ::Spec::VERSION::MAJOR > 1 || ::Spec::VERSION::MINOR > 0
+	if ::Spec::Extensions::Main.private_method_defined?(:rspec_options)
+		options = rspec_options
+	else # ssanders: RSpec > 1.1.4
+		options = ::Spec::Runner.options
+	end
+	exit ::Spec::Runner::CommandLine.run(options)
+else # ssanders: RSpec < 1.1
+	exit ::Spec::Runner::CommandLine.run(ARGV, STDERR, STDOUT)
+end
