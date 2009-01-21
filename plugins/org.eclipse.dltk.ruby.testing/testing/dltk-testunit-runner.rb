@@ -251,6 +251,11 @@ at_exit do
 			autoRunner = Test::Unit::AutoRunner.new(path != nil)
 			autoRunner.output_level = Test::Unit::UI::SILENT
 			autoRunner.base = path if path
+			# ssanders - Support non-standard test filenames (e.g. Rails)
+			autoRunner.pattern = [/\b.*_test\.rb\Z/m]
+			# ssanders - Avoid running the 'default_test' dummy method (e.g. Rails),
+			#            required to satisfy Test::Unit always needing at least one test method
+			autoRunner.filters = [proc { |t| /default_test/ =~ t.method_name ? false : nil }]
 			autoRunner.runner = proc do |r|
 				DLTK::TestUnit::Runner
 			end
