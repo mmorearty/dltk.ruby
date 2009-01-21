@@ -605,8 +605,6 @@ public abstract class ScriptHeuristicScanner implements ISymbols {
 		if (pos == NOT_FOUND)
 			return TokenEOF;
 
-		fPos--;
-
 		int token = getGenericToken(fChar);
 		if (token != TokenOTHER)
 			return token;
