@@ -14,37 +14,53 @@ A::
 B:: 
 
 c D::, e
+C.c D::, e
 
 e(F::)
+C.e(F::)
 
 g[H::]
+C.g[H::]
 
 h{I::}
+C.h{I::}
 
 
 #JRubySourceParser.COLON_FIXER2
 j :k => :, :l => 2
+C.j :k => :, :l => 2
 
 j :k => : , :l => 2
+C.j :k => : , :l => 2
 
 j{k :l => :}
+C.j{k :l => :}
 
 j{k :l => : }
+C.j{k :l => : }
 
 j(k :l => :)
+C.j(k :l => :)
 
 j(k :l => : )
+C.j(k :l => : )
 
 
 #JRubySourceParser.COLON_FIXER3
 j :, k
+C.j :, k
 
 j : , k
+C.j : , k
 
 j{k :}
+C.j{k :}
 
 j{k : }
+C.j{k : }
 
 j(k :)
+C.j(k :)
 
 j(k : )
+C.j(k : )

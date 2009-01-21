@@ -11,26 +11,40 @@
 #JRubySourceParser.HASH_FIXER1
 a :b =>do
 end
+C.a :b =>do
+end
 
 a :b => do
+end
+C.a :b => do
 end
 
 a(:b =>)do
 end
+C.a(:b =>)do
+end
 
 a( :b => ) do
+end
+C.a( :b => ) do
 end
 
 
 #JRubySourceParser.HASH_FIXER2
 j :k =>
+C.j :k =>
 
 j :k => 
+C.j :k => 
 
 j{k :l =>}
+C.j{k :l =>}
 
 j{k :l => }
+C.j{k :l => }
 
 j(k :l =>)
+C.j(k :l =>)
 
 j(k :l => )
+C.j(k :l => )

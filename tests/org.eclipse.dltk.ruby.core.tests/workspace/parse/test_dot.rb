@@ -10,13 +10,19 @@
 
 #JRubySourceParser.DOT_FIXER
 a.
+C.a.
 
 b. 
+C.b. 
 
 c d., e
+C.c d., e
 
 e(f.)
+C.e(f.)
 
 g[h.]
+C.g[h.]
 
 h{i.}
+C.h{i.}

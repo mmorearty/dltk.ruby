@@ -10,11 +10,15 @@
 
 #JRubySourceParser.COLON_FIXER_UNSAFE1
 a :b => :
+C.a :b => :
 
 a :b => : 
+C.a :b => : 
 
 
 #JRubySourceParser.COLON_FIXER_UNSAFE2
 a :
+C.a :
 
 b : 
+C.b : 
