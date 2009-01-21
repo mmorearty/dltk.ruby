@@ -13,9 +13,16 @@ package org.eclipse.dltk.ruby.internal.parser.mixin;
 
 public class RubyMixinUtils {
 
+	public static boolean isObject(String key) {
+		return OBJECT.equals(key) || OBJECT_INSTANCE.equals(key);
+	}
+
+	public static boolean isKernel(String key) {
+		return KERNEL.equals(key) || KERNEL_INSTANCE.equals(key);
+	}
+
 	public static boolean isObjectOrKernel(String key) {
-		return OBJECT.equals(key) || OBJECT_INSTANCE.equals(key)
-				|| KERNEL.equals(key) || KERNEL_INSTANCE.equals(key);
+		return isObject(key) || isKernel(key);
 	}
 
 	public static final String OBJECT = "Object"; //$NON-NLS-1$

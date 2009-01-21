@@ -493,7 +493,8 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 
 				final boolean shouldAdd = Flags.isPublic(flags)
 						|| lastParentIsSuperClass && Flags.isProtected(flags)
-						|| Flags.isPrivate(flags) && isSelf;
+						|| Flags.isPrivate(flags) && isSelf
+						|| RubyMixinUtils.isKernel(selfClass.getKey());
 				if (shouldAdd)
 					group.add(method);
 			}
