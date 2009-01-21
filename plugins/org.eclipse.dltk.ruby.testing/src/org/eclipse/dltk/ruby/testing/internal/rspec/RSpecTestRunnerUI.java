@@ -25,6 +25,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -355,13 +356,16 @@ public class RSpecTestRunnerUI extends AbstractRubyTestRunnerUI {
 		final Set describeReferences = findMethodReferences(scope, methodName);
 		describeReferences.removeAll(processedResources);
 		for (Iterator i = describeReferences.iterator(); i.hasNext();) {
-			final IFile file = (IFile) i.next();
-			processedResources.add(file);
-			final ISourceModule module = (ISourceModule) DLTKCore.create(file);
-			if (module != null) {
-				locator.process(module);
-				if (locator.range != null) {
-					return new TestElementResolution(module, locator.range);
+			final IResource resource = (IResource) i.next();
+			if (resource instanceof IFile) {
+				final IFile file = (IFile) resource;
+				processedResources.add(file);
+				final ISourceModule module = (ISourceModule) DLTKCore.create(file);
+				if (module != null) {
+					locator.process(module);
+					if (locator.range != null) {
+						return new TestElementResolution(module, locator.range);
+					}
 				}
 			}
 		}
