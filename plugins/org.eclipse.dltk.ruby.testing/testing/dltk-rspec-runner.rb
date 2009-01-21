@@ -265,13 +265,14 @@ module DLTK
 			end
 
 			def add_example_group(example_group)
-				examples = example_group.examples
-				description = example_group.description_text
-				# ssanders: Ensure that description is never blank
-				description ||= example_group.to_s
-				@connection.notifyTestTreeEntry getTestId(example_group), description, true, examples.size
-				examples.each do |e|
-					@connection.notifyTestTreeEntry getTestId(e), getTestName(e), false, 1
+				examples = example_group.respond_to?(:DLTK_examples_to_run) ? example_group.DLTK_examples_to_run : example_group.examples
+				if examples.size > 0 then
+					# ssanders: Ensure that description is never blank
+					description = example_group.description_text || example_group.to_s
+					@connection.notifyTestTreeEntry getTestId(example_group), description, true, examples.size
+					examples.each do |e|
+						@connection.notifyTestTreeEntry getTestId(e), getTestName(e), false, 1
+					end
 				end
 				if ::Spec::VERSION::MAJOR > 1 || ::Spec::VERSION::MINOR > 0
 					super
