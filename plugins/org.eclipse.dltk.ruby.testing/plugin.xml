@@ -23,7 +23,7 @@
             delegate="org.eclipse.dltk.ruby.testing.internal.RubyTestingLaunchConfigurationDelegate"
             id="org.eclipse.dltk.ruby.testing.launchConfig"
             modes="run, debug"
-            name="Ruby Testing"
+            name="%launchConfigurationType.name"
             public="true"
             sourceLocatorId="rubySourceLocator"
             sourcePathComputerId="rubySourcePathComputer">
@@ -44,11 +44,11 @@
             id="org.eclipse.dltk.ruby.testing.launchConfigTabGroup"
             type="org.eclipse.dltk.ruby.testing.launchConfig">
          <launchMode
-               description="Run mode"
+               description="%launchMode.description.run"
                mode="run">
          </launchMode>
          <launchMode
-               description="Debug mode"
+               description="%launchMode.description.debug"
                mode="debug"
                perspective="org.eclipse.debug.ui.DebugPerspective">
          </launchMode>
@@ -79,10 +79,10 @@
 						</iterate>
 					</with>
 				</enablement>
-				<contextLabel label="Ruby Testing Run"
+				<contextLabel label="%contextLabel.label.run"
 					mode="run">
 				</contextLabel>
-				<contextLabel label="Ruby Testing Debug"
+				<contextLabel label="%contextLabel.label.debug"
 					mode="debug">
 				</contextLabel>
          </contextualLaunch>
