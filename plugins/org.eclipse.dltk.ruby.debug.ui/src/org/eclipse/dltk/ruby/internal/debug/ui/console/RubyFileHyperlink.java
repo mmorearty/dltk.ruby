@@ -129,9 +129,9 @@ public class RubyFileHyperlink implements IHyperlink {
 	public static Object findSourceModule(String fileName) {
 		final IPath path = Path.fromOSString(fileName);
 		final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-		final IFile f = root.getFileForLocation(path);
-		if (f != null) {
-			return f;
+		final IFile[] files = root.findFilesForLocation(path);
+		if (files.length != 0) {
+			return files[0];
 		}
 		if (DEBUG) {
 			System.out.println("File for " + path + " is not found"); //$NON-NLS-1$ //$NON-NLS-2$
