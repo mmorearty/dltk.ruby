@@ -38,21 +38,49 @@ public class RubySourceFixer {
 			"(?:=>.*)(,)(?=[\\s)]*do)", Pattern.MULTILINE); //$NON-NLS-1$
 	private static final Pattern COMMA_FIXER2 = Pattern.compile(
 			",(?=[\\s)]*do)", Pattern.MULTILINE); //$NON-NLS-1$
-	private static final Pattern COMMA_FIXER3 = Pattern
+	private static final Pattern COMMA_FIXER3A = Pattern.compile(
+			"(?:=>.*,[^=>\r\n]*'[^']*)(')(?=[\\s)]*do)", Pattern.MULTILINE); //$NON-NLS-1$
+	private static final Pattern COMMA_FIXER3B = Pattern.compile(
+			"(?:=>.*,[^=>\r\n]*\"[^\"]*)(\")(?=[\\s)]*do)", Pattern.MULTILINE); //$NON-NLS-1$
+	private static final Pattern COMMA_FIXER3C = Pattern
 			.compile(
 					"(?:=>.*,[^=>\r\n]*)([\\:a-zA-Z0-9_!?])(?=[\\s)]*do)", Pattern.MULTILINE); //$NON-NLS-1$
 	private static final Pattern COMMA_FIXER4 = Pattern.compile(
 			"(?:=>.*)(,)(?=[\\s]*[)][\\s]*$)", Pattern.MULTILINE); //$NON-NLS-1$
 	private static final Pattern COMMA_FIXER5 = Pattern.compile(
 			",(?=[\\s]*[)][\\s]*$)", Pattern.MULTILINE); //$NON-NLS-1$
-	private static final Pattern COMMA_FIXER6 = Pattern
+	private static final Pattern COMMA_FIXER6A = Pattern
+			.compile(
+					"(?:=>.*,[^=>\r\n]*'[^']*)(')(?=[\\s]*[)][\\s]*$)", Pattern.MULTILINE); //$NON-NLS-1$
+	private static final Pattern COMMA_FIXER6B = Pattern
+			.compile(
+					"(?:=>.*,[^=>\r\n]*\"[^\"]*)(\")(?=[\\s]*[)][\\s]*$)", Pattern.MULTILINE); //$NON-NLS-1$
+	private static final Pattern COMMA_FIXER6C = Pattern
 			.compile(
 					"(?:=>.*,[^=>\r\n]*)([\\:a-zA-Z0-9_!?])(?=[\\s]*[)][\\s]*$)", Pattern.MULTILINE); //$NON-NLS-1$
-	private static final Pattern COMMA_FIXER_UNSAFE1 = Pattern.compile(
-			"(?:=>.*)(,)(?=[\\s)]*$)", Pattern.MULTILINE); //$NON-NLS-1$
-	private static final Pattern COMMA_FIXER_UNSAFE2 = Pattern.compile(
-			",(?=[\\s)]*$)", Pattern.MULTILINE); //$NON-NLS-1$
-	private static final Pattern COMMA_FIXER_UNSAFE3 = Pattern
+	private static final Pattern COMMA_FIXER_UNSAFE1A = Pattern
+			.compile(
+					"(?:^[\\s]*[^\\s(\\:]+[\\s]*'[^']*'[\\s]*=>.*)(,)(?=[\\s)]*$)", Pattern.MULTILINE); //$NON-NLS-1$
+	private static final Pattern COMMA_FIXER_UNSAFE1B = Pattern
+			.compile(
+					"(?:^[\\s]*[^\\s(\\:]+[\\s]*\"[^\"]*\"[\\s]*=>.*)(,)(?=[\\s)]*$)", Pattern.MULTILINE); //$NON-NLS-1$
+	private static final Pattern COMMA_FIXER_UNSAFE1C = Pattern
+			.compile(
+					"(?:^[\\s]*[^\\s(\\:]+[\\s]*[\\:a-zA-Z0-9_!?]+[\\s]*=>.*)(,)(?=[\\s)]*$)", Pattern.MULTILINE); //$NON-NLS-1$
+	private static final Pattern COMMA_FIXER_UNSAFE2A = Pattern
+			.compile(
+					"(?:^[\\s]*[^\\s(\\:]+[\\s]*'[^']*'[\\s]*)(,)(?=[\\s)]*$)", Pattern.MULTILINE); //$NON-NLS-1$
+	private static final Pattern COMMA_FIXER_UNSAFE2B = Pattern
+			.compile(
+					"(?:^[\\s]*[^\\s(\\:]+[\\s]*\"[^\"]*\"[\\s]*)(,)(?=[\\s)]*$)", Pattern.MULTILINE); //$NON-NLS-1$
+	private static final Pattern COMMA_FIXER_UNSAFE2C = Pattern
+			.compile(
+					"(?:^[\\s]*[^\\s(\\:]+[\\s]*[\\:a-zA-Z0-9_!?]*[\\s]*)(,)(?=[\\s)]*$)", Pattern.MULTILINE); //$NON-NLS-1$
+	private static final Pattern COMMA_FIXER_UNSAFE3A = Pattern.compile(
+			"(?:=>.*,[^=>\r\n]*'[^']*)(')(?=[\\s)]*$)", Pattern.MULTILINE); //$NON-NLS-1$
+	private static final Pattern COMMA_FIXER_UNSAFE3B = Pattern.compile(
+			"(?:=>.*,[^=>\r\n]*\"[^\"]*)(\")(?=[\\s)]*$)", Pattern.MULTILINE); //$NON-NLS-1$
+	private static final Pattern COMMA_FIXER_UNSAFE3C = Pattern
 			.compile(
 					"(?:=>.*,[^=>\r\n]*)([\\:a-zA-Z0-9_!?])(?=[\\s)]*$)", Pattern.MULTILINE); //$NON-NLS-1$
 	private static final Pattern HASH_FIXER1 = Pattern.compile(
@@ -61,14 +89,24 @@ public class RubySourceFixer {
 			"=>(?=[\\s]*[,}\\)])", Pattern.MULTILINE); //$NON-NLS-1$
 	private static final Pattern HASH_FIXER_UNSAFE1 = Pattern.compile(
 			"=>(?=[\\s)]*$)", Pattern.MULTILINE); //$NON-NLS-1$
-	private static final Pattern HASH_FIXER_UNSAFE2 = Pattern
+	private static final Pattern HASH_FIXER_UNSAFE2A = Pattern
 			.compile(
-					"^(?:\\s*)(\\s)(?:[a-zA-Z0-9_\"\':]+[\\s]*=>.*$)", Pattern.MULTILINE); //$NON-NLS-1$
+					"(?:^[\\s]*)(\\s)(?:'[^']*'[\\s]*=>.*[^\\s,)]+[\\s]*$)", Pattern.MULTILINE); //$NON-NLS-1$
+	private static final Pattern HASH_FIXER_UNSAFE2B = Pattern
+			.compile(
+					"(?:^[\\s]*)(\\s)(?:\"[^\"]*\"[\\s]*=>.*[^\\s,)]+[\\s]*$)", Pattern.MULTILINE); //$NON-NLS-1$
+	private static final Pattern HASH_FIXER_UNSAFE2C = Pattern
+			.compile(
+					"(?:^[\\s]*)(\\s)(?:[\\:a-zA-Z0-9_]+[\\s]*=>.*[^\\s,)]+[\\s]*$)", Pattern.MULTILINE); //$NON-NLS-1$
 
+	private static final String missingKey = "_m_key_"; //$NON-NLS-1$
+	private static final String missingValue = "_m_value__"; //$NON-NLS-1$
 	private static final String missingName = "_missing_method_name_"; //$NON-NLS-1$
 	private static final String missingName2 = "NoConstant___________"; //$NON-NLS-1$
 	private static final String missingName3 = "_missing_param_name__"; //$NON-NLS-1$
-	private static final String missingName4 = "_m_key_ => _m_value__"; //$NON-NLS-1$
+	private static final String missingName4 = missingKey
+			+ " => " + missingValue; //$NON-NLS-1$
+	private static final String missingName4a = " => " + missingValue; //$NON-NLS-1$
 	private static final int magicLength = missingName.length();
 
 	// missingName.len should == missingName2.len, etc
@@ -121,10 +159,13 @@ public class RubySourceFixer {
 
 	public static Set FIXUP_NAMES = new HashSet();
 	{
+		FIXUP_NAMES.add(missingKey);
+		FIXUP_NAMES.add(missingValue);
 		FIXUP_NAMES.add(missingName);
 		FIXUP_NAMES.add(missingName2);
 		FIXUP_NAMES.add(missingName3);
 		FIXUP_NAMES.add(missingName4);
+		FIXUP_NAMES.add(missingName4a);
 	}
 
 	private final List fixPositions = new ArrayList();
@@ -278,22 +319,42 @@ public class RubySourceFixer {
 				"," + missingName4 + " ", 1); //$NON-NLS-1$ //$NON-NLS-2$
 		content2 = fixBrokenThings(COMMA_FIXER2, content2,
 				"," + missingName3 + " ", 1); //$NON-NLS-1$ //$NON-NLS-2$
-		content2 = fixBrokenThings(COMMA_FIXER3, content2,
+		content2 = fixBrokenThings(COMMA_FIXER3A, content2,
+				"'" + missingName4a, 1); //$NON-NLS-1$
+		content2 = fixBrokenThings(COMMA_FIXER3B, content2,
+				"\"" + missingName4a, 1); //$NON-NLS-1$
+		content2 = fixBrokenThings(COMMA_FIXER3C, content2,
 				missingName4 + " ", 1); //$NON-NLS-1$
 		content2 = fixBrokenThings(COMMA_FIXER4, content2,
 				"," + missingName4, 1); //$NON-NLS-1$
 		content2 = fixBrokenThings(COMMA_FIXER5, content2,
 				"," + missingName3, 1); //$NON-NLS-1$
-		return fixBrokenThings(COMMA_FIXER6, content2, missingName4 + " ", 1); //$NON-NLS-1$
+		content2 = fixBrokenThings(COMMA_FIXER6A, content2,
+				"'" + missingName4a, 1); //$NON-NLS-1$
+		content2 = fixBrokenThings(COMMA_FIXER6B, content2,
+				"\"" + missingName4a, 1); //$NON-NLS-1$
+		return fixBrokenThings(COMMA_FIXER6C, content2, missingName4 + " ", 1); //$NON-NLS-1$
 	}
 
 	private String fixBrokenCommasUnsafe(String content) {
 		String content2 = content;
-		content2 = fixBrokenThings(COMMA_FIXER_UNSAFE1, content2,
+		content2 = fixBrokenThings(COMMA_FIXER_UNSAFE1A, content2,
 				"," + missingName4, 1); //$NON-NLS-1$
-		content2 = fixBrokenThings(COMMA_FIXER_UNSAFE2, content2,
+		content2 = fixBrokenThings(COMMA_FIXER_UNSAFE1B, content2,
+				"," + missingName4, 1); //$NON-NLS-1$
+		content2 = fixBrokenThings(COMMA_FIXER_UNSAFE1C, content2,
+				"," + missingName4, 1); //$NON-NLS-1$
+		content2 = fixBrokenThings(COMMA_FIXER_UNSAFE2A, content2,
 				"," + missingName3, 1); //$NON-NLS-1$
-		return fixBrokenThings(COMMA_FIXER_UNSAFE3, content2, missingName4
+		content2 = fixBrokenThings(COMMA_FIXER_UNSAFE2B, content2,
+				"," + missingName3, 1); //$NON-NLS-1$
+		content2 = fixBrokenThings(COMMA_FIXER_UNSAFE2C, content2,
+				"," + missingName3, 1); //$NON-NLS-1$
+		content2 = fixBrokenThings(COMMA_FIXER_UNSAFE3A, content2,
+				"'" + missingName4a, 1); //$NON-NLS-1$
+		content2 = fixBrokenThings(COMMA_FIXER_UNSAFE3B, content2,
+				"\"" + missingName4a, 1); //$NON-NLS-1$
+		return fixBrokenThings(COMMA_FIXER_UNSAFE3C, content2, missingName4
 				+ " ", 1); //$NON-NLS-1$
 	}
 
@@ -308,7 +369,11 @@ public class RubySourceFixer {
 		String content2 = content;
 		content2 = fixBrokenThings(HASH_FIXER_UNSAFE1, content2,
 				"=>" + missingName3, 2); //$NON-NLS-1$
-		return fixBrokenThings(HASH_FIXER_UNSAFE2, content2,
+		content2 = fixBrokenThings(HASH_FIXER_UNSAFE2A, content2,
+				" " + missingName + " ", 1); //$NON-NLS-1$ //$NON-NLS-2$
+		content2 = fixBrokenThings(HASH_FIXER_UNSAFE2B, content2,
+				" " + missingName + " ", 1); //$NON-NLS-1$ //$NON-NLS-2$
+		return fixBrokenThings(HASH_FIXER_UNSAFE2C, content2,
 				" " + missingName + " ", 1); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
