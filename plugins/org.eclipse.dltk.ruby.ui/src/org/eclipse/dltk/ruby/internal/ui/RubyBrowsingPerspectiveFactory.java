@@ -18,12 +18,16 @@ import org.eclipse.dltk.ruby.internal.ui.wizards.RubyNewFileWizard;
 import org.eclipse.dltk.ruby.internal.ui.wizards.RubyNewModuleWizard;
 import org.eclipse.dltk.ruby.internal.ui.wizards.RubyNewProjectWizard;
 import org.eclipse.dltk.ui.DLTKUIPlugin;
+import org.eclipse.search.ui.NewSearchUI;
+import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 import org.eclipse.ui.IPlaceholderFolderLayout;
+import org.eclipse.ui.console.IConsoleConstants;
 import org.eclipse.ui.progress.IProgressConstants;
 
 public class RubyBrowsingPerspectiveFactory implements IPerspectiveFactory {
+	public static final String PERSPECTIVE_ID = "org.eclipse.dltk.ruby.ui.RubyBrowsingPerspective"; //$NON-NLS-1$
 	public static final String ID_PROJECTS_VIEW = "org.eclipse.dltk.ruby.ui.Projects"; //$NON-NLS-1$
 	public static final String ID_PACKAGES_VIEW = "org.eclipse.dltk.ruby.ui.extbrowsing"; //$NON-NLS-1$
 	public static final String ID_MEMBERS_VIEW = "org.eclipse.dltk.ruby.ui.Members"; //$NON-NLS-1$
@@ -54,6 +58,7 @@ public class RubyBrowsingPerspectiveFactory implements IPerspectiveFactory {
 		addActionSets(layout);
 		addShowViewShortcuts(layout);
 		addNewWizardShortcuts(layout);
+		addPerspectiveShotcuts(layout);
 	}
 
 	private void createHorizontalLayout(IPageLayout layout) {
@@ -75,12 +80,17 @@ public class RubyBrowsingPerspectiveFactory implements IPerspectiveFactory {
 		layout.addView(ID_MEMBERS_VIEW, IPageLayout.RIGHT, (float) 0.75,
 				ID_PACKAGES_VIEW);
 
-		IPlaceholderFolderLayout placeHolderLeft = layout
-				.createPlaceholderFolder(
+		IFolderLayout placeHolderLeft = layout
+				.createFolder(
 						"left", IPageLayout.LEFT, (float) 0.25, IPageLayout.ID_EDITOR_AREA); //$NON-NLS-1$
-		placeHolderLeft.addPlaceholder(IPageLayout.ID_OUTLINE);
 		placeHolderLeft.addPlaceholder(DLTKUIPlugin.ID_SCRIPTEXPLORER);
+		placeHolderLeft.addPlaceholder("org.eclipse.dltk.testing.ResultView"); //$NON-NLS-1$
 		placeHolderLeft.addPlaceholder(IPageLayout.ID_RES_NAV);
+
+		IFolderLayout folderRight = layout
+				.createFolder(
+						"right", IPageLayout.RIGHT, (float) 0.75, IPageLayout.ID_EDITOR_AREA); //$NON-NLS-1$
+		folderRight.addView(IPageLayout.ID_OUTLINE);
 
 		IPlaceholderFolderLayout placeHolderBottom = layout
 				.createPlaceholderFolder(
@@ -103,17 +113,35 @@ public class RubyBrowsingPerspectiveFactory implements IPerspectiveFactory {
 				.addNewWizardShortcut("org.eclipse.ui.editors.wizards.UntitledTextFileWizard");//$NON-NLS-1$
 	}
 
+	protected void addPerspectiveShotcuts(IPageLayout layout) {
+		layout
+				.addPerspectiveShortcut("org.eclipse.dltk.ruby.ui.RubyPerspective"); //$NON-NLS-1$
+		layout.addPerspectiveShortcut("org.eclipse.debug.ui.DebugPerspective"); //$NON-NLS-1$
+		layout.addPerspectiveShortcut("org.eclipse.ui.resourcePerspective"); //$NON-NLS-1$
+		layout
+				.addPerspectiveShortcut("org.eclipse.team.ui.TeamSynchronizingPerspective"); //$NON-NLS-1$
+	}
+
 	protected void addShowViewShortcuts(IPageLayout layout) {
+		layout.addShowViewShortcut(ID_PROJECTS_VIEW);
+		layout.addShowViewShortcut(ID_PACKAGES_VIEW);
+		layout.addShowViewShortcut(ID_MEMBERS_VIEW);
 		layout.addShowViewShortcut(IPageLayout.ID_OUTLINE);
 		layout.addShowViewShortcut(IPageLayout.ID_PROBLEM_VIEW);
-
 		layout.addShowViewShortcut(IPageLayout.ID_TASK_LIST);
 		layout.addShowViewShortcut(IProgressConstants.PROGRESS_VIEW_ID);
+		layout.addShowViewShortcut("org.eclipse.dltk.ui.ScriptExplorer"); //$NON-NLS-1$
+		layout.addShowViewShortcut(IConsoleConstants.ID_CONSOLE_VIEW);
+		layout.addShowViewShortcut("org.eclipse.dltk.ruby.ui.RubyDocumentationView"); //$NON-NLS-1$
+		layout.addShowViewShortcut(NewSearchUI.SEARCH_VIEW_ID);
+		layout.addShowViewShortcut("org.eclipse.dltk.ui.TypeHierarchy"); //$NON-NLS-1$
+		layout.addShowViewShortcut("org.eclipse.dltk.callhierarchy.view"); //$NON-NLS-1$
 	}
 
 	protected void addActionSets(IPageLayout layout) {
 		layout.addActionSet(IPageLayout.ID_NAVIGATE_ACTION_SET);
 		layout.addActionSet(ID_ACTION_SET);
+		layout.addActionSet("org.eclipse.debug.ui.launchActionSet"); //$NON-NLS-1$
 	}
 
 	private boolean shouldShowProjectsView() {
