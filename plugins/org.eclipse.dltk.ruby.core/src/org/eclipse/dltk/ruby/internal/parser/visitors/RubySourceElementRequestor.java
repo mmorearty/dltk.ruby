@@ -41,8 +41,11 @@ import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.ruby.ast.IRubyASTVisitor;
 import org.eclipse.dltk.ruby.ast.RubyAliasExpression;
 import org.eclipse.dltk.ruby.ast.RubyAssignment;
+import org.eclipse.dltk.ruby.ast.RubyCallArgument;
 import org.eclipse.dltk.ruby.ast.RubyColonExpression;
 import org.eclipse.dltk.ruby.ast.RubyConstantDeclaration;
+import org.eclipse.dltk.ruby.ast.RubyHashExpression;
+import org.eclipse.dltk.ruby.ast.RubyHashPairExpression;
 import org.eclipse.dltk.ruby.ast.RubyRegexpExpression;
 import org.eclipse.dltk.ruby.ast.RubySymbolReference;
 import org.eclipse.dltk.ruby.core.RubyConstants;
@@ -288,6 +291,53 @@ public class RubySourceElementRequestor extends SourceElementRequestVisitor
 
 					fRequestor.enterMethod(mi);
 					fRequestor.exitMethod(n.sourceEnd());
+				}
+			}
+			else if ("delegate".equals(callExpression.getName())) { //$NON-NLS-1$
+				RubyCallArgument argNode;
+				RubyHashPairExpression hashNode;
+				String oldName = ""; //$NON-NLS-1$
+				String dName;
+				for (Iterator iterator = callExpression.getArgs().getChilds()
+						.iterator(); iterator.hasNext();) {
+					argNode = (RubyCallArgument) iterator.next();
+					if (argNode.getValue() instanceof RubyHashExpression) {
+						for (Iterator iterator2 = argNode.getValue()
+								.getChilds().iterator(); iterator2.hasNext();) {
+							hashNode = (RubyHashPairExpression) iterator2
+									.next();
+							if (hashNode.getValue() instanceof RubySymbolReference) {
+								oldName = ((RubySymbolReference) hashNode
+										.getValue()).getName();
+							} else if (hashNode.getValue() instanceof StringLiteral) {
+								oldName = ((StringLiteral) hashNode.getValue())
+										.getValue();
+							}
+						}
+					}
+				}
+				for (Iterator iterator = callExpression.getArgs().getChilds()
+						.iterator(); iterator.hasNext();) {
+					argNode = (RubyCallArgument) iterator.next();
+					dName = null;
+					if (argNode.getValue() instanceof RubySymbolReference) {
+						dName = ((RubySymbolReference) argNode.getValue())
+								.getName();
+					} else if (argNode.getValue() instanceof StringLiteral) {
+						dName = ((StringLiteral) argNode.getValue()).getValue();
+					}
+					if (dName != null) {
+						ISourceElementRequestor.MethodInfo mi = new ISourceElementRequestor.MethodInfo();
+						mi.name = dName;
+						mi.modifiers = RubyConstants.RubyAliasModifier;
+						mi.nameSourceStart = argNode.sourceStart();
+						mi.nameSourceEnd = argNode.sourceEnd() - 1;
+						mi.declarationStart = argNode.sourceStart();
+						mi.parameterNames = new String[] { oldName };
+
+						fRequestor.enterMethod(mi);
+						fRequestor.exitMethod(argNode.sourceEnd());
+					}
 				}
 			}
 
