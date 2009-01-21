@@ -23,6 +23,7 @@ import org.eclipse.dltk.ast.declarations.MethodDeclaration;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
 import org.eclipse.dltk.ast.declarations.TypeDeclaration;
 import org.eclipse.dltk.ast.expressions.CallExpression;
+import org.eclipse.dltk.ast.expressions.StringLiteral;
 import org.eclipse.dltk.ast.references.ConstantReference;
 import org.eclipse.dltk.ast.references.SimpleReference;
 import org.eclipse.dltk.ast.references.VariableReference;
@@ -46,6 +47,7 @@ import org.eclipse.dltk.ruby.ast.RubyMethodArgument;
 import org.eclipse.dltk.ruby.ast.RubySelfReference;
 import org.eclipse.dltk.ruby.ast.RubySingletonClassDeclaration;
 import org.eclipse.dltk.ruby.ast.RubySingletonMethodDeclaration;
+import org.eclipse.dltk.ruby.ast.RubySymbolReference;
 import org.eclipse.dltk.ruby.core.model.FakeField;
 import org.eclipse.dltk.ruby.core.model.FakeMethod;
 import org.eclipse.dltk.ruby.internal.parser.visitors.RubyAttributeHandler;
@@ -481,8 +483,16 @@ public class RubyMixinBuildVisitor extends ASTVisitor {
 				expr = ((RubyCallArgument) expr).getValue();
 			Scope scope = peekScope();
 			String incl = evaluateClassKey(expr);
-			if (incl != null)
+			if (incl != null) {
+				// ssanders - Try to account for unqualified references,
+				// see 'include Assertions' in 'lib/ruby/1.8/test/unit/testcase.rb'
+				if (scope.getClassKey().indexOf(SEPARATOR) != -1) {
+					scope.reportInclude(scope.getClassKey().substring(0,
+							scope.getClassKey().lastIndexOf(SEPARATOR) + 1)
+							+ incl);
+				}
 				scope.reportInclude(incl);
+			}
 			return false;
 		} else if (call.getReceiver() == null
 				&& call.getName().equals("extend") //$NON-NLS-1$
@@ -493,8 +503,15 @@ public class RubyMixinBuildVisitor extends ASTVisitor {
 			scopes.push(new MetaClassScope(call, peekScope().getClassKey()));
 			Scope scope = peekScope();
 			String ext = evaluateClassKey(expr);
-			if (ext != null)
+			if (ext != null) {
+				// ssanders - Try to account for unqualified references
+				if (scope.getClassKey().indexOf(SEPARATOR) != -1) {
+					scope.reportExtend(scope.getClassKey().substring(0,
+							scope.getClassKey().lastIndexOf(SEPARATOR) + 1)
+							+ ext);
+				}
 				scope.reportExtend(ext);
+			}
 			scopes.pop();
 			return false;
 		} else if (RubyAttributeHandler.isAttributeCreationCall(call)
@@ -541,6 +558,29 @@ public class RubyMixinBuildVisitor extends ASTVisitor {
 					scopes.push(metaScope);
 					metaScope.reportMethod(attr + "=", fakeMethod); //$NON-NLS-1$
 					scopes.pop();
+				}
+			}
+			return false;
+		} else if (call.getReceiver() == null
+				&& call.getName().equals("delegate") //$NON-NLS-1$
+				&& call.getArgs().getChilds().size() > 0) {
+			RubyCallArgument argNode;
+			String name;
+			for (Iterator iterator = call.getArgs().getChilds().iterator(); iterator.hasNext(); ) {
+				argNode = (RubyCallArgument)iterator.next();
+				name = null;
+				if (argNode.getValue() instanceof RubySymbolReference) {
+					name = ((RubySymbolReference)argNode.getValue()).getName();
+				}
+				else if (argNode.getValue() instanceof StringLiteral) {
+					name = ((StringLiteral)argNode.getValue()).getValue();
+				}
+				if (name != null) {
+					FakeMethod fakeMethod = new FakeMethod(
+							(ModelElement) sourceModule, name, argNode.sourceStart(),
+							name.length(), argNode.sourceStart(), name.length());
+					fakeMethod.setFlags(Modifiers.AccPublic);
+					peekScope().reportMethod(name, fakeMethod);
 				}
 			}
 			return false;
