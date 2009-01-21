@@ -36,13 +36,17 @@ public class RubyPerspective implements IPerspectiveFactory {
 	protected void addFolders(IPageLayout layout) {
 		IFolderLayout leftFolder = layout.createFolder("left", IPageLayout.LEFT, (float) 0.2, layout.getEditorArea()); //$NON-NLS-1$
 		leftFolder.addView("org.eclipse.dltk.ui.ScriptExplorer"); //$NON-NLS-1$
+		leftFolder.addView("org.eclipse.dltk.testing.ResultView"); //$NON-NLS-1$
+	    leftFolder.addPlaceholder("org.eclipse.dltk.ui.TypeHierarchy"); //$NON-NLS-1$
 		leftFolder.addPlaceholder(IPageLayout.ID_BOOKMARKS);
 
 		IFolderLayout bottomFolder = layout.createFolder("bottom", IPageLayout.BOTTOM, (float) 0.75, layout.getEditorArea()); //$NON-NLS-1$
 		bottomFolder.addView(IPageLayout.ID_PROBLEM_VIEW);
 		bottomFolder.addView(IPageLayout.ID_TASK_LIST);
 		bottomFolder.addView("org.eclipse.dltk.ruby.ui.RubyDocumentationView"); //$NON-NLS-1$
-		bottomFolder.addView(IConsoleConstants.ID_CONSOLE_VIEW);		
+		bottomFolder.addView(IConsoleConstants.ID_CONSOLE_VIEW);
+
+	    bottomFolder.addPlaceholder("org.eclipse.dltk.callhierarchy.view"); //$NON-NLS-1$
 		bottomFolder.addPlaceholder(NewSearchUI.SEARCH_VIEW_ID);
 		bottomFolder.addPlaceholder(IProgressConstants.PROGRESS_VIEW_ID);
 	}
@@ -62,11 +66,14 @@ public class RubyPerspective implements IPerspectiveFactory {
 		layout.addShowViewShortcut(IPageLayout.ID_OUTLINE);
 		layout.addShowViewShortcut(IPageLayout.ID_PROBLEM_VIEW);
 		layout.addShowViewShortcut("org.eclipse.dltk.ui.ScriptExplorer"); //$NON-NLS-1$
+		layout.addShowViewShortcut("org.eclipse.dltk.testing.ResultView"); //$NON-NLS-1$
 		layout.addShowViewShortcut(IPageLayout.ID_TASK_LIST);
 		layout.addShowViewShortcut(IProgressConstants.PROGRESS_VIEW_ID);
 		layout.addShowViewShortcut(IConsoleConstants.ID_CONSOLE_VIEW);
 		layout.addShowViewShortcut("org.eclipse.dltk.ruby.ui.RubyDocumentationView"); //$NON-NLS-1$
 		layout.addShowViewShortcut(NewSearchUI.SEARCH_VIEW_ID);
+		layout.addShowViewShortcut("org.eclipse.dltk.ui.TypeHierarchy"); //$NON-NLS-1$
+		layout.addShowViewShortcut("org.eclipse.dltk.callhierarchy.view"); //$NON-NLS-1$
 	}
 
 	protected void addNewWizardShortcuts(IPageLayout layout) {
@@ -83,6 +90,7 @@ public class RubyPerspective implements IPerspectiveFactory {
 	}
 	
 	protected void addPerspectiveShotcuts(IPageLayout layout) {
+		layout.addPerspectiveShortcut("org.eclipse.dltk.ruby.ui.RubyBrowsingPerspective"); //$NON-NLS-1$
 		layout.addPerspectiveShortcut("org.eclipse.debug.ui.DebugPerspective"); //$NON-NLS-1$
 		layout.addPerspectiveShortcut("org.eclipse.ui.resourcePerspective"); //$NON-NLS-1$
 		layout.addPerspectiveShortcut("org.eclipse.team.ui.TeamSynchronizingPerspective"); //$NON-NLS-1$
