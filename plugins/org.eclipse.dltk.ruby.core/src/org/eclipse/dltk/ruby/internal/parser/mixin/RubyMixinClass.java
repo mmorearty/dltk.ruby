@@ -72,7 +72,11 @@ public class RubyMixinClass implements IRubyMixinElement {
 	}
 
 	public String getName() {
-		String name = key.substring(key.lastIndexOf(MixinModel.SEPARATOR));
+		String name;
+		if (key.indexOf(MixinModel.SEPARATOR) != -1)
+			name = key.substring(key.lastIndexOf(MixinModel.SEPARATOR));
+		else
+			name = key;
 		int pos;
 		if ((pos = name.indexOf(RubyMixin.INSTANCE_SUFFIX)) != -1)
 			name = name.substring(0, pos);
