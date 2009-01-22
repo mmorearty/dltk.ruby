@@ -305,12 +305,12 @@
        point="org.eclipse.ui.bindings">
          <key
                commandId="org.eclipse.dltk.ruby.ui.navigate.open.type"
-               contextId="org.eclipse.ui.contexts.dialogAndWindow"
+               contextId="org.eclipse.dltk.ui.rubyEditorScope"
                schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
                sequence="M1+M2+T"/>        
         <key
               commandId="org.eclipse.dltk.ruby.ui.navigate.open.type.in.hierarchy"
-              contextId="org.eclipse.ui.contexts.dialogAndWindow"
+              contextId="org.eclipse.dltk.ui.rubyEditorScope"
               schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
               sequence="M1+M2+H"/> 
         <key
@@ -449,6 +449,10 @@
       </actionSetPartAssociation>
       <actionSetPartAssociation
             targetID="org.eclipse.dltk.ui.ScriptCodingActionSet">
+         <part id="org.eclipse.dltk.ruby.ui.editor.RubyEditor"/>
+      </actionSetPartAssociation>
+      <actionSetPartAssociation
+            targetID="org.eclipse.dltk.ruby.ui.RubyActionSet">
          <part id="org.eclipse.dltk.ruby.ui.editor.RubyEditor"/>
       </actionSetPartAssociation>
  </extension>
