@@ -12,7 +12,6 @@ package org.eclipse.dltk.ruby.internal.debug.ui.console;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.MessageFormat;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -29,6 +28,7 @@ import org.eclipse.dltk.ruby.core.RubyLanguageToolkit;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IRegion;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -79,8 +79,8 @@ public class RubyFileHyperlink implements IHyperlink {
 						.openInformation(
 								DLTKDebugUIPlugin.getActiveWorkbenchShell(),
 								ConsoleMessages.RubyFileHyperlink_Information_1,
-								MessageFormat
-										.format(
+								NLS
+										.bind(
 												ConsoleMessages.RubyFileHyperlink_Source_not_found_for__0__2,
 												new Object[] { fileName }));
 				return;
