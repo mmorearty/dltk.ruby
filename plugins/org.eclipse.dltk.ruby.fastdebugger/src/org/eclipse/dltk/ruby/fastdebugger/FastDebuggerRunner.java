@@ -1,7 +1,6 @@
 package org.eclipse.dltk.ruby.fastdebugger;
 
 import java.io.IOException;
-import java.text.MessageFormat;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -23,6 +22,7 @@ import org.eclipse.dltk.launching.debug.DbgpInterpreterConfig;
 import org.eclipse.dltk.ruby.debug.RubyDebugPlugin;
 import org.eclipse.dltk.ruby.internal.launching.RubyGenericInstallType;
 import org.eclipse.dltk.ruby.launching.RubyLaunchConfigurationConstants;
+import org.eclipse.osgi.util.NLS;
 
 public class FastDebuggerRunner extends DebuggingEngineRunner {
 	public static final String ENGINE_ID = "org.eclipse.dltk.ruby.fastdebugger"; //$NON-NLS-1$
@@ -186,8 +186,8 @@ public class FastDebuggerRunner extends DebuggingEngineRunner {
 	private void checkRubyDebug() throws CoreException {
 		if (!resolveRubyDebugGemExists()) {
 			abort(
-					MessageFormat
-							.format(
+					NLS
+							.bind(
 									Messages.FastDebuggerRunner_rubyDebugGemDoesntSeemToBeInstalled,
 									new Object[] {
 											getDebuggingEngine().getName(),
