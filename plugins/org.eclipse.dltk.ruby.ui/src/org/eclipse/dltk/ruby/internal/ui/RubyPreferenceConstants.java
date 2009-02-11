@@ -558,11 +558,8 @@ public class RubyPreferenceConstants extends PreferenceConstants {
 		store.setDefault(EDITOR_SYNC_OUTLINE_ON_CURSOR_MOVE, true);
 
 		// folding
-		store.setDefault(EDITOR_FOLDING_ENABLED, true);
-		store.setDefault(EDITOR_FOLDING_INIT_COMMENTS, false);
-		store.setDefault(EDITOR_FOLDING_INIT_HEADER_COMMENTS, true);
-		store.setDefault(EDITOR_FOLDING_INIT_METHODS, false);
-
+		initializeFoldingDefaults(store);
+		
 		store.setDefault(CodeFormatterConstants.FORMATTER_TAB_CHAR,
 				CodeFormatterConstants.SPACE);
 		store.setDefault(CodeFormatterConstants.FORMATTER_TAB_SIZE, "2"); //$NON-NLS-1$
@@ -581,4 +578,14 @@ public class RubyPreferenceConstants extends PreferenceConstants {
 
 		store.setDefault(CODEASSIST_AUTOACTIVATION_TRIGGERS, ".:$@"); //$NON-NLS-1$
 	}
+	
+	protected static void initializeFoldingDefaults(IPreferenceStore store)
+    {
+        store.setDefault(PreferenceConstants.EDITOR_FOLDING_LINES_LIMIT, 2);
+        
+        store.setDefault(PreferenceConstants.EDITOR_DOCS_FOLDING_ENABLED, true);
+        store.setDefault(PreferenceConstants.EDITOR_COMMENTS_FOLDING_ENABLED, true);
+        
+		store.setDefault(PreferenceConstants.EDITOR_FOLDING_INIT_HEADER_COMMENTS, true);
+    }
 }

@@ -12,16 +12,33 @@
 package org.eclipse.dltk.ruby.internal.ui.preferences;
 
 import org.eclipse.dltk.ruby.internal.ui.RubyUI;
+import org.eclipse.dltk.ruby.internal.ui.text.folding.RubyDocFoldingPreferenceBlock;
+import org.eclipse.dltk.ruby.internal.ui.text.folding.RubyFoldingPreferenceBlock;
 import org.eclipse.dltk.ui.preferences.AbstractConfigurationBlockPreferencePage;
 import org.eclipse.dltk.ui.preferences.IPreferenceConfigurationBlock;
 import org.eclipse.dltk.ui.preferences.OverlayPreferenceStore;
+import org.eclipse.dltk.ui.text.folding.DefaultFoldingPreferenceConfigurationBlock;
+import org.eclipse.dltk.ui.text.folding.IFoldingPreferenceBlock;
+import org.eclipse.jface.preference.PreferencePage;
 
 public class RubyFoldingPreferencePage extends
 		AbstractConfigurationBlockPreferencePage {
 
 	protected IPreferenceConfigurationBlock createConfigurationBlock(
 			OverlayPreferenceStore overlayPreferenceStore) {
-		return new RubyFoldingConfigurationBlock(overlayPreferenceStore, this);
+		return new DefaultFoldingPreferenceConfigurationBlock(
+				overlayPreferenceStore, this) {
+
+			protected IFoldingPreferenceBlock createDocumentationBlock(
+					OverlayPreferenceStore store, PreferencePage page) {
+				return new RubyDocFoldingPreferenceBlock(store, page);
+			}
+
+			protected IFoldingPreferenceBlock createSourceCodeBlock(
+					OverlayPreferenceStore store, PreferencePage page) {
+				return new RubyFoldingPreferenceBlock(store, page);
+			}
+		};
 	}
 
 	protected String getHelpId() {
@@ -29,7 +46,7 @@ public class RubyFoldingPreferencePage extends
 	}
 
 	protected void setDescription() {
-		setDescription(RubyPreferencesMessages.EditorFoldingPreferencePageDescription);
+		// setDescription(RubyPreferencesMessages.EditorFoldingPreferencePageDescription);
 	}
 
 	protected void setPreferenceStore() {

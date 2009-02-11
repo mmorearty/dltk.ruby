@@ -18,17 +18,11 @@ public final class RubyFoldingMessages extends NLS {
 	private RubyFoldingMessages() {
 		// Do not instantiate
 	}
-
-	
 	
 	static {
 		NLS.initializeMessages(BUNDLE_NAME, RubyFoldingMessages.class);
 	}
-
-	public static String DLTKEditorPreferencePage_empty_input;
-	public static String RubyFoldingPreference_initiallyFoldComments;
-	public static String RubyFoldingPreference_initiallyFoldHeaderComments;
-	public static String RubyFoldingPreference_initiallyFoldMethods;
+	
 	public static String RubyFoldingPreferenceBlock_0;
 	public static String RubyFoldingPreferenceBlock_10;
 	public static String RubyFoldingPreferenceBlock_14;
@@ -38,8 +32,6 @@ public final class RubyFoldingMessages extends NLS {
 	public static String RubyFoldingPreferenceBlock_3;
 	public static String RubyFoldingPreferenceBlock_4;
 	public static String RubyFoldingPreferenceBlock_6;
-	public static String RubyFoldingPreferenceBlock_inputIsNotANumber;
-	public static String RubyFoldingPreferenceBlock_minimalAmountOfLinesToBeFolded;
-	public static String RubyFoldingPreferenceBlock_youMayInputNumbers;
-
+	
+	public static String RubyFoldingPreferenceBlock_initFoldRDoc;
 }

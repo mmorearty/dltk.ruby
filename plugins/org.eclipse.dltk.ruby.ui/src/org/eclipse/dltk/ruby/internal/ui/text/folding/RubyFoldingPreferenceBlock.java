@@ -4,24 +4,16 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *
- 
- *******************************************************************************/
+ ******************************************************************************/
 package org.eclipse.dltk.ruby.internal.ui.text.folding;
 
-import java.util.ArrayList;
-
-import org.eclipse.dltk.ruby.internal.ui.RubyPreferenceConstants;
-import org.eclipse.dltk.ui.PreferenceConstants;
-import org.eclipse.dltk.ui.preferences.AbstractConfigurationBlock;
 import org.eclipse.dltk.ui.preferences.OverlayPreferenceStore;
-import org.eclipse.dltk.ui.preferences.PreferencesMessages;
-import org.eclipse.dltk.ui.preferences.OverlayPreferenceStore.OverlayKey;
-import org.eclipse.dltk.ui.text.folding.IFoldingPreferenceBlock;
+import org.eclipse.dltk.ui.text.folding.SourceCodeFoldingPreferenceBlock;
 import org.eclipse.dltk.ui.util.PixelConverter;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
+import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -37,42 +29,22 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
 /**
- * Ruby folding preferences.
+ * Ruby source code folding preferences.
  */
-public class RubyFoldingPreferenceBlock extends AbstractConfigurationBlock implements IFoldingPreferenceBlock {
-	private OverlayPreferenceStore fOverlayStore;
-	private OverlayKey[] fKeys;
-
-	public RubyFoldingPreferenceBlock(OverlayPreferenceStore store) {
-		super(store);
-		fOverlayStore = store;
-		fKeys = createKeys();
-		fOverlayStore.addKeys(fKeys);
+public class RubyFoldingPreferenceBlock extends SourceCodeFoldingPreferenceBlock {
+	
+	public RubyFoldingPreferenceBlock(OverlayPreferenceStore store,
+			PreferencePage page) {
+		super(store, page);
 	}
 
-	private OverlayKey[] createKeys() {
-		ArrayList overlayKeys = new ArrayList();
-		
-		overlayKeys.add(new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.INT, 
-				PreferenceConstants.EDITOR_FOLDING_LINES_LIMIT));
-
-		overlayKeys.add(new OverlayPreferenceStore.OverlayKey(
-				OverlayPreferenceStore.BOOLEAN,
-				RubyPreferenceConstants.EDITOR_FOLDING_INIT_COMMENTS));
-
-		overlayKeys.add(new OverlayPreferenceStore.OverlayKey(
-				OverlayPreferenceStore.BOOLEAN,
-				RubyPreferenceConstants.EDITOR_FOLDING_INIT_HEADER_COMMENTS));
-
-		overlayKeys.add(new OverlayPreferenceStore.OverlayKey(
-				OverlayPreferenceStore.BOOLEAN,
-				RubyPreferenceConstants.EDITOR_FOLDING_INIT_METHODS));
-
-		OverlayPreferenceStore.OverlayKey[] keys = new OverlayPreferenceStore.OverlayKey[overlayKeys.size()];
-		overlayKeys.toArray(keys);
-		return keys;
-	}	
+	// TODO: add addtional folding options
 	
+	/*
+	 * this class also exists in the tcl implementation, so if a similar 
+	 * implementation is used here, this should be refactored so both 
+	 * can share
+	 */
 	private class ListBlock {
 		private ListViewer fList;
 		String fKey;
@@ -203,69 +175,5 @@ public class RubyFoldingPreferenceBlock extends AbstractConfigurationBlock imple
 				setEntries (items);
 			}
 		}
-	}
-
-	/*
-	 * @see org.eclipse.dltk.internal.ui.text.folding.IScriptFoldingPreferences#createControl(org.eclipse.swt.widgets.Group)
-	 */
-	public Control createControl(Composite composite) {
-		Composite inner = new Composite(composite, SWT.NONE);
-		GridLayout layout = new GridLayout();
-		layout.numColumns = 1;
-		inner.setLayout(layout);
-		
-		
-		Composite blockFolding = createSubsection(inner, null, RubyFoldingMessages.RubyFoldingPreferenceBlock_10);
-		blockFolding.setLayout(new GridLayout());		
-		
-		IInputValidator val = new IInputValidator () {
-
-			public String isValid(String number) {
-				if (number.length() == 0) {
-					return PreferencesMessages.DLTKEditorPreferencePage_empty_input; 
-				} else {
-					try {
-						int value= Integer.parseInt(number);
-						if (value < 2)
-							return RubyFoldingMessages.RubyFoldingPreferenceBlock_youMayInputNumbers; 
-					} catch (NumberFormatException e) {
-						return RubyFoldingMessages.RubyFoldingPreferenceBlock_inputIsNotANumber; 
-					}
-				}
-				return null;
-			}
-			
-		};
-		
-		addLabelledTextField(blockFolding, RubyFoldingMessages.RubyFoldingPreferenceBlock_minimalAmountOfLinesToBeFolded, 
-				PreferenceConstants.EDITOR_FOLDING_LINES_LIMIT, 3, 1, true, val);
-		
-		Composite initialFolding = createSubsection(inner, null, RubyFoldingMessages.RubyFoldingPreferenceBlock_16);
-		initialFolding.setLayout(new GridLayout());
-		
-		addCheckBox(
-				initialFolding,
-				RubyFoldingMessages.RubyFoldingPreference_initiallyFoldComments,
-				RubyPreferenceConstants.EDITOR_FOLDING_INIT_COMMENTS, 0);
-				
-		addCheckBox(
-				initialFolding,
-				RubyFoldingMessages.RubyFoldingPreference_initiallyFoldHeaderComments,
-				RubyPreferenceConstants.EDITOR_FOLDING_INIT_HEADER_COMMENTS, 0);
-				
-		addCheckBox(
-				initialFolding,
-				RubyFoldingMessages.RubyFoldingPreference_initiallyFoldMethods,
-				RubyPreferenceConstants.EDITOR_FOLDING_INIT_METHODS, 0);
-
-		return inner;
-	}
-	
-	public void initialize() {
-		super.initialize();		
-	}
-	
-	public void performDefaults() {
-		super.performDefaults();		
 	}
 }

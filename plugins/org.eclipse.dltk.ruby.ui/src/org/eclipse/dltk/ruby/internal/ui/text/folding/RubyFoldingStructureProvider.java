@@ -4,9 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- *
- 
- *******************************************************************************/
+*******************************************************************************/
 package org.eclipse.dltk.ruby.internal.ui.text.folding;
 
 import java.util.ArrayList;
@@ -15,67 +13,26 @@ import java.util.List;
 import java.util.Stack;
 
 import org.eclipse.core.runtime.ILog;
-import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.declarations.FakeModuleDeclaration;
-import org.eclipse.dltk.ast.declarations.MethodDeclaration;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
 import org.eclipse.dltk.ast.declarations.TypeDeclaration;
 import org.eclipse.dltk.ast.parser.ISourceParser;
 import org.eclipse.dltk.ruby.core.RubyNature;
-import org.eclipse.dltk.ruby.internal.ui.RubyPreferenceConstants;
 import org.eclipse.dltk.ruby.internal.ui.RubyUI;
 import org.eclipse.dltk.ruby.internal.ui.text.IRubyPartitions;
 import org.eclipse.dltk.ruby.internal.ui.text.RubyPartitionScanner;
 import org.eclipse.dltk.ui.text.folding.AbstractASTFoldingStructureProvider;
-import org.eclipse.dltk.ui.text.folding.DefaultElementCommentResolver;
-import org.eclipse.dltk.ui.text.folding.IElementCommentResolver;
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.rules.IPartitionTokenScanner;
 
 public class RubyFoldingStructureProvider extends
 		AbstractASTFoldingStructureProvider {
 
-	/* preferences */
-	private boolean fInitCollapseComments;
-	private boolean fInitCollapseHeaderComments;
-	private boolean fInitCollapseMethods;
-	private IElementCommentResolver fElementCommentResolver = new DefaultElementCommentResolver();
-
-	protected void initializePreferences(IPreferenceStore store) {
-		super.initializePreferences(store);
-		fFoldNewLines = true;
-		fCommentsFolding = true;
-		fInitCollapseComments = store
-				.getBoolean(RubyPreferenceConstants.EDITOR_FOLDING_INIT_COMMENTS);
-		fInitCollapseHeaderComments = store
-				.getBoolean(RubyPreferenceConstants.EDITOR_FOLDING_INIT_HEADER_COMMENTS);
-		fInitCollapseMethods = store
-				.getBoolean(RubyPreferenceConstants.EDITOR_FOLDING_INIT_METHODS);
-	}
-
-	protected boolean initiallyCollapse(ASTNode s,
-			FoldingStructureComputationContext ctx) {
-		return ctx.allowCollapsing() && s instanceof MethodDeclaration
-				&& fInitCollapseMethods;
-	}
-
-	protected boolean initiallyCollapseComments(IRegion commentRegion,
-			FoldingStructureComputationContext ctx) {
-		if (ctx.allowCollapsing()) {
-			return isHeaderRegion(commentRegion, ctx) ? fInitCollapseHeaderComments
-					: fInitCollapseComments;
-		}
-		return false;
-	}
-
-	protected boolean mayCollapse(ASTNode s,
-			FoldingStructureComputationContext ctx) {
-		return s instanceof MethodDeclaration || s instanceof TypeDeclaration;
-	}
-
 	protected String getCommentPartition() {
 		return IRubyPartitions.RUBY_COMMENT;
+	}
+	
+	protected String getDocPartition() {
+		return IRubyPartitions.RUBY_DOC;
 	}
 
 	protected String getPartition() {
@@ -158,10 +115,12 @@ public class RubyFoldingStructureProvider extends
 	}
 
 	protected FoldingASTVisitor getFoldingVisitor(int offset) {
-		return new RubyFoldingASTVisitor(0);
-	}
-
-	public IElementCommentResolver getElementCommentResolver() {
-		return fElementCommentResolver;
+		/*
+		 * XXX: something is wrong with the ruby ast visitor implementation
+		 * above. it does not allow class folding b/c the 'add' is never called
+		 * for the TypeDeclaration. 
+		 */
+//		return new RubyFoldingASTVisitor(0);
+		return super.getFoldingVisitor(offset);
 	}
 }
