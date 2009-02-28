@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
-*******************************************************************************/
+ *******************************************************************************/
 package org.eclipse.dltk.ruby.internal.ui.text.folding;
 
 import java.util.ArrayList;
@@ -13,7 +13,9 @@ import java.util.List;
 import java.util.Stack;
 
 import org.eclipse.core.runtime.ILog;
+import org.eclipse.dltk.ast.declarations.Declaration;
 import org.eclipse.dltk.ast.declarations.FakeModuleDeclaration;
+import org.eclipse.dltk.ast.declarations.MethodDeclaration;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
 import org.eclipse.dltk.ast.declarations.TypeDeclaration;
 import org.eclipse.dltk.ast.parser.ISourceParser;
@@ -30,7 +32,7 @@ public class RubyFoldingStructureProvider extends
 	protected String getCommentPartition() {
 		return IRubyPartitions.RUBY_COMMENT;
 	}
-	
+
 	protected String getDocPartition() {
 		return IRubyPartitions.RUBY_DOC;
 	}
@@ -64,63 +66,103 @@ public class RubyFoldingStructureProvider extends
 		return buildCodeBlocks(decl, offset);
 	}
 
+	/**
+	 * This folding visitor implementation intentionally does not fold top level
+	 * classes. This behavior is similar to the JDT.
+	 */
 	protected static class RubyFoldingASTVisitor extends FoldingASTVisitor {
 
-		static class TypeContainer {
+		static class DeclarationContainer {
 			final List children = new ArrayList();
-			final TypeDeclaration type;
+			final Declaration declaration;
+			final boolean foldAlways;
 
-			public TypeContainer(TypeDeclaration type) {
-				this.type = type;
+			public DeclarationContainer(Declaration declaration,
+					boolean foldAlways) {
+				this.declaration = declaration;
+				this.foldAlways = foldAlways;
+			}
+
+			void addChild(DeclarationContainer child) {
+				children.add(child);
+			}
+
+			int countChildren() {
+				return children.size();
+			}
+
+			public String toString() {
+				return declaration != null ? declaration.toString() : "<TOP>";
 			}
 
 		}
 
-		final Stack types = new Stack();
+		private final Stack declarations = new Stack();
+
+		private DeclarationContainer peekDeclaration() {
+			return (DeclarationContainer) declarations.peek();
+		}
+
+		private DeclarationContainer popDeclaration() {
+			return (DeclarationContainer) declarations.pop();
+		}
 
 		protected RubyFoldingASTVisitor(int offset) {
 			super(offset);
-			types.push(new TypeContainer(null));
+		}
+
+		public boolean visit(ModuleDeclaration s) throws Exception {
+			declarations.push(new DeclarationContainer(null, false));
+			return visitGeneral(s);
 		}
 
 		public boolean visit(TypeDeclaration s) throws Exception {
-			final TypeContainer child = new TypeContainer(s);
-			((TypeContainer) types.peek()).children.add(child);
-			types.push(child);
+			final DeclarationContainer child = new DeclarationContainer(s,
+					false);
+			peekDeclaration().addChild(child);
+			declarations.push(child);
 			return visitGeneral(s);
 		}
 
 		public boolean endvisit(TypeDeclaration s) throws Exception {
-			types.pop();
+			declarations.pop();
 			return super.endvisit(s);
 		}
 
-		private void processType(TypeContainer container, int level,
-				boolean collapsible) {
-			if (collapsible) {
-				add(container.type);
+		public boolean visit(MethodDeclaration s) throws Exception {
+			final DeclarationContainer child = new DeclarationContainer(s, true);
+			peekDeclaration().addChild(child);
+			declarations.push(child);
+			return visitGeneral(s);
+		}
+
+		public boolean endvisit(MethodDeclaration s) throws Exception {
+			declarations.pop();
+			return super.endvisit(s);
+		}
+
+		private void processDeclarations(DeclarationContainer container,
+				int level, boolean collapsible) {
+			if (container.declaration != null
+					&& (collapsible || container.foldAlways)) {
+				add(container.declaration);
 			}
 			for (Iterator i = container.children.iterator(); i.hasNext();) {
-				final TypeContainer child = (TypeContainer) i.next();
-				processType(child, level + 1, collapsible
-						|| (level > 0 && container.children.size() > 1));
+				final DeclarationContainer child = (DeclarationContainer) i
+						.next();
+				processDeclarations(child, level + 1, collapsible
+						|| (level > 0 && container.countChildren() > 1));
 			}
 		}
 
 		public boolean endvisit(ModuleDeclaration s) throws Exception {
-			TypeContainer container = (TypeContainer) types.peek();
-			processType(container, 0, false);
+			final DeclarationContainer container = popDeclaration();
+			processDeclarations(container, 0, container.countChildren() > 1);
 			return super.endvisit(s);
 		}
 	}
 
 	protected FoldingASTVisitor getFoldingVisitor(int offset) {
-		/*
-		 * XXX: something is wrong with the ruby ast visitor implementation
-		 * above. it does not allow class folding b/c the 'add' is never called
-		 * for the TypeDeclaration. 
-		 */
-//		return new RubyFoldingASTVisitor(0);
-		return super.getFoldingVisitor(offset);
+		return new RubyFoldingASTVisitor(offset);
 	}
 }
