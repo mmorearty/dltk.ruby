@@ -136,7 +136,7 @@ public class RubyFoldingTest extends TestCase {
 		provider.setDocument(document);
 		Map result = provider.testComputeFoldingStructure(content, provider
 				.createInitialContext());
-		assertEquals(73 + 13, result.size());
+		assertEquals(73 + 13 + 1, result.size());
 	}
 
 	public void test193174c() throws Exception {
@@ -147,6 +147,6 @@ public class RubyFoldingTest extends TestCase {
 		provider.setDocument(document);
 		Map result = provider.testComputeFoldingStructure(content, provider
 				.createInitialContext());
-		assertEquals(100 + 13, result.size());
+		assertEquals(100 + 13 + 1, result.size());
 	}
 }
