@@ -12,13 +12,11 @@ public class RubyDocFoldingPreferenceBlock extends
 		super(store, page);
 	}
 
-    protected String getInitiallyFoldDocsText()
-    {
-        return RubyFoldingMessages.RubyFoldingPreferenceBlock_initFoldRDoc;
-    }
-    
-    protected boolean supportsDocFolding() 
-    {
-        return true;
-    }
+	protected String getInitiallyFoldDocsText() {
+		return RubyFoldingMessages.RubyFoldingPreferenceBlock_initFoldRDoc;
+	}
+
+	protected boolean supportsDocFolding() {
+		return true;
+	}
 }
