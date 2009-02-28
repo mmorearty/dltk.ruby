@@ -151,7 +151,7 @@
 	          name="%RubyEditorSyntaxColoringPreferencePage.name"/>
 	    <page
     	      category="org.eclipse.dltk.ruby.preferences.editor"
-        	  class="org.eclipse.dltk.ruby.internal.ui.preferences.RubyEditorHoverPreferencePage"
+        	  class="org.eclipse.dltk.ui.preferences.ScriptEditorHoverPreferencePage:org.eclipse.dltk.ruby.core.nature"
 	          id="org.eclipse.dltk.ruby.preferences.editor.hovers"
     	      name="%RubyEditorHoversPreferencePage.name"/>    
 	    <page category="org.eclipse.dltk.ruby.preferences.editor"
