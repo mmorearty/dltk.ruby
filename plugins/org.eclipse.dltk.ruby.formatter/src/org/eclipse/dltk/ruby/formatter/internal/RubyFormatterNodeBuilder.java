@@ -21,6 +21,7 @@ import org.eclipse.dltk.formatter.AbstractFormatterNodeBuilder;
 import org.eclipse.dltk.formatter.IFormatterContainerNode;
 import org.eclipse.dltk.formatter.IFormatterDocument;
 import org.eclipse.dltk.formatter.IFormatterTextNode;
+import org.eclipse.dltk.ruby.core.RubyConstants;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterArrayNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterAtBeginNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterAtEndNode;
@@ -546,7 +547,7 @@ public class RubyFormatterNodeBuilder extends AbstractFormatterNodeBuilder {
 			}
 
 			private boolean isRequireMethod(FCallNode call) {
-				if ("require".equals(call.getName())) { //$NON-NLS-1$
+				if (RubyConstants.REQUIRE.equals(call.getName())) {
 					if (call.getArgsNode() instanceof ArrayNode) {
 						return true;
 					}
