@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.internal.ui.text.hyperlink;
 
+import org.eclipse.dltk.ruby.core.RubyConstants;
 import org.eclipse.dltk.ruby.core.RubyPlugin;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -27,8 +28,6 @@ import org.eclipse.ui.texteditor.ITextEditor;
  * statements.
  */
 public class RubyRequireHyperlinkDetector extends AbstractHyperlinkDetector {
-
-	private static final String REQUIRE = "require"; //$NON-NLS-1$
 
 	public IHyperlink[] detectHyperlinks(ITextViewer textViewer,
 			IRegion inputRegion, boolean canShowMultipleHyperlinks) {
@@ -70,8 +69,9 @@ public class RubyRequireHyperlinkDetector extends AbstractHyperlinkDetector {
 		while (begin < end && Character.isWhitespace(line.charAt(end - 1))) {
 			--end;
 		}
-		if (begin + REQUIRE.length() < end && line.startsWith(REQUIRE, begin)) {
-			begin += REQUIRE.length();
+		if (begin + RubyConstants.REQUIRE.length() < end
+				&& line.startsWith(RubyConstants.REQUIRE, begin)) {
+			begin += RubyConstants.REQUIRE.length();
 			while (begin < end && Character.isWhitespace(line.charAt(begin))) {
 				++begin;
 			}

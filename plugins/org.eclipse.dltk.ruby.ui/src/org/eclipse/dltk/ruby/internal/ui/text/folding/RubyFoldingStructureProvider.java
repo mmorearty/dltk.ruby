@@ -21,6 +21,7 @@ import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
 import org.eclipse.dltk.ast.declarations.TypeDeclaration;
 import org.eclipse.dltk.ast.expressions.CallExpression;
 import org.eclipse.dltk.ast.parser.ISourceParser;
+import org.eclipse.dltk.ruby.core.RubyConstants;
 import org.eclipse.dltk.ruby.core.RubyNature;
 import org.eclipse.dltk.ruby.internal.ui.RubyPreferenceConstants;
 import org.eclipse.dltk.ruby.internal.ui.RubyUI;
@@ -116,7 +117,7 @@ public class RubyFoldingStructureProvider extends
 			}
 
 			public String toString() {
-				return declaration != null ? declaration.toString() : "(TOP)";
+				return declaration != null ? declaration.toString() : "(TOP)"; //$NON-NLS-1$
 			}
 
 		}
@@ -222,7 +223,7 @@ public class RubyFoldingStructureProvider extends
 			if (declarations.size() == 1) {
 				if (node instanceof CallExpression) {
 					final CallExpression call = (CallExpression) node;
-					if ("require".equals(call.getName())) {
+					if (RubyConstants.REQUIRE.equals(call.getName())) {
 						final ModuleDeclarationContainer container = peekModuleDeclaration();
 						if (container != null) {
 							container.requires.add(call);
