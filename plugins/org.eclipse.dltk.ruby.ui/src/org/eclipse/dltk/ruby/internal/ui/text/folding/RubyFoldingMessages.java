@@ -33,5 +33,6 @@ public final class RubyFoldingMessages extends NLS {
 	public static String RubyFoldingPreferenceBlock_4;
 	public static String RubyFoldingPreferenceBlock_6;
 	
+	public static String RubyFoldingPreferenceBlock_initRequires;
 	public static String RubyFoldingPreferenceBlock_initFoldRDoc;
 }

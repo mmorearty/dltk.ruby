@@ -461,6 +461,12 @@ public class RubyPreferenceConstants extends PreferenceConstants {
 	public static final String EDITOR_FOLDING_INIT_METHODS = "editor_folding_init_methods"; //$NON-NLS-1$
 
 	/**
+	 * A named preference that controls whether require statements are initially
+	 * folded.
+	 */
+	public static final String EDITOR_FOLDING_INIT_REQUIRES = "editor_folding_init_requires"; //$NON-NLS-1$
+
+	/**
 	 * A preference that controls the color of TO-DO tasks in comments
 	 */
 	public static final String COMMENT_TASK_TAGS_COLOR = IRubyColorConstants.RUBY_TODO_COMMENT;
@@ -587,5 +593,6 @@ public class RubyPreferenceConstants extends PreferenceConstants {
 				true);
 		store.setDefault(
 				PreferenceConstants.EDITOR_FOLDING_INIT_HEADER_COMMENTS, true);
+		store.setDefault(EDITOR_FOLDING_INIT_REQUIRES, true);
 	}
 }

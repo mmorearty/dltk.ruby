@@ -7,6 +7,9 @@
  ******************************************************************************/
 package org.eclipse.dltk.ruby.internal.ui.text.folding;
 
+import java.util.List;
+
+import org.eclipse.dltk.ruby.internal.ui.RubyPreferenceConstants;
 import org.eclipse.dltk.ui.preferences.OverlayPreferenceStore;
 import org.eclipse.dltk.ui.text.folding.SourceCodeFoldingPreferenceBlock;
 import org.eclipse.dltk.ui.util.PixelConverter;
@@ -27,23 +30,38 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Group;
 
 /**
  * Ruby source code folding preferences.
  */
-public class RubyFoldingPreferenceBlock extends SourceCodeFoldingPreferenceBlock {
-	
+public class RubyFoldingPreferenceBlock extends
+		SourceCodeFoldingPreferenceBlock {
+
 	public RubyFoldingPreferenceBlock(OverlayPreferenceStore store,
 			PreferencePage page) {
 		super(store, page);
 	}
 
+	protected void addOverlayKeys(List keys) {
+		super.addOverlayKeys(keys);
+		keys.add(new OverlayPreferenceStore.OverlayKey(
+				OverlayPreferenceStore.BOOLEAN,
+				RubyPreferenceConstants.EDITOR_FOLDING_INIT_REQUIRES));
+	}
+
+	protected void addInitiallyFoldOptions(Group group) {
+		super.addInitiallyFoldOptions(group);
+		createCheckBox(group,
+				RubyFoldingMessages.RubyFoldingPreferenceBlock_initRequires,
+				RubyPreferenceConstants.EDITOR_FOLDING_INIT_REQUIRES);
+	}
+
 	// TODO: add addtional folding options
-	
+
 	/*
-	 * this class also exists in the tcl implementation, so if a similar 
-	 * implementation is used here, this should be refactored so both 
-	 * can share
+	 * this class also exists in the tcl implementation, so if a similar
+	 * implementation is used here, this should be refactored so both can share
 	 */
 	private class ListBlock {
 		private ListViewer fList;
@@ -75,31 +93,40 @@ public class RubyFoldingPreferenceBlock extends SourceCodeFoldingPreferenceBlock
 			pathButtonLayout.marginHeight = 0;
 			pathButtonLayout.marginWidth = 0;
 			pathButtonComp.setLayout(pathButtonLayout);
-			gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING | GridData.HORIZONTAL_ALIGN_FILL);
+			gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING
+					| GridData.HORIZONTAL_ALIGN_FILL);
 			pathButtonComp.setLayoutData(gd);
 			pathButtonComp.setFont(font);
-			fAddButton = createPushButton(pathButtonComp, RubyFoldingMessages.RubyFoldingPreferenceBlock_0);
+			fAddButton = createPushButton(pathButtonComp,
+					RubyFoldingMessages.RubyFoldingPreferenceBlock_0);
 			fAddButton.addSelectionListener(new SelectionListener() {
-				public void widgetDefaultSelected(SelectionEvent e) {}
+				public void widgetDefaultSelected(SelectionEvent e) {
+				}
 
 				public void widgetSelected(SelectionEvent e) {
 					IInputValidator validator = new IInputValidator() {
 						public String isValid(String newText) {
-							if (newText.trim().length() > 0 && newText.matches("[_a-zA-Z]*")) //$NON-NLS-1$
-								return null;							
+							if (newText.trim().length() > 0
+									&& newText.matches("[_a-zA-Z]*")) //$NON-NLS-1$
+								return null;
 							return RubyFoldingMessages.RubyFoldingPreferenceBlock_2;
 						}
 					};
-					InputDialog dlg = new InputDialog(null, RubyFoldingMessages.RubyFoldingPreferenceBlock_3, RubyFoldingMessages.RubyFoldingPreferenceBlock_4, "", validator); //$NON-NLS-1$
+					InputDialog dlg = new InputDialog(null,
+							RubyFoldingMessages.RubyFoldingPreferenceBlock_3,
+							RubyFoldingMessages.RubyFoldingPreferenceBlock_4,
+							"", validator); //$NON-NLS-1$
 					if (dlg.open() == InputDialog.OK) {
 						fList.add(dlg.getValue());
 						save();
 					}
 				}
 			});
-			fRemoveButton = createPushButton(pathButtonComp, RubyFoldingMessages.RubyFoldingPreferenceBlock_6);
+			fRemoveButton = createPushButton(pathButtonComp,
+					RubyFoldingMessages.RubyFoldingPreferenceBlock_6);
 			fRemoveButton.addSelectionListener(new SelectionListener() {
-				public void widgetDefaultSelected(SelectionEvent e) {}
+				public void widgetDefaultSelected(SelectionEvent e) {
+				}
 
 				public void widgetSelected(SelectionEvent e) {
 					ISelection s = fList.getSelection();
@@ -132,15 +159,17 @@ public class RubyFoldingPreferenceBlock extends SourceCodeFoldingPreferenceBlock
 		public int getButtonWidthHint(Button button) {
 			button.setFont(JFaceResources.getDialogFont());
 			PixelConverter converter = new PixelConverter(button);
-			int widthHint = converter.convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
-			return Math.max(widthHint, button.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
+			int widthHint = converter
+					.convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
+			return Math.max(widthHint, button.computeSize(SWT.DEFAULT,
+					SWT.DEFAULT, true).x);
 		}
 
 		private String[] getEntries() {
 			return fList.getList().getItems();
 		}
-		
-		private void setEntries (String items[]) {
+
+		private void setEntries(String items[]) {
 			fList.remove(fList.getList().getItems());
 			for (int i = 0; i < items.length; i++) {
 				if (items[i].trim().length() > 0)
@@ -158,21 +187,21 @@ public class RubyFoldingPreferenceBlock extends SourceCodeFoldingPreferenceBlock
 			}
 			getPreferenceStore().setValue(fKey, buf.toString());
 		}
-		
-		public void initialize () {
+
+		public void initialize() {
 			String val = getPreferenceStore().getString(fKey);
 			if (val != null) {
 				String items[] = val.split(","); //$NON-NLS-1$
-				setEntries (items);
+				setEntries(items);
 			}
-			
+
 		}
 
 		public void performDefault() {
 			String val = getPreferenceStore().getDefaultString(fKey);
 			if (val != null) {
 				String items[] = val.split(","); //$NON-NLS-1$
-				setEntries (items);
+				setEntries(items);
 			}
 		}
 	}

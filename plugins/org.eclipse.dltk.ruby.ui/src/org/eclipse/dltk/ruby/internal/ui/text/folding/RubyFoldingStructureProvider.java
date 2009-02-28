@@ -13,17 +13,22 @@ import java.util.List;
 import java.util.Stack;
 
 import org.eclipse.core.runtime.ILog;
+import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.declarations.Declaration;
 import org.eclipse.dltk.ast.declarations.FakeModuleDeclaration;
 import org.eclipse.dltk.ast.declarations.MethodDeclaration;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
 import org.eclipse.dltk.ast.declarations.TypeDeclaration;
+import org.eclipse.dltk.ast.expressions.CallExpression;
 import org.eclipse.dltk.ast.parser.ISourceParser;
 import org.eclipse.dltk.ruby.core.RubyNature;
+import org.eclipse.dltk.ruby.internal.ui.RubyPreferenceConstants;
 import org.eclipse.dltk.ruby.internal.ui.RubyUI;
 import org.eclipse.dltk.ruby.internal.ui.text.IRubyPartitions;
 import org.eclipse.dltk.ruby.internal.ui.text.RubyPartitionScanner;
 import org.eclipse.dltk.ui.text.folding.AbstractASTFoldingStructureProvider;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.rules.IPartitionTokenScanner;
 
 public class RubyFoldingStructureProvider extends
@@ -66,9 +71,28 @@ public class RubyFoldingStructureProvider extends
 		return buildCodeBlocks(decl, offset);
 	}
 
+	protected boolean mayCollapse(ASTNode s,
+			FoldingStructureComputationContext ctx) {
+		return super.mayCollapse(s, ctx) || s instanceof CallExpression;
+	}
+
+	protected boolean initiallyCollapse(ASTNode s) {
+		return super.initiallyCollapse(s)
+				|| (s instanceof CallExpression && fInitCollapseRequires);
+	}
+
+	private boolean fInitCollapseRequires;
+
+	protected void initializePreferences(IPreferenceStore store) {
+		super.initializePreferences(store);
+		fInitCollapseRequires = store
+				.getBoolean(RubyPreferenceConstants.EDITOR_FOLDING_INIT_REQUIRES);
+	}
+
 	/**
 	 * This folding visitor implementation intentionally does not fold top level
-	 * classes. This behavior is similar to the JDT.
+	 * classes, but methods and inner classes are folded. This behavior is
+	 * similar to the JDT.
 	 */
 	protected static class RubyFoldingASTVisitor extends FoldingASTVisitor {
 
@@ -92,7 +116,21 @@ public class RubyFoldingStructureProvider extends
 			}
 
 			public String toString() {
-				return declaration != null ? declaration.toString() : "<TOP>";
+				return declaration != null ? declaration.toString() : "(TOP)";
+			}
+
+		}
+
+		static class ModuleDeclarationContainer extends DeclarationContainer {
+
+			final List requires = new ArrayList();
+
+			public ModuleDeclarationContainer() {
+				super(null, false);
+			}
+
+			public void addChild(CodeBlock block) {
+				children.add(block);
 			}
 
 		}
@@ -107,16 +145,28 @@ public class RubyFoldingStructureProvider extends
 			return (DeclarationContainer) declarations.pop();
 		}
 
+		private ModuleDeclarationContainer peekModuleDeclaration() {
+			if (declarations.size() == 1) {
+				DeclarationContainer container = (DeclarationContainer) declarations
+						.peek();
+				if (container instanceof ModuleDeclarationContainer) {
+					return (ModuleDeclarationContainer) container;
+				}
+			}
+			return null;
+		}
+
 		protected RubyFoldingASTVisitor(int offset) {
 			super(offset);
 		}
 
 		public boolean visit(ModuleDeclaration s) throws Exception {
-			declarations.push(new DeclarationContainer(null, false));
+			declarations.push(new ModuleDeclarationContainer());
 			return visitGeneral(s);
 		}
 
 		public boolean visit(TypeDeclaration s) throws Exception {
+			handleRequireStatements();
 			final DeclarationContainer child = new DeclarationContainer(s,
 					false);
 			peekDeclaration().addChild(child);
@@ -130,6 +180,7 @@ public class RubyFoldingStructureProvider extends
 		}
 
 		public boolean visit(MethodDeclaration s) throws Exception {
+			handleRequireStatements();
 			final DeclarationContainer child = new DeclarationContainer(s, true);
 			peekDeclaration().addChild(child);
 			declarations.push(child);
@@ -147,19 +198,58 @@ public class RubyFoldingStructureProvider extends
 					&& (collapsible || container.foldAlways)) {
 				add(container.declaration);
 			}
+			final boolean nextCollabsible = collapsible
+					|| (level > 0 && container.countChildren() > 1);
 			for (Iterator i = container.children.iterator(); i.hasNext();) {
-				final DeclarationContainer child = (DeclarationContainer) i
-						.next();
-				processDeclarations(child, level + 1, collapsible
-						|| (level > 0 && container.countChildren() > 1));
+				final Object child = i.next();
+				if (child instanceof DeclarationContainer) {
+					processDeclarations((DeclarationContainer) child,
+							level + 1, nextCollabsible);
+				} else if (child instanceof CodeBlock) {
+					add((CodeBlock) child);
+				}
 			}
 		}
 
 		public boolean endvisit(ModuleDeclaration s) throws Exception {
+			handleRequireStatements();
 			final DeclarationContainer container = popDeclaration();
-			processDeclarations(container, 0, container.countChildren() > 1);
+			processDeclarations(container, 0, false);
 			return super.endvisit(s);
 		}
+
+		public boolean visitGeneral(ASTNode node) throws Exception {
+			if (declarations.size() == 1) {
+				if (node instanceof CallExpression) {
+					final CallExpression call = (CallExpression) node;
+					if ("require".equals(call.getName())) {
+						final ModuleDeclarationContainer container = peekModuleDeclaration();
+						if (container != null) {
+							container.requires.add(call);
+						}
+						return false;
+					}
+				} else {
+					handleRequireStatements();
+				}
+			}
+			return super.visitGeneral(node);
+		}
+
+		private void handleRequireStatements() {
+			final ModuleDeclarationContainer container = peekModuleDeclaration();
+			if (container != null && !container.requires.isEmpty()) {
+				final CallExpression firstRequire = (CallExpression) container.requires
+						.get(0);
+				final CallExpression lastRequire = (CallExpression) container.requires
+						.get(container.requires.size() - 1);
+				container.addChild(new CodeBlock(firstRequire, new Region(
+						firstRequire.sourceStart(), lastRequire.sourceEnd()
+								- firstRequire.sourceStart())));
+				container.requires.clear();
+			}
+		}
+
 	}
 
 	protected FoldingASTVisitor getFoldingVisitor(int offset) {
