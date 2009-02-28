@@ -25,13 +25,12 @@ import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.search.indexing.IIndexConstants;
 import org.eclipse.dltk.ruby.ast.RubyCallArgument;
 import org.eclipse.dltk.ruby.ast.RubyClassDeclaration;
+import org.eclipse.dltk.ruby.core.RubyConstants;
 import org.eclipse.dltk.ruby.internal.parser.mixin.RubyMixinClass;
 import org.eclipse.dltk.ruby.internal.parser.mixin.RubyMixinModel;
 import org.eclipse.dltk.ruby.typeinference.RubyClassType;
 
 public class AbstractTestingEngineValidateVisitor extends ASTVisitor {
-
-	private static final String REQUIRE = "require"; //$NON-NLS-1$
 
 	private final Stack stack = new Stack();
 
@@ -105,14 +104,13 @@ public class AbstractTestingEngineValidateVisitor extends ASTVisitor {
 					// contains() above
 					mixinClass = mixinClass.getSuperclass();
 				while (mixinClass != null) {
-				  if (processedKeys.add(mixinClass.getKey()) == true) {
-					  if (mixinClass.getKey().equals(classKey))
-						  return true;
-					  mixinClass = mixinClass.getSuperclass();
-				  }
-				  else {
-					  mixinClass = null;
-				  }
+					if (processedKeys.add(mixinClass.getKey()) == true) {
+						if (mixinClass.getKey().equals(classKey))
+							return true;
+						mixinClass = mixinClass.getSuperclass();
+					} else {
+						mixinClass = null;
+					}
 				}
 			}
 		}
@@ -120,7 +118,8 @@ public class AbstractTestingEngineValidateVisitor extends ASTVisitor {
 	}
 
 	private boolean isRequire(CallExpression call) {
-		return call.getReceiver() == null && REQUIRE.equals(call.getName())
+		return call.getReceiver() == null
+				&& RubyConstants.REQUIRE.equals(call.getName())
 				&& call.getArgs().getChilds().size() == 1;
 	}
 
