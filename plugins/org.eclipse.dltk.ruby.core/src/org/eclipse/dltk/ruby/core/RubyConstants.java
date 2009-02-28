@@ -18,7 +18,9 @@ public class RubyConstants {
 
 	public final static String RUBY_PARTITIONING = "__ruby_partitioning"; //$NON-NLS-1$
 
-	public static final int RubyAttributeModifier = 2 << ( Modifiers.USER_MODIFIER + 1);
+	public static final int RubyAttributeModifier = 2 << (Modifiers.USER_MODIFIER + 1);
 
 	public static final int RubyAliasModifier = 2 << (Modifiers.USER_MODIFIER + 2);
+
+	public static final String REQUIRE = "require"; //$NON-NLS-1$
 }
