@@ -77,6 +77,20 @@
       </contentTypeBinding>
    </editor>
 	 </extension>
+ 
+  <extension point="org.eclipse.ui.editorActions">
+    <editorContribution
+      targetID="org.eclipse.dltk.ruby.ui.editor.RubyEditor"
+      id="org.eclipse.dltk.ruby.internal.ui.editor.RubyEditor.ruler">
+      <action
+        label="Ruby Selection Ruler action"
+        class="org.eclipse.dltk.ui.actions.ScriptEditorRulerActionDelegate:org.eclipse.dltk.ruby.core.nature"
+        actionID="RulerClick"
+        id="org.eclipse.dltk.ruby.internal.ui.editor.RubySelectRulerAction">
+      </action>
+    </editorContribution>
+  </extension>  
+ 
  <extension
        point="org.eclipse.ui.editors.templates">
     <contextType
