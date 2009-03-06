@@ -35,7 +35,7 @@ public class RubyOutlinePage extends ScriptOutlinePage {
 		IToolBarManager toolBarManager = actionBars.getToolBarManager();
 
 		MemberFilterActionGroup fMemberFilterActionGroup = new MemberFilterActionGroup(
-				fOutlineViewer, fStore); //$NON-NLS-1$
+				fOutlineViewer, fStore);
 
 		String title, helpContext;
 		ArrayList actions = new ArrayList(3);
