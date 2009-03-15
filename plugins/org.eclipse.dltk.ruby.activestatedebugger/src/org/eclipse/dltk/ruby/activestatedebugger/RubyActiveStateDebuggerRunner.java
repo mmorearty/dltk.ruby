@@ -13,7 +13,7 @@ import org.eclipse.dltk.core.environment.IFileHandle;
 import org.eclipse.dltk.launching.ExternalDebuggingEngineRunner;
 import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.dltk.launching.InterpreterConfig;
-import org.eclipse.dltk.launching.debug.DbgpInterpreterConfig;
+import org.eclipse.dltk.launching.debug.DbgpConnectionConfig;
 import org.eclipse.dltk.ruby.debug.RubyDebugPlugin;
 import org.eclipse.dltk.ruby.launching.RubyLaunchConfigurationConstants;
 
@@ -39,13 +39,7 @@ public class RubyActiveStateDebuggerRunner extends
 			PreferencesLookupDelegate delegate) {
 
 		IFileHandle debugEnginePath = getDebuggingEnginePath(delegate);
-		DbgpInterpreterConfig dbgpConfig = new DbgpInterpreterConfig(config);
-		final String host = dbgpConfig.getHost();
-		final int port = dbgpConfig.getPort();
-		final String sessionId = dbgpConfig.getSessionId();
-
-		final String dir = debugEnginePath.getParent().toString();
-
+		DbgpConnectionConfig dbgpConfig = DbgpConnectionConfig.load(config);
 		/*
 		 * TODO: handle RUBYOPT support for rubygems
 		 * 
@@ -53,11 +47,13 @@ public class RubyActiveStateDebuggerRunner extends
 		 * http://aspn.activestate
 		 * .com/ASPN/docs/Komodo/komodo-doc-debugruby.html
 		 */
-		config.addEnvVar("RUBYDB_OPTS", "RemotePort=" + host + ":" + port); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		config.addEnvVar("DBGP_IDEKEY", sessionId); //$NON-NLS-1$
+		config
+				.addEnvVar(
+						"RUBYDB_OPTS", "RemotePort=" + dbgpConfig.getHost() + ":" + dbgpConfig.getPort()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+		config.addEnvVar("DBGP_IDEKEY", dbgpConfig.getSessionId()); //$NON-NLS-1$
 		// ruby -I"$dbgdir" -r "$dbgdir"/rdbgp.rb <Program_To_Debug.rb>
 		config.addInterpreterArg("-I"); //$NON-NLS-1$
-		config.addInterpreterArg(dir);
+		config.addInterpreterArg(debugEnginePath.getParent().toString());
 
 		config.addInterpreterArg("-r"); //$NON-NLS-1$
 		config.addInterpreterArg(debugEnginePath.toOSString());
@@ -111,7 +107,7 @@ public class RubyActiveStateDebuggerRunner extends
 	protected String getLogFilePathPreferenceKey() {
 		return RubyActiveStateDebuggerConstants.LOG_FILE_PATH;
 	}
-	
+
 	protected String getProcessType() {
 		return RubyLaunchConfigurationConstants.ID_RUBY_PROCESS_TYPE;
 	}
