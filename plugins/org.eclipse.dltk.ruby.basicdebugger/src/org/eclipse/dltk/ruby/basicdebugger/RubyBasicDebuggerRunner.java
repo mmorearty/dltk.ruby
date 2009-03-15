@@ -23,7 +23,7 @@ import org.eclipse.dltk.internal.launching.execution.DeploymentManager;
 import org.eclipse.dltk.launching.DebuggingEngineRunner;
 import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.dltk.launching.InterpreterConfig;
-import org.eclipse.dltk.launching.debug.DbgpInterpreterConfig;
+import org.eclipse.dltk.launching.debug.DbgpConnectionConfig;
 import org.eclipse.dltk.ruby.debug.RubyDebugPlugin;
 import org.eclipse.dltk.ruby.internal.launching.JRubyInstallType;
 import org.eclipse.dltk.ruby.launching.RubyLaunchConfigurationConstants;
@@ -85,17 +85,14 @@ public class RubyBasicDebuggerRunner extends DebuggingEngineRunner {
 		newConfig.addInterpreterArg(env.convertPathToString(sourceLocation));
 
 		// Environment
-		final DbgpInterpreterConfig dbgpConfig = new DbgpInterpreterConfig(
-				config);
-
-		String sessionId = dbgpConfig.getSessionId();
+		DbgpConnectionConfig dbgpConfig = DbgpConnectionConfig.load(config);
 
 		newConfig.addEnvVar(RUBY_HOST_VAR, dbgpConfig.getHost());
 		newConfig.addEnvVar(RUBY_PORT_VAR, Integer.toString(dbgpConfig
 				.getPort()));
-		newConfig.addEnvVar(RUBY_KEY_VAR, sessionId);
+		newConfig.addEnvVar(RUBY_KEY_VAR, dbgpConfig.getSessionId());
 
-		String logFileName = getLogFileName(delegate, sessionId);
+		String logFileName = getLogFileName(delegate, dbgpConfig.getSessionId());
 		if (logFileName != null) {
 			newConfig.addEnvVar(RUBY_LOG_VAR, logFileName);
 		}
@@ -149,7 +146,7 @@ public class RubyBasicDebuggerRunner extends DebuggingEngineRunner {
 	protected String getLogFilePathPreferenceKey() {
 		return RubyBasicDebuggerConstants.LOG_FILE_PATH;
 	}
-	
+
 	protected String getProcessType() {
 		return RubyLaunchConfigurationConstants.ID_RUBY_PROCESS_TYPE;
 	}
