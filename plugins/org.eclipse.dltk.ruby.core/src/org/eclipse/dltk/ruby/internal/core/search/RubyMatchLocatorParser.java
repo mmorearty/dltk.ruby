@@ -91,14 +91,14 @@ public class RubyMatchLocatorParser extends MatchLocatorParser {
 		}
 		if (node instanceof CallExpression) {
 			CallExpression call = (CallExpression) node;
-			int start = call.sourceStart();
-			int end = call.sourceEnd();
-			if (start < 0) {
-				start = 0;
-			}
-			if (end < 0) {
-				end = 1;
-			}
+			// int start = call.sourceStart();
+			// int end = call.sourceEnd();
+			// if (start < 0) {
+			// start = 0;
+			// }
+			// if (end < 0) {
+			// end = 1;
+			// }
 			locator.match(call, this.getNodeSet());
 			/*
 			 * (CallExpression) new CallExpression(start, end,
