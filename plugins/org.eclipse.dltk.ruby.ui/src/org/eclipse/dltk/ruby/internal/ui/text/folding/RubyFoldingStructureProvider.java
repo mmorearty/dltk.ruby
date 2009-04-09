@@ -64,8 +64,7 @@ public class RubyFoldingStructureProvider extends
 	}
 
 	protected CodeBlock[] getCodeBlocks(String code, int offset) {
-		ISourceParser parser = getSourceParser();
-		ModuleDeclaration decl = parser.parse(null, code.toCharArray(), null);
+		ModuleDeclaration decl = getModuleDeclaration();
 		if (decl instanceof FakeModuleDeclaration) {
 			return null;
 		}
