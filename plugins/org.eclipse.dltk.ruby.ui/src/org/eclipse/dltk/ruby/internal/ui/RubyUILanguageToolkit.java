@@ -17,6 +17,7 @@ import org.eclipse.dltk.ruby.core.RubyConstants;
 import org.eclipse.dltk.ruby.core.RubyLanguageToolkit;
 import org.eclipse.dltk.ruby.internal.ui.editor.RubyEditor;
 import org.eclipse.dltk.ruby.internal.ui.preferences.SimpleRubySourceViewerConfiguration;
+import org.eclipse.dltk.ui.AbstractDLTKUILanguageToolkit;
 import org.eclipse.dltk.ui.IDLTKUILanguageToolkit;
 import org.eclipse.dltk.ui.ScriptElementLabels;
 import org.eclipse.dltk.ui.text.ScriptSourceViewerConfiguration;
@@ -25,7 +26,7 @@ import org.eclipse.dltk.ui.viewsupport.ScriptUILabelProvider;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.preference.IPreferenceStore;
 
-public class RubyUILanguageToolkit implements IDLTKUILanguageToolkit {
+public class RubyUILanguageToolkit extends AbstractDLTKUILanguageToolkit {
 	private static ScriptElementLabels sInstance = new ScriptElementLabels() {
 		public void getElementLabel(IModelElement element, long flags,
 				StringBuffer buf) {
@@ -113,10 +114,10 @@ public class RubyUILanguageToolkit implements IDLTKUILanguageToolkit {
 	private static final String INTERPRETERS_PREFERENCE_PAGE_ID = "org.eclipse.dltk.ruby.preferences.interpreters"; //$NON-NLS-1$
 	private static final String DEBUG_PREFERENCE_PAGE_ID = "org.eclipse.dltk.ruby.preferences.debug"; //$NON-NLS-1$
 	private static final String[] EDITOR_PREFERENCE_PAGES_IDS = {
-		"org.eclipse.dltk.ruby.preferences.editor",  //$NON-NLS-1$
-		"org.eclipse.dltk.ruby.preferences.editor.folding",  //$NON-NLS-1$
-		"org.eclipse.dltk.ruby.preferences.editor.syntaxcoloring", //$NON-NLS-1$ 
-		"org.eclipse.dltk.ruby.preferences.templates" //$NON-NLS-1$
+			"org.eclipse.dltk.ruby.preferences.editor", //$NON-NLS-1$
+			"org.eclipse.dltk.ruby.preferences.editor.folding", //$NON-NLS-1$
+			"org.eclipse.dltk.ruby.preferences.editor.syntaxcoloring", //$NON-NLS-1$ 
+			"org.eclipse.dltk.ruby.preferences.templates" //$NON-NLS-1$
 	};
 
 	public String getInterpreterPreferencePage() {
