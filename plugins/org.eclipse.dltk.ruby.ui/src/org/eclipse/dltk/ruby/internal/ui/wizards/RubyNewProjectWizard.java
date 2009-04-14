@@ -9,15 +9,12 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.internal.ui.wizards;
 
-import java.util.Observable;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExecutableExtension;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IModelElement;
-import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.dltk.ruby.core.RubyNature;
 import org.eclipse.dltk.ruby.internal.ui.RubyImages;
 import org.eclipse.dltk.ruby.internal.ui.RubyUI;
@@ -52,8 +49,6 @@ public class RubyNewProjectWizard extends NewElementWizard implements
 		super.addPages();
 		fFirstPage = new ProjectWizardFirstPage() {
 
-			RubyInterpreterGroup fInterpreterGroup;
-
 			final class RubyInterpreterGroup extends AbstractInterpreterGroup {
 				public RubyInterpreterGroup(Composite composite) {
 					super(composite);
@@ -68,24 +63,8 @@ public class RubyNewProjectWizard extends NewElementWizard implements
 				}
 			};
 
-			protected void createInterpreterGroup(Composite parent) {
-				fInterpreterGroup = new RubyInterpreterGroup(parent);
-			}
-
-			protected Observable getInterpreterGroupObservable() {
-				return fInterpreterGroup;
-			}
-
-			protected boolean supportInterpreter() {
-				return true;
-			}
-
-			protected IInterpreterInstall getInterpreter() {
-				return fInterpreterGroup.getSelectedInterpreter();
-			}
-
-			protected void handlePossibleInterpreterChange() {
-				fInterpreterGroup.handlePossibleInterpreterChange();
+			protected IInterpreterGroup createInterpreterGroup(Composite parent) {
+				return new RubyInterpreterGroup(parent);
 			}
 
 			protected boolean interpeterRequired() {
