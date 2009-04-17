@@ -19,6 +19,9 @@ public class RubyFormatterConstants {
 	public static final String FORMATTER_TAB_SIZE = CodeFormatterConstants.FORMATTER_TAB_SIZE;
 	public static final String FORMATTER_INDENTATION_SIZE = CodeFormatterConstants.FORMATTER_INDENTATION_SIZE;
 
+	public static final String FORMATTER_PROFILES = "formatter.profiles"; //$NON-NLS-1$
+	public static final String FORMATTER_ACTIVE_PROFILE = "formatter.profiles.active"; //$NON-NLS-1$
+
 	public static final String INDENT_CLASS = "indent.class"; //$NON-NLS-1$
 	public static final String INDENT_MODULE = "indent.module"; //$NON-NLS-1$
 	public static final String INDENT_METHOD = "indent.method"; //$NON-NLS-1$

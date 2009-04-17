@@ -23,13 +23,15 @@ public class RubyFormatterModifyDialog extends FormatterModifyDialog {
 	public RubyFormatterModifyDialog(IFormatterModifyDialogOwner dialogOwner,
 			IScriptFormatterFactory formatterFactory) {
 		super(dialogOwner, formatterFactory);
-		setTitle(Messages.RubyFormatterModifyDialog_rubyFormatter);
 	}
 
 	protected void addPages() {
-		addTabPage(Messages.RubyFormatterModifyDialog_indentation, new RubyFormatterIndentationTabPage(this));
-		addTabPage(Messages.RubyFormatterModifyDialog_blankLines, new RubyFormatterBlankLinesPage(this));
-		addTabPage(Messages.RubyFormatterModifyDialog_comments, new RubyFormatterCommentsPage(this));
+		addTabPage(Messages.RubyFormatterModifyDialog_indentation,
+				new RubyFormatterIndentationTabPage(this));
+		addTabPage(Messages.RubyFormatterModifyDialog_blankLines,
+				new RubyFormatterBlankLinesPage(this));
+		addTabPage(Messages.RubyFormatterModifyDialog_comments,
+				new RubyFormatterCommentsPage(this));
 	}
 
 }

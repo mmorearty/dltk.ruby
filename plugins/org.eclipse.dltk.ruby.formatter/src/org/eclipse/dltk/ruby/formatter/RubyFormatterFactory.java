@@ -25,6 +25,16 @@ import org.eclipse.dltk.ui.preferences.PreferenceKey;
 
 public class RubyFormatterFactory extends AbstractScriptFormatterFactory {
 
+	public PreferenceKey getProfilesKey() {
+		return new PreferenceKey(RubyFormatterPlugin.PLUGIN_ID,
+				RubyFormatterConstants.FORMATTER_PROFILES);
+	}
+
+	public PreferenceKey getActiveProfileKey() {
+		return new PreferenceKey(RubyFormatterPlugin.PLUGIN_ID,
+				RubyFormatterConstants.FORMATTER_ACTIVE_PROFILE);
+	}
+
 	private static final String[] KEYS = {
 			RubyFormatterConstants.FORMATTER_TAB_CHAR,
 			RubyFormatterConstants.FORMATTER_INDENTATION_SIZE,
