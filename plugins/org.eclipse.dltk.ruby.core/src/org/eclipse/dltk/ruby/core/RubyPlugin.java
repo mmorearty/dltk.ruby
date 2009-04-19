@@ -23,9 +23,9 @@ import org.eclipse.dltk.core.IShutdownListener;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.core.search.IDLTKSearchConstants;
 import org.eclipse.dltk.core.search.IDLTKSearchScope;
+import org.eclipse.dltk.core.search.NopTypeNameRequestor;
 import org.eclipse.dltk.core.search.SearchEngine;
 import org.eclipse.dltk.core.search.SearchPattern;
-import org.eclipse.dltk.core.search.TypeNameRequestor;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -160,13 +160,7 @@ public class RubyPlugin extends Plugin {
 								| SearchPattern.R_CASE_SENSITIVE,
 						IDLTKSearchConstants.TYPE,
 						scope,
-						new TypeNameRequestor() {
-							public void acceptType(int modifiers,
-									char[] packageName, char[] simpleTypeName,
-									char[][] enclosingTypeNames, String path) {
-								// no type to accept
-							}
-						},
+						new NopTypeNameRequestor(),
 						// will not activate index query caches if indexes are
 						// not ready, since it would take to long
 						// to wait until indexes are fully rebuild
