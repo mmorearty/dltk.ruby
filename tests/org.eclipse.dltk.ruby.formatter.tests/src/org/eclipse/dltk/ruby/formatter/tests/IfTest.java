@@ -11,12 +11,15 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.formatter.tests;
 
+import org.eclipse.dltk.formatter.tests.ScriptedTest;
+
 import junit.framework.TestSuite;
 
 public class IfTest extends ScriptedTest {
 
 	public static TestSuite suite() {
-		return new IfTest().createScriptedSuite("scripts/if.rb");
+		return new IfTest().createScriptedSuite(
+				RubyFormatterTestsPlugin.CONTEXT, "scripts/if.rb");
 	}
 
 }

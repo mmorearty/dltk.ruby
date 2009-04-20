@@ -1,8 +1,14 @@
 package org.eclipse.dltk.ruby.formatter.tests;
 
+import java.util.Map;
+
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.dltk.compiler.util.Util;
+import org.eclipse.dltk.formatter.tests.ScriptedTest.IScriptedTestContext;
+import org.eclipse.dltk.ui.formatter.IScriptFormatter;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -60,5 +66,26 @@ public class RubyFormatterTestsPlugin extends AbstractUIPlugin {
 	public static void log(IStatus status) {
 		getDefault().getLog().log(status);
 	}
+
+	public static final IScriptedTestContext CONTEXT = new IScriptedTestContext() {
+
+		public Bundle getResourceBundle() {
+			return getDefault().getBundle();
+		}
+
+		public String getCharset() {
+			return AllTests.CHARSET;
+		}
+
+		public IScriptFormatter createFormatter(Map preferences) {
+			if (preferences != null) {
+				final Map prefs = TestRubyFormatter.createTestingPreferences();
+				prefs.putAll(preferences);
+				return new TestRubyFormatter(Util.LINE_SEPARATOR, prefs);
+			} else {
+				return new TestRubyFormatter();
+			}
+		}
+	};
 
 }

@@ -11,11 +11,14 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.formatter.tests;
 
+import org.eclipse.dltk.formatter.tests.ScriptedTest;
+
 import junit.framework.TestSuite;
 
 public class BeginTest extends ScriptedTest {
 	public static TestSuite suite() {
-		return new BeginTest().createScriptedSuite("scripts/begin.rb");
+		return new BeginTest().createScriptedSuite(
+				RubyFormatterTestsPlugin.CONTEXT, "scripts/begin.rb");
 	}
 
 }

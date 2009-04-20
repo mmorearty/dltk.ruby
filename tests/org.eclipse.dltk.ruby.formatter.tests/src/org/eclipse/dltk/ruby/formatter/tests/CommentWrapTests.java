@@ -13,12 +13,10 @@ package org.eclipse.dltk.ruby.formatter.tests;
 
 import java.util.Map;
 
-import org.eclipse.dltk.compiler.util.Util;
-import org.eclipse.dltk.ruby.formatter.RubyFormatter;
 import org.eclipse.dltk.ruby.formatter.RubyFormatterConstants;
 import org.eclipse.dltk.ui.formatter.FormatterException;
 
-public class CommentWrapTests extends AbstractFormatterTest {
+public class CommentWrapTests extends AbstractRubyFormatterTest {
 
 	public void testWrapping1() throws FormatterException {
 		String input = joinLines(new String[] { "# 01234567890 01234567890",
@@ -37,12 +35,12 @@ public class CommentWrapTests extends AbstractFormatterTest {
 		assertEquals(output, format(input));
 	}
 
-	protected RubyFormatter createFormatter() {
+	protected Map getDefaultPreferences() {
 		Map preferences = TestRubyFormatter.createTestingPreferences();
 		preferences.put(RubyFormatterConstants.WRAP_COMMENTS, Boolean.TRUE
 				.toString());
 		preferences.put(RubyFormatterConstants.WRAP_COMMENTS_LENGTH, "20");
-		return new TestRubyFormatter(Util.LINE_SEPARATOR, preferences);
+		return preferences;
 	}
 
 }

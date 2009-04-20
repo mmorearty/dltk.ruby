@@ -34,7 +34,7 @@ import org.jruby.evaluator.Instruction;
 import org.jruby.lexer.yacc.ISourcePosition;
 import org.jruby.parser.RubyParserResult;
 
-public class ParserTest extends AbstractFormatterTest {
+public class ParserTest extends AbstractRubyFormatterTest {
 
 	public void testEndKeyword() throws FormatterException {
 		final String input = "class Test" + Util.LINE_SEPARATOR + "end"

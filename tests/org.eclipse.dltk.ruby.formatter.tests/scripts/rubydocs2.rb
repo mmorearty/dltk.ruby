@@ -1,3 +1,5 @@
+==> line.first.before = 1
+==> line.method.before = 2 
 ==== method rubydocs
 #Hello class
 class Hello

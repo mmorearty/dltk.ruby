@@ -11,16 +11,16 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.formatter.tests;
 
-import org.eclipse.dltk.formatter.tests.ScriptedTest;
+import java.util.Map;
 
-import junit.framework.TestSuite;
+import org.eclipse.dltk.compiler.util.Util;
+import org.eclipse.dltk.formatter.tests.AbstractFormatterTest;
+import org.eclipse.dltk.ui.formatter.IScriptFormatter;
 
-public class ClassesAndMethodsTest extends ScriptedTest {
+public abstract class AbstractRubyFormatterTest extends AbstractFormatterTest {
 
-	public static TestSuite suite() {
-		return new ClassesAndMethodsTest().createScriptedSuite(
-				RubyFormatterTestsPlugin.CONTEXT,
-				"scripts/classes-n-methods.rb");
+	protected IScriptFormatter createFormatter(Map preferences) {
+		return preferences != null ? new TestRubyFormatter(Util.LINE_SEPARATOR,
+				preferences) : new TestRubyFormatter();
 	}
-
 }

@@ -13,7 +13,7 @@ package org.eclipse.dltk.ruby.formatter.tests;
 
 import org.eclipse.dltk.ui.formatter.FormatterException;
 
-public class SimpleTests extends AbstractFormatterTest {
+public class SimpleTests extends AbstractRubyFormatterTest {
 
 	public void test1() throws FormatterException {
 		String input = joinLines(new String[] { "class Hello",

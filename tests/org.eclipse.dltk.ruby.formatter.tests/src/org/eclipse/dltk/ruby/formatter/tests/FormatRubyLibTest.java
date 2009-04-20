@@ -31,7 +31,7 @@ import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.text.edits.TextEdit;
 
-public class FormatRubyLibTest extends AbstractFormatterTest {
+public class FormatRubyLibTest extends AbstractRubyFormatterTest {
 
 	private static final String FILENAME = "/home/dltk/apps/ruby-lib.zip";
 
