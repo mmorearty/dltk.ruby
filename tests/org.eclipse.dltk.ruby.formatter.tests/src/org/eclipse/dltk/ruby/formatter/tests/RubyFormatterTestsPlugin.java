@@ -6,6 +6,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.dltk.compiler.util.Util;
 import org.eclipse.dltk.formatter.tests.ScriptedTest.IScriptedTestContext;
+import org.eclipse.dltk.ruby.formatter.RubyFormatter;
 import org.eclipse.dltk.ui.formatter.IScriptFormatter;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.Bundle;
@@ -84,6 +85,31 @@ public class RubyFormatterTestsPlugin extends AbstractUIPlugin {
 				return new TestRubyFormatter(Util.LINE_SEPARATOR, prefs);
 			} else {
 				return new TestRubyFormatter();
+			}
+		}
+
+		public String validateOptionName(String name) {
+			if (RubyFormatter.isBooleanOption(name)
+					|| RubyFormatter.isIntegerOption(name)) {
+				return name;
+			} else {
+				return null;
+			}
+		}
+
+		public String validateOptionValue(String name, String value) {
+			if (RubyFormatter.isBooleanOption(name)) {
+				return "false".equals(value) || "true".equals(value) ? value
+						: null;
+			} else if (RubyFormatter.isIntegerOption(name)) {
+				try {
+					Integer.parseInt(value);
+					return value;
+				} catch (NumberFormatException e) {
+					return null;
+				}
+			} else {
+				return null;
 			}
 		}
 	};
