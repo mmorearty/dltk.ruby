@@ -162,6 +162,24 @@ public class RubyFormatter extends AbstractScriptFormatter {
 		return document;
 	}
 
+	public static boolean isBooleanOption(String optionName) {
+		for (int i = 0; i < INDENTING.length; ++i) {
+			if (INDENTING[i].equals(optionName)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public static boolean isIntegerOption(String optionName) {
+		for (int i = 0; i < BLANK_LINES.length; ++i) {
+			if (BLANK_LINES[i].equals(optionName)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	private boolean equalsIgnoreBlanks(Reader inputReader, Reader outputReader) {
 		LineNumberReader input = new LineNumberReader(inputReader);
 		LineNumberReader output = new LineNumberReader(outputReader);
