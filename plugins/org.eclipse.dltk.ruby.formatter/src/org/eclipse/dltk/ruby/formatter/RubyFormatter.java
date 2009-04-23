@@ -76,7 +76,7 @@ public class RubyFormatter extends AbstractScriptFormatter {
 			final RubyFormatterNodeBuilder builder = new RubyFormatterNodeBuilder();
 			final FormatterDocument fDocument = createDocument(input);
 			IFormatterContainerNode root = builder.build(result, fDocument);
-			new RubyFormatterNodeRewriter(result, fDocument).rewrite(root);
+			new RubyFormatterNodeRewriter(result).rewrite(root);
 			final IFormatterContext context = new RubyFormatterContext(0);
 			FormatterIndentDetector detector = new FormatterIndentDetector(
 					offset);
@@ -130,7 +130,7 @@ public class RubyFormatter extends AbstractScriptFormatter {
 		final RubyFormatterNodeBuilder builder = new RubyFormatterNodeBuilder();
 		final FormatterDocument document = createDocument(input);
 		IFormatterContainerNode root = builder.build(result, document);
-		new RubyFormatterNodeRewriter(result, document).rewrite(root);
+		new RubyFormatterNodeRewriter(result).rewrite(root);
 		IFormatterContext context = new RubyFormatterContext(indent);
 		FormatterWriter writer = new FormatterWriter(document, lineDelimiter,
 				createIndentGenerator());
