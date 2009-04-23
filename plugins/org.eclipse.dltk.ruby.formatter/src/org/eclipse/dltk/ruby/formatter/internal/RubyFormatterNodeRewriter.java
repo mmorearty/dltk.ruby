@@ -4,18 +4,18 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.dltk.formatter.FormatterNodeRewriter;
 import org.eclipse.dltk.formatter.FormatterTextNode;
 import org.eclipse.dltk.formatter.FormatterUtils;
 import org.eclipse.dltk.formatter.IFormatterCommentableNode;
 import org.eclipse.dltk.formatter.IFormatterContainerNode;
 import org.eclipse.dltk.formatter.IFormatterDocument;
 import org.eclipse.dltk.formatter.IFormatterNode;
-import org.eclipse.dltk.formatter.IFormatterTextNode;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterCommentNode;
 import org.jruby.ast.CommentNode;
 import org.jruby.parser.RubyParserResult;
 
-public class RubyFormatterNodeRewriter {
+public class RubyFormatterNodeRewriter extends FormatterNodeRewriter {
 
 	private final IFormatterDocument document;
 	private final List comments = new ArrayList();
@@ -35,54 +35,6 @@ public class RubyFormatterNodeRewriter {
 		mergeTextNodes(root);
 		insertComments(root);
 		attachComments(root);
-	}
-
-	private void mergeTextNodes(IFormatterContainerNode root) {
-		final List body = root.getBody();
-		final List newBody = new ArrayList();
-		final List texts = new ArrayList();
-		for (Iterator i = body.iterator(); i.hasNext();) {
-			final IFormatterNode node = (IFormatterNode) i.next();
-			if (isPlainTextNode(node)) {
-				if (!texts.isEmpty()
-						&& ((IFormatterTextNode) texts.get(texts.size() - 1))
-								.getEndOffset() != node.getStartOffset()) {
-					flushTextNodes(texts, newBody);
-				}
-				texts.add(node);
-			} else {
-				if (!texts.isEmpty()) {
-					flushTextNodes(texts, newBody);
-				}
-				newBody.add(node);
-			}
-		}
-		if (!texts.isEmpty()) {
-			flushTextNodes(texts, newBody);
-		}
-		if (body.size() != newBody.size()) {
-			body.clear();
-			body.addAll(newBody);
-		}
-		for (Iterator i = body.iterator(); i.hasNext();) {
-			final IFormatterNode node = (IFormatterNode) i.next();
-			if (node instanceof IFormatterContainerNode) {
-				mergeTextNodes((IFormatterContainerNode) node);
-			}
-		}
-	}
-
-	private void flushTextNodes(List texts, List newBody) {
-		if (texts.size() > 1) {
-			final IFormatterNode first = (IFormatterNode) texts.get(0);
-			final IFormatterNode last = (IFormatterNode) texts
-					.get(texts.size() - 1);
-			newBody.add(new FormatterTextNode(document, first.getStartOffset(),
-					last.getEndOffset()));
-		} else {
-			newBody.addAll(texts);
-		}
-		texts.clear();
 	}
 
 	private void insertComments(IFormatterContainerNode root) {
@@ -142,10 +94,6 @@ public class RubyFormatterNodeRewriter {
 				attachComments((IFormatterContainerNode) node);
 			}
 		}
-	}
-
-	private boolean isPlainTextNode(final IFormatterNode node) {
-		return node.getClass() == FormatterTextNode.class;
 	}
 
 	private boolean hasComments(int startOffset, int endOffset) {
