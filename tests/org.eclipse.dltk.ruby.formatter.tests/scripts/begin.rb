@@ -43,14 +43,14 @@ i = 0
 begin
 print i
 i += 1
-end until 
+end until
 i > 3
 ==
 i = 0
 begin
 	print i
 	i += 1
-end until 
+end until
 	i > 3
 ==== begin-rescue-any
 begin
