@@ -30,7 +30,7 @@ b"
 	def m
 		print "m
 m"
-	end    
+	end
 end
 ==== multiline-string-if-block
 a = 1
@@ -72,7 +72,7 @@ bbb"
 i +=1
 end while i < 5
 ==
-i = 0 
+i = 0
 begin
 	print "aaa
 bbb"

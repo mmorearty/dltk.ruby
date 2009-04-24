@@ -143,7 +143,7 @@ THAT
 end
 ==
 a = 0
-def myfunc 
+def myfunc
 	print <<"THIS", <<"THAT"
 #{a}
 Here's a line
@@ -162,7 +162,7 @@ and here's another.
 THAT
 end
 ==
-def myfunc 
+def myfunc
 	print <<`THIS`, <<`THAT`
 Here's a line
 or two.
@@ -180,7 +180,7 @@ and here's another.
 THAT
 end
 ==
-def myfunc 
+def myfunc
 	print <<'THIS', <<'THAT'
 Here's a line
 or two.
@@ -201,7 +201,7 @@ THAT
 end
 myfunc
 ==
-def myfunc 
+def myfunc
 	a = 123
 	print <<"THIS", <<"THAT",1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19
 #{a}

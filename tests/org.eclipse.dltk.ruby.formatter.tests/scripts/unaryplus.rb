@@ -20,7 +20,7 @@ for i in [1...10]
 end
 ==
 for i in [1...10]
-	+a    
+	+a
 end
 ==== unary-plus-for-block-multiple
 for i in [1...10]
@@ -30,7 +30,7 @@ end
 ==
 for i in [1...10]
 	+a
-	print i    
+	print i
 end
 ==== unary-plus-do-block-single
 [ 1, 2, 3 ].each do |x|

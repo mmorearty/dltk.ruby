@@ -25,7 +25,7 @@ end
 ==== 2 methods
 class Hello
 def method1
-return 1 
+return 1
 end
 def method2
 return 2
@@ -34,7 +34,7 @@ end
 ==
 class Hello
 	def method1
-		return 1 
+		return 1
 	end
 	def method2
 		return 2
@@ -101,24 +101,24 @@ end
 ==== SClass
 class << self
 def execute
-puts "execute"		
+puts "execute"
 end
 end
 ==
 class << self
 	def execute
-		puts "execute"		
+		puts "execute"
 	end
 end
 ==== empty-SClass
 class << self
 def execute
-puts "execute"		
+puts "execute"
 end
 end
 ==
 class << self
 	def execute
-		puts "execute"		
+		puts "execute"
 	end
 end

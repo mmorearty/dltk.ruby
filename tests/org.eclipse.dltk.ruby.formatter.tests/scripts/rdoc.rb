@@ -36,9 +36,9 @@ def a
 inside
 	method
 =end
-end     
-def b        
-end  
+end
+def b
+end
 end
 ==
 =begin
@@ -55,7 +55,7 @@ inside
 inside
 	method
 =end
-	end     
-	def b        
-	end  
+	end
+	def b
+	end
 end

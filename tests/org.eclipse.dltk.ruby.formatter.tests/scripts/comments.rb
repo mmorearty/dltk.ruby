@@ -191,14 +191,14 @@ end
 ==
 a = 1
 if a == 1
-	#one  	
+	#one
 	puts "One"
 elsif a == 2
-	#two 	
-	puts "Two" 
+	#two
+	puts "Two"
 else
 	#other
-	puts "Other"	
+	puts "Other"
 end
 ==== unless-comments
 a = 1
