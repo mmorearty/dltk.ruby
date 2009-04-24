@@ -15,38 +15,38 @@ begin
 	puts "Hello"
 end
 ==== begin-while-modifier
-i = 0 
+i = 0
 begin
 print i
 i += 1
 end while i < 5
 ==
-i = 0 
+i = 0
 begin
 	print i
 	i += 1
 end while i < 5
 ==== begin-until-modifier
-i = 0 
+i = 0
 begin
 print i
 i += 1
 end until i > 3
 ==
-i = 0 
+i = 0
 begin
 	print i
 	i += 1
 end until i > 3
 ==== begin-until-modifier-multiline
-i = 0 
+i = 0
 begin
 print i
 i += 1
 end until 
 i > 3
 ==
-i = 0 
+i = 0
 begin
 	print i
 	i += 1
