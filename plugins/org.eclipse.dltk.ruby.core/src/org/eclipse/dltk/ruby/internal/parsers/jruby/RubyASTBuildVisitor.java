@@ -10,7 +10,6 @@
 package org.eclipse.dltk.ruby.internal.parsers.jruby;
 
 import java.math.BigInteger;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -95,6 +94,7 @@ import org.eclipse.dltk.ruby.ast.RubyYieldExpression;
 import org.eclipse.dltk.ruby.core.RubyPlugin;
 import org.eclipse.dltk.ruby.core.utils.RubySyntaxUtils;
 import org.eclipse.dltk.ruby.internal.parser.JRubySourceParser;
+import org.eclipse.osgi.util.NLS;
 import org.jruby.ast.AliasNode;
 import org.jruby.ast.AndNode;
 import org.jruby.ast.ArgsCatNode;
@@ -473,18 +473,18 @@ public class RubyASTBuildVisitor implements NodeVisitor {
 		}
 		if (list.size() > 1) {
 			throw new RuntimeException(
-					MessageFormat
-							.format(
+					NLS
+							.bind(
 									Messages.RubyASTBuildVisitor_jrubyNodeHasntBeenConvertedIntoAnyDltkAstNode,
-									new Object[] { node.getClass().getName() }));
+									node.getClass().getName()));
 		}
 		if (allowZero)
 			return null;
 		throw new RuntimeException(
-				MessageFormat
-						.format(
+				NLS
+						.bind(
 								Messages.RubyASTBuildVisitor_jrubyNodeHasntBeenConvertedIntoAnyDltkAstNode,
-								new Object[] { node.getClass().getName() }));
+								node.getClass().getName()));
 	}
 
 	protected char[] getContent() {
