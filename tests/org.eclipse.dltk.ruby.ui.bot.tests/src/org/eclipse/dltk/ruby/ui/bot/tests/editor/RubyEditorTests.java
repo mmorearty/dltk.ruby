@@ -1,11 +1,11 @@
 package org.eclipse.dltk.ruby.ui.bot.tests.editor;
 
 import junit.framework.Test;
-import net.sf.swtbot.eclipse.finder.widgets.SWTBotEclipseEditor;
 
 import org.eclipse.dltk.ruby.internal.ui.RubyPerspective;
 import org.eclipse.dltk.ruby.ui.bot.tests.AllTests;
 import org.eclipse.dltk.uibot.tests.AbstractSWTBotTests;
+import org.eclipse.swtbot.eclipse.finder.widgets.SWTBotEclipseEditor;
 import org.eclipse.test.performance.Dimension;
 import org.eclipse.test.performance.Performance;
 import org.eclipse.test.performance.PerformanceMeter;
