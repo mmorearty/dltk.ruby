@@ -43,11 +43,15 @@ module Spec
 			IN_METHOD_RE = /^(.+):in `(.+)'$/
 			def rspecTestName
 				if @DLTK_backtrace.nil?
-					backtrace = implementation_backtrace[0]
-					if backtrace =~ IN_METHOD_RE 
-						backtrace = $1
+
+					# tgrimm: This a workaround for a bug in 1.1.12:
+					filtered_backtrace = respond_to?(:backtrace) ? backtrace : implementation_backtrace
+					filtered_backtrace = filtered_backtrace.reject { |bt| bt =~ /(example_group_methods|dltk-rspec-runner.rb)/ }
+
+					@DLTK_backtrace = filtered_backtrace[0]
+					if @DLTK_backtrace =~ IN_METHOD_RE 
+						@DLTK_backtrace = $1
 					end
-					@DLTK_backtrace = backtrace
 				end
 				description + '<' + @DLTK_backtrace
 			end
@@ -264,18 +268,28 @@ module DLTK
 				@connection.notifyTestRunStarted example_count
 			end
 
+			# tgrimm: Since rspec 1.2.4 add_example_group was renamed to example_groupe_started
 			def add_example_group(example_group)
-				examples = example_group.respond_to?(:DLTK_examples_to_run) ? example_group.DLTK_examples_to_run : example_group.examples
-				if examples.size > 0 then
-					# ssanders: Ensure that description is never blank
-					description = example_group.description_text || example_group.to_s
-					@connection.notifyTestTreeEntry getTestId(example_group), description, true, examples.size
-					examples.each do |e|
-						@connection.notifyTestTreeEntry getTestId(e), getTestName(e), false, 1
-					end
-				end
+				example_group_started(example_group)
 				if ::Spec::VERSION::MAJOR > 1 || ::Spec::VERSION::MINOR > 0
 					super
+				end
+			end
+
+			def example_group_started(example_group)
+				options = @options ? @options : ::Spec::Runner.options
+				examples_to_run = example_group.examples
+				examples_to_run = examples_to_run.reject do |example|
+					matcher = ::Spec::Example::ExampleMatcher.new(example_group.description.to_s, example.description)
+					!matcher.matches?(options.examples)
+				end unless options.examples.empty?
+				if examples_to_run.size > 0 then
+					# ssanders: Ensure that description is never blank
+					description = example_group.description || example_group.to_s
+					@connection.notifyTestTreeEntry getTestId(example_group), description, true, examples_to_run.size
+					examples_to_run.each do |e|
+						@connection.notifyTestTreeEntry getTestId(e), getTestName(e), false, 1
+					end
 				end
 			end
 
@@ -342,10 +356,16 @@ module DLTK
 
 			def getTestName(example)
 				if example.respond_to?(:rspecTestName)
-					return example.rspecTestName
-				else
-					return example.description
+					name = example.rspecTestName
+				elsif example.description
+					name = example.description ? example.description : "NO NAME"
+					if example.respond_to?(:location)
+						name += "<" + example.location if example.location
+					else
+						name += "<" + example.backtrace if example.backtrace
+					end
 				end
+				return name.to_s
 			end
 
 		end
@@ -359,9 +379,11 @@ end
 ARGV.push '--format'
 ARGV.push 'DLTK::RSpec::DLTKFormatter'
 
+# tgrimm: RSpec 1.2.1 was release 7 days after 1.2.0, so there's no real reason to support 1.2.0
+raise "RSpec 1.2.0 is not supported, please update RSpec" if ::Spec::VERSION::STRING == '1.2.0'
 
 if ::Spec::VERSION::MAJOR > 1 || ::Spec::VERSION::MINOR > 0
-	if ::Spec::Extensions::Main.private_method_defined?(:rspec_options)
+	if ::Spec.constants.include?("Extensions") && ::Spec::Extensions::Main.private_method_defined?(:rspec_options)
 		options = rspec_options
 	else # ssanders: RSpec > 1.1.4
 		options = ::Spec::Runner.options
