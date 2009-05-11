@@ -21,6 +21,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.dltk.ruby.core,
  org.eclipse.dltk.launching
 Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.dltk.ruby.internal.ui,
  org.eclipse.dltk.ruby.internal.ui.editor,
  org.eclipse.dltk.ruby.internal.ui.preferences,
