@@ -15,14 +15,19 @@ public class FormatterCommentNode extends FormatterTextNode {
 
 	public void accept(IFormatterContext context, IFormatterWriter visitor)
 			throws Exception {
-		if (getDocument().getBoolean(RubyFormatterConstants.WRAP_COMMENTS)) {
-			final boolean savedWrapping = context.isWrapping();
+		final boolean savedWrapping = context.isWrapping();
+		final boolean savedComment = context.isComment();
+		final boolean isWrapping = getDocument().getBoolean(
+				RubyFormatterConstants.WRAP_COMMENTS);
+		if (isWrapping) {
 			context.setWrapping(true);
-			visitor.write(context, getStartOffset(), getEndOffset());
-			context.setWrapping(savedWrapping);
-		} else {
-			visitor.write(context, getStartOffset(), getEndOffset());
 		}
+		context.setComment(true);
+		visitor.write(context, getStartOffset(), getEndOffset());
+		if (isWrapping) {
+			context.setWrapping(savedWrapping);
+		}
+		context.setComment(savedComment);
 	}
 
 }
