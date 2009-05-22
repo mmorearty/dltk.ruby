@@ -10,7 +10,6 @@ import org.eclipse.dltk.ui.text.folding.IElementCommentResolver;
 
 public class RubyCommentElementTests extends AbstractModelTests {
 
-	private final IElementCommentResolver resolver = new DefaultElementCommentResolver();
 	private static final String PROJECT_NAME = "comments";
 
 	public static Suite suite() {
@@ -58,7 +57,9 @@ public class RubyCommentElementTests extends AbstractModelTests {
 	 */
 	protected String getElementByComment(ISourceModule module,
 			String commentPattern) throws ModelException {
-		IModelElement el = resolver.getElementByCommentPosition(module, module
+		final IElementCommentResolver resolver = new DefaultElementCommentResolver(
+				module);
+		IModelElement el = resolver.getElementByCommentPosition(module
 				.getSource().indexOf(commentPattern), 0);
 		if (el != null)
 			return el.getElementName();
