@@ -85,9 +85,8 @@ public class RubyConsoleSourceModuleLookup {
 	}
 
 	public static boolean isIncluded(IProjectFragment fragment, IPath path) {
-		final ProjectFragment root = (ProjectFragment) fragment;
-		return !Util.isExcluded(path, root.fullInclusionPatternChars(), root
-				.fullExclusionPatternChars(), false);
+		final IProjectFragment root = (IProjectFragment) fragment;
+		return !Util.isExcluded(path, root, false);
 	}
 
 	private ISourceModule findInProject(IScriptProject scriptProject,
