@@ -99,25 +99,6 @@ public class RubySourceViewerConfiguration extends
 		}
 	}
 
-	/**
-	 * Computes and returns the indent prefixes for space indentation and the
-	 * given <code>tabWidth</code>.
-	 * 
-	 * @param tabWidth
-	 *            the display tab width
-	 * @return the indent prefixes
-	 * @see #getIndentPrefixes(ISourceViewer, String)
-	 */
-	private static String[] getIndentPrefixesForSpaces(int tabWidth) {
-		final String[] indentPrefixes = new String[tabWidth + 2];
-		indentPrefixes[0] = AutoEditUtils.getNSpaces(tabWidth);
-		for (int i = 0; i < tabWidth; i++) {
-			indentPrefixes[i + 1] = AutoEditUtils.getNSpaces(i) + '\t';
-		}
-		indentPrefixes[tabWidth + 1] = ""; //$NON-NLS-1$
-		return indentPrefixes;
-	}
-
 	public int getTabWidth(ISourceViewer sourceViewer) {
 		if (fPreferenceStore == null)
 			return super.getTabWidth(sourceViewer);
