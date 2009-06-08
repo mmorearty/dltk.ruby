@@ -25,9 +25,6 @@ public final class RubyFoldingMessages extends NLS {
 	
 	public static String RubyFoldingPreferenceBlock_0;
 	public static String RubyFoldingPreferenceBlock_10;
-	public static String RubyFoldingPreferenceBlock_14;
-	public static String RubyFoldingPreferenceBlock_15;
-	public static String RubyFoldingPreferenceBlock_16;
 	public static String RubyFoldingPreferenceBlock_2;
 	public static String RubyFoldingPreferenceBlock_3;
 	public static String RubyFoldingPreferenceBlock_4;
