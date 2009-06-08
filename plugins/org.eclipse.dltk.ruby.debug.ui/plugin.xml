@@ -310,7 +310,7 @@
 	</extension>
 
 	<extension point="org.eclipse.dltk.ui.buildpathContainerPage">
-		<buildpathContainerPath
+		<buildpathContainerPage
 			class="org.eclipse.dltk.ruby.internal.debug.ui.interpreters.RubyInterpreterContainerWizardPage"
 			id="org.eclipse.dltk.ruby.launching.INTERPRETER_CONTAINER"
 			name="Ruby Interpreter Libraries"
