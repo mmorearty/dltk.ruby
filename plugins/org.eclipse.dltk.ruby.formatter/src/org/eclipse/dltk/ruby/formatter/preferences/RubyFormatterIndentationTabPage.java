@@ -78,13 +78,18 @@ public class RubyFormatterIndentationTabPage extends FormatterModifyTabPage {
 	protected void createOptions(final IFormatterControlManager manager,
 			Composite parent) {
 		Group tabPolicyGroup = SWTFactory.createGroup(parent,
-				Messages.RubyFormatterIndentationTabPage_generalSettings, 2, 1, GridData.FILL_HORIZONTAL);
+				Messages.RubyFormatterIndentationTabPage_generalSettings, 2, 1,
+				GridData.FILL_HORIZONTAL);
 		tabPolicy = manager
 				.createCombo(
 						tabPolicyGroup,
 						RubyFormatterConstants.FORMATTER_TAB_CHAR,
 						FormatterMessages.IndentationTabPage_general_group_option_tab_policy,
-						tabPolicyItems);
+						tabPolicyItems,
+						new String[] {
+								FormatterMessages.IndentationTabPage_general_group_option_tab_policy_SPACE,
+								FormatterMessages.IndentationTabPage_general_group_option_tab_policy_TAB,
+								FormatterMessages.IndentationTabPage_general_group_option_tab_policy_MIXED });
 		tabPolicyListener = new TabPolicyListener(manager);
 		tabPolicy.addSelectionListener(tabPolicyListener);
 		manager.addInitializeListener(tabPolicyListener);
@@ -111,30 +116,49 @@ public class RubyFormatterIndentationTabPage extends FormatterModifyTabPage {
 			}
 		});
 		//
-		Group indentGroup = SWTFactory.createGroup(parent,
-				Messages.RubyFormatterIndentationTabPage_indentWithinDefinitions, 1, 1, GridData.FILL_HORIZONTAL);
-		manager.createCheckbox(indentGroup,
-				RubyFormatterConstants.INDENT_CLASS,
-				Messages.RubyFormatterIndentationTabPage_declarationsWithinClassBody);
-		manager.createCheckbox(indentGroup,
-				RubyFormatterConstants.INDENT_MODULE,
-				Messages.RubyFormatterIndentationTabPage_declarationsWithinModuleBody);
-		manager.createCheckbox(indentGroup,
-				RubyFormatterConstants.INDENT_METHOD,
-				Messages.RubyFormatterIndentationTabPage_statementsWithinMethodBody);
+		Group indentGroup = SWTFactory
+				.createGroup(
+						parent,
+						Messages.RubyFormatterIndentationTabPage_indentWithinDefinitions,
+						1, 1, GridData.FILL_HORIZONTAL);
+		manager
+				.createCheckbox(
+						indentGroup,
+						RubyFormatterConstants.INDENT_CLASS,
+						Messages.RubyFormatterIndentationTabPage_declarationsWithinClassBody);
+		manager
+				.createCheckbox(
+						indentGroup,
+						RubyFormatterConstants.INDENT_MODULE,
+						Messages.RubyFormatterIndentationTabPage_declarationsWithinModuleBody);
+		manager
+				.createCheckbox(
+						indentGroup,
+						RubyFormatterConstants.INDENT_METHOD,
+						Messages.RubyFormatterIndentationTabPage_statementsWithinMethodBody);
 		Group indentBlocks = SWTFactory.createGroup(parent,
-				Messages.RubyFormatterIndentationTabPage_indentWithinBlocks, 1, 1, GridData.FILL_HORIZONTAL);
-		manager.createCheckbox(indentBlocks,
-				RubyFormatterConstants.INDENT_BLOCKS,
-				Messages.RubyFormatterIndentationTabPage_statementsWithinBlockBody);
-		manager.createCheckbox(indentBlocks, RubyFormatterConstants.INDENT_IF,
-				Messages.RubyFormatterIndentationTabPage_statementsWithinIfBody);
-		manager.createCheckbox(indentBlocks,
-				RubyFormatterConstants.INDENT_CASE,
-				Messages.RubyFormatterIndentationTabPage_statementsWithinCaseBody);
-		manager.createCheckbox(indentBlocks,
-				RubyFormatterConstants.INDENT_WHEN,
-				Messages.RubyFormatterIndentationTabPage_StatementsWithinWhenBody);
+				Messages.RubyFormatterIndentationTabPage_indentWithinBlocks, 1,
+				1, GridData.FILL_HORIZONTAL);
+		manager
+				.createCheckbox(
+						indentBlocks,
+						RubyFormatterConstants.INDENT_BLOCKS,
+						Messages.RubyFormatterIndentationTabPage_statementsWithinBlockBody);
+		manager
+				.createCheckbox(
+						indentBlocks,
+						RubyFormatterConstants.INDENT_IF,
+						Messages.RubyFormatterIndentationTabPage_statementsWithinIfBody);
+		manager
+				.createCheckbox(
+						indentBlocks,
+						RubyFormatterConstants.INDENT_CASE,
+						Messages.RubyFormatterIndentationTabPage_statementsWithinCaseBody);
+		manager
+				.createCheckbox(
+						indentBlocks,
+						RubyFormatterConstants.INDENT_WHEN,
+						Messages.RubyFormatterIndentationTabPage_StatementsWithinWhenBody);
 	}
 
 	protected URL getPreviewContent() {
