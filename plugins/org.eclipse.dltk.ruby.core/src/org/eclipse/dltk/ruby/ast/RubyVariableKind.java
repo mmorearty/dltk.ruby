@@ -13,29 +13,27 @@ import org.eclipse.dltk.ast.references.VariableKind;
 
 public interface RubyVariableKind extends VariableKind {
 
-	public class Local extends VariableKind.Local implements RubyVariableKind {
+	public class RubyImplementation extends Implementation implements
+			RubyVariableKind {
+
+		public RubyImplementation(VariableKind kind) {
+			super(kind.getId());
+		}
 	}
 
-	public class Global extends VariableKind.Global implements RubyVariableKind {
-	}
+	public static final RubyVariableKind LOCAL = new RubyImplementation(
+			VariableKind.LOCAL);
 
-	public class Instance extends VariableKind.Instance implements RubyVariableKind {
-	}
-	
-	public class Class extends VariableKind.Global implements RubyVariableKind {
-	}
-	
-	public class Constant extends VariableKind.Global implements RubyVariableKind {
-	}
+	public static final RubyVariableKind GLOBAL = new RubyImplementation(
+			VariableKind.GLOBAL);
 
-	public static final RubyVariableKind LOCAL = new Local();
+	public static final RubyVariableKind INSTANCE = new RubyImplementation(
+			VariableKind.INSTANCE);
 
-	public static final RubyVariableKind GLOBAL = new Global();
+	public static final RubyVariableKind CLASS = new RubyImplementation(
+			VariableKind.CLASS);
 
-	public static final RubyVariableKind INSTANCE = new Instance();
-
-	public static final RubyVariableKind CLASS = new Class();
-	
-	public static final RubyVariableKind CONSTANT = new Constant();
+	public static final RubyVariableKind CONSTANT = new RubyImplementation(
+			VariableKind.GLOBAL);
 
 }
