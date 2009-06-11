@@ -113,7 +113,7 @@ public class RubySourceViewerConfiguration extends
 				fPreferenceStore);
 		fSingleQuoteStringScanner = new RubySingleQuoteStringScanner(
 				getColorManager(), fPreferenceStore);
-		
+
 		fCommentScanner = createCommentScanner(
 				IRubyColorConstants.RUBY_SINGLE_LINE_COMMENT,
 				IRubyColorConstants.RUBY_TODO_COMMENT);
@@ -253,17 +253,6 @@ public class RubySourceViewerConfiguration extends
 
 		presenter.setSizeConstraints(50, 20, true, false);
 		return presenter;
-	}
-
-	protected boolean isNewLine(IDocument doc, String text) {
-		String[] delims = doc.getLegalLineDelimiters();
-		for (int i = 0; i < delims.length; ++i) {
-			if (delims[i].equals(text)) {
-				return true;
-			}
-		}
-
-		return false;
 	}
 
 	public IAutoEditStrategy[] getAutoEditStrategies(
