@@ -58,7 +58,7 @@ public class ASTUtils {
 			public boolean visitGeneral(ASTNode node) throws Exception {
 				if (!found) {
 					stack.push(node);
-					if (node.equals(nde)) {
+					if (node.locationMatches(nde)) {
 						found = true;
 					}
 				}
