@@ -19,7 +19,6 @@ import org.eclipse.dltk.ast.declarations.MethodDeclaration;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
 import org.eclipse.dltk.ast.expressions.CallArgumentsList;
 import org.eclipse.dltk.ast.expressions.CallExpression;
-import org.eclipse.dltk.ast.references.VariableKind;
 import org.eclipse.dltk.ast.references.VariableReference;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.ISourceModule;
@@ -95,15 +94,13 @@ public class VariableReferenceEvaluator extends RubyMixinGoalEvaluator {
 					.getRootNode();
 			VariableReference expression = ref;
 			String varName = expression.getName().trim();
-			if (expression.getVariableKind() instanceof VariableKind.Local) {
-				if (context instanceof IArgumentsContext) {
-					IArgumentsContext argumentsContext = (IArgumentsContext) context;
-					IEvaluatedType argumentType = argumentsContext
-							.getArgumentType(varName);
-					if (argumentType != null) {
-						results.add(argumentType);
-						return IGoal.NO_GOALS;
-					}
+			if (context instanceof IArgumentsContext) {
+				IArgumentsContext argumentsContext = (IArgumentsContext) context;
+				IEvaluatedType argumentType = argumentsContext
+						.getArgumentType(varName);
+				if (argumentType != null) {
+					results.add(argumentType);
+					return IGoal.NO_GOALS;
 				}
 			}
 
