@@ -43,4 +43,46 @@ public class VariableTypeGoal extends AbstractTypeGoal {
 		return parentKey;
 	}
 
+	/*
+	 * @see java.lang.Object#hashCode()
+	 */
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result
+				+ ((parentKey == null) ? 0 : parentKey.hashCode());
+		return result;
+	}
+
+	/*
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		VariableTypeGoal other = (VariableTypeGoal) obj;
+		if (kind != other.kind)
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		if (parentKey == null) {
+			if (other.parentKey != null)
+				return false;
+		} else if (!parentKey.equals(other.parentKey))
+			return false;
+		return true;
+	}
+
+	public String toString() {
+		return getClassName() + "[" + name + "," + parentKey + "," + kind + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$//$NON-NLS-4$
+	}
+
 }
