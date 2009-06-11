@@ -31,4 +31,35 @@ public class NonTypeConstantTypeGoal extends AbstractTypeGoal {
 		return element;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((element == null) ? 0 : element.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		NonTypeConstantTypeGoal other = (NonTypeConstantTypeGoal) obj;
+		if (element == null) {
+			if (other.element != null)
+				return false;
+		} else if (!element.equals(other.element))
+			return false;
+		return true;
+	}
+	
+	
+
 }

@@ -25,5 +25,34 @@ public class ColonExpressionGoal extends AbstractTypeGoal {
 	public RubyColonExpression getColonExpression() {
 		return expr;
 	}
-	
+
+	/*
+	 * @see java.lang.Object#hashCode()
+	 */
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((expr == null) ? 0 : expr.hashCode());
+		return result;
+	}
+
+	/*
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ColonExpressionGoal other = (ColonExpressionGoal) obj;
+		if (expr == null) {
+			if (other.expr != null)
+				return false;
+		} else if (!expr.equals(other.expr))
+			return false;
+		return true;
+	}
+
 }
