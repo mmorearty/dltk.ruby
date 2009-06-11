@@ -36,7 +36,7 @@ public class FieldParentKeyVerificator extends RubyMixinGoalEvaluator {
 		ASTNode[] way = ASTUtils.restoreWayToNode(decl, node);
 		if (way.length >= 2 && way[way.length - 2] instanceof RubyAssignment) {
 			RubyAssignment assignment = (RubyAssignment) way[way.length - 2];
-			if (assignment.getLeft().equals(node))
+			if (assignment.getLeft().locationMatches(node))
 				return way[way.length - 2];
 		}
 		return node;
