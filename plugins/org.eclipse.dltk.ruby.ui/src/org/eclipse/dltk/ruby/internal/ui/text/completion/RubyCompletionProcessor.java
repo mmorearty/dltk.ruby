@@ -26,21 +26,21 @@ public class RubyCompletionProcessor extends ScriptCompletionProcessor {
 	}
 
 	/*
-	 * @see org.eclipse.dltk.ui.text.completion.ScriptCompletionProcessor#getNatureId()
+	 * @see ScriptCompletionProcessor#getNatureId()
 	 */
 	protected String getNatureId() {
 		return RubyNature.NATURE_ID;
 	}
 
 	/*
-	 * @see org.eclipse.dltk.ui.text.completion.ScriptCompletionProcessor#getProposalLabelProvider()
+	 * @see ScriptCompletionProcessor#getProposalLabelProvider()
 	 */
 	protected CompletionProposalLabelProvider getProposalLabelProvider() {
 		return new RubyCompletionProposalLabelProvider();
 	}
 
 	/*
-	 * @see org.eclipse.dltk.ui.text.completion.ContentAssistProcessor#getPreferenceStore()
+	 * @see ContentAssistProcessor#getPreferenceStore ()
 	 */
 	protected IPreferenceStore getPreferenceStore() {
 		return RubyUI.getDefault().getPreferenceStore();
