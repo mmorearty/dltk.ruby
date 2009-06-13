@@ -9,7 +9,6 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.internal.ui.text;
 
-import org.eclipse.dltk.ruby.internal.ui.RubyUI;
 import org.eclipse.dltk.ui.CodeFormatterConstants;
 import org.eclipse.dltk.ui.PreferenceConstants;
 import org.eclipse.dltk.ui.text.util.AutoEditUtils;
@@ -18,15 +17,8 @@ import org.eclipse.dltk.ui.text.util.TabStyle;
 import org.eclipse.jface.preference.IPreferenceStore;
 
 public class RubyPreferenceInterpreter implements ITabPreferencesProvider {
-	private static RubyPreferenceInterpreter instance;
-	private final IPreferenceStore store;
 
-	public static final RubyPreferenceInterpreter getDefault() {
-		if (instance == null)
-			instance = new RubyPreferenceInterpreter(RubyUI.getDefault()
-					.getPreferenceStore());
-		return instance;
-	}
+	private final IPreferenceStore store;
 
 	public RubyPreferenceInterpreter(IPreferenceStore store) {
 		this.store = store;
