@@ -15,6 +15,7 @@ package org.eclipse.dltk.ruby.internal.ui.text;
 import java.util.Map;
 
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.dltk.compiler.util.Util;
 import org.eclipse.dltk.internal.ui.editor.EditorUtility;
 import org.eclipse.dltk.internal.ui.editor.ScriptSourceViewer;
 import org.eclipse.dltk.internal.ui.text.HTMLTextPresenter;
@@ -76,34 +77,6 @@ public class RubySourceViewerConfiguration extends
 
 	public String[] getConfiguredContentTypes(ISourceViewer sourceViewer) {
 		return IRubyPartitions.RUBY_PARTITION_TYPES;
-	}
-
-	/*
-	 * @see SourceViewerConfiguration#getIndentPrefixes(ISourceViewer, String)
-	 */
-	public String[] getIndentPrefixes(ISourceViewer sourceViewer,
-			String contentType) {
-		if (fPreferenceStore == null) {
-			return super.getIndentPrefixes(sourceViewer, contentType);
-		}
-		final RubyPreferenceInterpreter prefs = new RubyPreferenceInterpreter(
-				fPreferenceStore);
-		final int tabWidth = prefs.getTabSize();
-		final int indentWidth = prefs.getIndentSize();
-		if (indentWidth < tabWidth) {
-			return new String[] { AutoEditUtils.getNSpaces(indentWidth), "" }; //$NON-NLS-1$
-		} else if (prefs.getTabStyle() == TabStyle.TAB) {
-			return getIndentPrefixesForTab(tabWidth);
-		} else {
-			return getIndentPrefixesForSpaces(tabWidth);
-		}
-	}
-
-	public int getTabWidth(ISourceViewer sourceViewer) {
-		if (fPreferenceStore == null)
-			return super.getTabWidth(sourceViewer);
-		return fPreferenceStore
-				.getInt(CodeFormatterConstants.FORMATTER_TAB_SIZE);
 	}
 
 	protected void initializeScanners() {
