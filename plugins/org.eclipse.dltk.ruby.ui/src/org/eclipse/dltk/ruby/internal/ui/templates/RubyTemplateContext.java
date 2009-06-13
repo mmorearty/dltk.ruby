@@ -9,8 +9,10 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.internal.ui.templates;
 
+import org.eclipse.dltk.core.IPreferencesLookupDelegate;
 import org.eclipse.dltk.core.ISourceModule;
-import org.eclipse.dltk.ruby.internal.ui.text.RubyPreferenceInterpreter;
+import org.eclipse.dltk.ruby.internal.ui.RubyUI;
+import org.eclipse.dltk.ui.CodeFormatterConstants;
 import org.eclipse.dltk.ui.templates.IScriptTemplateIndenter;
 import org.eclipse.dltk.ui.templates.ScriptTemplateContext;
 import org.eclipse.dltk.ui.templates.TabExpandScriptTemplateIndenter;
@@ -27,14 +29,15 @@ public class RubyTemplateContext extends ScriptTemplateContext {
 	}
 
 	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see org.eclipse.dltk.ui.templates.ScriptTemplateContext#getIndenter()
 	 */
 	protected IScriptTemplateIndenter getIndenter() {
-		RubyPreferenceInterpreter pref = RubyPreferenceInterpreter.getDefault();
-		if (TabStyle.SPACES == pref.getTabStyle()) {
-			return new TabExpandScriptTemplateIndenter(pref.getTabSize());
+		IPreferencesLookupDelegate prefs = getPreferences();
+		if (TabStyle.SPACES == TabStyle.forName(prefs.getString(
+				RubyUI.PLUGIN_ID, CodeFormatterConstants.FORMATTER_TAB_CHAR))) {
+			return new TabExpandScriptTemplateIndenter(prefs
+					.getInt(RubyUI.PLUGIN_ID,
+							CodeFormatterConstants.FORMATTER_TAB_SIZE));
 		}
 		return super.getIndenter();
 	}
