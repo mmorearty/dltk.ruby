@@ -20,3 +20,4 @@ Bundle-Localization: plugin
 Eclipse-LazyStart: true
 Export-Package: org.eclipse.dltk.ruby.fastdebugger,
  org.eclipse.dltk.ruby.fastdebugger.preferences
+Bundle-RequiredExecutionEnvironment: J2SE-1.4
