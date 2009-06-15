@@ -10,3 +10,4 @@ Eclipse-LazyStart: true
 Bundle-Vendor: %providerName
 Export-Package: org.eclipse.dltk.ruby.abstractdebugger
 Bundle-Activator: org.eclipse.dltk.ruby.abstractdebugger.AbstractRubyDebuggerPlugin
+Bundle-RequiredExecutionEnvironment: J2SE-1.4
