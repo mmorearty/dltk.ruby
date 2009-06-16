@@ -19,6 +19,7 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.dltk.formatter.AbstractScriptFormatter;
 import org.eclipse.dltk.formatter.FormatterDocument;
 import org.eclipse.dltk.formatter.FormatterIndentDetector;
 import org.eclipse.dltk.formatter.FormatterWriter;
@@ -31,7 +32,6 @@ import org.eclipse.dltk.ruby.formatter.internal.RubyFormatterNodeBuilder;
 import org.eclipse.dltk.ruby.formatter.internal.RubyFormatterNodeRewriter;
 import org.eclipse.dltk.ruby.formatter.internal.RubyFormatterPlugin;
 import org.eclipse.dltk.ruby.formatter.internal.RubyParser;
-import org.eclipse.dltk.ui.formatter.AbstractScriptFormatter;
 import org.eclipse.dltk.ui.formatter.FormatterException;
 import org.eclipse.dltk.ui.formatter.FormatterSyntaxProblemException;
 import org.eclipse.jface.text.IDocument;

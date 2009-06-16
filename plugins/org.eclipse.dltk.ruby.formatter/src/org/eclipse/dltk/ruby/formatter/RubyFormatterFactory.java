@@ -14,10 +14,10 @@ package org.eclipse.dltk.ruby.formatter;
 import java.net.URL;
 import java.util.Map;
 
+import org.eclipse.dltk.formatter.AbstractScriptFormatterFactory;
 import org.eclipse.dltk.ruby.formatter.internal.RubyFormatterPlugin;
 import org.eclipse.dltk.ruby.formatter.preferences.RubyFormatterModifyDialog;
 import org.eclipse.dltk.ruby.internal.ui.RubyUI;
-import org.eclipse.dltk.ui.formatter.AbstractScriptFormatterFactory;
 import org.eclipse.dltk.ui.formatter.IFormatterModifyDialog;
 import org.eclipse.dltk.ui.formatter.IFormatterModifyDialogOwner;
 import org.eclipse.dltk.ui.formatter.IScriptFormatter;
