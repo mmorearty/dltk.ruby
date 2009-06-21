@@ -15,7 +15,6 @@ package org.eclipse.dltk.ruby.internal.ui.text;
 import java.util.Map;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.dltk.compiler.util.Util;
 import org.eclipse.dltk.internal.ui.editor.EditorUtility;
 import org.eclipse.dltk.internal.ui.editor.ScriptSourceViewer;
 import org.eclipse.dltk.internal.ui.text.HTMLTextPresenter;
@@ -23,14 +22,11 @@ import org.eclipse.dltk.internal.ui.text.ScriptElementProvider;
 import org.eclipse.dltk.ruby.internal.ui.text.completion.RubyCompletionProcessor;
 import org.eclipse.dltk.ruby.internal.ui.text.completion.RubyContentAssistPreference;
 import org.eclipse.dltk.ruby.internal.ui.typehierarchy.RubyHierarchyInformationControl;
-import org.eclipse.dltk.ui.CodeFormatterConstants;
 import org.eclipse.dltk.ui.text.AbstractScriptScanner;
 import org.eclipse.dltk.ui.text.IColorManager;
 import org.eclipse.dltk.ui.text.ScriptPresentationReconciler;
 import org.eclipse.dltk.ui.text.ScriptSourceViewerConfiguration;
 import org.eclipse.dltk.ui.text.completion.ContentAssistPreference;
-import org.eclipse.dltk.ui.text.util.AutoEditUtils;
-import org.eclipse.dltk.ui.text.util.TabStyle;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.AbstractInformationControlManager;
 import org.eclipse.jface.text.DefaultInformationControl;
@@ -233,18 +229,6 @@ public class RubySourceViewerConfiguration extends
 		// // TODO: check contentType. think, do we really need it? :)
 		String partitioning = getConfiguredDocumentPartitioning(sourceViewer);
 		return new IAutoEditStrategy[] { new RubyAutoEditStrategy(partitioning) };
-	}
-
-	protected IInformationControlCreator getOutlinePresenterControlCreator(
-			ISourceViewer sourceViewer, final String commandId) {
-		return new IInformationControlCreator() {
-			public IInformationControl createInformationControl(Shell parent) {
-				int shellStyle = SWT.RESIZE;
-				int treeStyle = SWT.V_SCROLL | SWT.H_SCROLL;
-				return new RubyOutlineInformationControl(parent, shellStyle,
-						treeStyle, commandId);
-			}
-		};
 	}
 
 	protected void alterContentAssistant(ContentAssistant assistant) {
