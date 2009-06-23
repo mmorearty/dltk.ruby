@@ -14,15 +14,14 @@ import java.util.List;
 
 import org.eclipse.dltk.ruby.internal.ui.text.rules.BeginOfLineRule;
 import org.eclipse.dltk.ui.text.IColorManager;
-import org.eclipse.dltk.ui.text.ScriptCommentScanner;
+import org.eclipse.dltk.ui.text.ScriptMultilineCommentScanner;
 import org.eclipse.dltk.ui.text.TodoTaskPreferencesOnPreferenceStore;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.rules.IRule;
 import org.eclipse.jface.text.rules.IToken;
-import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.rules.WhitespaceRule;
 
-public class RubyDocScanner extends ScriptCommentScanner {
+public class RubyDocScanner extends ScriptMultilineCommentScanner {
 	private static final String[] fgTokenProperties = new String[] {
 			IRubyColorConstants.RUBY_DOC, IRubyColorConstants.RUBY_DOC_TOPIC,
 			IRubyColorConstants.RUBY_TODO_COMMENT };
@@ -53,30 +52,6 @@ public class RubyDocScanner extends ScriptCommentScanner {
 
 		setDefaultReturnToken(other);
 		return rules;
-	}
-
-	@Override
-	protected int skipCommentChars() {
-		return 0;
-	}
-
-	/**
-	 * FIXME Standard implementation copied (Alex)
-	 */
-	@Override
-	public IToken nextToken() {
-		fTokenOffset = fOffset;
-		fColumn = UNDEFINED;
-		if (fRules != null) {
-			for (int i = 0; i < fRules.length; i++) {
-				IToken token = (fRules[i].evaluate(this));
-				if (!token.isUndefined())
-					return token;
-			}
-		}
-		if (read() == EOF)
-			return Token.EOF;
-		return fDefaultReturnToken;
 	}
 
 }
