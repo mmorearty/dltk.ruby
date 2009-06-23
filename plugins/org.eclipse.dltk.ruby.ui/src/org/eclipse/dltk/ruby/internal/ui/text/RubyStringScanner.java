@@ -15,6 +15,7 @@ import java.util.List;
 import org.eclipse.dltk.ui.text.AbstractScriptScanner;
 import org.eclipse.dltk.ui.text.IColorManager;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.text.rules.IRule;
 import org.eclipse.jface.text.rules.WhitespaceRule;
 import org.eclipse.jface.text.rules.WordPatternRule;
 
@@ -32,12 +33,14 @@ public class RubyStringScanner extends AbstractScriptScanner {
 		initialize();
 	}
 
+	@Override
 	protected String[] getTokenProperties() {
 		return fgTokenProperties;
 	}
 
-	protected List createRules() {
-		List rules = new ArrayList/* <IRule> */();
+	@Override
+	protected List<IRule> createRules() {
+		List<IRule> rules = new ArrayList<IRule>();
 
 		// Add generic whitespace rule.
 		rules.add(new WhitespaceRule(new RubyWhitespaceDetector()));
