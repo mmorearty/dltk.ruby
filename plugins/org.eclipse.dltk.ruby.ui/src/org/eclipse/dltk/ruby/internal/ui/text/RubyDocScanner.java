@@ -19,6 +19,7 @@ import org.eclipse.dltk.ui.text.IColorManager;
 import org.eclipse.dltk.ui.text.TodoTagRule;
 import org.eclipse.dltk.ui.text.TodoTaskPreferencesOnPreferenceStore;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.text.rules.IRule;
 import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.WhitespaceRule;
 
@@ -33,12 +34,14 @@ public class RubyDocScanner extends AbstractScriptScanner {
 		initialize();
 	}
 
+	@Override
 	protected String[] getTokenProperties() {
 		return fgTokenProperties;
 	}
 
-	protected List createRules() {
-		final List/* <IRule> */rules = new ArrayList/* <IRule> */();
+	@Override
+	protected List<IRule> createRules() {
+		final List<IRule> rules = new ArrayList<IRule>();
 
 		final IToken topic = getToken(IRubyColorConstants.RUBY_DOC_TOPIC);
 		final IToken other = getToken(IRubyColorConstants.RUBY_DOC);
