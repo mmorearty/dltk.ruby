@@ -33,12 +33,10 @@ public class RubyDocScanner extends ScriptMultilineCommentScanner {
 		initialize();
 	}
 
-	@Override
 	protected String[] getTokenProperties() {
 		return fgTokenProperties;
 	}
 
-	@Override
 	protected List<IRule> createRules() {
 		final List<IRule> rules = new ArrayList<IRule>();
 
