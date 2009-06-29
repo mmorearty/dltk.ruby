@@ -11,6 +11,7 @@ import java.util.List;
 
 import org.eclipse.dltk.ruby.internal.ui.RubyPreferenceConstants;
 import org.eclipse.dltk.ui.preferences.OverlayPreferenceStore;
+import org.eclipse.dltk.ui.preferences.OverlayPreferenceStore.OverlayKey;
 import org.eclipse.dltk.ui.text.folding.SourceCodeFoldingPreferenceBlock;
 import org.eclipse.dltk.ui.util.PixelConverter;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -43,7 +44,8 @@ public class RubyFoldingPreferenceBlock extends
 		super(store, page);
 	}
 
-	protected void addOverlayKeys(List keys) {
+	@Override
+	protected void addOverlayKeys(List<OverlayKey> keys) {
 		super.addOverlayKeys(keys);
 		keys.add(new OverlayPreferenceStore.OverlayKey(
 				OverlayPreferenceStore.BOOLEAN,
