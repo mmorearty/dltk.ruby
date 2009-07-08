@@ -68,6 +68,7 @@ public abstract class FormatterBlockWithBeginEndNode extends FormatterBlockNode 
 
 	/**
 	 * @return the begin
+	 * @since 2.0
 	 */
 	public IFormatterNode[] getBegin() {
 		return FormatterUtils.toTextNodeArray(begin);
