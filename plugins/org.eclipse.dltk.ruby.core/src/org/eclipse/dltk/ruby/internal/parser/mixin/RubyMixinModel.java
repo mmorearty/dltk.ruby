@@ -36,7 +36,7 @@ public class RubyMixinModel implements IShutdownListener {
 
 	private static final Map instances = new HashMap();
 
-	public static RubyMixinModel getInstance(IScriptProject project) {
+	public static synchronized RubyMixinModel getInstance(IScriptProject project) {
 		Assert.isNotNull(project);
 		synchronized (instances) {
 			RubyMixinModel mixinModel = (RubyMixinModel) instances.get(project);
