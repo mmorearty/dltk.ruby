@@ -58,7 +58,7 @@ public class RubyUILanguageToolkit extends AbstractDLTKUILanguageToolkit {
 
 	private static RubyUILanguageToolkit sToolkit = null;
 
-	public static IDLTKUILanguageToolkit getInstance() {
+	public static synchronized IDLTKUILanguageToolkit getInstance() {
 		if (sToolkit == null) {
 			sToolkit = new RubyUILanguageToolkit();
 		}

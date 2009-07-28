@@ -22,7 +22,7 @@ public class RubyTemplateAccess extends ScriptTemplateAccess {
 
 	private static RubyTemplateAccess instance;
 
-	public static RubyTemplateAccess getInstance() {
+	public static synchronized RubyTemplateAccess getInstance() {
 		if (instance == null) {
 			instance = new RubyTemplateAccess();
 		}

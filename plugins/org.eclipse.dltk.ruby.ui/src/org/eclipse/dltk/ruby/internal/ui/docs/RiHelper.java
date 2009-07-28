@@ -41,7 +41,7 @@ public class RiHelper {
 
 	private static RiHelper instance;
 
-	public static RiHelper getInstance() {
+	public static synchronized RiHelper getInstance() {
 		if (instance == null) {
 			instance = new RiHelper();
 		}
