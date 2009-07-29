@@ -71,6 +71,9 @@ public class FastDebuggerRunner extends DebuggingEngineRunner {
 		IExecutionEnvironment exeEnv = (IExecutionEnvironment) env
 				.getAdapter(IExecutionEnvironment.class);
 		IDeployment deployment = exeEnv.createDeployment();
+		if (deployment == null) {
+			return null;
+		}
 		DeploymentManager.getInstance().addDeployment(launch, deployment);
 
 		// Get debugger source location
