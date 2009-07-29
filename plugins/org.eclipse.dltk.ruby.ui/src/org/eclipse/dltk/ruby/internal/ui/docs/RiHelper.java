@@ -81,7 +81,9 @@ public class RiHelper {
 		IExecutionEnvironment exeEnv = (IExecutionEnvironment) env
 				.getAdapter(IExecutionEnvironment.class);
 		deployment = exeEnv.createDeployment();
-
+		if (deployment == null) {
+			return;
+		}
 		IPath path = deployment.add(RubyUI.getDefault().getBundle(),
 				"support/dltkri.rb"); //$NON-NLS-1$
 
