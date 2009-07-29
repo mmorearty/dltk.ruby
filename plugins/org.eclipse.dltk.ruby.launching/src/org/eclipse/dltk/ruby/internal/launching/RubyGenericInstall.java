@@ -42,6 +42,9 @@ public class RubyGenericInstall extends AbstractInterpreterInstall {
 		private String[] generateLines() throws IOException, CoreException {
 			IExecutionEnvironment exeEnv = getExecEnvironment();
 			IDeployment deployment = exeEnv.createDeployment();
+			if (deployment == null) {
+				return null;
+			}
 			final IPath builder = deployment.add(RubyLaunchingPlugin
 					.getDefault().getBundle(), "scripts/builtin.rb"); //$NON-NLS-1$
 
@@ -145,7 +148,7 @@ public class RubyGenericInstall extends AbstractInterpreterInstall {
 
 			return sources;
 		}
-		
+
 		long lastModified;
 	}
 
@@ -178,7 +181,7 @@ public class RubyGenericInstall extends AbstractInterpreterInstall {
 		final Map sources = helper.getSources();
 		return (String) sources.get(name);
 	}
-	
+
 	public long lastModified() {
 		helper.getSources();
 		return helper.lastModified;

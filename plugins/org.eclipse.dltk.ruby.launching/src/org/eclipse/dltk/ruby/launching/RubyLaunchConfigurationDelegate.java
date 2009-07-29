@@ -112,10 +112,12 @@ public class RubyLaunchConfigurationDelegate extends
 		try {
 			IDeployment deployment = config.getExecutionEnvironment()
 					.createDeployment();
-			final IPath path = deployment.add(RubyLaunchingPlugin.getDefault()
-					.getBundle(), "scripts/sync.rb"); //$NON-NLS-1$
-			config.addInterpreterArg("-r"); //$NON-NLS-1$
-			config.addInterpreterArg(deployment.getFile(path).toString());
+			if (deployment != null) {
+				final IPath path = deployment.add(RubyLaunchingPlugin
+						.getDefault().getBundle(), "scripts/sync.rb"); //$NON-NLS-1$
+				config.addInterpreterArg("-r"); //$NON-NLS-1$
+				config.addInterpreterArg(deployment.getFile(path).toString());
+			}
 		} catch (IOException e) {
 			RubyLaunchingPlugin.log(e);
 		}
