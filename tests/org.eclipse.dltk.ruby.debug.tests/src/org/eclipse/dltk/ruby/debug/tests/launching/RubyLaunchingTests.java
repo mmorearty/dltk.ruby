@@ -78,8 +78,6 @@ public class RubyLaunchingTests extends ScriptLaunchingTests {
 		assertEquals(1, stats.getBeforeSuspendCount());
 	}
 	public void testFastDebugRuby() throws Exception {
-		if (notYetImplemented())
-			return;
 		RubyDebugPlugin.getDefault().getPluginPreferences().setValue(
 				RubyDebugConstants.DEBUGGING_ENGINE_ID_KEY,
 				"org.eclipse.dltk.ruby.fastdebugger");
