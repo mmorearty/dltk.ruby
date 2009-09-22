@@ -49,8 +49,8 @@ public class RubyCallProcessor implements ICallProcessor {
 				if (match.getElement() != null
 						&& match.getElement() instanceof IModelElement) {
 					IModelElement member = (IModelElement) match.getElement();
-					ISourceModule module = (ISourceModule) member
-							.getAncestor(IModelElement.SOURCE_MODULE);
+//					ISourceModule module = (ISourceModule) member
+//							.getAncestor(IModelElement.SOURCE_MODULE);
 					SimpleReference ref = new SimpleReference(
 							match.getOffset(), match.getOffset()
 									+ match.getLength(), ""); //$NON-NLS-1$
