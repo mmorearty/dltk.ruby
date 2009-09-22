@@ -36,6 +36,13 @@
       </buildParticipant>
    </extension>
   <extension
+      point="org.eclipse.dltk.core.projectIndexer">
+      <enable
+            indexer="org.eclipse.dltk.core.indexer.mixin"
+            nature="org.eclipse.dltk.ruby.core.nature">
+      </enable>
+  </extension>
+  <extension
         point="org.eclipse.dltk.core.mixin">
      <mixin
            class="org.eclipse.dltk.ruby.internal.parser.mixin.RubyMixin"
