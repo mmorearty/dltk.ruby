@@ -54,14 +54,15 @@ public class RubyNewProjectWizard extends NewElementWizard implements
 					super(composite);
 				}
 
-				protected String getCurrentLanguageNature() {
-					return RubyNature.NATURE_ID;
-				}
-
 				protected String getIntereprtersPreferencePageId() {
 					return "org.eclipse.dltk.ruby.preferences.interpreters"; //$NON-NLS-1$
 				}
 			};
+
+			@Override
+			public String getScriptNature() {
+				return RubyNature.NATURE_ID;
+			}
 
 			protected IInterpreterGroup createInterpreterGroup(Composite parent) {
 				return new RubyInterpreterGroup(parent);
@@ -89,10 +90,6 @@ public class RubyNewProjectWizard extends NewElementWizard implements
 				return new RubyBuildPathsBlock(
 						new BusyIndicatorRunnableContext(), listener, 0,
 						useNewSourcePage(), null);
-			}
-
-			protected String getScriptNature() {
-				return RubyNature.NATURE_ID;
 			}
 
 			protected IPreferenceStore getPreferenceStore() {
