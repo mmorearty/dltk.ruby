@@ -17,17 +17,10 @@ import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.ruby.core.RubyNature;
 import org.eclipse.dltk.ruby.internal.ui.RubyImages;
-import org.eclipse.dltk.ruby.internal.ui.RubyUI;
-import org.eclipse.dltk.ruby.internal.ui.preferences.RubyBuildPathsBlock;
 import org.eclipse.dltk.ui.DLTKUIPlugin;
-import org.eclipse.dltk.ui.util.BusyIndicatorRunnableContext;
-import org.eclipse.dltk.ui.util.IStatusChangeListener;
-import org.eclipse.dltk.ui.wizards.BuildpathsBlock;
 import org.eclipse.dltk.ui.wizards.NewElementWizard;
 import org.eclipse.dltk.ui.wizards.ProjectWizardFirstPage;
 import org.eclipse.dltk.ui.wizards.ProjectWizardSecondPage;
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.wizards.newresource.BasicNewProjectResourceWizard;
 
@@ -71,18 +64,7 @@ public class RubyNewProjectWizard extends NewElementWizard implements
 		addPage(fFirstPage);
 
 		// Second page
-		fSecondPage = new ProjectWizardSecondPage(fFirstPage) {
-			protected BuildpathsBlock createBuildpathBlock(
-					IStatusChangeListener listener) {
-				return new RubyBuildPathsBlock(
-						new BusyIndicatorRunnableContext(), listener, 0,
-						useNewSourcePage(), null);
-			}
-
-			protected IPreferenceStore getPreferenceStore() {
-				return RubyUI.getDefault().getPreferenceStore();
-			}
-		};
+		fSecondPage = new ProjectWizardSecondPage(fFirstPage);
 		addPage(fSecondPage);
 	}
 
