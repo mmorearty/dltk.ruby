@@ -55,12 +55,6 @@ public class RubyNewProjectWizard extends NewElementWizard implements
 			}
 
 			@Override
-			protected IInterpreterGroup createInterpreterGroup(Composite parent) {
-				return new DefaultInterpreterGroup(parent,
-						"org.eclipse.dltk.ruby.preferences.interpreters"); //$NON-NLS-1$
-			}
-
-			@Override
 			protected boolean interpeterRequired() {
 				/*
 				 * It is not allowed to create Ruby project without interpreter
