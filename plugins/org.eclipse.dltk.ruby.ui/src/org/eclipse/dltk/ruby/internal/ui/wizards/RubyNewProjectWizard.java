@@ -49,25 +49,18 @@ public class RubyNewProjectWizard extends NewElementWizard implements
 		super.addPages();
 		fFirstPage = new ProjectWizardFirstPage() {
 
-			final class RubyInterpreterGroup extends AbstractInterpreterGroup {
-				public RubyInterpreterGroup(Composite composite) {
-					super(composite);
-				}
-
-				protected String getIntereprtersPreferencePageId() {
-					return "org.eclipse.dltk.ruby.preferences.interpreters"; //$NON-NLS-1$
-				}
-			};
-
 			@Override
 			public String getScriptNature() {
 				return RubyNature.NATURE_ID;
 			}
 
+			@Override
 			protected IInterpreterGroup createInterpreterGroup(Composite parent) {
-				return new RubyInterpreterGroup(parent);
+				return new DefaultInterpreterGroup(parent,
+						"org.eclipse.dltk.ruby.preferences.interpreters"); //$NON-NLS-1$
 			}
 
+			@Override
 			protected boolean interpeterRequired() {
 				/*
 				 * It is not allowed to create Ruby project without interpreter
