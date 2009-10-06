@@ -20,7 +20,6 @@ import org.eclipse.dltk.ast.declarations.MethodDeclaration;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
 import org.eclipse.dltk.ast.declarations.TypeDeclaration;
 import org.eclipse.dltk.ast.expressions.CallExpression;
-import org.eclipse.dltk.ast.parser.ISourceParser;
 import org.eclipse.dltk.ruby.core.RubyConstants;
 import org.eclipse.dltk.ruby.core.RubyNature;
 import org.eclipse.dltk.ruby.internal.ui.RubyPreferenceConstants;
@@ -97,7 +96,7 @@ public class RubyFoldingStructureProvider extends
 	protected static class RubyFoldingASTVisitor extends FoldingASTVisitor {
 
 		static class DeclarationContainer {
-			final List children = new ArrayList();
+			final List<Object> children = new ArrayList<Object>();
 			final Declaration declaration;
 			final boolean foldAlways;
 
@@ -123,7 +122,7 @@ public class RubyFoldingStructureProvider extends
 
 		static class ModuleDeclarationContainer extends DeclarationContainer {
 
-			final List requires = new ArrayList();
+			final List<CallExpression> requires = new ArrayList<CallExpression>();
 
 			public ModuleDeclarationContainer() {
 				super(null, false);
@@ -135,20 +134,19 @@ public class RubyFoldingStructureProvider extends
 
 		}
 
-		private final Stack declarations = new Stack();
+		private final Stack<DeclarationContainer> declarations = new Stack<DeclarationContainer>();
 
 		private DeclarationContainer peekDeclaration() {
-			return (DeclarationContainer) declarations.peek();
+			return declarations.peek();
 		}
 
 		private DeclarationContainer popDeclaration() {
-			return (DeclarationContainer) declarations.pop();
+			return declarations.pop();
 		}
 
 		private ModuleDeclarationContainer peekModuleDeclaration() {
 			if (declarations.size() == 1) {
-				DeclarationContainer container = (DeclarationContainer) declarations
-						.peek();
+				DeclarationContainer container = declarations.peek();
 				if (container instanceof ModuleDeclarationContainer) {
 					return (ModuleDeclarationContainer) container;
 				}
@@ -200,7 +198,7 @@ public class RubyFoldingStructureProvider extends
 			}
 			final boolean nextCollabsible = collapsible
 					|| (level > 0 && container.countChildren() > 1);
-			for (Iterator i = container.children.iterator(); i.hasNext();) {
+			for (Iterator<?> i = container.children.iterator(); i.hasNext();) {
 				final Object child = i.next();
 				if (child instanceof DeclarationContainer) {
 					processDeclarations((DeclarationContainer) child,
@@ -239,9 +237,8 @@ public class RubyFoldingStructureProvider extends
 		private void handleRequireStatements() {
 			final ModuleDeclarationContainer container = peekModuleDeclaration();
 			if (container != null && !container.requires.isEmpty()) {
-				final CallExpression firstRequire = (CallExpression) container.requires
-						.get(0);
-				final CallExpression lastRequire = (CallExpression) container.requires
+				final CallExpression firstRequire = container.requires.get(0);
+				final CallExpression lastRequire = container.requires
 						.get(container.requires.size() - 1);
 				container.addChild(new CodeBlock(firstRequire, new Region(
 						firstRequire.sourceStart(), lastRequire.sourceEnd()
