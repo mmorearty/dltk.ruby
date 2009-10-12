@@ -19,10 +19,6 @@ public class RubyInterpreterComboBlock extends AbstractInterpreterComboBlock {
 		super(tab);
 	}
 
-	protected void showInterpreterPreferencePage() {
-		showPrefPage(RubyInterpreterPreferencePage.PAGE_ID);
-	}
-
 	protected String getCurrentLanguageNature() {
 		return RubyNature.NATURE_ID;
 	}
