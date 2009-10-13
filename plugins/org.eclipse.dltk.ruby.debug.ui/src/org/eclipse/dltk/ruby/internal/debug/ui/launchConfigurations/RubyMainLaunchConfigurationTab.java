@@ -22,7 +22,8 @@ public class RubyMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 	public RubyMainLaunchConfigurationTab(String mode) {
 		super(mode);
 	}
-	
+
+	@Override
 	protected boolean canSelectDebugConsoleType() {
 		return true;
 	}
@@ -30,6 +31,7 @@ public class RubyMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 	/*
 	 * @see org.eclipse.dltk.debug.ui.launchConfigurations.ScriptLaunchConfigurationTab#breakOnFirstLinePrefEnabled(org.eclipse.dltk.core.PreferencesLookupDelegate)
 	 */
+	@Override
 	protected boolean breakOnFirstLinePrefEnabled(
 			PreferencesLookupDelegate delegate) {
 		return delegate.getBoolean(RubyDebugPlugin.PLUGIN_ID,
@@ -39,15 +41,17 @@ public class RubyMainLaunchConfigurationTab extends MainLaunchConfigurationTab {
 	/*
 	 * @see org.eclipse.dltk.debug.ui.launchConfigurations.ScriptLaunchConfigurationTab#dbpgLoggingPrefEnabled(org.eclipse.dltk.core.PreferencesLookupDelegate)
 	 */
+	@Override
 	protected boolean dbpgLoggingPrefEnabled(PreferencesLookupDelegate delegate) {
 		return delegate.getBoolean(RubyDebugPlugin.PLUGIN_ID,
 				DLTKDebugPreferenceConstants.PREF_DBGP_ENABLE_LOGGING);
 	}
 
-	/*
-	 * @see org.eclipse.dltk.debug.ui.launchConfigurations.ScriptLaunchConfigurationTab#getNatureID()
+	/**
+	 * @since 2.0
 	 */
-	protected String getNatureID() {
+	@Override
+	public String getNatureID() {
 		return RubyNature.NATURE_ID;
 	}
 

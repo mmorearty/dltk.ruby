@@ -9,13 +9,15 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.internal.debug.ui.interpreters;
 
-
-import org.eclipse.dltk.internal.debug.ui.interpreters.AbstractInterpreterComboBlock;
 import org.eclipse.dltk.internal.debug.ui.interpreters.AbstractInterpreterContainerWizardPage;
+import org.eclipse.dltk.ruby.core.RubyNature;
 
+public class RubyInterpreterContainerWizardPage extends
+		AbstractInterpreterContainerWizardPage {
 
-public class RubyInterpreterContainerWizardPage extends AbstractInterpreterContainerWizardPage {
-	protected AbstractInterpreterComboBlock getInterpreterBlock() {
-		return new RubyInterpreterComboBlock(null);
+	@Override
+	public String getScriptNature() {
+		return RubyNature.NATURE_ID;
 	}
+
 }
