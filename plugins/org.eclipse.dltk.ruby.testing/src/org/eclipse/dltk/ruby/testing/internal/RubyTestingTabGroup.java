@@ -15,8 +15,8 @@ import org.eclipse.debug.ui.AbstractLaunchConfigurationTabGroup;
 import org.eclipse.debug.ui.EnvironmentTab;
 import org.eclipse.debug.ui.ILaunchConfigurationDialog;
 import org.eclipse.debug.ui.ILaunchConfigurationTab;
+import org.eclipse.dltk.debug.ui.launchConfigurations.InterpreterTab;
 import org.eclipse.dltk.debug.ui.launchConfigurations.ScriptArgumentsTab;
-import org.eclipse.dltk.ruby.internal.debug.ui.interpreters.RubyInterpreterTab;
 
 public class RubyTestingTabGroup extends AbstractLaunchConfigurationTabGroup {
 
@@ -24,7 +24,7 @@ public class RubyTestingTabGroup extends AbstractLaunchConfigurationTabGroup {
 		RubyTestingMainLaunchConfigurationTab main = new RubyTestingMainLaunchConfigurationTab(
 				mode);
 		ILaunchConfigurationTab[] tabs = new ILaunchConfigurationTab[] { main,
-				new ScriptArgumentsTab(), new RubyInterpreterTab(main),
+				new ScriptArgumentsTab(), new InterpreterTab(main),
 				new EnvironmentTab(), new RubyTestingCommonTab() };
 		setTabs(tabs);
 	}
