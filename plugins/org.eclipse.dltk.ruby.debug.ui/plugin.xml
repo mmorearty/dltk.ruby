@@ -3,7 +3,7 @@
 <plugin>
 	<extension point="org.eclipse.ui.actionSets">
 		<actionSet id="org.eclipse.dltk.ruby.debug.ui.ScriptDebugActionSet"
-			label="%actionSet.label.rubyDebugger" visible="true">
+			label="%actionSet.label.rubyDebugger" visible="false">
 			<menu
          		id="org.eclipse.ui.run"
          		label="%menu.label.run"
@@ -21,7 +21,21 @@
 			</action>
 		</actionSet>
 	</extension>
-	
+
+   	<extension point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension targetID="org.eclipse.debug.ui.DebugPerspective">
+         <actionSet id="org.eclipse.dltk.ruby.debug.ui.ScriptDebugActionSet"/>
+      </perspectiveExtension>
+      <perspectiveExtension targetID="org.eclipse.dltk.ruby.ui.RubyPerspective">
+         <actionSet id="org.eclipse.dltk.ruby.debug.ui.ScriptDebugActionSet"/>
+      </perspectiveExtension>
+	</extension>
+	<extension point="org.eclipse.ui.actionSetPartAssociations">
+      <actionSetPartAssociation targetID="org.eclipse.dltk.ruby.debug.ui.ScriptDebugActionSet">
+         <part id="org.eclipse.dltk.ruby.ui.editor.RubyEditor"/>
+         <part id="org.eclipse.dltk.ruby.ui.RubyDocumentationView"/>
+      </actionSetPartAssociation>
+	</extension>
   <extension point="org.eclipse.ui.commands">
 	<command name="%ActionDefinition.RunRubyScript.name"
 		description="%ActionDefinition.RunRubyScript.description"
