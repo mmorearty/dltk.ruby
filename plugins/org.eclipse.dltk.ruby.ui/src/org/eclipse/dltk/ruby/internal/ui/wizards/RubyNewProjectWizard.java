@@ -28,14 +28,15 @@ public class RubyNewProjectWizard extends ProjectWizard {
 		setWindowTitle(RubyWizardMessages.NewProjectWizard_title);
 	}
 
+	@Override
+	public String getScriptNature() {
+		return RubyNature.NATURE_ID;
+	}
+
+	@Override
 	public void addPages() {
 		super.addPages();
 		fFirstPage = new ProjectWizardFirstPage() {
-
-			@Override
-			public String getScriptNature() {
-				return RubyNature.NATURE_ID;
-			}
 
 			@Override
 			protected boolean interpeterRequired() {
