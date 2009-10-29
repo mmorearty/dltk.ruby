@@ -14,15 +14,15 @@ import org.eclipse.dltk.ast.ASTVisitor;
 import org.eclipse.dltk.utils.CorePrinter;
 
 public class RubyCallArgument extends ASTNode {
-	
-	public final static int SIMPLE = 0;	
-	
+
+	public final static int SIMPLE = 0;
+
 	public final static int VARARG = 1;
-	
+
 	public final static int BLOCK = 2;
-	
+
 	private ASTNode value;
-	
+
 	private int kind;
 
 	public ASTNode getValue() {
@@ -37,25 +37,27 @@ public class RubyCallArgument extends ASTNode {
 		super(value.sourceStart(), value.sourceEnd());
 		this.value = value;
 	}
-	
+
 	public RubyCallArgument(ASTNode value, int kind) {
 		super(value.sourceStart(), value.sourceEnd());
 		this.value = value;
 		this.kind = kind;
 	}
-	
+
 	public int getArgumentKind() {
 		return kind;
 	}
-	
-	public int getKind() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 
+	@Override
 	public void printNode(CorePrinter output) {
-		// TODO Auto-generated method stub
-
+		if (kind == VARARG) {
+			output.append("[VARARG]"); //$NON-NLS-1$
+		} else if (kind == BLOCK) {
+			output.append("[BLOCK]"); //$NON-NLS-1$
+		}
+		if (value != null) {
+			value.printNode(output);
+		}
 	}
 
 	public void traverse(ASTVisitor visitor) throws Exception {
@@ -70,11 +72,8 @@ public class RubyCallArgument extends ASTNode {
 		if (!(obj instanceof RubyCallArgument))
 			return false;
 		RubyCallArgument arg = (RubyCallArgument) obj;
+		// FIXME WTF?
 		return (arg.kind == kind && arg.value == value);
 	}
-
-	
-	
-	
 
 }
