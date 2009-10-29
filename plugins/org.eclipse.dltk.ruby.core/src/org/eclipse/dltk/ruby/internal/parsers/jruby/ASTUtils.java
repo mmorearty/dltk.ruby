@@ -11,7 +11,6 @@ package org.eclipse.dltk.ruby.internal.parsers.jruby;
 
 import java.util.Stack;
 
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.ASTVisitor;
 import org.eclipse.dltk.ast.Modifiers;
@@ -50,11 +49,12 @@ public class ASTUtils {
 
 	public static ASTNode[] restoreWayToNode(ModuleDeclaration module,
 			final ASTNode nde) {
-		final Stack stack = new Stack();
+		final Stack<ASTNode> stack = new Stack<ASTNode>();
 
 		ASTVisitor visitor = new ASTVisitor() {
 			boolean found = false;
 
+			@Override
 			public boolean visitGeneral(ASTNode node) throws Exception {
 				if (!found) {
 					stack.push(node);
@@ -65,6 +65,7 @@ public class ASTUtils {
 				return super.visitGeneral(node);
 			}
 
+			@Override
 			public void endvisitGeneral(ASTNode node) throws Exception {
 				super.endvisitGeneral(node);
 				if (!found) {
@@ -78,24 +79,28 @@ public class ASTUtils {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return (ASTNode[]) stack.toArray(new ASTNode[stack.size()]);
+		return stack.toArray(new ASTNode[stack.size()]);
 	}
 
-	public static ASTNode getEnclosingElement(Class element,
+	public static <E extends ASTNode> E getEnclosingElement(Class<E> element,
 			ASTNode[] wayToNode, ASTNode node, boolean considerGiven) {
 		int pos = -1;
-		for (int i = wayToNode.length - 1; i >= 0; i--) {
+		for (int i = wayToNode.length; --i >= 0;) {
 			if (wayToNode[i] == node) {
 				pos = i;
 				break;
 			}
 		}
-		Assert.isLegal(pos != -1);
-		if (!considerGiven)
-			pos--;
-		for (int i = pos; i >= 0; i--) {
-			if (element.isInstance(wayToNode[i]))
-				return wayToNode[i];
+		if (pos != -1) {
+			if (!considerGiven)
+				pos--;
+			for (int i = pos; i >= 0; i--) {
+				if (element.isInstance(wayToNode[i])) {
+					@SuppressWarnings("unchecked")
+					final E result = (E) wayToNode[i];
+					return result;
+				}
+			}
 		}
 
 		return null;
@@ -103,20 +108,20 @@ public class ASTUtils {
 
 	public static TypeDeclaration getEnclosingType(ASTNode[] wayToNode,
 			ASTNode node, boolean considerGiven) {
-		return (TypeDeclaration) getEnclosingElement(TypeDeclaration.class,
-				wayToNode, node, considerGiven);
+		return getEnclosingElement(TypeDeclaration.class, wayToNode, node,
+				considerGiven);
 	}
 
 	public static CallExpression getEnclosingCallNode(ASTNode[] wayToNode,
 			ASTNode node, boolean considerGiven) {
-		return (CallExpression) getEnclosingElement(CallExpression.class,
-				wayToNode, node, considerGiven);
+		return getEnclosingElement(CallExpression.class, wayToNode, node,
+				considerGiven);
 	}
 
 	public static MethodDeclaration getEnclosingMethod(ASTNode[] wayToNode,
 			ASTNode node, boolean considerGiven) {
-		return (MethodDeclaration) getEnclosingElement(MethodDeclaration.class,
-				wayToNode, node, considerGiven);
+		return getEnclosingElement(MethodDeclaration.class, wayToNode, node,
+				considerGiven);
 	}
 
 	/**
@@ -217,6 +222,7 @@ public class ASTUtils {
 				return result;
 			}
 
+			@Override
 			public boolean visitGeneral(ASTNode s) throws Exception {
 				if (s.sourceStart() < 0 || s.sourceEnd() < 0)
 					return true;
