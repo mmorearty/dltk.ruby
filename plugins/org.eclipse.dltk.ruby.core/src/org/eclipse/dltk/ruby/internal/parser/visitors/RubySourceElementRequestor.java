@@ -292,8 +292,7 @@ public class RubySourceElementRequestor extends SourceElementRequestVisitor
 					fRequestor.enterMethod(mi);
 					fRequestor.exitMethod(n.sourceEnd());
 				}
-			}
-			else if ("delegate".equals(callExpression.getName())) { //$NON-NLS-1$
+			} else if ("delegate".equals(callExpression.getName())) { //$NON-NLS-1$
 				RubyCallArgument argNode;
 				RubyHashPairExpression hashNode;
 				String oldName = ""; //$NON-NLS-1$
@@ -333,7 +332,7 @@ public class RubySourceElementRequestor extends SourceElementRequestVisitor
 						mi.nameSourceStart = argNode.sourceStart();
 						mi.nameSourceEnd = argNode.sourceEnd() - 1;
 						mi.declarationStart = argNode.sourceStart();
-						mi.parameterNames = new String[] { oldName };
+						// mi.parameterNames = new String[] { oldName };
 
 						fRequestor.enterMethod(mi);
 						fRequestor.exitMethod(argNode.sourceEnd());
@@ -444,7 +443,7 @@ public class RubySourceElementRequestor extends SourceElementRequestVisitor
 				mi.nameSourceStart = alias.sourceStart();
 				mi.nameSourceEnd = alias.sourceEnd() - 1;
 				mi.declarationStart = alias.sourceStart();
-				mi.parameterNames = new String[] { oldValue };
+				// mi.parameterNames = new String[] { oldValue };
 
 				fRequestor.enterMethod(mi);
 				fRequestor.exitMethod(alias.sourceEnd());
