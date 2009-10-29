@@ -36,6 +36,7 @@ import org.eclipse.dltk.ast.references.VariableReference;
 import org.eclipse.dltk.ast.statements.Statement;
 import org.eclipse.dltk.compiler.ISourceElementRequestor;
 import org.eclipse.dltk.compiler.SourceElementRequestVisitor;
+import org.eclipse.dltk.compiler.IElementRequestor.ImportInfo;
 import org.eclipse.dltk.compiler.IElementRequestor.MethodInfo;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.ruby.ast.IRubyASTVisitor;
@@ -258,8 +259,6 @@ public class RubySourceElementRequestor extends SourceElementRequestVisitor
 			// CallExpression handling
 			CallExpression callExpression = (CallExpression) expression;
 
-			String name = callExpression.getName();
-
 			if (RubyAttributeHandler.isAttributeCreationCall(callExpression)) {
 				RubyAttributeHandler info = new RubyAttributeHandler(
 						callExpression);
@@ -338,10 +337,24 @@ public class RubySourceElementRequestor extends SourceElementRequestVisitor
 						fRequestor.exitMethod(argNode.sourceEnd());
 					}
 				}
-			}
-
-			if (name.equals("require")) { //$NON-NLS-1$
-				// TODO
+			} else if (RubyConstants.REQUIRE.equals(callExpression.getName())) {
+				final List<?> args = callExpression.getArgs().getChilds();
+				if (args.size() == 1 && args.get(0) instanceof RubyCallArgument) {
+					RubyCallArgument argument = (RubyCallArgument) args.get(0);
+					final ImportInfo importInfo = new ImportInfo();
+					importInfo.sourceStart = callExpression.sourceStart();
+					importInfo.sourceEnd = callExpression.sourceEnd();
+					importInfo.containerName = RubyConstants.REQUIRE;
+					if (argument.getValue() instanceof StringLiteral) {
+						StringLiteral lit = (StringLiteral) argument.getValue();
+						importInfo.name = lit.getValue();
+					} else {
+						// TODO add expression as text
+					}
+					if (importInfo.name != null) {
+						this.fRequestor.acceptImport(importInfo);
+					}
+				}
 			}
 
 			// Arguments
