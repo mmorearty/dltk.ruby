@@ -10,6 +10,7 @@
 package org.eclipse.dltk.ruby.internal.ui;
 
 import org.eclipse.dltk.core.IDLTKLanguageToolkit;
+import org.eclipse.dltk.core.IImportContainer;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.IType;
@@ -53,6 +54,17 @@ public class RubyUILanguageToolkit extends AbstractDLTKUILanguageToolkit {
 
 		protected char getTypeDelimiter() {
 			return '$';
+		}
+
+		@Override
+		protected void getImportContainerLabel(IModelElement element,
+				long flags, StringBuffer buf) {
+			final IImportContainer container = (IImportContainer) element;
+			if (RubyConstants.REQUIRE.equals(container.getContainerName())) {
+				buf.append("requires");
+			} else {
+				super.getImportContainerLabel(element, flags, buf);
+			}
 		}
 	};
 
