@@ -14,13 +14,12 @@ package org.eclipse.dltk.ruby.testing.internal;
 import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.net.URISyntaxException;
 import java.net.URL;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.dltk.compiler.util.Util;
 import org.eclipse.dltk.launching.InterpreterConfig;
 import org.eclipse.dltk.launching.ScriptLaunchConfigurationConstants;
 import org.eclipse.dltk.testing.AbstractTestingEngine;
@@ -52,25 +51,10 @@ public abstract class AbstractRubyTestingEngine extends AbstractTestingEngine {
 					RubyTestingPlugin.PLUGIN_ID, msg, null));
 		}
 		try {
-			runnerScript = FileLocator.toFileURL(runnerScript);
+			return Util.toFile(runnerScript);
 		} catch (IOException e) {
 			final String msg = NLS.bind(
 					Messages.Delegate_errorExtractingRunner, runnerName);
-			throw new CoreException(new Status(IStatus.ERROR,
-					RubyTestingPlugin.PLUGIN_ID, msg, e));
-		}
-		try {
-			return new File(runnerScript.toURI());
-		} catch (IllegalArgumentException e) {
-			final String msg = NLS
-					.bind(Messages.Delegate_internalErrorExtractingRunner,
-							runnerName);
-			throw new CoreException(new Status(IStatus.ERROR,
-					RubyTestingPlugin.PLUGIN_ID, msg, e));
-		} catch (URISyntaxException e) {
-			final String msg = NLS
-					.bind(Messages.Delegate_internalErrorExtractingRunner,
-							runnerName);
 			throw new CoreException(new Status(IStatus.ERROR,
 					RubyTestingPlugin.PLUGIN_ID, msg, e));
 		}
