@@ -21,6 +21,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.console
 Eclipse-LazyStart: true
 Export-Package: org.eclipse.dltk.ruby.testing.internal
-Bundle-RequiredExecutionEnvironment: J2SE-1.4
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-Vendor: %pluginProvider
 Bundle-ActivationPolicy: lazy
