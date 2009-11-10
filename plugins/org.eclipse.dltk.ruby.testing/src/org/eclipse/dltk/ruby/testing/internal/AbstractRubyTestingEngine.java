@@ -14,7 +14,6 @@ package org.eclipse.dltk.ruby.testing.internal;
 import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
@@ -61,7 +60,7 @@ public abstract class AbstractRubyTestingEngine extends AbstractTestingEngine {
 					RubyTestingPlugin.PLUGIN_ID, msg, e));
 		}
 		try {
-			return new File(new URI(runnerScript.toString()));
+			return new File(runnerScript.toURI());
 		} catch (IllegalArgumentException e) {
 			final String msg = NLS
 					.bind(Messages.Delegate_internalErrorExtractingRunner,
@@ -159,13 +158,6 @@ public abstract class AbstractRubyTestingEngine extends AbstractTestingEngine {
 		if (display == null)
 			display = Display.getDefault();
 		return display;
-	}
-
-	/*
-	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-	 */
-	public Object getAdapter(Class adapter) {
-		return null;
 	}
 
 	/**
