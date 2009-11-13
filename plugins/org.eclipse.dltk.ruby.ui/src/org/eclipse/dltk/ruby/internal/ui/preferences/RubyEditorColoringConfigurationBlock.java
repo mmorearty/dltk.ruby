@@ -63,7 +63,7 @@ public class RubyEditorColoringConfigurationBlock extends
 
 			{ PreferencesMessages.DLTKEditorPreferencePage_strings,
 					RubyPreferenceConstants.EDITOR_STRING_COLOR, sCoreCategory },
-			{ PreferencesMessages.DLTKEditorPreferencePage_default,
+			{ PreferencesMessages.DLTKEditorPreferencePage_others,
 					IRubyColorConstants.RUBY_DEFAULT, sCoreCategory },
 			{ PreferencesMessages.DLTKEditorPreferencePage_numbers,
 					RubyPreferenceConstants.EDITOR_NUMBER_COLOR, sCoreCategory },
