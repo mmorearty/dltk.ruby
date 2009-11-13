@@ -773,8 +773,7 @@ public class RubyCompletionTests extends AbstractModelCompletionTests {
 		int lastElementsOccurance = 0;
 		while ((lastElementsOccurance = completionResults.indexOf("element:",
 				lastElementsOccurance)) > -1) {
-			int lastElementsIndex = lastElementsOccurance
-					+ new String("element:").length();
+			int lastElementsIndex = lastElementsOccurance + "element:".length();
 			lastElementsOccurance = completionResults.indexOf(" ",
 					lastElementsOccurance);
 			methods.add(completionResults.substring(lastElementsIndex,
@@ -787,7 +786,7 @@ public class RubyCompletionTests extends AbstractModelCompletionTests {
 			lastRelevanceOccurance = completionResults.indexOf("relevance:",
 					lastRelevanceOccurance);
 			int lastRelevanceIndex = lastRelevanceOccurance
-					+ new String("relevance:").length();
+					+ "relevance:".length();
 			lastRelevanceOccurance = completionResults.indexOf("\n",
 					lastRelevanceOccurance);
 			if (lastRelevanceOccurance > -1)
