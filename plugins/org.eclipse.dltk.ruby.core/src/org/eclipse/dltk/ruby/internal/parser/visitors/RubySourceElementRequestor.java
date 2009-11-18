@@ -424,8 +424,8 @@ public class RubySourceElementRequestor extends SourceElementRequestVisitor
 				}
 
 				// Accept
-				fRequestor.acceptFieldReference(variableReference.getName()
-						.toCharArray(), pos);
+				fRequestor.acceptFieldReference(variableReference.getName(),
+						pos);
 			} else if (expression instanceof ConstantReference) {
 				reportTypeReferences(expression);
 			}
