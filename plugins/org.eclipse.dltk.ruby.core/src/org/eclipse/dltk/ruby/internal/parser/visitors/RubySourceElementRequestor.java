@@ -377,8 +377,8 @@ public class RubySourceElementRequestor extends SourceElementRequestVisitor
 			}
 
 			// Accept
-			fRequestor.acceptMethodReference(callExpression.getName()
-					.toCharArray(), argsCount, start, end);
+			fRequestor.acceptMethodReference(callExpression.getName(),
+					argsCount, start, end);
 		} else if (expression instanceof Literal) {
 			if (expression instanceof RubyRegexpExpression) {
 				fRequestor.acceptTypeReference(
