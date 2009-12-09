@@ -18,10 +18,10 @@ import org.eclipse.dltk.internal.ui.editor.ScriptEditor;
 import org.eclipse.dltk.internal.ui.editor.ScriptOutlinePage;
 import org.eclipse.dltk.ruby.core.RubyLanguageToolkit;
 import org.eclipse.dltk.ruby.internal.ui.RubyUI;
-import org.eclipse.dltk.ruby.internal.ui.actions.RubyGenerateActionGroup;
 import org.eclipse.dltk.ruby.internal.ui.text.IRubyPartitions;
 import org.eclipse.dltk.ruby.internal.ui.text.RubyPairMatcher;
 import org.eclipse.dltk.ruby.internal.ui.text.folding.RubyFoldingStructureProvider;
+import org.eclipse.dltk.ui.actions.GenerateActionGroup;
 import org.eclipse.dltk.ui.text.ScriptTextTools;
 import org.eclipse.dltk.ui.text.folding.IFoldingStructureProvider;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -113,7 +113,7 @@ public class RubyEditor extends ScriptEditor {
 
 	protected void createActions() {
 		super.createActions();
-		ActionGroup generateActions = new RubyGenerateActionGroup(this, ITextEditorActionConstants.GROUP_EDIT);
+		ActionGroup generateActions = new GenerateActionGroup(this, ITextEditorActionConstants.GROUP_EDIT);
 		fActionGroups.addGroup(generateActions);
 		fContextMenuGroup.addGroup(generateActions);
 	}
