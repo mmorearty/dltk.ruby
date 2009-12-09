@@ -21,7 +21,6 @@ public class Messages extends NLS {
 	public static String RubyFormatterCommentsPage_maximumLineWidthForComments;
 	public static String RubyFormatterIndentationTabPage_declarationsWithinClassBody;
 	public static String RubyFormatterIndentationTabPage_declarationsWithinModuleBody;
-	public static String RubyFormatterIndentationTabPage_generalSettings;
 	public static String RubyFormatterIndentationTabPage_indentationCharacter;
 	public static String RubyFormatterIndentationTabPage_indentationSize;
 	public static String RubyFormatterIndentationTabPage_indentWithinBlocks;
