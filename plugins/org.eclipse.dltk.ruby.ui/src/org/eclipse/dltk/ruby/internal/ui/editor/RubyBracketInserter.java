@@ -19,8 +19,6 @@ import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.BadPositionCategoryException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
-import org.eclipse.jface.text.ITypedRegion;
-import org.eclipse.jface.text.TextUtilities;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.graphics.Point;
@@ -116,10 +114,10 @@ public class RubyBracketInserter extends BracketInserter {
 
 			int correctedOffset = (document.getLength() > 0 && document
 					.getLength() == offset) ? offset - 1 : offset;
-			ITypedRegion partition = TextUtilities.getPartition(document,
-					IRubyPartitions.RUBY_PARTITIONING, correctedOffset, true);
-			if (!IDocument.DEFAULT_CONTENT_TYPE.equals(partition.getType()))
+			if (!validatePartitioning(document, correctedOffset,
+					IRubyPartitions.RUBY_PARTITIONING)) {
 				return;
+			}
 
 			if (!this.editor.validateEditorInputState())
 				return;
