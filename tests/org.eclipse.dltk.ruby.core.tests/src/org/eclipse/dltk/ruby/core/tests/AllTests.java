@@ -23,7 +23,7 @@ import org.eclipse.dltk.ruby.core.tests.typeinference.VariablesTest;
 
 public class AllTests {
 	public static Test suite() {
-		TestSuite suite = new TestSuite("Test for org.eclipse.dltk.ruby.core");
+		TestSuite suite = new TestSuite("org.eclipse.dltk.ruby.core");
 		// $JUnit-BEGIN$
 		suite.addTest(RubyResourcesTests.suite());
 		// suite.addTest(SourceCacheTests.suite());
