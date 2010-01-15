@@ -8,7 +8,7 @@ import org.eclipse.dltk.ruby.debug.tests.launching.RubyLaunchingTests;
 
 public class AllTests {
 	public static Test suite() {
-		TestSuite suite = new TestSuite("Test for org.eclipse.dltk.ruby.debug");
+		TestSuite suite = new TestSuite("org.eclipse.dltk.ruby.debug");
 		// $JUnit-BEGIN$
 
 		// Launching
