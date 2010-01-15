@@ -19,8 +19,7 @@ public class AllTests {
 	static final String CHARSET = "ISO-8859-1";
 
 	public static Test suite() {
-		TestSuite suite = new TestSuite(
-				"Test for org.eclipse.dltk.ruby.formatter.tests");
+		TestSuite suite = new TestSuite("org.eclipse.dltk.ruby.formatter.tests");
 		// $JUnit-BEGIN$
 		suite.addTestSuite(ParserTest.class);
 		suite.addTestSuite(SimpleTests.class);
