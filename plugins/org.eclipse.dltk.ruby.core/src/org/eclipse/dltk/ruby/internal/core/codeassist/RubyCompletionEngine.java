@@ -212,7 +212,7 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 			}
 
 			ModuleDeclaration moduleDeclaration = parser.parse(module
-					.getFileName(), content.toCharArray(), null);
+					.getFileName().toCharArray(), content.toCharArray(), null);
 
 			if (afterDollar(content, position)) {
 				completeGlobalVar(moduleDeclaration, "$", position); //$NON-NLS-1$
