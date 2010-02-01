@@ -156,11 +156,6 @@
 			targetID="org.eclipse.debug.ui.launchActionSet">
 			<part id="org.eclipse.dltk.ruby.ui.editor.RubyEditor" />
 		</actionSetPartAssociation>
-		<actionSetPartAssociation
-			targetID="org.eclipse.debug.ui.launchActionSet">
-			<part id="org.eclipse.dltk.ui.ScriptExplorer" />
-			<part id="org.eclipse.dltk.ruby.ui.editor.RubyEditor" />
-		</actionSetPartAssociation>
 	</extension>
 
 	<extension point="org.eclipse.ui.preferencePages">
