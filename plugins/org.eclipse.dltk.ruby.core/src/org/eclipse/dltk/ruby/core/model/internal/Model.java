@@ -17,7 +17,6 @@ import java.util.WeakHashMap;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.dltk.ast.ASTCaching;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
 import org.eclipse.dltk.ast.parser.ISourceParser;
 import org.eclipse.dltk.core.DLTKLanguageManager;
@@ -28,6 +27,7 @@ import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.ruby.core.RubyNature;
 import org.eclipse.dltk.ruby.core.RubyPlugin;
+import org.eclipse.dltk.ruby.core.model.ASTCaching;
 import org.eclipse.dltk.ruby.core.model.IElement;
 import org.eclipse.dltk.ruby.core.model.IElementCriteria;
 import org.eclipse.dltk.ruby.core.model.IElementKind;
