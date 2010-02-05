@@ -118,4 +118,8 @@ public abstract class FormatterBlockWithBeginNode extends FormatterBlockNode {
 		return begin + "\n" + super.toString(); //$NON-NLS-1$
 	}
 
+	protected boolean isIndenting() {
+		return true;
+	}
+
 }
