@@ -20,6 +20,8 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
+import org.eclipse.dltk.ast.parser.IModuleDeclaration;
+import org.eclipse.dltk.compiler.env.ModuleSource;
 import org.eclipse.dltk.core.DLTKLanguageManager;
 import org.eclipse.dltk.core.tests.model.AbstractModelTests;
 import org.eclipse.dltk.ruby.core.RubyNature;
@@ -50,10 +52,9 @@ public class ZippedParserSuite extends TestSuite {
 
 						protected void runTest() throws Throwable {
 							JRubySourceParser.setSilentState(false);
-							ModuleDeclaration module = DLTKLanguageManager
+							IModuleDeclaration module = DLTKLanguageManager
 									.getSourceParser(RubyNature.NATURE_ID)
-									.parse(fileName.toCharArray(),
-											content.toCharArray(), null);
+									.parse(new ModuleSource(content), null);
 							assertNotNull(module);
 						}
 

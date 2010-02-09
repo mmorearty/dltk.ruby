@@ -12,6 +12,7 @@ package org.eclipse.dltk.ruby.core.tests.parser;
 import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.ASTVisitor;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
+import org.eclipse.dltk.compiler.env.ModuleSource;
 import org.eclipse.dltk.compiler.problem.AbstractProblemReporter;
 import org.eclipse.dltk.compiler.problem.IProblem;
 import org.eclipse.dltk.core.DLTKLanguageManager;
@@ -58,8 +59,8 @@ public abstract class AbstractASTTest extends AbstractModelTests {
 
 	protected ModuleDeclaration getAST(String content) {
 		problems.reset();
-		return DLTKLanguageManager.getSourceParser(RubyNature.NATURE_ID).parse(
-				null, content.toCharArray(), problems);
+		return (ModuleDeclaration) DLTKLanguageManager.getSourceParser(
+				RubyNature.NATURE_ID).parse(new ModuleSource(content), problems);
 	}
 
 	protected ASTNode getNodeAt(ASTNode root, final int start, final int end)

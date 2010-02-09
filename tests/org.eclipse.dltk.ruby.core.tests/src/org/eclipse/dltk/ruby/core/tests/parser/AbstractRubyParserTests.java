@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
+import org.eclipse.dltk.compiler.env.ModuleSource;
 import org.eclipse.dltk.core.DLTKLanguageManager;
 import org.eclipse.dltk.core.tests.model.AbstractModelTests;
 import org.eclipse.dltk.ruby.core.RubyNature;
@@ -40,9 +41,9 @@ public abstract class AbstractRubyParserTests extends AbstractModelTests {
 					buffer.append('\n');
 				}
 			}
-			module = DLTKLanguageManager
-			.getSourceParser(RubyNature.NATURE_ID).parse(name.toCharArray(), buffer
-					.toString().toCharArray(), null);
+			module = (ModuleDeclaration) DLTKLanguageManager.getSourceParser(
+					RubyNature.NATURE_ID).parse(
+					new ModuleSource(name, buffer.toString()), null);
 			assertNotNull(module);
 			assertFalse(module.isEmpty());
 		} finally {

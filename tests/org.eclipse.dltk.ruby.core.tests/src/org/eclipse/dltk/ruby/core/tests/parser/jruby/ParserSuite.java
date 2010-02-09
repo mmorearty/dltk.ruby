@@ -21,6 +21,7 @@ import junit.framework.TestSuite;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
+import org.eclipse.dltk.compiler.env.ModuleSource;
 import org.eclipse.dltk.core.DLTKLanguageManager;
 import org.eclipse.dltk.ruby.core.RubyNature;
 import org.eclipse.dltk.ruby.core.tests.Activator;
@@ -29,7 +30,8 @@ public class ParserSuite extends TestSuite {
 
 	public ParserSuite(String testsDirectory) {
 		super(testsDirectory);
-		Enumeration entryPaths = Activator.getDefault().getBundle().getEntryPaths(testsDirectory);
+		Enumeration entryPaths = Activator.getDefault().getBundle()
+				.getEntryPaths(testsDirectory);
 		while (entryPaths.hasMoreElements()) {
 			final String path = (String) entryPaths.nextElement();
 			if (path.endsWith(".exp"))
@@ -46,23 +48,25 @@ public class ParserSuite extends TestSuite {
 			final String cleanPath = (pos >= 0 ? path.substring(0, pos) : path);
 			addTest(new TestCase(name) {
 
-				
 				public void setUp() {
-					
+
 				}
 
 				protected void runTest() throws Throwable {
-					Map map = new HashMap ();
+					Map map = new HashMap();
 					String input = loadInput(cleanPath + ".rb", map);
 					String output = loadOutput(cleanPath + ".exp", map);
-										
-					ModuleDeclaration module = DLTKLanguageManager.getSourceParser(RubyNature.NATURE_ID).parse((cleanPath + ".rb").toCharArray(), input.toCharArray(), null);
+
+					ModuleDeclaration module = (ModuleDeclaration) DLTKLanguageManager
+							.getSourceParser(RubyNature.NATURE_ID).parse(
+									new ModuleSource(cleanPath + ".rb", input),
+									null);
 					assertNotNull(module);
-					
+
 					AST2StringVisitor vis = new AST2StringVisitor();
 					module.traverse(vis);
 					String fact = vis.getResult();
-					
+
 					if (!"success".equals(output.trim()))
 						assertEquals(output, fact);
 				}
@@ -70,7 +74,7 @@ public class ParserSuite extends TestSuite {
 			});
 		}
 	}
-	
+
 	public static String loadContent(String path) throws IOException {
 		InputStream stream = Activator.openResource(path);
 		int length = stream.available();
@@ -82,7 +86,7 @@ public class ParserSuite extends TestSuite {
 
 	private String loadInput(String path, Map map) throws IOException {
 		String content = loadContent(path);
-		StringBuffer result = new StringBuffer ();
+		StringBuffer result = new StringBuffer();
 		char[] charArray = content.toCharArray();
 		for (int i = 0; i < charArray.length; i++) {
 			char c = charArray[i];
@@ -92,25 +96,25 @@ public class ParserSuite extends TestSuite {
 				result.append(c);
 			}
 		}
-				
+
 		return result.toString();
 	}
-	
+
 	private String loadOutput(String path, Map map) throws IOException {
 		String content = loadContent(path);
-		
-		StringBuffer result = new StringBuffer ();
+
+		StringBuffer result = new StringBuffer();
 		for (int i = 0; i < content.length(); i++) {
 			char c = content.charAt(i);
 			if (c > '~') {
 				Integer pos = (Integer) map.get(new Character(c));
 				Assert.isNotNull(pos);
-				result.append (pos.intValue());
+				result.append(pos.intValue());
 			} else {
 				result.append(c);
 			}
 		}
-				
+
 		return result.toString();
 	}
 
