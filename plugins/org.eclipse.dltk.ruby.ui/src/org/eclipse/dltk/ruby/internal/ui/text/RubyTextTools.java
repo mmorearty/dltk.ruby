@@ -9,13 +9,12 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.internal.ui.text;
 
-import org.eclipse.dltk.ast.ASTVisitor;
-import org.eclipse.dltk.compiler.env.ISourceModule;
-import org.eclipse.dltk.core.ModelException;
+import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
+import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.ruby.core.RubyNature;
+import org.eclipse.dltk.ui.editor.highlighting.ASTSemanticHighlighter;
 import org.eclipse.dltk.ui.editor.highlighting.ISemanticHighlighter;
 import org.eclipse.dltk.ui.editor.highlighting.SemanticHighlighting;
-import org.eclipse.dltk.ui.editor.highlighting.ASTSemanticHighlighter;
 import org.eclipse.dltk.ui.text.ScriptSourceViewerConfiguration;
 import org.eclipse.dltk.ui.text.ScriptTextTools;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -31,8 +30,8 @@ public class RubyTextTools extends ScriptTextTools {
 	private final static String[] LEGAL_CONTENT_TYPES = new String[] {
 			IRubyPartitions.RUBY_STRING,
 			IRubyPartitions.RUBY_SINGLE_QUOTE_STRING,
-			IRubyPartitions.RUBY_PERCENT_STRING,
-			IRubyPartitions.RUBY_COMMENT, IRubyPartitions.RUBY_DOC };
+			IRubyPartitions.RUBY_PERCENT_STRING, IRubyPartitions.RUBY_COMMENT,
+			IRubyPartitions.RUBY_DOC };
 
 	public RubyTextTools(boolean autoDisposeOnDisplayDispose) {
 		super(IRubyPartitions.RUBY_PARTITIONING, LEGAL_CONTENT_TYPES,
@@ -64,9 +63,16 @@ public class RubyTextTools extends ScriptTextTools {
 		}
 		return new ASTSemanticHighlighter() {
 
-			protected ASTVisitor createVisitor(ISourceModule code)
-					throws ModelException {
-				return new RubySemanticUpdateWorker(this, code);
+			@Override
+			protected boolean doHighlighting(IModuleSource code)
+					throws Exception {
+				final ModuleDeclaration declaration = (ModuleDeclaration) parseCode(code);
+				if (declaration != null) {
+					declaration.traverse(new RubySemanticUpdateWorker(this,
+							code));
+					return true;
+				}
+				return false;
 			}
 
 			protected String getNature() {

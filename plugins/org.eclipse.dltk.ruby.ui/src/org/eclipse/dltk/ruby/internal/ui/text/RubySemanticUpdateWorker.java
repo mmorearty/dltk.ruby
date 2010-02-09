@@ -23,7 +23,7 @@ import org.eclipse.dltk.ast.expressions.NumericLiteral;
 import org.eclipse.dltk.ast.expressions.StringLiteral;
 import org.eclipse.dltk.ast.references.SimpleReference;
 import org.eclipse.dltk.ast.references.VariableReference;
-import org.eclipse.dltk.compiler.env.ISourceModule;
+import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.ruby.ast.RubyConstantDeclaration;
 import org.eclipse.dltk.ruby.ast.RubyDAssgnExpression;
@@ -95,7 +95,7 @@ public class RubySemanticUpdateWorker extends ASTVisitor {
 	 * @throws ModelException
 	 */
 	public RubySemanticUpdateWorker(ISemanticHighlightingRequestor requestor,
-			ISourceModule code) throws ModelException {
+			IModuleSource code) throws ModelException {
 		this.requestor = requestor;
 		this.content = code.getContentsAsCharArray();
 	}
