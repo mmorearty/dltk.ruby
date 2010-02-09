@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.testing.internal;
 
-import org.eclipse.dltk.ast.declarations.FakeModuleDeclaration;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
 import org.eclipse.dltk.core.IMember;
 import org.eclipse.dltk.core.ISourceModule;
@@ -19,6 +18,7 @@ import org.eclipse.dltk.core.ISourceRange;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.core.SourceParserUtil;
 import org.eclipse.dltk.corext.SourceRange;
+import org.eclipse.dltk.ruby.ast.FakeModuleDeclaration;
 
 public class ResolverUtils {
 
