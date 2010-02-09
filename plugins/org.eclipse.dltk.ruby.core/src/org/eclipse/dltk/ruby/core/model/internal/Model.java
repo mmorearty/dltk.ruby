@@ -12,21 +12,20 @@ package org.eclipse.dltk.ruby.core.model.internal;
 import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.WeakHashMap;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
 import org.eclipse.dltk.ast.parser.ISourceParser;
+import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.core.DLTKLanguageManager;
-import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.core.IParent;
+import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.ruby.core.RubyNature;
-import org.eclipse.dltk.ruby.core.RubyPlugin;
 import org.eclipse.dltk.ruby.core.model.ASTCaching;
 import org.eclipse.dltk.ruby.core.model.IElement;
 import org.eclipse.dltk.ruby.core.model.IElementCriteria;
@@ -37,7 +36,7 @@ public class Model implements IModel {
 
 	private final IScriptProject project;
 
-	private final Map sourceModulesToASTs = new WeakHashMap();
+	private final Map<ISourceModule, SoftReference<ModuleDeclaration>> sourceModulesToASTs = new HashMap<ISourceModule, SoftReference<ModuleDeclaration>>();
 
 	public Model(IScriptProject project) {
 		this.project = project;
@@ -46,25 +45,17 @@ public class Model implements IModel {
 	public ModuleDeclaration getASTNode(ISourceModule sourceModule,
 			ASTCaching caching) {
 		ModuleDeclaration result = null;
-		SoftReference astNode = (SoftReference) sourceModulesToASTs
+		SoftReference<ModuleDeclaration> astNode = sourceModulesToASTs
 				.get(sourceModule);
 		if (astNode != null && caching != ASTCaching.REPARSE)
-			result = (ModuleDeclaration) astNode.get();
+			result = astNode.get();
 		if (result == null && caching != ASTCaching.CACHED_ONLY) {
-			try {
-				ISourceParser parser = DLTKLanguageManager
-						.getSourceParser(RubyNature.NATURE_ID);
-				result = parser.parse(sourceModule.getPath().toString()
-						.toCharArray(), sourceModule.getSourceAsCharArray(),
-						null);
-			} catch (ModelException e) {
-				RubyPlugin.log(e);
-				result = null;
-			} catch (CoreException e) {
-				e.printStackTrace();
-			}
+			ISourceParser parser = DLTKLanguageManager
+					.getSourceParser(RubyNature.NATURE_ID);
+			result = (ModuleDeclaration) parser.parse(
+					(IModuleSource) sourceModule, null);
 			if (result != null) {
-				astNode = new SoftReference(result);
+				astNode = new SoftReference<ModuleDeclaration>(result);
 				sourceModulesToASTs.put(sourceModule, astNode);
 			}
 		}
@@ -72,15 +63,14 @@ public class Model implements IModel {
 	}
 
 	public ISourceModule[] search(String name) {
-		Collection sourceModules = new ArrayList();
+		Collection<ISourceModule> sourceModules = new ArrayList<ISourceModule>();
 		try {
 			IModelElement[] children = project.getChildren();
 			addModules(sourceModules, children);
 		} catch (ModelException e) {
 			e.printStackTrace();
 		}
-		return (ISourceModule[]) sourceModules
-				.toArray(new ISourceModule[sourceModules.size()]);
+		return sourceModules.toArray(new ISourceModule[sourceModules.size()]);
 	}
 
 	private void addModules(Collection sourceModules, IModelElement[] children)

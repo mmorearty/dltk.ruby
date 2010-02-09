@@ -12,7 +12,7 @@ package org.eclipse.dltk.ruby.internal.core.codeassist;
 import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
 import org.eclipse.dltk.codeassist.IAssistParser;
-import org.eclipse.dltk.compiler.env.ISourceModule;
+import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.core.SourceParserUtil;
 
 public abstract class RubyAssistParser implements IAssistParser {
@@ -29,7 +29,7 @@ public abstract class RubyAssistParser implements IAssistParser {
 		this.module = unit;
 	}
 
-	public ModuleDeclaration parse(ISourceModule sourceUnit) {
+	public ModuleDeclaration parse(IModuleSource sourceUnit) {
 		ModuleDeclaration module = null;
 		module = SourceParserUtil
 				.getModuleDeclaration((org.eclipse.dltk.core.ISourceModule) sourceUnit

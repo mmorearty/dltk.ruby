@@ -30,6 +30,7 @@ import org.eclipse.dltk.ast.references.ConstantReference;
 import org.eclipse.dltk.ast.references.SimpleReference;
 import org.eclipse.dltk.codeassist.IAssistParser;
 import org.eclipse.dltk.codeassist.ScriptCompletionEngine;
+import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.compiler.util.Util;
 import org.eclipse.dltk.core.CompletionProposal;
 import org.eclipse.dltk.core.DLTKLanguageManager;
@@ -189,8 +190,7 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 		return content.substring(position, original);
 	}
 
-	public void complete(org.eclipse.dltk.compiler.env.ISourceModule module,
-			int position, int i) {
+	public void complete(IModuleSource module, int position, int i) {
 		this.currentModule = (ISourceModule) module;
 		this.mixinModel = RubyMixinModel.getInstance(currentModule
 				.getScriptProject());
@@ -211,8 +211,8 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 				}
 			}
 
-			ModuleDeclaration moduleDeclaration = parser.parse(module
-					.getFileName().toCharArray(), content.toCharArray(), null);
+			ModuleDeclaration moduleDeclaration = (ModuleDeclaration) parser
+					.parse(module, null);
 
 			if (afterDollar(content, position)) {
 				completeGlobalVar(moduleDeclaration, "$", position); //$NON-NLS-1$

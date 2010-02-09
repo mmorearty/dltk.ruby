@@ -27,6 +27,7 @@ import org.eclipse.dltk.ast.references.ConstantReference;
 import org.eclipse.dltk.ast.references.VariableReference;
 import org.eclipse.dltk.codeassist.IAssistParser;
 import org.eclipse.dltk.codeassist.ScriptSelectionEngine;
+import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.DLTKLanguageManager;
 import org.eclipse.dltk.core.IField;
@@ -111,8 +112,7 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 
 	private RubyMixinModel mixinModel;
 
-	public IModelElement[] select(
-			org.eclipse.dltk.compiler.env.ISourceModule sourceUnit,
+	public IModelElement[] select(IModuleSource sourceUnit,
 			int selectionSourceStart, int selectionSourceEnd) {
 		sourceModule = (ISourceModule) sourceUnit.getModelElement();
 		mixinModel = RubyMixinModel
@@ -405,8 +405,7 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 	}
 
 	private IField createLocalVariable(String name, int nameStart, int nameEnd) {
-		return new FakeField(sourceModule, name, nameStart,
-				nameEnd - nameStart);
+		return new FakeField(sourceModule, name, nameStart, nameEnd - nameStart);
 	}
 
 	private IType[] getSourceTypesForClass(ModuleDeclaration parsedUnit,

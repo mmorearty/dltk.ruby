@@ -20,6 +20,7 @@ import org.eclipse.dltk.ast.declarations.TypeDeclaration;
 import org.eclipse.dltk.ast.expressions.CallExpression;
 import org.eclipse.dltk.ast.parser.ISourceParser;
 import org.eclipse.dltk.ast.statements.Block;
+import org.eclipse.dltk.compiler.env.ModuleSource;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.DLTKLanguageManager;
 import org.eclipse.dltk.core.ISourceModule;
@@ -256,8 +257,9 @@ public class ASTUtils {
 	public static ModuleDeclaration getAST(char[] cs) {
 		ISourceParser sourceParser = DLTKLanguageManager
 				.getSourceParser(RubyNature.NATURE_ID);
-		ModuleDeclaration declaration = sourceParser.parse("RawSource" //$NON-NLS-1$
-				.toCharArray(), cs, null);
+		ModuleDeclaration declaration = (ModuleDeclaration) sourceParser.parse(
+				new ModuleSource("RawSource" //$NON-NLS-1$
+						, cs), null);
 		return declaration;
 	}
 

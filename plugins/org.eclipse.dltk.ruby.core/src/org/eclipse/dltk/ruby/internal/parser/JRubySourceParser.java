@@ -16,15 +16,18 @@ import java.util.StringTokenizer;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.dltk.ast.ASTNode;
-import org.eclipse.dltk.ast.declarations.FakeModuleDeclaration;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
 import org.eclipse.dltk.ast.parser.AbstractSourceParser;
 import org.eclipse.dltk.ast.references.ConstantReference;
 import org.eclipse.dltk.ast.statements.Block;
+import org.eclipse.dltk.compiler.env.IModuleSource;
+import org.eclipse.dltk.compiler.env.ModuleSource;
 import org.eclipse.dltk.compiler.problem.AbstractProblemReporter;
 import org.eclipse.dltk.compiler.problem.IProblem;
 import org.eclipse.dltk.compiler.problem.IProblemReporter;
+import org.eclipse.dltk.compiler.util.Util;
 import org.eclipse.dltk.core.DLTKCore;
+import org.eclipse.dltk.ruby.ast.FakeModuleDeclaration;
 import org.eclipse.dltk.ruby.ast.RubyClassDeclaration;
 import org.eclipse.dltk.ruby.ast.RubyModuleDeclaration;
 import org.eclipse.dltk.ruby.core.utils.RubySyntaxUtils;
@@ -103,7 +106,7 @@ public class JRubySourceParser extends AbstractSourceParser {
 		return new RubyASTBuildVisitor(module, content);
 	}
 
-	public ModuleDeclaration parse(final char[] fileName, char[] content,
+	public ModuleDeclaration parse(IModuleSource input,
 			IProblemReporter reporter) {
 		try {
 			DLTKRubyParser parser = new DLTKRubyParser();
@@ -112,31 +115,31 @@ public class JRubySourceParser extends AbstractSourceParser {
 			errorState[0] = false;
 
 			final long sTime = TRACE_AST_DLTK ? System.currentTimeMillis() : 0;
-			final String strFileName = fileName != null ? String
-					.valueOf(fileName) : ""; //$NON-NLS-1$
-
+			final String fileName = input.getFileName() != null ? input
+					.getFileName() : Util.EMPTY_STRING;
+			char[] content = input.getContentsAsCharArray();
 			char[] fixedContent = RubySpacedParensFixer
 					.fixSpacedParens(content);
 			Node node;
 			if (Arrays.equals(fixedContent, content) != true) {
 				// ssanders - Parse with reporter to collect parenthesis
 				// warnings
-				parser.parse(strFileName, new CharArrayReader(content),
+				parser.parse(fileName, new CharArrayReader(content),
 						proxyProblemReporter);
 				// ssanders - However, use modified content to have corrected
 				// position info
-				node = parser.parse(strFileName, new CharArrayReader(
-						fixedContent), null);
+				node = parser.parse(fileName,
+						new CharArrayReader(fixedContent), null);
 			} else {
-				node = parser.parse(strFileName, new CharArrayReader(content),
+				node = parser.parse(fileName, new CharArrayReader(content),
 						proxyProblemReporter);
 			}
 			final RubySourceFixer fixer = new RubySourceFixer();
 			if (!parser.isSuccess() || errorState[0]) {
 				String content2 = fixer.fix1(String.valueOf(fixedContent));
 
-				Node node2 = parser.parse(strFileName, new StringReader(
-						content2), null);
+				Node node2 = parser.parse(fileName, new StringReader(content2),
+						null);
 				if (node2 != null)
 					node = node2;
 				else {
@@ -144,8 +147,8 @@ public class JRubySourceParser extends AbstractSourceParser {
 
 					content2 = fixer.fixUnsafe1(content2);
 
-					node2 = parser.parse(strFileName,
-							new StringReader(content2), null);
+					node2 = parser.parse(fileName, new StringReader(content2),
+							null);
 					if (node2 != null)
 						node = node2;
 					else {
@@ -153,13 +156,13 @@ public class JRubySourceParser extends AbstractSourceParser {
 
 						content2 = fixer.fixUnsafe2(content2);
 
-						node2 = parser.parse(strFileName, new StringReader(
+						node2 = parser.parse(fileName, new StringReader(
 								content2), new AbstractProblemReporter() {
 
 							public void reportProblem(IProblem problem) {
 								if (DLTKCore.DEBUG) {
 									System.out
-											.println("JRubySourceParser.parse(): Fallback Parse Problem - fileName=" + strFileName + //$NON-NLS-1$
+											.println("JRubySourceParser.parse(): Fallback Parse Problem - fileName=" + fileName + //$NON-NLS-1$
 													", message=" //$NON-NLS-1$
 													+ problem.getMessage()
 													+ ", line=" + problem.getSourceLineNumber()); //$NON-NLS-1$
@@ -218,7 +221,7 @@ public class JRubySourceParser extends AbstractSourceParser {
 	}
 
 	public ModuleDeclaration parse(String source) {
-		return this.parse(null, source.toCharArray(), null);
+		return this.parse(new ModuleSource(source), null);
 	}
 
 	/**
