@@ -86,7 +86,7 @@ public class RubyLabelProvider extends LabelProvider {
 			sb.append(method.getElementName());
 			String[] parameters;
 			try {
-				parameters = method.getParameters();
+				parameters = method.getParameterNames();
 			} catch (ModelException e) {
 				parameters = null;
 			}
