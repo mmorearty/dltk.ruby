@@ -9,21 +9,20 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.core.model;
 
-import org.eclipse.dltk.compiler.CharOperation;
+import org.eclipse.dltk.core.IParameter;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ISourceRange;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.internal.core.ModelElement;
 import org.eclipse.dltk.internal.core.SourceMethod;
+import org.eclipse.dltk.internal.core.SourceMethodUtils;
 import org.eclipse.dltk.internal.core.SourceRange;
 
 public class FakeMethod extends SourceMethod {
 
 	private String receiver;
 
-	private String[] parameters = CharOperation.NO_STRINGS;
-
-	private String[] parameterInitializers = CharOperation.NO_STRINGS;
+	private IParameter[] parameters = SourceMethodUtils.NO_PARAMETERS;
 
 	private int flags;
 
@@ -59,22 +58,26 @@ public class FakeMethod extends SourceMethod {
 		hasSpecialOffsets = true;
 	}
 
+	@Override
 	public ISourceRange getNameRange() throws ModelException {
 		if (hasSpecialOffsets)
 			return new SourceRange(nameOffset, nameLength);
 		return super.getNameRange();
 	}
 
+	@Override
 	public ISourceRange getSourceRange() throws ModelException {
 		if (hasSpecialOffsets)
 			return new SourceRange(offset, length);
 		return super.getSourceRange();
 	}
 
+	@Override
 	public IScriptProject getScriptProject() {
 		return parent.getScriptProject();
 	}
 
+	@Override
 	public int getFlags() {
 		return flags;
 	}
@@ -83,20 +86,18 @@ public class FakeMethod extends SourceMethod {
 		this.flags = flags;
 	}
 
-	public void setParameterInitializers(String[] parameterInitializers) {
-		this.parameterInitializers = parameterInitializers;
-	}
-
-	public void setParameters(String[] parameters) {
+	public void setParameters(IParameter[] parameters) {
 		this.parameters = parameters;
 	}
 
-	public String[] getParameterInitializers() throws ModelException {
-		return parameterInitializers;
+	@Override
+	public IParameter[] getParameters() throws ModelException {
+		return parameters;
 	}
 
-	public String[] getParameters() throws ModelException {
-		return parameters;
+	@Override
+	public String[] getParameterNames() throws ModelException {
+		return SourceMethodUtils.getParameterNames(parameters);
 	}
 
 }

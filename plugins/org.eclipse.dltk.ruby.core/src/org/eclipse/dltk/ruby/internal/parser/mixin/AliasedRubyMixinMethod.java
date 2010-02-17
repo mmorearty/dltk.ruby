@@ -34,8 +34,6 @@ public class AliasedRubyMixinMethod extends RubyMixinMethod {
 			try {
 				fakeMethod.setFlags(sourceMethod.getFlags());
 				fakeMethod.setParameters(sourceMethod.getParameters());
-				fakeMethod.setParameterInitializers(sourceMethod
-						.getParameterInitializers());
 			} catch (ModelException e) {
 			}
 		}

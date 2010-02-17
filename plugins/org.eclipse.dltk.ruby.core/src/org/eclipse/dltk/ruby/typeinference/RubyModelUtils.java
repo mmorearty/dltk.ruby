@@ -27,6 +27,7 @@ import org.eclipse.dltk.core.DLTKLanguageManager;
 import org.eclipse.dltk.core.IField;
 import org.eclipse.dltk.core.IMethod;
 import org.eclipse.dltk.core.IModelElement;
+import org.eclipse.dltk.core.IParameter;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ISourceRange;
@@ -41,6 +42,7 @@ import org.eclipse.dltk.core.search.SearchParticipant;
 import org.eclipse.dltk.core.search.SearchPattern;
 import org.eclipse.dltk.core.search.SearchRequestor;
 import org.eclipse.dltk.evaluation.types.AmbiguousType;
+import org.eclipse.dltk.internal.core.MethodParameterInfo;
 import org.eclipse.dltk.internal.core.ModelElement;
 import org.eclipse.dltk.ruby.core.RubyLanguageToolkit;
 import org.eclipse.dltk.ruby.core.RubyPlugin;
@@ -258,9 +260,8 @@ public class RubyModelUtils {
 				List result = new ArrayList();
 				for (int i = 0; i < initMethods.length; i++) {
 					try {
-						String[] parameters = initMethods[i].getParameters();
-						String[] parameterInitializers = initMethods[i]
-								.getParameterInitializers();
+						IParameter[] parameters = initMethods[i]
+								.getParameters();
 						int flags = initMethods[i].getFlags();
 						ISourceRange sourceRange = initMethods[i]
 								.getSourceRange();
@@ -273,8 +274,6 @@ public class RubyModelUtils {
 										.getLength(), nameRange.getOffset(),
 								nameRange.getLength());
 						newMethod.setParameters(parameters);
-						newMethod
-								.setParameterInitializers(parameterInitializers);
 						newMethod.setFlags(flags);
 						String receiver = ""; //$NON-NLS-1$
 						if (parent instanceof IType) {
@@ -508,16 +507,18 @@ public class RubyModelUtils {
 		FakeMethod method = new FakeMethod(parent, info.getName());
 		method.setFlags(info.getFlags());
 		int arity = info.getArity();
-		String parameters[] = new String[0];
+		IParameter[] parameters;
 		if (arity > 0) {
-			parameters = new String[arity];
+			parameters = new IParameter[arity];
 			for (int i = 0; i < arity; i++)
-				parameters[i] = "arg" + (i + 1); //$NON-NLS-1$
+				parameters[i] = new MethodParameterInfo("arg" + (i + 1)); //$NON-NLS-1$
 		} else if (arity < 0) {
-			parameters = new String[-arity];
+			parameters = new IParameter[-arity];
 			for (int i = 0; i < -arity - 1; i++)
-				parameters[i] = "arg" + (i + 1); //$NON-NLS-1$
-			parameters[-arity - 1] = "..."; //$NON-NLS-1$
+				parameters[i] = new MethodParameterInfo("arg" + (i + 1)); //$NON-NLS-1$
+			parameters[-arity - 1] = new MethodParameterInfo("..."); //$NON-NLS-1$
+		} else {
+			parameters = new IParameter[0];
 		}
 		method.setParameters(parameters);
 		method.setReceiver(metaclass.getName());

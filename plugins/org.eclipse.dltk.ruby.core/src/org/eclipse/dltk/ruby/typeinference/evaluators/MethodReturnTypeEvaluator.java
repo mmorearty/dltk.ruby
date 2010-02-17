@@ -147,7 +147,7 @@ public class MethodReturnTypeEvaluator extends RubyMixinGoalEvaluator {
 		}
 		String[] parameters;
 		try {
-			parameters = resultMethod.getParameters();
+			parameters = resultMethod.getParameterNames();
 		} catch (ModelException e1) {
 			RubyPlugin.log(e1);
 			parameters = new String[0];

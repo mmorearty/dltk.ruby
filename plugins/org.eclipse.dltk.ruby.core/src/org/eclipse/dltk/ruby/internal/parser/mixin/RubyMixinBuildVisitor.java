@@ -30,12 +30,14 @@ import org.eclipse.dltk.ast.references.VariableReference;
 import org.eclipse.dltk.core.IField;
 import org.eclipse.dltk.core.IMethod;
 import org.eclipse.dltk.core.IModelElement;
+import org.eclipse.dltk.core.IParameter;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.IType;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.core.mixin.IMixinRequestor;
 import org.eclipse.dltk.core.mixin.MixinModel;
 import org.eclipse.dltk.core.mixin.IMixinRequestor.ElementInfo;
+import org.eclipse.dltk.internal.core.MethodParameterInfo;
 import org.eclipse.dltk.internal.core.ModelElement;
 import org.eclipse.dltk.ruby.ast.RubyAliasExpression;
 import org.eclipse.dltk.ruby.ast.RubyAssignment;
@@ -100,7 +102,7 @@ public class RubyMixinBuildVisitor extends ASTVisitor {
 		public String getClassKey() {
 			return "Object"; //$NON-NLS-1$
 		}
-		
+
 		private boolean isObjectReported = false;
 
 		public String reportMethod(String name, IMethod object) {
@@ -552,7 +554,9 @@ public class RubyMixinBuildVisitor extends ASTVisitor {
 								.sourceStart(), attr.length(), n.sourceStart(),
 						attr.length());
 				fakeMethod.setFlags(Modifiers.AccPublic);
-				fakeMethod.setParameters(new String[] { attr });
+				fakeMethod
+						.setParameters(new IParameter[] { new MethodParameterInfo(
+								attr) });
 				scope.reportMethod(attr + "=", fakeMethod); //$NON-NLS-1$
 				if (metaScope != null) {
 					scopes.push(metaScope);
@@ -566,19 +570,20 @@ public class RubyMixinBuildVisitor extends ASTVisitor {
 				&& call.getArgs().getChilds().size() > 0) {
 			RubyCallArgument argNode;
 			String name;
-			for (Iterator iterator = call.getArgs().getChilds().iterator(); iterator.hasNext(); ) {
-				argNode = (RubyCallArgument)iterator.next();
+			for (Iterator iterator = call.getArgs().getChilds().iterator(); iterator
+					.hasNext();) {
+				argNode = (RubyCallArgument) iterator.next();
 				name = null;
 				if (argNode.getValue() instanceof RubySymbolReference) {
-					name = ((RubySymbolReference)argNode.getValue()).getName();
-				}
-				else if (argNode.getValue() instanceof StringLiteral) {
-					name = ((StringLiteral)argNode.getValue()).getValue();
+					name = ((RubySymbolReference) argNode.getValue()).getName();
+				} else if (argNode.getValue() instanceof StringLiteral) {
+					name = ((StringLiteral) argNode.getValue()).getValue();
 				}
 				if (name != null) {
 					FakeMethod fakeMethod = new FakeMethod(
-							(ModelElement) sourceModule, name, argNode.sourceStart(),
-							name.length(), argNode.sourceStart(), name.length());
+							(ModelElement) sourceModule, name, argNode
+									.sourceStart(), name.length(), argNode
+									.sourceStart(), name.length());
 					fakeMethod.setFlags(Modifiers.AccPublic);
 					peekScope().reportMethod(name, fakeMethod);
 				}

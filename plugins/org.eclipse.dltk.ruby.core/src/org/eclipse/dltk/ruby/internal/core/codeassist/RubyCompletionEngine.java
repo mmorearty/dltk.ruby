@@ -880,7 +880,7 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 
 			String[] params = null;
 			try {
-				params = method.getParameters();
+				params = method.getParameterNames();
 			} catch (ModelException e) {
 				// ssanders: Ignore
 			}
