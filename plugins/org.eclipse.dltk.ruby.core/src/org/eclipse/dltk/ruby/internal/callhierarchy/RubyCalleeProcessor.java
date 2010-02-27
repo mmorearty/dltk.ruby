@@ -55,7 +55,6 @@ public class RubyCalleeProcessor implements ICalleeProcessor {
 		@Override
 		public void acceptMethodReference(String methodName, int argCount,
 				int sourcePosition, int sourceEndPosition) {
-			String name = new String(methodName);
 			int off = 0;
 			try {
 				off = method.getSourceRange().getOffset();
@@ -63,8 +62,8 @@ public class RubyCalleeProcessor implements ICalleeProcessor {
 				e.printStackTrace();
 			}
 			SimpleReference ref = new SimpleReference(off + sourcePosition, off
-					+ sourceEndPosition, name);
-			IMethod[] methods = findMethods(name, argCount, off
+					+ sourceEndPosition, methodName);
+			IMethod[] methods = findMethods(methodName, argCount, off
 					+ sourceEndPosition - 1);
 			fSearchResults.put(ref, methods);
 		}
