@@ -189,8 +189,8 @@ public class RubyCompletionTests extends AbstractModelCompletionTests {
 		waitForAutoBuild();
 		cu.codeComplete(cursorLocation, requestor);
 
-		assertTrue((requestor.getResults().indexOf("Mine42") != -1)
-				&& (requestor.getResults().indexOf("Mix42") != -1));
+		assertTrue(requestor.getResults().indexOf("Mine42") != -1);
+		assertTrue(requestor.getResults().indexOf("Mix42") != -1);
 
 	}
 
