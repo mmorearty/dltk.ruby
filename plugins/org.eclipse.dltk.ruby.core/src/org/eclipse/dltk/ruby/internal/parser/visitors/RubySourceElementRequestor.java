@@ -222,13 +222,11 @@ public class RubySourceElementRequestor extends SourceElementRequestVisitor
 		while (node != null) {
 			if (node instanceof RubyColonExpression) {
 				typeName = ((RubyColonExpression) node).getName();
-				fRequestor.acceptTypeReference(typeName.toCharArray(), node
-						.sourceStart());
+				fRequestor.acceptTypeReference(typeName, node.sourceStart());
 				node = ((RubyColonExpression) node).getLeft();
 			} else if (node instanceof ConstantReference) {
 				typeName = ((ConstantReference) node).getName();
-				fRequestor.acceptTypeReference(typeName.toCharArray(), node
-						.sourceStart());
+				fRequestor.acceptTypeReference(typeName, node.sourceStart());
 				node = null;
 			} else {
 				node = null;
@@ -382,38 +380,36 @@ public class RubySourceElementRequestor extends SourceElementRequestVisitor
 		} else if (expression instanceof Literal) {
 			if (expression instanceof RubyRegexpExpression) {
 				fRequestor.acceptTypeReference(
-						"Regexp".toCharArray(), expression.sourceStart()); //$NON-NLS-1$
+						"Regexp", expression.sourceStart()); //$NON-NLS-1$
 			} else if (expression instanceof StringLiteral) {
 				fRequestor.acceptTypeReference(
-						"String".toCharArray(), expression.sourceStart()); //$NON-NLS-1$
+						"String", expression.sourceStart()); //$NON-NLS-1$
 			} else if (expression instanceof BooleanLiteral) {
 				BooleanLiteral boolLit = (BooleanLiteral) expression;
 				if (boolLit.boolValue()) {
-					fRequestor
-							.acceptTypeReference(
-									"TrueClass".toCharArray(), expression.sourceStart()); //$NON-NLS-1$$
+					fRequestor.acceptTypeReference(
+							"TrueClass", expression.sourceStart()); //$NON-NLS-1$$
 				} else {
-					fRequestor
-							.acceptTypeReference(
-									"FalseClass".toCharArray(), expression.sourceStart()); //$NON-NLS-1$
+					fRequestor.acceptTypeReference(
+							"FalseClass", expression.sourceStart()); //$NON-NLS-1$
 				}
 			} else if (expression instanceof NumericLiteral) {
 				fRequestor.acceptTypeReference(
-						"Fixnum".toCharArray(), expression.sourceStart()); //$NON-NLS-1$
+						"Fixnum", expression.sourceStart()); //$NON-NLS-1$
 			} else if (expression instanceof NilLiteral) {
 				fRequestor.acceptTypeReference(
-						"NilClass".toCharArray(), expression.sourceStart()); //$NON-NLS-1$
+						"NilClass", expression.sourceStart()); //$NON-NLS-1$
 			} else if (expression instanceof FloatNumericLiteral) {
 				fRequestor.acceptTypeReference(
-						"Float".toCharArray(), expression.sourceStart()); //$NON-NLS-1$
+						"Float", expression.sourceStart()); //$NON-NLS-1$
 			} else if (expression instanceof BigNumericLiteral) {
 				fRequestor.acceptTypeReference(
-						"Bignum".toCharArray(), expression.sourceStart()); //$NON-NLS-1$
+						"Bignum", expression.sourceStart()); //$NON-NLS-1$
 			}
 		} else if (expression instanceof Reference) {
 			if (expression instanceof RubySymbolReference) {
 				fRequestor.acceptTypeReference(
-						"Symbol".toCharArray(), expression.sourceStart()); //$NON-NLS-1$
+						"Symbol", expression.sourceStart()); //$NON-NLS-1$
 			} else if (expression instanceof VariableReference) {
 				// VariableReference handling
 				VariableReference variableReference = (VariableReference) expression;
