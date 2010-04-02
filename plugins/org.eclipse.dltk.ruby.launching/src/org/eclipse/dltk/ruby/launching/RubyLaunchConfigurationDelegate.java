@@ -115,8 +115,8 @@ public class RubyLaunchConfigurationDelegate extends
 			if (deployment != null) {
 				final IPath path = deployment.add(RubyLaunchingPlugin
 						.getDefault().getBundle(), "scripts/sync.rb"); //$NON-NLS-1$
-				config.addInterpreterArg("-r"); //$NON-NLS-1$
-				config.addInterpreterArg(deployment.getFile(path).toString());
+				config
+						.addInterpreterArg("-r" + deployment.getFile(path).toString());//$NON-NLS-1$
 			}
 		} catch (IOException e) {
 			RubyLaunchingPlugin.log(e);
