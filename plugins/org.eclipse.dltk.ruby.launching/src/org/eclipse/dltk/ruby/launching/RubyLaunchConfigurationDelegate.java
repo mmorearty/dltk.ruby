@@ -28,10 +28,12 @@ import org.eclipse.dltk.ruby.core.RubyNature;
 public class RubyLaunchConfigurationDelegate extends
 		AbstractScriptLaunchConfigurationDelegate {
 
+	@Override
 	public String getLanguageId() {
 		return RubyNature.NATURE_ID;
 	}
 
+	@Override
 	protected InterpreterConfig createInterpreterConfig(
 			ILaunchConfiguration configuration, ILaunch launch)
 			throws CoreException {
