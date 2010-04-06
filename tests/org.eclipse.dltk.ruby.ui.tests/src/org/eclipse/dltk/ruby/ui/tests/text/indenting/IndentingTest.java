@@ -9,11 +9,12 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.ui.tests.text.indenting;
 
+import junit.framework.TestCase;
+
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.dltk.ruby.internal.ui.RubyPreferenceConstants;
 import org.eclipse.dltk.ruby.internal.ui.text.IRubyPartitions;
 import org.eclipse.dltk.ruby.internal.ui.text.RubyAutoEditStrategy;
-import org.eclipse.dltk.ruby.ui.tests.RubyUITests;
 import org.eclipse.dltk.ruby.ui.tests.internal.TestUtils;
 import org.eclipse.dltk.ui.CodeFormatterConstants;
 import org.eclipse.dltk.ui.PreferenceConstants;
@@ -23,11 +24,7 @@ import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.TextUtilities;
 import org.eclipse.ui.PlatformUI;
 
-public class IndentingTest extends RubyUITests {
-
-	public IndentingTest(String name) {
-		super(name);
-	}
+public class IndentingTest extends TestCase {
 
 	private static final String PATH = "resources/indenting/";
 	private static final String DELIMITER = TextUtilities
@@ -45,6 +42,7 @@ public class IndentingTest extends RubyUITests {
 				"Workbench did not intitialized during a minute.");
 	}
 
+	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 		waitWorkbenchCreated();

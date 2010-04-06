@@ -9,10 +9,11 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.ui.tests.indenting;
 
+import junit.framework.TestCase;
+
 import org.eclipse.dltk.ruby.internal.ui.RubyPreferenceConstants;
 import org.eclipse.dltk.ruby.internal.ui.text.IRubyPartitions;
 import org.eclipse.dltk.ruby.internal.ui.text.RubyAutoEditStrategy;
-import org.eclipse.dltk.ruby.ui.tests.RubyUITests;
 import org.eclipse.dltk.ui.CodeFormatterConstants;
 import org.eclipse.dltk.ui.PreferenceConstants;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -22,16 +23,12 @@ import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.TextUtilities;
 
 
-public class RubyAutoIndentStrategyTest extends RubyUITests {
+public class RubyAutoIndentStrategyTest extends TestCase {
 	/*
 	 * Tests with _ in the beginning relies on features, not
 	 * presented now, and may be will be implemented in future
 	 */
 	
-	public RubyAutoIndentStrategyTest(String name) {
-		super(name);
-	}
-
 	private static final String TAB = "\t";
 	
 	private static final String AUTOINDENT = TAB;
@@ -49,7 +46,8 @@ public class RubyAutoIndentStrategyTest extends RubyUITests {
 	IPreferenceStore fStore;
 	
 
-    protected void setUp() throws Exception {
+    @Override
+	protected void setUp() throws Exception {
         super.setUp();
     	fStore = new PreferenceStore();
     	RubyPreferenceConstants.initializeDefaultValues(fStore);
@@ -61,7 +59,8 @@ public class RubyAutoIndentStrategyTest extends RubyUITests {
     	strategy = new RubyAutoEditStrategy(fPartitioning, fStore);
     }
 
-    protected void tearDown() throws Exception {
+    @Override
+	protected void tearDown() throws Exception {
         super.tearDown();
     }
 
