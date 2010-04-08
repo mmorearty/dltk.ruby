@@ -25,8 +25,6 @@ public class RubyTextTools extends ScriptTextTools {
 
 	public static final boolean USE_SEMANTIC_HL = true;
 
-	private IPartitionTokenScanner fPartitionScanner;
-
 	private final static String[] LEGAL_CONTENT_TYPES = new String[] {
 			IRubyPartitions.RUBY_STRING,
 			IRubyPartitions.RUBY_SINGLE_QUOTE_STRING,
@@ -36,7 +34,6 @@ public class RubyTextTools extends ScriptTextTools {
 	public RubyTextTools(boolean autoDisposeOnDisplayDispose) {
 		super(IRubyPartitions.RUBY_PARTITIONING, LEGAL_CONTENT_TYPES,
 				autoDisposeOnDisplayDispose);
-		fPartitionScanner = new RubyPartitionScanner();
 	}
 
 	public ScriptSourceViewerConfiguration createSourceViewerConfiguraton(
@@ -47,7 +44,7 @@ public class RubyTextTools extends ScriptTextTools {
 	}
 
 	public IPartitionTokenScanner getPartitionScanner() {
-		return fPartitionScanner;
+		return new RubyPartitionScanner();
 	}
 
 	public SemanticHighlighting[] getSemanticHighlightings() {
