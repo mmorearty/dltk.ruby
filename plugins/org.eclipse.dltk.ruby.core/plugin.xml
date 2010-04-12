@@ -87,11 +87,11 @@
   </extension>
   <extension
         point="org.eclipse.dltk.core.search">
-     <seachFactory
+     <searchFactory
            class="org.eclipse.dltk.ruby.internal.core.search.RubySearchFactory"
            nature="org.eclipse.dltk.ruby.core.nature"
            priority="0">
-     </seachFactory>
+     </searchFactory>
   </extension>
   <extension
         point="org.eclipse.dltk.core.completionEngine">
