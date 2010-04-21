@@ -881,11 +881,7 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 			}
 
 			if (params != null && params.length > 0) {
-				char[][] args = new char[params.length][];
-				for (int i = 0; i < params.length; ++i) {
-					args[i] = params[i].toCharArray();
-				}
-				proposal.setParameterNames(args);
+				proposal.setParameterNames(params);
 			}
 
 			proposal.setModelElement(method);
