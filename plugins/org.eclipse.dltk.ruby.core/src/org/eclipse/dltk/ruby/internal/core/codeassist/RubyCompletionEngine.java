@@ -849,10 +849,6 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 
 	}
 
-	protected String processFieldName(IField field, String token) {
-		return field.getElementName();
-	}
-
 	private void reportMethod(IMethod method, int rel) {
 		this.intresting.add(method);
 		String elementName = method.getElementName();
