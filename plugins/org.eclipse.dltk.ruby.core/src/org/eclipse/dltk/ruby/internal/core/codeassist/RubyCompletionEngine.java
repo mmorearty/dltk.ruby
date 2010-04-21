@@ -28,7 +28,6 @@ import org.eclipse.dltk.ast.expressions.StringLiteral;
 import org.eclipse.dltk.ast.parser.ISourceParser;
 import org.eclipse.dltk.ast.references.ConstantReference;
 import org.eclipse.dltk.ast.references.SimpleReference;
-import org.eclipse.dltk.codeassist.IAssistParser;
 import org.eclipse.dltk.codeassist.ScriptCompletionEngine;
 import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.compiler.util.Util;
@@ -128,10 +127,6 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 	}
 
 	protected String processTypeName(IType method, String token) {
-		return null;
-	}
-
-	public IAssistParser getParser() {
 		return null;
 	}
 

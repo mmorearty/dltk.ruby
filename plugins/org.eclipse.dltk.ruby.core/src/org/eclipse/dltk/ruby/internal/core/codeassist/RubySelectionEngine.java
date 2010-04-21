@@ -25,7 +25,6 @@ import org.eclipse.dltk.ast.declarations.TypeDeclaration;
 import org.eclipse.dltk.ast.expressions.CallExpression;
 import org.eclipse.dltk.ast.references.ConstantReference;
 import org.eclipse.dltk.ast.references.VariableReference;
-import org.eclipse.dltk.codeassist.IAssistParser;
 import org.eclipse.dltk.codeassist.ScriptSelectionEngine;
 import org.eclipse.dltk.compiler.env.IModuleSource;
 import org.eclipse.dltk.core.DLTKCore;
@@ -104,10 +103,6 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 
 	public RubySelectionEngine() {
 		inferencer = new DLTKTypeInferenceEngine();
-	}
-
-	public IAssistParser getParser() {
-		return null;
 	}
 
 	private RubyMixinModel mixinModel;
