@@ -864,10 +864,9 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 
 		// accept result
 		noProposal = false;
-		if (!requestor.isIgnored(CompletionProposal.METHOD_DECLARATION)) {
+		if (!requestor.isIgnored(CompletionProposal.METHOD_REF)) {
 			CompletionProposal proposal = createProposal(
-					CompletionProposal.METHOD_DECLARATION,
-					actualCompletionPosition);
+					CompletionProposal.METHOD_REF, actualCompletionPosition);
 
 			String[] params = null;
 			try {
