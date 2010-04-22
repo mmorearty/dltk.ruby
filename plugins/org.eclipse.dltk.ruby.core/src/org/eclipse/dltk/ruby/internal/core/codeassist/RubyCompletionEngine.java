@@ -859,8 +859,8 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 		if (elementName.indexOf('.') != -1) {
 			elementName = elementName.substring(elementName.indexOf('.') + 1);
 		}
-		char[] name = elementName.toCharArray();
-		char[] compl = name;
+		String name = elementName;
+		String compl = name;
 
 		// accept result
 		noProposal = false;
@@ -905,8 +905,8 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 			return;
 		}
 		completedNames.add(elementName);
-		char[] name = elementName.toCharArray();
-		if (name.length == 0)
+		String name = elementName;
+		if (name.length() == 0)
 			return;
 
 		// accept result
@@ -917,7 +917,7 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 
 			proposal.setModelElement(type);
 			proposal.setName(name);
-			proposal.setCompletion(elementName.toCharArray());
+			proposal.setCompletion(elementName);
 			// proposal.setFlags(Flags.AccDefault);
 			try {
 				proposal.setFlags(type.getFlags());
@@ -941,8 +941,8 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 			return;
 		}
 		completedNames.add(elementName);
-		char[] name = elementName.toCharArray();
-		if (name.length == 0)
+		String name = elementName;
+		if (name.length() == 0)
 			return;
 
 		// accept result
@@ -953,7 +953,7 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 
 			proposal.setModelElement(field);
 			proposal.setName(name);
-			proposal.setCompletion(elementName.toCharArray());
+			proposal.setCompletion(elementName);
 			// proposal.setFlags(Flags.AccDefault);
 			proposal.setReplaceRange(this.startPosition - this.offset,
 					this.endPosition - this.offset);
@@ -973,8 +973,8 @@ public class RubyCompletionEngine extends ScriptCompletionEngine {
 			CompletionProposal proposal = createProposal(
 					CompletionProposal.KEYWORD, actualCompletionPosition);
 
-			proposal.setName(name.toCharArray());
-			proposal.setCompletion(name.toCharArray());
+			proposal.setName(name);
+			proposal.setCompletion(name);
 			// proposal.setFlags(Flags.AccDefault);
 			proposal.setReplaceRange(this.startPosition - this.offset,
 					this.endPosition - this.offset);
