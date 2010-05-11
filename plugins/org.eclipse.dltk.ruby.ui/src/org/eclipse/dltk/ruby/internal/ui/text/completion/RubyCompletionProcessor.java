@@ -8,10 +8,7 @@
 package org.eclipse.dltk.ruby.internal.ui.text.completion;
 
 import org.eclipse.dltk.ruby.core.RubyNature;
-import org.eclipse.dltk.ruby.internal.ui.RubyUI;
-import org.eclipse.dltk.ui.text.completion.CompletionProposalLabelProvider;
 import org.eclipse.dltk.ui.text.completion.ScriptCompletionProcessor;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.ui.IEditorPart;
 
@@ -25,25 +22,9 @@ public class RubyCompletionProcessor extends ScriptCompletionProcessor {
 		super(editor, assistant, partition);
 	}
 
-	/*
-	 * @see ScriptCompletionProcessor#getNatureId()
-	 */
+	@Override
 	protected String getNatureId() {
 		return RubyNature.NATURE_ID;
-	}
-
-	/*
-	 * @see ScriptCompletionProcessor#getProposalLabelProvider()
-	 */
-	protected CompletionProposalLabelProvider getProposalLabelProvider() {
-		return new RubyCompletionProposalLabelProvider();
-	}
-
-	/*
-	 * @see ContentAssistProcessor#getPreferenceStore ()
-	 */
-	protected IPreferenceStore getPreferenceStore() {
-		return RubyUI.getDefault().getPreferenceStore();
 	}
 
 }

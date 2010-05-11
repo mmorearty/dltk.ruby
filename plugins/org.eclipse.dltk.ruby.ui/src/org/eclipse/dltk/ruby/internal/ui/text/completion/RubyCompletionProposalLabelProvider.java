@@ -31,7 +31,7 @@ public class RubyCompletionProposalLabelProvider extends
 
 		// parameters
 		nameBuffer.append('(');
-		appendUnboundedParameterList(nameBuffer, methodProposal);
+		appendParameterList(nameBuffer, methodProposal);
 		nameBuffer.append(')');
 
 		IMethod method = (IMethod) methodProposal.getModelElement();
@@ -61,7 +61,7 @@ public class RubyCompletionProposalLabelProvider extends
 
 		// parameters
 		nameBuffer.append('(');
-		appendUnboundedParameterList(nameBuffer, methodProposal);
+		appendParameterList(nameBuffer, methodProposal);
 		nameBuffer.append(')');
 
 		IMethod method = (IMethod) methodProposal.getModelElement();

@@ -425,6 +425,12 @@
 			<partition type="__dftl_partition_content_type"/>
 		</scriptCompletionProposalComputer>	
 	</extension> 
+	<extension point="org.eclipse.dltk.ui.completion">
+	      <proposalLabelProvider
+             class="org.eclipse.dltk.ruby.internal.ui.text.completion.RubyCompletionProposalLabelProvider"
+             nature="org.eclipse.dltk.ruby.core.nature">
+	      </proposalLabelProvider>
+	</extension>
 
 <extension
        point="org.eclipse.dltk.ui.language">

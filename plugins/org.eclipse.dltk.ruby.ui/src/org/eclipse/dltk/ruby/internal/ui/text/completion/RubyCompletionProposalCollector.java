@@ -12,11 +12,10 @@ package org.eclipse.dltk.ruby.internal.ui.text.completion;
 import org.eclipse.dltk.core.CompletionProposal;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ISourceModule;
-import org.eclipse.dltk.ui.text.completion.CompletionProposalLabelProvider;
+import org.eclipse.dltk.ruby.core.RubyNature;
 import org.eclipse.dltk.ui.text.completion.IScriptCompletionProposal;
 import org.eclipse.dltk.ui.text.completion.ScriptCompletionProposal;
 import org.eclipse.dltk.ui.text.completion.ScriptCompletionProposalCollector;
-import org.eclipse.dltk.ui.text.completion.ScriptContentAssistInvocationContext;
 import org.eclipse.swt.graphics.Image;
 
 public class RubyCompletionProposalCollector extends
@@ -31,21 +30,6 @@ public class RubyCompletionProposalCollector extends
 
 	public RubyCompletionProposalCollector(ISourceModule module) {
 		super(module);
-	}
-
-	// Label provider
-	protected CompletionProposalLabelProvider createLabelProvider() {
-		return new RubyCompletionProposalLabelProvider();
-	}
-
-	// Invocation context
-	protected ScriptContentAssistInvocationContext createScriptContentAssistInvocationContext(
-			ISourceModule sourceModule) {
-		return new ScriptContentAssistInvocationContext(sourceModule) {
-			protected CompletionProposalLabelProvider createLabelProvider() {
-				return new RubyCompletionProposalLabelProvider();
-			}
-		};
 	}
 
 	// Specific proposals creation. May be use factory?
@@ -67,8 +51,8 @@ public class RubyCompletionProposalCollector extends
 			IScriptProject scriptProject, ISourceModule compilationUnit,
 			String name, String[] paramTypes, int start, int length,
 			String displayName, String completionProposal) {
-		return new RubyOverrideCompletionProposal(scriptProject, compilationUnit,
-				name, paramTypes, start, length, displayName,
+		return new RubyOverrideCompletionProposal(scriptProject,
+				compilationUnit, name, paramTypes, start, length, displayName,
 				completionProposal);
 	}
 
@@ -78,10 +62,14 @@ public class RubyCompletionProposalCollector extends
 		int start = proposal.getReplaceStart();
 		int length = getLength(proposal);
 		String label = getLabelProvider().createSimpleLabel(proposal);
-		Image img = getImage(getLabelProvider().createImageDescriptor(
-				proposal));
+		Image img = getImage(getLabelProvider().createImageDescriptor(proposal));
 		int relevance = computeRelevance(proposal);
 		return createScriptCompletionProposal(completion, start, length, img,
 				label, relevance);
+	}
+
+	@Override
+	protected String getNatureId() {
+		return RubyNature.NATURE_ID;
 	}
 }
