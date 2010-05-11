@@ -18,18 +18,17 @@ import org.eclipse.dltk.ui.preferences.OverlayPreferenceStore;
 public class RubyEditorPreferencesPage extends
 		AbstractConfigurationBlockPreferencePage {
 
-	protected String getHelpId() {
-		return null;
-	}
-
+	@Override
 	protected void setDescription() {
 		setDescription(RubyPreferencesMessages.EditorPreferencePageDescription);
 	}
 
+	@Override
 	protected void setPreferenceStore() {
 		setPreferenceStore(RubyUI.getDefault().getPreferenceStore());
 	}
 
+	@Override
 	protected IPreferenceConfigurationBlock createConfigurationBlock(
 			OverlayPreferenceStore overlayPreferenceStore) {
 		return new EditorConfigurationBlock(this, overlayPreferenceStore,
