@@ -222,6 +222,8 @@ public class RubyDocumentationProvider implements IScriptDocumentationProvider {
 	private Reader proccessBuiltinMethod(IMethod method) {
 		final String divider = "#"; //$NON-NLS-1$
 		IModelElement pp = method.getAncestor(IModelElement.TYPE);
+		if (pp == null)
+			return null;
 		if (pp.getElementName().startsWith("<<")) //$NON-NLS-1$
 			pp = pp.getAncestor(IModelElement.TYPE);
 		String keyword = pp.getElementName() + divider
