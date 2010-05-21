@@ -1995,6 +1995,8 @@ public class RubyASTBuildVisitor implements NodeVisitor {
 		if (value.length() == 0 && !isEmptyString(start, end)) {
 			// FIXME why do we need this code? only for the __FILE__?
 			value = String.copyValueOf(content, start, end - start);
+		} else {
+			value = '"' + value + '"';
 		}
 		states.peek().add(new StringLiteral(start, end, value));
 		return null;
