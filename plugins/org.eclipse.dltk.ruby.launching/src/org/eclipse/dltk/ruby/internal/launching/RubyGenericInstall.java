@@ -37,7 +37,7 @@ public class RubyGenericInstall extends AbstractInterpreterInstall {
 	public class BuiltinsHelper {
 		private static final String PREFIX = "#### DLTK RUBY BUILTINS ####"; //$NON-NLS-1$
 
-		private Map sources;
+		private Map<String, String> sources;
 
 		private String[] generateLines() throws IOException, CoreException {
 			IExecutionEnvironment exeEnv = getExecEnvironment();
@@ -48,7 +48,7 @@ public class RubyGenericInstall extends AbstractInterpreterInstall {
 			final IPath builder = deployment.add(RubyLaunchingPlugin
 					.getDefault().getBundle(), "scripts/builtin.rb"); //$NON-NLS-1$
 
-			final List lines = new ArrayList();
+			final List<String> lines = new ArrayList<String>();
 
 			IFileHandle builderFile = deployment.getFile(builder);
 			InterpreterConfig config = ScriptLaunchUtil
@@ -100,7 +100,7 @@ public class RubyGenericInstall extends AbstractInterpreterInstall {
 				}
 			}
 			deployment.dispose();
-			return (String[]) lines.toArray(new String[lines.size()]);
+			return lines.toArray(new String[lines.size()]);
 		}
 
 		private void parseLines(String[] lines) {
@@ -112,7 +112,7 @@ public class RubyGenericInstall extends AbstractInterpreterInstall {
 				int index = line.indexOf(PREFIX);
 				if (index != -1) {
 					if (fileName != null) {
-						String old = (String) sources.get(fileName);
+						String old = sources.get(fileName);
 						if (old == null)
 							sources.put(fileName, sb.toString());
 						else
@@ -129,9 +129,9 @@ public class RubyGenericInstall extends AbstractInterpreterInstall {
 			}
 		}
 
-		public synchronized Map getSources() {
+		public synchronized Map<String, String> getSources() {
 			if (sources == null) {
-				sources = new HashMap();
+				sources = new HashMap<String, String>();
 
 				try {
 					String[] lines = generateLines();
@@ -178,8 +178,8 @@ public class RubyGenericInstall extends AbstractInterpreterInstall {
 
 	// Builtins
 	public String getBuiltinModuleContent(String name) {
-		final Map sources = helper.getSources();
-		return (String) sources.get(name);
+		final Map<String, String> sources = helper.getSources();
+		return sources.get(name);
 	}
 
 	public long lastModified() {
@@ -188,7 +188,7 @@ public class RubyGenericInstall extends AbstractInterpreterInstall {
 	}
 
 	public String[] getBuiltinModules() {
-		final Map sources = helper.getSources();
-		return (String[]) sources.keySet().toArray(new String[sources.size()]);
+		final Map<String, String> sources = helper.getSources();
+		return sources.keySet().toArray(new String[sources.size()]);
 	}
 }
