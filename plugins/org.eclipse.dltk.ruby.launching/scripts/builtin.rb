@@ -546,7 +546,7 @@ def put_constants(metaclass)
 	for c in consts
 		v = metaclass.const_get(c)
 		if !@classesAndModules.include?(v)
-			$data << c + '=' + v.class.to_s + ".new\n"  
+			$data << c.to_s + '=' + v.class.to_s + ".new\n"  
 		end
 	end
 end
