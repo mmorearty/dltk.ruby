@@ -13,6 +13,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,24 +30,34 @@ import org.eclipse.dltk.launching.IInterpreterInstallType;
 import org.eclipse.dltk.launching.IInterpreterRunner;
 import org.eclipse.dltk.launching.InterpreterConfig;
 import org.eclipse.dltk.launching.ScriptLaunchUtil;
+import org.eclipse.dltk.launching.model.InterpreterGeneratedContent;
+import org.eclipse.dltk.launching.model.LaunchingModel;
+import org.eclipse.dltk.launching.model.LaunchingModelFactory;
+import org.eclipse.dltk.launching.model.util.GeneratedContentPredicate;
 import org.eclipse.dltk.ruby.core.RubyNature;
 import org.eclipse.dltk.ruby.launching.RubyLaunchingPlugin;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 
 public class RubyGenericInstall extends AbstractInterpreterInstall {
 
 	public class BuiltinsHelper {
+
+		private static final int CACHE_LIFETIME = 24 * 60 * 60 * 1000;
+
+		private static final String SCRIPT_NAME = "scripts/builtin.rb"; //$NON-NLS-1$
+
 		private static final String PREFIX = "#### DLTK RUBY BUILTINS ####"; //$NON-NLS-1$
 
 		private Map<String, String> sources;
 
-		private String[] generateLines() throws IOException, CoreException {
+		private List<String> generateLines() throws IOException, CoreException {
 			IExecutionEnvironment exeEnv = getExecEnvironment();
 			IDeployment deployment = exeEnv.createDeployment();
 			if (deployment == null) {
 				return null;
 			}
 			final IPath builder = deployment.add(RubyLaunchingPlugin
-					.getDefault().getBundle(), "scripts/builtin.rb"); //$NON-NLS-1$
+					.getDefault().getBundle(), SCRIPT_NAME);
 
 			final List<String> lines = new ArrayList<String>();
 
@@ -100,15 +111,13 @@ public class RubyGenericInstall extends AbstractInterpreterInstall {
 				}
 			}
 			deployment.dispose();
-			return lines.toArray(new String[lines.size()]);
+			return lines;
 		}
 
-		private void parseLines(String[] lines) {
+		private void parseLines(List<String> lines) {
 			String fileName = null;
 			StringBuffer sb = new StringBuffer();
-			for (int i = 0; i < lines.length; ++i) {
-				String line = lines[i];
-
+			for (String line : lines) {
 				int index = line.indexOf(PREFIX);
 				if (index != -1) {
 					if (fileName != null) {
@@ -132,21 +141,67 @@ public class RubyGenericInstall extends AbstractInterpreterInstall {
 		public synchronized Map<String, String> getSources() {
 			if (sources == null) {
 				sources = new HashMap<String, String>();
+				load();
+			}
+			return sources;
+		}
 
-				try {
-					String[] lines = generateLines();
-					if (lines != null) {
-						parseLines(lines);
-					}
-				} catch (IOException e) {
-					e.printStackTrace();
-				} catch (CoreException e) {
-					e.printStackTrace();
+		private void load() {
+			InterpreterGeneratedContent content = (InterpreterGeneratedContent) LaunchingModel
+					.getInstance().find(RubyGenericInstall.this,
+							new GeneratedContentPredicate(SCRIPT_NAME));
+			if (content != null
+					&& content.getValue() != null
+					&& content.getLastModified() != null
+					&& content.getInterpreterLastModified() != null
+					&& content.getInterpreterLastModified().getTime() == getInstallLocation()
+							.lastModified()) {
+				if (content.getFetchedAt() != null
+						&& content.getFetchedAt().getTime() + CACHE_LIFETIME > System
+								.currentTimeMillis()) {
+					parseLines(content.getValue());
+					lastModified = content.getLastModified().getTime();
+					return;
 				}
-				lastModified = System.currentTimeMillis();
+			} else {
+				content = null;
 			}
 
-			return sources;
+			try {
+				final List<String> lines = generateLines();
+				if (lines != null) {
+					parseLines(lines);
+					if (content != null) {
+						content = (InterpreterGeneratedContent) EcoreUtil
+								.copy(content);
+						content.setFetchedAt(new Date());
+						if (!lines.equals(content.getValue())) {
+							content.getValue().clear();
+							content.getValue().addAll(lines);
+							content.setLastModified(content.getFetchedAt());
+						}
+					} else {
+						content = LaunchingModelFactory.eINSTANCE
+								.createInterpreterGeneratedContent();
+						content.setKey(SCRIPT_NAME);
+						content.setFetchedAt(new Date());
+						content.setLastModified(content.getFetchedAt());
+						content.getValue().clear();
+						content.getValue().addAll(lines);
+						content.setInterpreterLastModified(new Date(
+								getInstallLocation().lastModified()));
+					}
+					LaunchingModel.getInstance()
+							.save(RubyGenericInstall.this,
+									new GeneratedContentPredicate(SCRIPT_NAME),
+									content);
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (CoreException e) {
+				e.printStackTrace();
+			}
+			lastModified = System.currentTimeMillis();
 		}
 
 		long lastModified;
