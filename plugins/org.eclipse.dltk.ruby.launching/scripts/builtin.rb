@@ -676,7 +676,10 @@ def process_all
 		#File.open(file, 'a') {|f| f.write $data}
 	}
 
-	ccc = Module.constants.to_a
+	ccc = []
+	Module.constants.each { |x|
+		ccc << x.to_s 
+	}
 	ccc.delete('DLTKBuiltinGenerator')
 	ccc.delete('DLTKBuiltinGeneratorSet')
 	known_modules.each { |x|
