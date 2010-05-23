@@ -171,6 +171,7 @@ public class FastDebuggerRunner extends DebuggingEngineRunner {
 	}
 
 	public boolean resolveRubyDebugGemExists() {
+		// TODO check in directories returned by `gem19 environment gempath`
 		return resolveRubyDebugGemExists(true)
 				|| resolveRubyDebugGemExists(false);
 	}
