@@ -195,13 +195,13 @@ public class RubyGenericInstall extends AbstractInterpreterInstall {
 							.save(RubyGenericInstall.this,
 									new GeneratedContentPredicate(SCRIPT_NAME),
 									content);
+					lastModified = content.getLastModified().getTime();
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			} catch (CoreException e) {
 				e.printStackTrace();
 			}
-			lastModified = System.currentTimeMillis();
 		}
 
 		long lastModified;
