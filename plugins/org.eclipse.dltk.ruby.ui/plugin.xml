@@ -327,19 +327,6 @@
               contextId="org.eclipse.dltk.ui.rubyEditorScope"
               schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
               sequence="M1+M2+H"/> 
-        <key
-              commandId="org.eclipse.dltk.ui.edit.text.script.format"
-              contextId="org.eclipse.dltk.ui.rubyEditorScope"
-              schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-              sequence="M1+M2+F">
-        </key>
-        <key
-              commandId="org.eclipse.dltk.ui.edit.text.script.format"
-              contextId="org.eclipse.dltk.ui.rubyEditorScope"
-              platform="gtk"
-              schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-              sequence="ESC CTRL+F">
-        </key> 
  </extension>
   
 <extension
