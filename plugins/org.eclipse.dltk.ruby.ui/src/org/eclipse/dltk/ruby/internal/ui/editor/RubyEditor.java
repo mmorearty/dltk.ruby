@@ -13,7 +13,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.dltk.core.IDLTKLanguageToolkit;
 import org.eclipse.dltk.core.IModelElement;
-import org.eclipse.dltk.internal.ui.actions.FoldingActionGroup;
 import org.eclipse.dltk.internal.ui.editor.ScriptEditor;
 import org.eclipse.dltk.internal.ui.editor.ScriptOutlinePage;
 import org.eclipse.dltk.ruby.core.RubyLanguageToolkit;
@@ -21,7 +20,6 @@ import org.eclipse.dltk.ruby.internal.ui.RubyUI;
 import org.eclipse.dltk.ruby.internal.ui.text.IRubyPartitions;
 import org.eclipse.dltk.ruby.internal.ui.text.RubyPairMatcher;
 import org.eclipse.dltk.ruby.internal.ui.text.folding.RubyFoldingStructureProvider;
-import org.eclipse.dltk.ui.actions.GenerateActionGroup;
 import org.eclipse.dltk.ui.text.ScriptTextTools;
 import org.eclipse.dltk.ui.text.folding.IFoldingStructureProvider;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -32,8 +30,6 @@ import org.eclipse.jface.text.source.ICharacterPairMatcher;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.actions.ActionGroup;
-import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 
 public class RubyEditor extends ScriptEditor {
 	public static final String EDITOR_ID = "org.eclipse.dltk.ruby.ui.editor.RubyEditor"; //$NON-NLS-1$
@@ -85,11 +81,6 @@ public class RubyEditor extends ScriptEditor {
 		return fFoldingProvider;
 	}
 
-	protected FoldingActionGroup createFoldingActionGroup() {
-		return new FoldingActionGroup(this, getViewer(), RubyUI.getDefault()
-				.getPreferenceStore());
-	}
-
 	public String getEditorId() {
 		return EDITOR_ID;
 	}
@@ -104,13 +95,6 @@ public class RubyEditor extends ScriptEditor {
 
 	protected void initializeKeyBindingScopes() {
 		setKeyBindingScopes(new String[] { "org.eclipse.dltk.ui.rubyEditorScope" }); //$NON-NLS-1$
-	}
-
-	protected void createActions() {
-		super.createActions();
-		ActionGroup generateActions = new GenerateActionGroup(this, ITextEditorActionConstants.GROUP_EDIT);
-		fActionGroups.addGroup(generateActions);
-		fContextMenuGroup.addGroup(generateActions);
 	}
 
 	public void createPartControl(Composite parent) {
