@@ -107,8 +107,8 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 
 	private RubyMixinModel mixinModel;
 
-	public void select(IModuleSource sourceUnit, int selectionSourceStart,
-			int selectionSourceEnd) {
+	public IModelElement[] select(IModuleSource sourceUnit,
+			int selectionSourceStart, int selectionSourceEnd) {
 		sourceModule = (ISourceModule) sourceUnit.getModelElement();
 		mixinModel = RubyMixinModel
 				.getInstance(sourceModule.getScriptProject());
@@ -124,7 +124,7 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 			System.out.println(source);
 		}
 		if (!checkSelection(source, selectionSourceStart, selectionSourceEnd)) {
-			return;
+			return new IModelElement[0];
 		}
 		actualSelectionEnd--; // inclusion fix
 		if (DEBUG) {
@@ -147,7 +147,7 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 						actualSelectionStart, actualSelectionEnd);
 
 				if (node == null)
-					return;
+					return new IModelElement[0];
 
 				this.wayToNode = ASTUtils.restoreWayToNode(parsedUnit, node);
 
@@ -178,7 +178,9 @@ public class RubySelectionEngine extends ScriptSelectionEngine {
 		} catch (IndexOutOfBoundsException e) { // work-around internal failure
 			RubyPlugin.log(e);
 		}
-		reportModelElements(selectionElements);
+
+		return (IModelElement[]) selectionElements
+				.toArray(new IModelElement[selectionElements.size()]);
 	}
 
 	private void selectOnSuper(ModuleDeclaration parsedUnit,
