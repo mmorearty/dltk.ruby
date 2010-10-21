@@ -128,14 +128,14 @@ public class RubyMatchLocatorParser extends MatchLocatorParser {
 		while (node != null) {
 			if (node instanceof RubyColonExpression) {
 				typeName = ((RubyColonExpression) node).getName();
-				TypeReference ref = new TypeReferenceLocation(node
-						.sourceStart(), node.sourceEnd(), typeName);
+				TypeReference ref = new TypeReferenceLocation(
+						node.sourceStart(), node.sourceEnd(), typeName);
 				locator.match(ref, this.getNodeSet());
 				node = ((RubyColonExpression) node).getLeft();
 			} else if (node instanceof ConstantReference) {
 				typeName = ((ConstantReference) node).getName();
-				TypeReference ref = new TypeReferenceLocation(node
-						.sourceStart(), node.sourceEnd(), typeName);
+				TypeReference ref = new TypeReferenceLocation(
+						node.sourceStart(), node.sourceEnd(), typeName);
 				locator.match(ref, this.getNodeSet());
 				node = null;
 			} else {
@@ -151,8 +151,8 @@ public class RubyMatchLocatorParser extends MatchLocatorParser {
 			pos = 0;
 		}
 		locator.match(new SimpleReferenceLocation(pos, pos
-				+ simpleRef.getName().length(), simpleRef.getName()), this
-				.getNodeSet());
+				+ simpleRef.getName().length(), simpleRef.getName()),
+				this.getNodeSet());
 	}
 
 	protected void processStatement(ASTNode node, PatternLocator locator) {
@@ -187,52 +187,52 @@ public class RubyMatchLocatorParser extends MatchLocatorParser {
 			ASTNode left = assignment.getLeft();
 			if (left instanceof VariableReference) {
 				VariableReference var = (VariableReference) left;
-				FieldDeclaration field = new FieldDeclarationLocation(var
-						.getName(), var.sourceStart(), var.sourceEnd() - 1, var
-						.sourceStart(), var.sourceEnd() - 1);
+				FieldDeclaration field = new FieldDeclarationLocation(
+						var.getName(), var.sourceStart(), var.sourceEnd() - 1,
+						var.sourceStart(), var.sourceEnd() - 1);
 				locator.match(field, this.getNodeSet());
 			}
 		} else if (node instanceof Literal) {
 			if (node instanceof RubyRegexpExpression) {
-				TypeReference ref = new TypeReferenceLocation(node
-						.sourceStart(), node.sourceEnd(), "Regexp"); //$NON-NLS-1$
+				TypeReference ref = new TypeReferenceLocation(
+						node.sourceStart(), node.sourceEnd(), "Regexp"); //$NON-NLS-1$
 				locator.match(ref, this.getNodeSet());
 			} else if (node instanceof StringLiteral) {
-				TypeReference ref = new TypeReferenceLocation(node
-						.sourceStart(), node.sourceEnd(), "String"); //$NON-NLS-1$
+				TypeReference ref = new TypeReferenceLocation(
+						node.sourceStart(), node.sourceEnd(), "String"); //$NON-NLS-1$
 				locator.match(ref, this.getNodeSet());
 			} else if (node instanceof BooleanLiteral) {
 				BooleanLiteral boolLit = (BooleanLiteral) node;
 				TypeReference ref;
 				if (boolLit.boolValue()) {
-					ref = new TypeReferenceLocation(node.sourceStart(), node
-							.sourceEnd(), "TrueClass"); //$NON-NLS-1$
+					ref = new TypeReferenceLocation(node.sourceStart(),
+							node.sourceEnd(), "TrueClass"); //$NON-NLS-1$
 				} else {
-					ref = new TypeReferenceLocation(node.sourceStart(), node
-							.sourceEnd(), "FalseClass"); //$NON-NLS-1$
+					ref = new TypeReferenceLocation(node.sourceStart(),
+							node.sourceEnd(), "FalseClass"); //$NON-NLS-1$
 				}
 				locator.match(ref, this.getNodeSet());
 			} else if (node instanceof NumericLiteral) {
-				TypeReference ref = new TypeReferenceLocation(node
-						.sourceStart(), node.sourceEnd(), "Fixnum"); //$NON-NLS-1$
+				TypeReference ref = new TypeReferenceLocation(
+						node.sourceStart(), node.sourceEnd(), "Fixnum"); //$NON-NLS-1$
 				locator.match(ref, this.getNodeSet());
 			} else if (node instanceof NilLiteral) {
-				TypeReference ref = new TypeReferenceLocation(node
-						.sourceStart(), node.sourceEnd(), "NilClass"); //$NON-NLS-1$
+				TypeReference ref = new TypeReferenceLocation(
+						node.sourceStart(), node.sourceEnd(), "NilClass"); //$NON-NLS-1$
 				locator.match(ref, this.getNodeSet());
 			} else if (node instanceof FloatNumericLiteral) {
-				TypeReference ref = new TypeReferenceLocation(node
-						.sourceStart(), node.sourceEnd(), "Float"); //$NON-NLS-1$
+				TypeReference ref = new TypeReferenceLocation(
+						node.sourceStart(), node.sourceEnd(), "Float"); //$NON-NLS-1$
 				locator.match(ref, this.getNodeSet());
 			} else if (node instanceof BigNumericLiteral) {
-				TypeReference ref = new TypeReferenceLocation(node
-						.sourceStart(), node.sourceEnd(), "Bignum"); //$NON-NLS-1$
+				TypeReference ref = new TypeReferenceLocation(
+						node.sourceStart(), node.sourceEnd(), "Bignum"); //$NON-NLS-1$
 				locator.match(ref, this.getNodeSet());
 			}
 		} else if (node instanceof Reference) {
 			if (node instanceof RubySymbolReference) {
-				TypeReference ref = new TypeReferenceLocation(node
-						.sourceStart(), node.sourceEnd(), "Symbol"); //$NON-NLS-1$
+				TypeReference ref = new TypeReferenceLocation(
+						node.sourceStart(), node.sourceEnd(), "Symbol"); //$NON-NLS-1$
 				locator.match(ref, this.getNodeSet());
 			} else if (node instanceof VariableReference) {
 				reportSimpleReferenceMatch((SimpleReference) node, locator);
@@ -245,9 +245,9 @@ public class RubyMatchLocatorParser extends MatchLocatorParser {
 		} else if (node instanceof RubyConstantDeclaration) {
 			RubyConstantDeclaration var = (RubyConstantDeclaration) node;
 			SimpleReference name = var.getName();
-			FieldDeclaration field = new FieldDeclarationLocation(name
-					.getName(), name.sourceStart(), name.sourceEnd(), name
-					.sourceStart(), name.sourceEnd());
+			FieldDeclaration field = new FieldDeclarationLocation(
+					name.getName(), name.sourceStart(), name.sourceEnd(),
+					name.sourceStart(), name.sourceEnd());
 			locator.match(field, this.getNodeSet());
 		}
 	}
