@@ -11,10 +11,9 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.internal.core.search;
 
-import org.eclipse.dltk.compiler.CharOperation;
-import org.eclipse.dltk.core.ISearchPatternProcessor;
+import org.eclipse.dltk.core.search.SearchPatternProcessor;
 
-public class RubySearchPatternProcessor implements ISearchPatternProcessor {
+public class RubySearchPatternProcessor extends SearchPatternProcessor {
 
 	private static final String TYPE_DELIMITER = "::"; //$NON-NLS-1$
 
@@ -51,26 +50,16 @@ public class RubySearchPatternProcessor implements ISearchPatternProcessor {
 		return pattern.toCharArray();
 	}
 
-	public String extractTypeChars(String pattern) {
-		final int pos = pattern.lastIndexOf(TYPE_DELIMITER);
+	@Override
+	public ITypePattern parseType(String patternString) {
+		final int pos = patternString.lastIndexOf(TYPE_DELIMITER);
 		if (pos != -1) {
-			final int begin = pos + TYPE_DELIMITER.length();
-			if (begin < pattern.length()) {
-				return pattern.substring(begin);
-			}
+			return new TypePatten(patternString.substring(0, pos).replace(
+					TYPE_DELIMITER, TYPE_SEPARATOR_STR),
+					patternString.substring(pos + TYPE_DELIMITER.length()));
+		} else {
+			return new TypePatten(null, patternString);
 		}
-		return pattern;
-	}
-
-	public char[] extractTypeQualification(String pattern) {
-		final int pos = pattern.lastIndexOf(TYPE_DELIMITER);
-		if (pos != -1) {
-			final char[] result = new char[pos];
-			pattern.getChars(0, pos, result, 0);
-			return CharOperation.replace(result, TYPE_DELIMITER.toCharArray(),
-					new char[] { '$' });
-		}
-		return null;
 	}
 
 	public String getDelimiterReplacementString() {
