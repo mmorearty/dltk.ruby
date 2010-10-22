@@ -256,18 +256,6 @@ public class RubySourceViewerConfiguration extends
 		};
 	}
 
-	protected void initializeQuickOutlineContexts(
-			InformationPresenter presenter, IInformationProvider provider) {
-		presenter
-				.setInformationProvider(provider, IRubyPartitions.RUBY_COMMENT);
-		presenter.setInformationProvider(provider, IRubyPartitions.RUBY_DOC);
-		presenter.setInformationProvider(provider, IRubyPartitions.RUBY_STRING);
-		presenter.setInformationProvider(provider,
-				IRubyPartitions.RUBY_PERCENT_STRING);
-		presenter.setInformationProvider(provider,
-				IRubyPartitions.RUBY_SINGLE_QUOTE_STRING);
-	}
-
 	protected Map getHyperlinkDetectorTargets(final ISourceViewer sourceViewer) {
 		final Map targets = super.getHyperlinkDetectorTargets(sourceViewer);
 		targets.put("org.eclipse.dltk.ruby.code", getEditor()); //$NON-NLS-1$
