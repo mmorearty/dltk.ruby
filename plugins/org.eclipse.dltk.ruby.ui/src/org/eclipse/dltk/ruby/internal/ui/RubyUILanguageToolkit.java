@@ -18,11 +18,13 @@ import org.eclipse.dltk.ruby.core.RubyConstants;
 import org.eclipse.dltk.ruby.core.RubyLanguageToolkit;
 import org.eclipse.dltk.ruby.internal.ui.editor.RubyEditor;
 import org.eclipse.dltk.ruby.internal.ui.preferences.SimpleRubySourceViewerConfiguration;
+import org.eclipse.dltk.ruby.internal.ui.templates.RubyTemplateAccess;
 import org.eclipse.dltk.ui.AbstractDLTKUILanguageToolkit;
 import org.eclipse.dltk.ui.IDLTKUILanguageToolkit;
 import org.eclipse.dltk.ui.ScriptElementLabels;
 import org.eclipse.dltk.ui.text.ScriptSourceViewerConfiguration;
 import org.eclipse.dltk.ui.text.ScriptTextTools;
+import org.eclipse.dltk.ui.text.templates.ITemplateAccess;
 import org.eclipse.dltk.ui.viewsupport.ScriptUILabelProvider;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -142,5 +144,10 @@ public class RubyUILanguageToolkit extends AbstractDLTKUILanguageToolkit {
 
 	public String[] getEditorPreferencePages() {
 		return EDITOR_PREFERENCE_PAGES_IDS;
+	}
+
+	@Override
+	public ITemplateAccess getEditorTemplates() {
+		return RubyTemplateAccess.getInstance();
 	}
 }
