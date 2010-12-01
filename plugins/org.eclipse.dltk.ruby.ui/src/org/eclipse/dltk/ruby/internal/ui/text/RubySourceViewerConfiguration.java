@@ -17,7 +17,6 @@ import java.util.Map;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.dltk.internal.ui.editor.EditorUtility;
 import org.eclipse.dltk.internal.ui.editor.ScriptSourceViewer;
-import org.eclipse.dltk.internal.ui.text.HTMLTextPresenter;
 import org.eclipse.dltk.internal.ui.text.ScriptElementProvider;
 import org.eclipse.dltk.ruby.internal.ui.text.completion.RubyCompletionProcessor;
 import org.eclipse.dltk.ruby.internal.ui.text.completion.RubyContentAssistPreference;
@@ -29,7 +28,6 @@ import org.eclipse.dltk.ui.text.ScriptSourceViewerConfiguration;
 import org.eclipse.dltk.ui.text.completion.ContentAssistPreference;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.AbstractInformationControlManager;
-import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IAutoEditStrategy;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IInformationControl;
@@ -244,16 +242,6 @@ public class RubySourceViewerConfiguration extends
 
 	protected ContentAssistPreference getContentAssistPreference() {
 		return RubyContentAssistPreference.getDefault();
-	}
-
-	public IInformationControlCreator getInformationControlCreator(
-			ISourceViewer sourceViewer) {
-		return new IInformationControlCreator() {
-			public IInformationControl createInformationControl(Shell parent) {
-				return new DefaultInformationControl(parent, SWT.NONE,
-						new HTMLTextPresenter(true), ""); //$NON-NLS-1$
-			}
-		};
 	}
 
 	protected Map getHyperlinkDetectorTargets(final ISourceViewer sourceViewer) {
