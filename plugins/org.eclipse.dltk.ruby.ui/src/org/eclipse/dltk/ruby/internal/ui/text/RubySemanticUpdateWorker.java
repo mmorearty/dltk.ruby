@@ -11,20 +11,26 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.internal.ui.text;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Stack;
 
 import org.eclipse.dltk.ast.ASTNode;
 import org.eclipse.dltk.ast.ASTVisitor;
 import org.eclipse.dltk.ast.declarations.Declaration;
+import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
 import org.eclipse.dltk.ast.expressions.BigNumericLiteral;
 import org.eclipse.dltk.ast.expressions.CallExpression;
 import org.eclipse.dltk.ast.expressions.FloatNumericLiteral;
 import org.eclipse.dltk.ast.expressions.NumericLiteral;
 import org.eclipse.dltk.ast.expressions.StringLiteral;
+import org.eclipse.dltk.ast.parser.IModuleDeclaration;
 import org.eclipse.dltk.ast.references.SimpleReference;
 import org.eclipse.dltk.ast.references.VariableReference;
 import org.eclipse.dltk.compiler.env.IModuleSource;
+import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.ModelException;
+import org.eclipse.dltk.core.SourceParserUtil;
 import org.eclipse.dltk.ruby.ast.RubyConstantDeclaration;
 import org.eclipse.dltk.ruby.ast.RubyDAssgnExpression;
 import org.eclipse.dltk.ruby.ast.RubyDRegexpExpression;
@@ -33,16 +39,21 @@ import org.eclipse.dltk.ruby.ast.RubyDynamicStringExpression;
 import org.eclipse.dltk.ruby.ast.RubyEvaluatableStringExpression;
 import org.eclipse.dltk.ruby.ast.RubyRegexpExpression;
 import org.eclipse.dltk.ruby.ast.RubySymbolReference;
+import org.eclipse.dltk.ruby.core.RubyNature;
 import org.eclipse.dltk.ruby.core.utils.RubySyntaxUtils;
 import org.eclipse.dltk.ruby.internal.ui.RubyPreferenceConstants;
 import org.eclipse.dltk.ruby.ui.preferences.RubyPreferencesMessages;
+import org.eclipse.dltk.ui.editor.highlighting.AbortSemanticHighlightingException;
+import org.eclipse.dltk.ui.editor.highlighting.ISemanticHighlighter;
+import org.eclipse.dltk.ui.editor.highlighting.ISemanticHighlighterExtension;
 import org.eclipse.dltk.ui.editor.highlighting.ISemanticHighlightingRequestor;
 import org.eclipse.dltk.ui.editor.highlighting.SemanticHighlighting;
 import org.eclipse.dltk.ui.preferences.PreferencesMessages;
 
-public class RubySemanticUpdateWorker extends ASTVisitor {
+public class RubySemanticUpdateWorker extends ASTVisitor implements
+		ISemanticHighlighter, ISemanticHighlighterExtension {
 
-	public static SemanticHighlighting[] getSemanticHighlightings() {
+	public SemanticHighlighting[] getSemanticHighlightings() {
 		return new SemanticHighlighting[] {
 				new RubySemanticHighlighting(
 						RubyPreferenceConstants.EDITOR_REGEXP_COLOR,
@@ -75,30 +86,20 @@ public class RubySemanticUpdateWorker extends ASTVisitor {
 						null) };
 	}
 
-	private static final int HL_REGEXP = 0;
-	private static final int HL_STRING = 1;
-	private static final int HL_SYMBOL = 2;
-	private static final int HL_LOCAL_VARIABLE = 3;
-	private static final int HL_INSTANCE_VARIABLE = 4;
-	private static final int HL_CLASS_VARIABLE = 5;
-	private static final int HL_GLOBAL_VARIABLE = 6;
-	private static final int HL_CONST = 7;
-	private static final int HL_NUMBER = 8;
-	private static final int HL_EVAL_EXPR = 9;
-	private static final int HL_DEFAULT = 10;
+	private static final String HL_REGEXP = RubyPreferenceConstants.EDITOR_REGEXP_COLOR;
+	private static final String HL_STRING = RubyPreferenceConstants.EDITOR_STRING_COLOR;
+	private static final String HL_SYMBOL = RubyPreferenceConstants.EDITOR_SYMBOLS_COLOR;
+	private static final String HL_LOCAL_VARIABLE = RubyPreferenceConstants.EDITOR_VARIABLE_COLOR;
+	private static final String HL_INSTANCE_VARIABLE = RubyPreferenceConstants.EDITOR_INSTANCE_VARIABLE_COLOR;
+	private static final String HL_CLASS_VARIABLE = RubyPreferenceConstants.EDITOR_CLASS_VARIABLE_COLOR;
+	private static final String HL_GLOBAL_VARIABLE = RubyPreferenceConstants.EDITOR_GLOBAL_VARIABLE_COLOR;
+	private static final String HL_CONST = RubyPreferenceConstants.EDITOR_CONST_COLOR;
+	private static final String HL_NUMBER = RubyPreferenceConstants.EDITOR_NUMBER_COLOR;
+	private static final String HL_EVAL_EXPR = RubyPreferenceConstants.EDITOR_EVAL_EXPR_COLOR;
+	private static final String HL_DEFAULT = IRubyColorConstants.RUBY_DEFAULT;
 
-	private final ISemanticHighlightingRequestor requestor;
-	private final char[] content;
-
-	/**
-	 * @param code
-	 * @throws ModelException
-	 */
-	public RubySemanticUpdateWorker(ISemanticHighlightingRequestor requestor,
-			IModuleSource code) throws ModelException {
-		this.requestor = requestor;
-		this.content = code.getContentsAsCharArray();
-	}
+	private ISemanticHighlightingRequestor requestor;
+	private char[] content;
 
 	private static final boolean ACTIVE = true;
 
@@ -141,14 +142,14 @@ public class RubySemanticUpdateWorker extends ASTVisitor {
 				final SimpleReference callName = call.getCallName();
 				if (callName.sourceStart() >= 0
 						&& callName.sourceEnd() > callName.sourceStart()) {
-					requestor.addPosition(callName.sourceStart(), callName
-							.sourceEnd(), HL_DEFAULT);
+					requestor.addPosition(callName.sourceStart(),
+							callName.sourceEnd(), HL_DEFAULT);
 				}
 			}
 		} else if (node instanceof Declaration) {
 			final Declaration declaration = (Declaration) node;
-			requestor.addPosition(declaration.getNameStart(), declaration
-					.getNameEnd(), HL_DEFAULT);
+			requestor.addPosition(declaration.getNameStart(),
+					declaration.getNameEnd(), HL_DEFAULT);
 		} else if (node instanceof RubyConstantDeclaration) {
 			final RubyConstantDeclaration declaration = (RubyConstantDeclaration) node;
 			final SimpleReference name = declaration.getName();
@@ -243,6 +244,50 @@ public class RubySemanticUpdateWorker extends ASTVisitor {
 			}
 		}
 		requestor.addPosition(start, end, HL_REGEXP);
+	}
+
+	public String[] getHighlightingKeys() {
+		final Set<String> result = new HashSet<String>();
+		for (SemanticHighlighting highlighting : getSemanticHighlightings()) {
+			result.add(highlighting.getPreferenceKey());
+		}
+		return result.toArray(new String[result.size()]);
+	}
+
+	public void process(IModuleSource code,
+			ISemanticHighlightingRequestor requestor) {
+		this.requestor = requestor;
+		this.content = code.getContentsAsCharArray();
+		try {
+			((ModuleDeclaration) parseCode(code)).traverse(this);
+		} catch (ModelException e) {
+			throw new AbortSemanticHighlightingException();
+		} catch (Exception e) {
+			throw new AbortSemanticHighlightingException();
+		}
+	}
+
+	/**
+	 * @param code
+	 * @return
+	 * @throws ModelException
+	 */
+	protected IModuleDeclaration parseCode(IModuleSource code)
+			throws ModelException {
+		if (code instanceof ISourceModule) {
+			return parseSourceModule((ISourceModule) code);
+		} else {
+			return parseSourceCode(code);
+		}
+	}
+
+	private IModuleDeclaration parseSourceCode(IModuleSource code) {
+		return SourceParserUtil.parse(code, RubyNature.NATURE_ID, null);
+	}
+
+	private IModuleDeclaration parseSourceModule(
+			final ISourceModule sourceModule) {
+		return SourceParserUtil.parse(sourceModule, null);
 	}
 
 }
