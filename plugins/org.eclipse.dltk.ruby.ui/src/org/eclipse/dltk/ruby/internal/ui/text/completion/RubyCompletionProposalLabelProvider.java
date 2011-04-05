@@ -83,7 +83,7 @@ public class RubyCompletionProposalLabelProvider extends
 		return nameBuffer.toString();
 	}
 
-	protected String createTypeProposalLabel(CompletionProposal typeProposal) {
+	public String createTypeProposalLabel(CompletionProposal typeProposal) {
 		final StringBuffer nameBuffer = new StringBuffer();
 		final IType type = (IType) typeProposal.getModelElement();
 		RubyLabelProvider.appendQualifiedType(type, nameBuffer);
