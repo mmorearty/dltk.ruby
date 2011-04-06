@@ -47,7 +47,7 @@ public class RubyEditor extends ScriptEditor {
 		setRulerContextMenuId(RULER_CONTEXT);
 	}
 
-	protected IPreferenceStore getScriptPreferenceStore() {
+	public IPreferenceStore getScriptPreferenceStore() {
 		return RubyUI.getDefault().getPreferenceStore();
 	}
 
