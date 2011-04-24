@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.eclipse.dltk.ruby.ui.tests
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 3.0.0.qualifier
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
@@ -11,7 +11,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.workbench.texteditor,
  org.eclipse.dltk.ruby.ui,
  org.eclipse.core.resources,
- org.eclipse.dltk.core;bundle-version="2.0.0",
+ org.eclipse.dltk.core;bundle-version="3.0.0",
  org.eclipse.dltk.core.tests,
  org.eclipse.dltk.ui,
  org.eclipse.dltk.ruby.core,
