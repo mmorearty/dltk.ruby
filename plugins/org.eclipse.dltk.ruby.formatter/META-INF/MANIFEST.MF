@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.eclipse.dltk.ruby.formatter;singleton:=true
-Bundle-Version: 2.0.0.qualifier
+Bundle-Version: 3.0.0.qualifier
 Bundle-Activator: org.eclipse.dltk.ruby.formatter.internal.RubyFormatterPlugin
 Bundle-Vendor: %pluginProvider
 Bundle-Localization: plugin
@@ -10,7 +10,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.dltk.ui;bundle-version="3.0.0",
  org.eclipse.dltk.core;bundle-version="3.0.0",
  org.eclipse.jface.text,
- org.eclipse.dltk.formatter;bundle-version="2.0.0",
+ org.eclipse.dltk.formatter;bundle-version="3.0.0",
  org.eclipse.dltk.ruby.core;bundle-version="3.0.0",
  org.eclipse.dltk.ruby.ui;bundle-version="3.0.0",
  org.eclipse.ui
