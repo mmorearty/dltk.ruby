@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Localization: plugin
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.eclipse.dltk.ruby.testing.tests
-Bundle-Version: 3.0.0
+Bundle-Version: 4.0.0
 Bundle-Vendor: %pluginProvider
 Fragment-Host: org.eclipse.dltk.ruby.testing
 Bundle-RequiredExecutionEnvironment: J2SE-1.4

@@ -3,17 +3,17 @@ Bundle-ManifestVersion: 2
 Bundle-Localization: plugin
 Bundle-Name: %pluginName
 Bundle-SymbolicName: org.eclipse.dltk.ruby.testing;singleton:=true
-Bundle-Version: 3.0.0.qualifier
+Bundle-Version: 4.0.0.qualifier
 Bundle-Activator: org.eclipse.dltk.ruby.testing.internal.RubyTestingPlugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.debug.ui,
  org.eclipse.jface.text,
- org.eclipse.dltk.core;bundle-version="3.0.0",
+ org.eclipse.dltk.core;bundle-version="4.0.0",
  org.eclipse.dltk.ui,
  org.eclipse.dltk.testing,
  org.eclipse.dltk.debug.ui,
- org.eclipse.dltk.launching;bundle-version="3.0.0",
+ org.eclipse.dltk.launching;bundle-version="4.0.0",
  org.eclipse.dltk.ruby.core,
  org.eclipse.dltk.ruby.debug,
  org.eclipse.dltk.ruby.debug.ui,
