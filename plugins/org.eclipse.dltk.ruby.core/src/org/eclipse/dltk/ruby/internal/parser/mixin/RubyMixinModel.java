@@ -10,7 +10,6 @@
 package org.eclipse.dltk.ruby.internal.parser.mixin;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.eclipse.core.runtime.Assert;
@@ -34,12 +33,12 @@ public class RubyMixinModel implements IShutdownListener {
 		}
 	}
 
-	private static final Map instances = new HashMap();
+	private static final Map<IScriptProject, RubyMixinModel> instances = new HashMap<IScriptProject, RubyMixinModel>();
 
 	public static synchronized RubyMixinModel getInstance(IScriptProject project) {
 		Assert.isNotNull(project);
 		synchronized (instances) {
-			RubyMixinModel mixinModel = (RubyMixinModel) instances.get(project);
+			RubyMixinModel mixinModel = instances.get(project);
 			if (mixinModel == null) {
 				mixinModel = new RubyMixinModel(project);
 				instances.put(project, mixinModel);
@@ -53,14 +52,16 @@ public class RubyMixinModel implements IShutdownListener {
 	 * @return
 	 */
 	public static void clearKeysCache(String key) {
+		final RubyMixinModel[] models;
 		synchronized (instances) {
 			if (instance != null) {
 				instance.getRawModel().clearKeysCache(key);
 			}
-			for (Iterator i = instances.values().iterator(); i.hasNext();) {
-				RubyMixinModel mixinModel = (RubyMixinModel) i.next();
-				mixinModel.getRawModel().clearKeysCache(key);
-			}
+			models = instances.values().toArray(
+					new RubyMixinModel[instances.size()]);
+		}
+		for (RubyMixinModel mixinModel : models) {
+			mixinModel.getRawModel().clearKeysCache(key);
 		}
 	}
 
