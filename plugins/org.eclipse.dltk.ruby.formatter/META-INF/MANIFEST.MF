@@ -32,6 +32,5 @@ Export-Package: org.eclipse.dltk.ruby.formatter,
  org.jruby.parser,
  org.jruby.runtime,
  org.jruby.runtime.builtin,
- org.jruby.util,
- org.jruby.util.collections
+ org.jruby.util
 Bundle-ActivationPolicy: lazy
