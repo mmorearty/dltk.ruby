@@ -26,6 +26,7 @@ import org.eclipse.dltk.ruby.formatter.internal.RubyParser;
 import org.eclipse.dltk.ruby.formatter.internal.nodes.FormatterBlockWithBeginEndNode;
 import org.eclipse.dltk.ui.formatter.FormatterException;
 import org.jruby.ast.ArgumentNode;
+import org.jruby.ast.ArrayNode;
 import org.jruby.ast.ListNode;
 import org.jruby.ast.Node;
 import org.jruby.ast.ext.HeredocNode;
@@ -90,8 +91,8 @@ public class ParserTest extends AbstractRubyFormatterTest {
 	 * @param position
 	 */
 	private String substring(String input, ISourcePosition position) {
-		return input.substring(position.getStartOffset(), position
-				.getEndOffset());
+		return input.substring(position.getStartOffset(),
+				position.getEndOffset());
 	}
 
 	private String createInput(final String id1, final String[] hereDoc1,
@@ -142,6 +143,39 @@ public class ParserTest extends AbstractRubyFormatterTest {
 
 		});
 		return heredocNodes;
+	}
+
+	public void testRuby19hash() throws FormatterException {
+		final String input = "hash = { one: 1, two: 2 }";
+		RubyParserResult result = RubyParser.parse(input);
+		assertNotNull(result);
+		final List arrays = new ArrayList();
+		result.getAST().accept(new AbstractVisitor() {
+			protected Instruction visitNode(Node visited) {
+				if (visited instanceof ArrayNode) {
+					arrays.add(visited);
+				}
+				visitChildren(visited);
+				return null;
+			}
+
+			private void visitChildren(Node visited) {
+				List children = visited.childNodes();
+				for (Iterator i = children.iterator(); i.hasNext();) {
+					final Node child = (Node) i.next();
+					visitChild(child);
+				}
+			}
+
+			private void visitChild(final Node child) {
+				if (child != null) {
+					child.accept(this);
+				}
+			}
+		});
+		assertEquals(1, arrays.size());
+		final ArrayNode node = (ArrayNode) arrays.get(0);
+		assertEquals(4, node.size());
 	}
 
 }

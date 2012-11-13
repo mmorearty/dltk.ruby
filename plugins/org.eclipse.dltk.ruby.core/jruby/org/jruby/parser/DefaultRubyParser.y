@@ -1721,6 +1721,10 @@ assocs        : assoc // [!null]
 assoc         : arg_value tASSOC arg_value { // [!null]
                   $$ = new ArrayNode(support.union($1, $3), $1).add($3);
               }
+              // or a Ruby 1.9 style hash value pair (e.g.  a: b) [!null]
+              | variable ':' arg_value {
+                  $$ = new ArrayNode(support.union($1, $3), new SymbolNode($1.getPosition(), (String) $1.getValue())).add($3);
+              }
 
 operation     : tIDENTIFIER | tCONSTANT | tFID
 operation2    : tIDENTIFIER | tCONSTANT | tFID | op

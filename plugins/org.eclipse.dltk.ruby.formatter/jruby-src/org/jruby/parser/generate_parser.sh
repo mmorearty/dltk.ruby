@@ -14,5 +14,6 @@ $JAY $PARSER_BASE.y < skeleton.parser | grep -v "^//t" >$PARSER_BASE.out
 
 # Patch file to get around Java static initialization issues plus extract
 # a bunch of stuff to seperate file (yytables).
-$RUBY ../../../../bin/patch_parser.rb $PARSER_BASE.out $YYTABLE_PREFIX > $PARSER_BASE.java
+$RUBY patch_parser.rb $PARSER_BASE.out $YYTABLE_PREFIX > $PARSER_BASE.java
+sed -i 's/public class DefaultRubyParser/@SuppressWarnings("nls")\npublic class DefaultRubyParser/' DefaultRubyParser.java
 rm -f $PARSER_BASE.out
