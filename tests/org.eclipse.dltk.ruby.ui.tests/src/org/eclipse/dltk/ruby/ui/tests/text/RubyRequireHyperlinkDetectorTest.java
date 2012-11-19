@@ -11,13 +11,14 @@
  *******************************************************************************/
 package org.eclipse.dltk.ruby.ui.tests.text;
 
-import org.eclipse.dltk.core.tests.model.SuiteOfTestCases;
+import junit.framework.TestCase;
+
 import org.eclipse.dltk.ruby.internal.ui.text.hyperlink.RubyRequireHyperlinkDetector;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
 
-public class RubyRequireHyperlinkDetectorTest extends SuiteOfTestCases {
+public class RubyRequireHyperlinkDetectorTest extends TestCase {
 
 	public RubyRequireHyperlinkDetectorTest(String name) {
 		super(name);

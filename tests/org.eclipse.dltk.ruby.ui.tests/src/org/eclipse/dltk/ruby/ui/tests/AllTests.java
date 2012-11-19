@@ -20,8 +20,8 @@ public class AllTests {
 		suite.addTestSuite(PartitioningTest.class);
 		suite.addTestSuite(IndentingTest.class);
 		suite.addTestSuite(RubyFoldingTest.class);
-		suite.addTestSuite(MixinCompleteTests.class);
-		suite.addTestSuite(ThreadedUIMixinTests.class);
+		suite.addTest(MixinCompleteTests.suite());
+		suite.addTest(ThreadedUIMixinTests.suite());
 		suite.addTestSuite(RubyRequireHyperlinkDetectorTest.class);
 		suite.addTest(RubyCommentElementTests.suite());
 		// $JUnit-END$
