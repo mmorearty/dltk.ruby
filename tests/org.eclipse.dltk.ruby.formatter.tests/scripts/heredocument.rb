@@ -8,7 +8,7 @@ def z
 	print <<EOS1
 EOS1
 end
-==== here-document-empty-minus
+==== @IGNORE:here-document-empty-minus
 def z
 print <<-EOS1
 EOS1

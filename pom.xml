@@ -30,6 +30,7 @@
 		<module>plugins/org.eclipse.dltk.ruby.testing</module>
 		<module>plugins/org.eclipse.dltk.ruby.ui</module>
 		<module>tests/org.eclipse.dltk.ruby.core.tests</module>
+		<module>tests/org.eclipse.dltk.ruby.formatter.tests</module>
 		<module>tests/org.eclipse.dltk.ruby.ui.tests</module>
 		<module>tests/org.eclipse.dltk.ruby.testing.tests</module>
 		<!-- <module>update.site</module> -->
