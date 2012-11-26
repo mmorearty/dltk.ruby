@@ -7,7 +7,6 @@ import org.eclipse.dltk.ruby.core.tests.assist.RubySelectionTests;
 import org.eclipse.dltk.ruby.core.tests.parser.RubyParserRecoveryTests;
 import org.eclipse.dltk.ruby.core.tests.parser.RubyParserTests;
 import org.eclipse.dltk.ruby.core.tests.resources.RubyResourcesTests;
-import org.eclipse.dltk.ruby.core.tests.resources.SourceModuleInfoCacheTest;
 import org.eclipse.dltk.ruby.core.tests.search.RubyFullNameSearchTests;
 import org.eclipse.dltk.ruby.core.tests.search.RubyMethodSearchTests;
 import org.eclipse.dltk.ruby.core.tests.search.RubySearchTests;
@@ -27,7 +26,6 @@ public class AllTests {
 		// $JUnit-BEGIN$
 		suite.addTest(RubyResourcesTests.suite());
 		// suite.addTest(SourceCacheTests.suite());
-		suite.addTest(SourceModuleInfoCacheTest.suite());
 		suite.addTest(MixinTestsSuite.suite());
 		suite.addTest(MixinModelManipulationTests.suite());
 		suite.addTest(RubyMixinClassTests.suite());
