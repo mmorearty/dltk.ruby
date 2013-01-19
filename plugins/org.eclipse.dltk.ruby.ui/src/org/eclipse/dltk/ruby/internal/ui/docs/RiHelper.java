@@ -69,9 +69,9 @@ public class RiHelper {
 
 	protected synchronized void runRiProcess() throws CoreException,
 			IOException {
-		IInterpreterInstall install = ScriptLaunchUtil
+		IInterpreterInstall install = ScriptRuntime
 				.getDefaultInterpreterInstall(RubyNature.NATURE_ID,
-						LocalEnvironment.ENVIRONMENT_ID);
+						LocalEnvironment.getInstance());
 
 		if (install == null) {
 			throw new CoreException(Status.CANCEL_STATUS);
