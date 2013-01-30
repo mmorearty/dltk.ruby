@@ -16,8 +16,11 @@ module XoredDebugger
         
 	    def receive_command
             #IDE: command [SPACE] [args] -- data [NULL]
-            line = ''       
-            while((ch = @socket.getc) != 0)
+            line = ''
+            # Ruby 1.8 uses numbers as characters and Ruby 1.9 uses single
+            # character strings. Select the terminator based on version.
+            terminator = RUBY_VERSION.start_with?("1.8") ? 0 : "\0"
+            while((ch = @socket.getc) != terminator)
                 if (ch.nil?)
                     raise IOError
                 end

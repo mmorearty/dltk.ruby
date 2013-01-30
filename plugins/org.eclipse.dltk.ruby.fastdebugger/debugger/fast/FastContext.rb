@@ -97,7 +97,7 @@ module XoredDebugger
         
         # Evaluation
         def eval(text, index)
-            Kernel.eval(text, @context.frame_binding(index))
+            Kernel.eval(text.to_s, @context.frame_binding(index))
         end
                     
         # Stack depth

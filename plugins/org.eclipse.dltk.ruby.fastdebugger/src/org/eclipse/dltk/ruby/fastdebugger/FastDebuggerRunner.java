@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugException;
@@ -13,16 +14,17 @@ import org.eclipse.dltk.core.PreferencesLookupDelegate;
 import org.eclipse.dltk.core.environment.IDeployment;
 import org.eclipse.dltk.core.environment.IEnvironment;
 import org.eclipse.dltk.core.environment.IExecutionEnvironment;
-import org.eclipse.dltk.core.environment.IFileHandle;
 import org.eclipse.dltk.internal.launching.execution.DeploymentManager;
 import org.eclipse.dltk.launching.DebuggingEngineRunner;
 import org.eclipse.dltk.launching.IInterpreterInstall;
 import org.eclipse.dltk.launching.InterpreterConfig;
+import org.eclipse.dltk.launching.ScriptLaunchUtil;
 import org.eclipse.dltk.launching.debug.DbgpConnectionConfig;
 import org.eclipse.dltk.ruby.debug.RubyDebugPlugin;
 import org.eclipse.dltk.ruby.internal.launching.RubyGenericInstallType;
 import org.eclipse.dltk.ruby.launching.RubyLaunchConfigurationConstants;
 import org.eclipse.osgi.util.NLS;
+import org.osgi.framework.Bundle;
 
 public class FastDebuggerRunner extends DebuggingEngineRunner {
 	public static final String ENGINE_ID = "org.eclipse.dltk.ruby.fastdebugger"; //$NON-NLS-1$
@@ -122,6 +124,8 @@ public class FastDebuggerRunner extends DebuggingEngineRunner {
 		return RubyDebugPlugin.PLUGIN_ID;
 	}
 
+	// FIXME TODO this is not used anywhere and is broken on non-1.8 installs
+	// or when the install location is non-default such as with rvm.
 	public IPath resolveGemsPath(boolean user) {
 		IEnvironment env = getInstall().getEnvironment();
 		IPath gemsPath = new Path(getInstall().getInstallLocation()
@@ -152,28 +156,20 @@ public class FastDebuggerRunner extends DebuggingEngineRunner {
 		return gemsPath;
 	}
 
-	private boolean resolveRubyDebugGemExists(boolean userGems) {
-		IEnvironment env = getInstall().getEnvironment();
-		IPath gemsPath = resolveGemsPath(userGems);
-
-		IFileHandle gemDir = env.getFile(gemsPath);
-		if ((gemsPath != null) && (gemDir.exists() == true)) {
-			IFileHandle[] children = gemDir.getChildren();
-			for (int i = 0; i < children.length; i++) {
-				String name = children[i].getName();
-				if (name.startsWith("ruby-debug-base")) { //$NON-NLS-1$
-					return true;
-				}
-			}
-		}
-
-		return false;
-	}
-
 	public boolean resolveRubyDebugGemExists() {
-		// TODO check in directories returned by `gem19 environment gempath`
-		return resolveRubyDebugGemExists(true)
-				|| resolveRubyDebugGemExists(false);
+		IEnvironment environment = getInstall().getEnvironment();
+
+		IExecutionEnvironment executionEnvironment = (IExecutionEnvironment) environment
+				.getAdapter(IExecutionEnvironment.class);
+		
+		Bundle bundle = FastDebuggerPlugin.getDefault().getBundle();
+
+		String output = ScriptLaunchUtil.runEmbeddedScriptReadContent(
+				executionEnvironment, "scripts/check_debugger_gem.rb", bundle, //$NON-NLS-1$
+				getInstall().getInstallLocation(),
+				new NullProgressMonitor());
+		
+		return output.startsWith("true");
 	}
 
 	protected void checkConfig(InterpreterConfig config,

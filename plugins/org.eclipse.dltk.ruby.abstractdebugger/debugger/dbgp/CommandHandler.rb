@@ -331,7 +331,7 @@ module XoredDebugger
             data = CONTEXT_NAMES.collect { |name, id| sprintf('<context name="%s" id="%d"/>', name, id)}
             
             response = Response.new(command)
-            response.set_data(data)
+            response.set_data(data.join("\n"))
             return response
         end
         
@@ -345,6 +345,10 @@ module XoredDebugger
                 pagesize = @feature_manager.get('max_children').to_i
                 props = []
                 vars.each { |var|                   
+                    # these variables give deprecation warnings in 1.9+
+                    # take advantage of the fact that they are strings in 1.8
+                    # and only skip them on newer ruby versions
+                    next if [:$KCODE,:$-K,:$=].include?(var)
                     real_var = @context.eval(var, d)
                     props << PropertyElement.new(real_var, var, pagesize, 0)
                 }
@@ -358,7 +362,7 @@ module XoredDebugger
              
             case context_id                
             # Local variables
-            when LOCAL_CONTEXT_ID:
+            when LOCAL_CONTEXT_ID
                 properties += make_props('local_variables', depth)
 
                 # TODO: correct this later
@@ -368,11 +372,11 @@ module XoredDebugger
                 end       
 
             # Global variables
-            when GLOBAL_CONTEXT_ID:
+            when GLOBAL_CONTEXT_ID
                 properties += make_props('global_variables', depth)
 
             # Class variables
-            when CLASS_CONTEXT_ID:
+            when CLASS_CONTEXT_ID
                 properties += make_props('instance_variables', depth)
                 properties += make_props('self.class.class_variables', depth)
             
@@ -494,10 +498,14 @@ module XoredDebugger
         def handle_stdout(command)
             check_command_arguments(command, '-c')
             state = case command.arg('-c').to_i
-                when 0 : state = CaptureManager::DISABLE
-                when 1 : state = CaptureManager::COPY
-	            when 2 : state = CaptureManager::REDIRECT
-	            else raise ArgumentError   
+            when 0
+              state = CaptureManager::DISABLE
+            when 1
+              state = CaptureManager::COPY
+            when 2
+              state = CaptureManager::REDIRECT
+            else
+              raise ArgumentError   
             end
                 
             @capture_manager.stdout_capturer.state = state
@@ -509,10 +517,14 @@ module XoredDebugger
         def handle_stderr(command)
             check_command_arguments(command, '-c')
             state = case command.arg('-c').to_i
-                when 0 : state = CaptureManager::DISABLE
-                when 1 : state = CaptureManager::COPY
-	            when 2 : state = CaptureManager::REDIRECT
-	            else raise ArgumentError   
+            when 0
+                state = CaptureManager::DISABLE
+            when 1
+                state = CaptureManager::COPY
+	          when 2
+	            state = CaptureManager::REDIRECT
+            else
+              raise ArgumentError   
             end
 
             @capture_manager.stderr_capturer.state = state

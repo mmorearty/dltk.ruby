@@ -91,9 +91,12 @@ module XoredDebugger
         def setupLogger
             log = Params.instance.log
             new_logger = case (log) 
-                when nil: NullLogManager.new 
-                when 'stdout': StdoutLogManager.new 
-                else FileLogManager.new(log)
+            when nil
+              NullLogManager.new 
+            when 'stdout'
+              StdoutLogManager.new 
+            else
+              FileLogManager.new(log)
             end            
             Logger.setup(new_logger)            
         end       

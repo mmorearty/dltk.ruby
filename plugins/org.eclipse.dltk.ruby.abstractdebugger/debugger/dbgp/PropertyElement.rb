@@ -88,7 +88,7 @@ module XoredDebugger
             	    finish = new_finish
             	end                
             end
-            log('Gathering ' + name + ' children form ' + start.to_s + ' to ' + finish.to_s)
+            log('Gathering ' + name.to_s + ' children form ' + start.to_s + ' to ' + finish.to_s)
 
         	type = object.class
             if (type == Array)
